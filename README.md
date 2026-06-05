@@ -20,8 +20,8 @@ Want a new dataset, added functionality, or a bug fixed? Feel free to post an is
 ## Getting Started
 
 For a quick start with the Python API, check out our Colab tutorials:
-[Python](https://colab.research.google.com/github/allenai/ir_datasets/blob/master/examples/ir_datasets.ipynb)
-[Command Line](https://colab.research.google.com/github/allenai/ir_datasets/blob/master/examples/ir_datasets_cli.ipynb)
+[Python](https://colab.research.google.com/github/ir-datasets/ir-datasets/blob/master/examples/ir_datasets.ipynb)
+[Command Line](https://colab.research.google.com/github/ir-datasets/ir-datasets/blob/master/examples/ir_datasets_cli.ipynb)
 
 Install via pip:
 
@@ -32,13 +32,13 @@ pip install ir_datasets
 If you want the main branch, you install as such:
 
 ```
-pip install git+https://github.com/allenai/ir_datasets.git
+pip install git+https://github.com/ir-datasets/ir-datasets.git
 ```
 
 If you want to run an editable version locally:
 
 ```
-$ git clone https://github.com/allenai/ir_datasets
+$ git clone https://github.com/ir-datasets/ir-datasets
 $ cd ir_datasets
 $ pip install -e .    
 ```
