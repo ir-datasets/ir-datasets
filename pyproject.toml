@@ -77,9 +77,9 @@ all = [
 [project.urls]
 "Homepage" = "https://ir-datasets.com/"
 "Documentation" = "https://project.readthedocs.io/"
-"Source" = "https://github.com/allenai/ir_datasets"
-"Issues" = "https://github.com/allenai/ir_datasets/issues"
-"Bug Tracker" = "https://github.com/allenai/ir_datasets/issues"
+"Source" = "https://github.com/ir-datasets/ir-datasets"
+"Issues" = "https://github.com/ir-datasets/ir-datasets/issues"
+"Bug Tracker" = "https://github.com/ir-datasets/ir-datasets/issues"
 
 [project.scripts]
 ir_datasets = "ir_datasets:main_cli"

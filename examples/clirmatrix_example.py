@@ -14,7 +14,7 @@ options:
 """
 
 #examples
-#reference python notebook: https://colab.research.google.com/github/allenai/ir_datasets/blob/master/examples/ir_datasets.ipynb#scrollTo=n7mY16MRH0hx
+#reference python notebook: https://colab.research.google.com/github/ir-datasets/ir-datasets/blob/master/examples/ir_datasets.ipynb#scrollTo=n7mY16MRH0hx
 dataset = ir_datasets.load("clirmatrix/en/bi139-base/zh/test1")
 docstore = dataset.docs_store()
 
