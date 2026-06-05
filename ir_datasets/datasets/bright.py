@@ -7,6 +7,13 @@ from ir_datasets.indices import PickleLz4FullStore
 
 NAME = 'bright'
 QRELS_DEFS = {1: 'Relevant', -100: 'Excluded from evaluation'}
+REASONING_FIELDS = {
+    'Gemini-1.0_reason': 'gemini_1_0_reason',
+    'claude-3-opus_reason': 'claude_3_opus_reason',
+    'gpt4_reason': 'gpt4_reason',
+    'grit_reason': 'grit_reason',
+    'llama3-70b_reason': 'llama3_70b_reason',
+}
 
 
 def parquet_iter(path):
@@ -23,6 +30,11 @@ class BrightQuery(NamedTuple):
     query_id: str
     text: str
     reasoning: str
+    gemini_1_0_reason: str
+    claude_3_opus_reason: str
+    gpt4_reason: str
+    grit_reason: str
+    llama3_70b_reason: str
 
 
 class BrightDocs(BaseDocs):
@@ -64,8 +76,9 @@ class BrightDocs(BaseDocs):
 
 
 class BrightQueries(BaseQueries):
-    def __init__(self, dlc, *, gold_field='gold_ids'):
+    def __init__(self, dlc, reasoning_dlcs=None, *, gold_field='gold_ids'):
         self._dlc = dlc
+        self._reasoning_dlcs = reasoning_dlcs or {}
         self._gold_field = gold_field
 
     def qrels_path(self):
@@ -81,8 +94,25 @@ class BrightQueries(BaseQueries):
                     yield TrecQrel(query_id, doc_id, -100, "0")
 
     def queries_iter(self):
+        reasoning_by_field = {}
+        for source, field in REASONING_FIELDS.items():
+            records = {}
+            if source in self._reasoning_dlcs:
+                for q in parquet_iter(self._reasoning_dlcs[source].path()):
+                    records[str(q['id'])] = q.get('reasoning', '')
+            reasoning_by_field[field] = records
         for q in parquet_iter(self._dlc.path()):
-            yield BrightQuery(str(q['id']), q['query'], q['reasoning'])
+            query_id = str(q['id'])
+            yield BrightQuery(
+                query_id,
+                q['query'],
+                q['reasoning'],
+                reasoning_by_field['gemini_1_0_reason'].get(query_id, ''),
+                reasoning_by_field['claude_3_opus_reason'].get(query_id, ''),
+                reasoning_by_field['gpt4_reason'].get(query_id, ''),
+                reasoning_by_field['grit_reason'].get(query_id, ''),
+                reasoning_by_field['llama3_70b_reason'].get(query_id, ''),
+            )
 
     def queries_cls(self):
         return BrightQuery
@@ -126,31 +156,29 @@ def _init():
     base = Dataset(documentation('_'))
 
     subsets = {}
+    query_subsets = ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'leetcode', 'pony', 'aops', 'theoremqa-theorems', 'theoremqa-questions']
 
-    subsets_with_queries = ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'leetcode', 'pony', 'aops', 'theoremqa-theorems', 'theoremqa-questions']
-    reasoning_sources = ['Gemini-1.0_reason', 'claude-3-opus_reason', 'gpt4_reason', 'grit_reason', 'llama3-70b_reason']
-
-    for subset in subsets_with_queries:
+    for subset in query_subsets:
+        reasoning_dlcs = {
+            source: dlc[f'{subset}/{source}/queries']
+            for source in REASONING_FIELDS
+        }
         subsets[subset] = Dataset(
             BrightDocs(subset, dlc[f'{subset}/docs']),
-            BrightQueries(dlc[f'{subset}/queries']),
+            BrightQueries(dlc[f'{subset}/queries'], reasoning_dlcs),
             BrightQrels(dlc[f'{subset}/queries']),
             documentation(subset),
         )
 
-        for reasoning_source in reasoning_sources:
-            subsets[f'{subset}/{reasoning_source}'] = Dataset(
-                BrightDocs(subset, dlc[f'{subset}/docs']),
-                BrightQueries(dlc[f'{subset}/{reasoning_source}/queries']),
-                BrightQrels(dlc[f'{subset}/queries']),
-                documentation(subset),
-            )
-
     # Long docs
     for subset in ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'pony']:
+        reasoning_dlcs = {
+            source: dlc[f'{subset}/{source}/queries']
+            for source in REASONING_FIELDS
+        }
         subsets[f'{subset}-long'] = Dataset(
             BrightDocs(subset, dlc[f'{subset}-long/docs']),
-            BrightQueries(dlc[f'{subset}/queries']),
+            BrightQueries(dlc[f'{subset}/queries'], reasoning_dlcs),
             BrightQrels(dlc[f'{subset}/queries'], gold_field='gold_ids_long'),
             documentation(f'{subset}-long'),
         )
