@@ -409,6 +409,246 @@
       "size_hint": 124476,
       "expected_md5": "e45115bb80e939fc9a063514f2331e54",
       "cache_path": "theoremqa-theorems.queries.parquet"
+    },
+    "biology/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/biology-00000-of-00001.parquet",
+      "cache_path": "biology.Gemini-1.0_reason.queries.parquet"
+    },
+    "biology/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/biology-00000-of-00001.parquet",
+      "cache_path": "biology.claude-3-opus_reason.queries.parquet"
+    },
+    "biology/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/biology-00000-of-00001.parquet",
+      "cache_path": "biology.gpt4_reason.queries.parquet"
+    },
+    "biology/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/biology-00000-of-00001.parquet",
+      "cache_path": "biology.grit_reason.queries.parquet"
+    },
+    "biology/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/biology-00000-of-00001.parquet",
+      "cache_path": "biology.llama3-70b_reason.queries.parquet"
+    },
+    "earth-science/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/earth_science-00000-of-00001.parquet",
+      "cache_path": "earth-science.Gemini-1.0_reason.queries.parquet"
+    },
+    "earth-science/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/earth_science-00000-of-00001.parquet",
+      "cache_path": "earth-science.claude-3-opus_reason.queries.parquet"
+    },
+    "earth-science/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/earth_science-00000-of-00001.parquet",
+      "cache_path": "earth-science.gpt4_reason.queries.parquet"
+    },
+    "earth-science/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/earth_science-00000-of-00001.parquet",
+      "cache_path": "earth-science.grit_reason.queries.parquet"
+    },
+    "earth-science/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/earth_science-00000-of-00001.parquet",
+      "cache_path": "earth-science.llama3-70b_reason.queries.parquet"
+    },
+    "economics/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/economics-00000-of-00001.parquet",
+      "cache_path": "economics.Gemini-1.0_reason.queries.parquet"
+    },
+    "economics/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/economics-00000-of-00001.parquet",
+      "cache_path": "economics.claude-3-opus_reason.queries.parquet"
+    },
+    "economics/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/economics-00000-of-00001.parquet",
+      "cache_path": "economics.gpt4_reason.queries.parquet"
+    },
+    "economics/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/economics-00000-of-00001.parquet",
+      "cache_path": "economics.grit_reason.queries.parquet"
+    },
+    "economics/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/economics-00000-of-00001.parquet",
+      "cache_path": "economics.llama3-70b_reason.queries.parquet"
+    },
+    "psychology/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/psychology-00000-of-00001.parquet",
+      "cache_path": "psychology.Gemini-1.0_reason.queries.parquet"
+    },
+    "psychology/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/psychology-00000-of-00001.parquet",
+      "cache_path": "psychology.claude-3-opus_reason.queries.parquet"
+    },
+    "psychology/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/psychology-00000-of-00001.parquet",
+      "cache_path": "psychology.gpt4_reason.queries.parquet"
+    },
+    "psychology/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/psychology-00000-of-00001.parquet",
+      "cache_path": "psychology.grit_reason.queries.parquet"
+    },
+    "psychology/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/psychology-00000-of-00001.parquet",
+      "cache_path": "psychology.llama3-70b_reason.queries.parquet"
+    },
+    "robotics/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/robotics-00000-of-00001.parquet",
+      "cache_path": "robotics.Gemini-1.0_reason.queries.parquet"
+    },
+    "robotics/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/robotics-00000-of-00001.parquet",
+      "cache_path": "robotics.claude-3-opus_reason.queries.parquet"
+    },
+    "robotics/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/robotics-00000-of-00001.parquet",
+      "cache_path": "robotics.gpt4_reason.queries.parquet"
+    },
+    "robotics/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/robotics-00000-of-00001.parquet",
+      "cache_path": "robotics.grit_reason.queries.parquet"
+    },
+    "robotics/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/robotics-00000-of-00001.parquet",
+      "cache_path": "robotics.llama3-70b_reason.queries.parquet"
+    },
+    "stackoverflow/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/stackoverflow-00000-of-00001.parquet",
+      "cache_path": "stackoverflow.Gemini-1.0_reason.queries.parquet"
+    },
+    "stackoverflow/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/stackoverflow-00000-of-00001.parquet",
+      "cache_path": "stackoverflow.claude-3-opus_reason.queries.parquet"
+    },
+    "stackoverflow/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/stackoverflow-00000-of-00001.parquet",
+      "cache_path": "stackoverflow.gpt4_reason.queries.parquet"
+    },
+    "stackoverflow/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/stackoverflow-00000-of-00001.parquet",
+      "cache_path": "stackoverflow.grit_reason.queries.parquet"
+    },
+    "stackoverflow/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/stackoverflow-00000-of-00001.parquet",
+      "cache_path": "stackoverflow.llama3-70b_reason.queries.parquet"
+    },
+    "sustainable-living/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/sustainable_living-00000-of-00001.parquet",
+      "cache_path": "sustainable-living.Gemini-1.0_reason.queries.parquet"
+    },
+    "sustainable-living/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/sustainable_living-00000-of-00001.parquet",
+      "cache_path": "sustainable-living.claude-3-opus_reason.queries.parquet"
+    },
+    "sustainable-living/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/sustainable_living-00000-of-00001.parquet",
+      "cache_path": "sustainable-living.gpt4_reason.queries.parquet"
+    },
+    "sustainable-living/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/sustainable_living-00000-of-00001.parquet",
+      "cache_path": "sustainable-living.grit_reason.queries.parquet"
+    },
+    "sustainable-living/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/sustainable_living-00000-of-00001.parquet",
+      "cache_path": "sustainable-living.llama3-70b_reason.queries.parquet"
+    },
+    "leetcode/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/leetcode-00000-of-00001.parquet",
+      "cache_path": "leetcode.Gemini-1.0_reason.queries.parquet"
+    },
+    "leetcode/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/leetcode-00000-of-00001.parquet",
+      "cache_path": "leetcode.claude-3-opus_reason.queries.parquet"
+    },
+    "leetcode/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/leetcode-00000-of-00001.parquet",
+      "cache_path": "leetcode.gpt4_reason.queries.parquet"
+    },
+    "leetcode/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/leetcode-00000-of-00001.parquet",
+      "cache_path": "leetcode.grit_reason.queries.parquet"
+    },
+    "leetcode/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/leetcode-00000-of-00001.parquet",
+      "cache_path": "leetcode.llama3-70b_reason.queries.parquet"
+    },
+    "pony/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/pony-00000-of-00001.parquet",
+      "cache_path": "pony.Gemini-1.0_reason.queries.parquet"
+    },
+    "pony/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/pony-00000-of-00001.parquet",
+      "cache_path": "pony.claude-3-opus_reason.queries.parquet"
+    },
+    "pony/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/pony-00000-of-00001.parquet",
+      "cache_path": "pony.gpt4_reason.queries.parquet"
+    },
+    "pony/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/pony-00000-of-00001.parquet",
+      "cache_path": "pony.grit_reason.queries.parquet"
+    },
+    "pony/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/pony-00000-of-00001.parquet",
+      "cache_path": "pony.llama3-70b_reason.queries.parquet"
+    },
+    "aops/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/aops-00000-of-00001.parquet",
+      "cache_path": "aops.Gemini-1.0_reason.queries.parquet"
+    },
+    "aops/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/aops-00000-of-00001.parquet",
+      "cache_path": "aops.claude-3-opus_reason.queries.parquet"
+    },
+    "aops/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/aops-00000-of-00001.parquet",
+      "cache_path": "aops.gpt4_reason.queries.parquet"
+    },
+    "aops/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/aops-00000-of-00001.parquet",
+      "cache_path": "aops.grit_reason.queries.parquet"
+    },
+    "aops/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/aops-00000-of-00001.parquet",
+      "cache_path": "aops.llama3-70b_reason.queries.parquet"
+    },
+    "theoremqa-theorems/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/theoremqa_theorems-00000-of-00001.parquet",
+      "cache_path": "theoremqa-theorems.Gemini-1.0_reason.queries.parquet"
+    },
+    "theoremqa-theorems/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/theoremqa_theorems-00000-of-00001.parquet",
+      "cache_path": "theoremqa-theorems.claude-3-opus_reason.queries.parquet"
+    },
+    "theoremqa-theorems/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/theoremqa_theorems-00000-of-00001.parquet",
+      "cache_path": "theoremqa-theorems.gpt4_reason.queries.parquet"
+    },
+    "theoremqa-theorems/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/theoremqa_theorems-00000-of-00001.parquet",
+      "cache_path": "theoremqa-theorems.grit_reason.queries.parquet"
+    },
+    "theoremqa-theorems/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/theoremqa_theorems-00000-of-00001.parquet",
+      "cache_path": "theoremqa-theorems.llama3-70b_reason.queries.parquet"
+    },
+    "theoremqa-questions/Gemini-1.0_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/theoremqa_questions-00000-of-00001.parquet",
+      "cache_path": "theoremqa-questions.Gemini-1.0_reason.queries.parquet"
+    },
+    "theoremqa-questions/claude-3-opus_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/claude-3-opus_reason/theoremqa_questions-00000-of-00001.parquet",
+      "cache_path": "theoremqa-questions.claude-3-opus_reason.queries.parquet"
+    },
+    "theoremqa-questions/gpt4_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/gpt4_reason/theoremqa_questions-00000-of-00001.parquet",
+      "cache_path": "theoremqa-questions.gpt4_reason.queries.parquet"
+    },
+    "theoremqa-questions/grit_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/grit_reason/theoremqa_questions-00000-of-00001.parquet",
+      "cache_path": "theoremqa-questions.grit_reason.queries.parquet"
+    },
+    "theoremqa-questions/llama3-70b_reason/queries": {
+      "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/llama3-70b_reason/theoremqa_questions-00000-of-00001.parquet",
+      "cache_path": "theoremqa-questions.llama3-70b_reason.queries.parquet"
     }
   },
   

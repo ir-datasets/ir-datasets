@@ -127,13 +127,24 @@ def _init():
 
     subsets = {}
 
-    for subset in ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'leetcode', 'pony', 'aops', 'theoremqa-theorems', 'theoremqa-questions']:
+    subsets_with_queries = ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'leetcode', 'pony', 'aops', 'theoremqa-theorems', 'theoremqa-questions']
+    reasoning_sources = ['Gemini-1.0_reason', 'claude-3-opus_reason', 'gpt4_reason', 'grit_reason', 'llama3-70b_reason']
+
+    for subset in subsets_with_queries:
         subsets[subset] = Dataset(
             BrightDocs(subset, dlc[f'{subset}/docs']),
             BrightQueries(dlc[f'{subset}/queries']),
             BrightQrels(dlc[f'{subset}/queries']),
             documentation(subset),
         )
+
+        for reasoning_source in reasoning_sources:
+            subsets[f'{subset}/{reasoning_source}'] = Dataset(
+                BrightDocs(subset, dlc[f'{subset}/docs']),
+                BrightQueries(dlc[f'{subset}/{reasoning_source}/queries']),
+                BrightQrels(dlc[f'{subset}/queries']),
+                documentation(subset),
+            )
 
     # Long docs
     for subset in ['biology', 'earth-science', 'economics', 'psychology', 'robotics', 'stackoverflow', 'sustainable-living', 'pony']:
