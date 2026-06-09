@@ -23,6 +23,7 @@ class BrightQuery(NamedTuple):
     query_id: str
     text: str
     reasoning: str
+    gold_answer: str
 
 
 class BrightDocs(BaseDocs):
@@ -82,7 +83,7 @@ class BrightQueries(BaseQueries):
 
     def queries_iter(self):
         for q in parquet_iter(self._dlc.path()):
-            yield BrightQuery(str(q['id']), q['query'], q['reasoning'])
+            yield BrightQuery(str(q['id']), q['query'], q['reasoning'], q['gold_answer'])
 
     def queries_cls(self):
         return BrightQuery
