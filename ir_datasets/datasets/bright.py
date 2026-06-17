@@ -30,11 +30,21 @@ class BrightQuery(NamedTuple):
     query_id: str
     text: str
     reasoning: str
+    gold_answer: str
     gemini_1_0_reason: str
     claude_3_opus_reason: str
     gpt4_reason: str
     grit_reason: str
     llama3_70b_reason: str
+
+      
+def _iter_qrels(query, *, gold_field):
+    query_id = str(query['id'])
+    for doc_id in query[gold_field]:
+        yield TrecQrel(query_id, str(doc_id), 1, "0")
+    for doc_id in query.get('excluded_ids', ()):
+        if doc_id not in (None, 'N/A'):
+            yield TrecQrel(query_id, str(doc_id), -100, "0")
 
 
 class BrightDocs(BaseDocs):
@@ -86,12 +96,7 @@ class BrightQueries(BaseQueries):
 
     def qrels_iter(self):
         for q in parquet_iter(self._dlc.path()):
-            query_id = str(q['id'])
-            for doc_id in q[self._gold_field]:
-                yield TrecQrel(query_id, str(doc_id), 1, "0")
-            for doc_id in q['excluded_ids']:
-                if doc_id != 'N/A':
-                    yield TrecQrel(query_id, doc_id, -100, "0")
+            yield from _iter_qrels(q, gold_field=self._gold_field)
 
     def queries_iter(self):
         reasoning_by_field = {}
@@ -107,6 +112,7 @@ class BrightQueries(BaseQueries):
                 query_id,
                 q['query'],
                 q['reasoning'],
+                q['gold_answer'],
                 reasoning_by_field['gemini_1_0_reason'].get(query_id, ''),
                 reasoning_by_field['claude_3_opus_reason'].get(query_id, ''),
                 reasoning_by_field['gpt4_reason'].get(query_id, ''),
@@ -134,12 +140,7 @@ class BrightQrels(BaseQrels):
 
     def qrels_iter(self):
         for q in parquet_iter(self._dlc.path()):
-            query_id = str(q['id'])
-            for doc_id in q[self._gold_field]:
-                yield TrecQrel(query_id, str(doc_id), 1, "0")
-            for doc_id in q['excluded_ids']:
-                if doc_id != 'N/A':
-                    yield TrecQrel(query_id, str(doc_id), -100, "0")
+            yield from _iter_qrels(q, gold_field=self._gold_field)
 
     def qrels_cls(self):
         return TrecQrel
