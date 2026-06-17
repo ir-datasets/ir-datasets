@@ -26,6 +26,15 @@ class BrightQuery(NamedTuple):
     gold_answer: str
 
 
+def _iter_qrels(query, *, gold_field):
+    query_id = str(query['id'])
+    for doc_id in query[gold_field]:
+        yield TrecQrel(query_id, str(doc_id), 1, "0")
+    for doc_id in query.get('excluded_ids', ()):
+        if doc_id not in (None, 'N/A'):
+            yield TrecQrel(query_id, str(doc_id), -100, "0")
+
+
 class BrightDocs(BaseDocs):
     def __init__(self, name, dlc, count_hint=None):
         self._name = name
@@ -74,12 +83,7 @@ class BrightQueries(BaseQueries):
 
     def qrels_iter(self):
         for q in parquet_iter(self._dlc.path()):
-            query_id = str(q['id'])
-            for doc_id in q[self._gold_field]:
-                yield TrecQrel(query_id, str(doc_id), 1, "0")
-            for doc_id in q['excluded_ids']:
-                if doc_id != 'N/A':
-                    yield TrecQrel(query_id, doc_id, -100, "0")
+            yield from _iter_qrels(q, gold_field=self._gold_field)
 
     def queries_iter(self):
         for q in parquet_iter(self._dlc.path()):
@@ -105,12 +109,7 @@ class BrightQrels(BaseQrels):
 
     def qrels_iter(self):
         for q in parquet_iter(self._dlc.path()):
-            query_id = str(q['id'])
-            for doc_id in q[self._gold_field]:
-                yield TrecQrel(query_id, str(doc_id), 1, "0")
-            for doc_id in q['excluded_ids']:
-                if doc_id != 'N/A':
-                    yield TrecQrel(query_id, str(doc_id), -100, "0")
+            yield from _iter_qrels(q, gold_field=self._gold_field)
 
     def qrels_cls(self):
         return TrecQrel
