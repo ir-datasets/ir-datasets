@@ -2,11 +2,22 @@ _:
   pretty_name: 'BRIGHT (benchmark suite)'
   desc: '
 <p>
-BRIGHT is a retrieval benchmark for reasoning.
+BRIGHT is a retrieval benchmark in which finding relevant documents requires reasoning rather
+than surface-level lexical or semantic matching. It spans 12 diverse domains drawn from sources
+such as StackExchange, coding problems (LeetCode), and math competitions (AoPS, TheoremQA).
+</p>
+<p>
+Each domain is available as a separate subset. The base subsets use short documents; the
+<kbd>-long</kbd> subsets provide the original long-form documents with relevance judgments
+mapped accordingly. Queries include the original reasoning rationale, gold answer, and
+LLM-generated reasoning fields (from Gemini, Claude 3 Opus, GPT-4, GRIT, and Llama3-70B).
 </p>
 <ul>
-<li><a href="https://arxiv.org/abs/2104.08663">Paper</a></li>
-<li><a href="https://github.com/UKPLab/beir/blob/main/README.md">GitHub</a></li>
+<li>Documents: Domain-specific passages (web posts, documentation, problems, etc.)</li>
+<li>Queries: Reasoning-intensive natural language questions</li>
+<li><a href="https://arxiv.org/abs/2407.12883">Dataset Paper</a></li>
+<li><a href="https://github.com/HKUNLP/BRIGHT">GitHub</a></li>
+<li><a href="https://brightbenchmark.github.io/">Website</a></li>
 </ul>
 '
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
@@ -14,79 +25,191 @@ BRIGHT is a retrieval benchmark for reasoning.
 aops:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Math competition problems from the Art of Problem Solving (AoPS) forum, where relevance
+requires recognizing shared problem-solving techniques.
+</p>
+'
 
 biology:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over biology content sourced from StackExchange.
+</p>
+'
 
 earth-science:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over earth science content sourced from StackExchange.
+</p>
+'
 
 economics:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over economics content sourced from StackExchange.
+</p>
+'
 
 leetcode:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Coding problems from LeetCode, where relevant documents share the underlying algorithmic
+approach needed to solve the query problem.
+</p>
+'
 
 pony:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Retrieval over documentation for the Pony programming language.
+</p>
+'
 
 psychology:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over psychology content sourced from StackExchange.
+</p>
+'
 
 robotics:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over robotics content sourced from StackExchange.
+</p>
+'
 
 stackoverflow:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over programming content sourced from StackOverflow.
+</p>
+'
 
 sustainable-living:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Reasoning-intensive retrieval over sustainable living content sourced from StackExchange.
+</p>
+'
 
 theoremqa-questions:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+TheoremQA questions, where relevance requires retrieving questions that rely on the same
+underlying theorem.
+</p>
+'
 
 theoremqa-theorems:
   official_measures: ['nDCG@10']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+TheoremQA theorems, where relevance requires retrieving the theorem(s) needed to answer
+the query.
+</p>
+'
 
 biology-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/biology</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 earth-science-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/earth-science</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 economics-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/economics</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 pony-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/pony</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 psychology-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/psychology</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 robotics-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/robotics</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 stackoverflow-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/stackoverflow</a>, retrieving the original
+full-length documents.
+</p>
+'
 
 sustainable-living-long:
   official_measures: ['Success@1']
   bibtex_ids: ['DBLP:conf/iclr/SuYXSMWLSST0YA025']
+  desc: '
+<p>
+Long-document variant of <a class="ds-ref">bright/sustainable-living</a>, retrieving the
+original full-length documents.
+</p>
+'
