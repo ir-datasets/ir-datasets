@@ -53,7 +53,10 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(ir_datasets.util.html_parsing.sax_html_parser(b'<meta charset="utf-8"/>\xc2\xa3'), ('', '£'))
         self.assertEqual(ir_datasets.util.html_parsing.sax_html_parser(b'<meta charset="iso8859-1"/>\xa3'), ('', '£'))
         self.assertEqual(ir_datasets.util.html_parsing.sax_html_parser(b'<title>Some <span>text</span></title>\n<body><script>this is all discarded <div></script><style a="b">so is this</style><div><span>other </span>  \xc2\xa3<span>stuff</span>!</div>   \n\n\r\ntext&gt;&#62;&#x3E;</body>'), ('Some text', 'other £stuff!\ntext>>>'))
-
+        # textarea is also an rcdata tag, so we should get the text inside it
+        self.assertEqual(ir_datasets.util.html_parsing.sax_html_parser(b'<textarea>text</textarea>'), ('', 'text'))
+        # and we should remove tags within it.
+        self.assertEqual(ir_datasets.util.html_parsing.sax_html_parser(b'<textarea>text <span>with</span> tags</textarea>'), ('', 'text with tags'))
 
 if __name__ == '__main__':
     unittest.main()
