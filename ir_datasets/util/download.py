@@ -95,10 +95,26 @@ class RequestsDownload(BaseDownload):
         skip = 0
         default_tries = self.tries if self.tries is not None else int(os.environ.get('IR_DATASETS_DL_TRIES', '3'))
         remaining_tries = default_tries
+        # Some hosts (e.g., HuggingFace's CDN) intermittently return "403 Forbidden" for otherwise-valid
+        # requests. Retry these a number of times before giving up.
+        default_403_tries = int(os.environ.get('IR_DATASETS_DL_403_TRIES', '10'))
+        remaining_403_tries = default_403_tries
         with contextlib.ExitStack() as stack:
             while not done:
                 try:
                     response = stack.enter_context(requests.get(**http_args))
+                    if response.status_code == 403:
+                        remaining_403_tries -= 1
+                        if remaining_403_tries <= 0:
+                            response.raise_for_status() # out of retries; raise the 403
+                        _logger.info(f'download error: 403 Forbidden. Retrying from start [{remaining_403_tries} attempts left]')
+                        stack.pop_all().close() # release the failed response before retrying
+                        response = None
+                        pbar = None
+                        skip = 0
+                        if 'Range' in http_args['headers']:
+                            del http_args['headers']['Range']
+                        continue
                     if pbar is None:
                         dlen = response.headers.get('content-length')
                         if dlen is not None:
@@ -116,6 +132,8 @@ class RequestsDownload(BaseDownload):
                             remaining_tries = default_tries
                         yield data
                 except requests.exceptions.RequestException as ex:
+                    if getattr(getattr(ex, 'response', None), 'status_code', None) == 403 and remaining_403_tries <= 0:
+                        raise # out of 403 retries; propagate rather than falling back to the general retry path
                     remaining_tries -= 1
                     if remaining_tries <= 0:
                         raise # no more tries
