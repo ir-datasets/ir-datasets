@@ -593,7 +593,7 @@
     "sustainable-living/Gemini-1.0_reason/queries": {
       "url": "https://huggingface.co/datasets/xlangai/BRIGHT/resolve/main/Gemini-1.0_reason/sustainable_living-00000-of-00001.parquet",
       "cache_path": "sustainable-living.Gemini-1.0_reason.queries.parquet",
-      "expected_md5": "519f6480bd93241207e387e87f25ec08",
+      "expected_md5": "0159adf6b11ba3abc9422db36a9c9079",
       "size_hint": 367575
     },
     "sustainable-living/claude-3-opus_reason/queries": {
