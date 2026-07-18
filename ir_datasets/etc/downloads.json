@@ -1430,7 +1430,8 @@
       "url": "http://ir.dcs.gla.ac.uk/resources/test_collections/cran/cran.tar.gz",
       "size_hint": 506960,
       "expected_md5": "1730f7be572d95a5a4b56c59a7b900a5",
-      "cache_path": "cran.tar.gz"
+      "cache_path": "cran.tar.gz",
+      "irds_mirror": true
     }
   },
   
@@ -6926,7 +6927,8 @@
       "url": "http://ir.dcs.gla.ac.uk/resources/test_collections/npl/npl.tar.gz",
       "size_hint": 2125168,
       "expected_md5": "23e5607081191b153738e81fbd834680",
-      "cache_path": "npl.tar.gz"
+      "cache_path": "npl.tar.gz",
+      "irds_mirror": true
     }
   },
   
