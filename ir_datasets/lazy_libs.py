@@ -152,3 +152,21 @@ def pyarrow_parquet():
             raise ImportError("This dataset requires pyarrow. Run 'pip install ir_datasets[pyarrow]' to install dependencies for this dataset") from ie
         _cache['pyarrow_parquet'] = pyarrow.parquet
     return _cache['pyarrow_parquet']
+
+def huggingface_hub():
+    if 'huggingface_hub' not in _cache:
+        try:
+            import huggingface_hub
+        except ImportError as ie:
+            raise ImportError("This dataset requires huggingface_hub. Run 'pip install ir_datasets[hf]' to install dependencies for this dataset") from ie
+        _cache['huggingface_hub'] = huggingface_hub
+    return _cache['huggingface_hub']
+
+def hf_datasets():
+    if 'hf_datasets' not in _cache:
+        try:
+            import datasets
+        except ImportError as ie:
+            raise ImportError("This dataset requires the 'datasets' package. Run 'pip install ir_datasets[hf]' to install dependencies for this dataset") from ie
+        _cache['hf_datasets'] = datasets
+    return _cache['hf_datasets']
