@@ -1,0 +1,122 @@
+_:
+  pretty_name: 'CoRE (Controlled Retrieval Evaluation)'
+  desc: '
+<p>
+CoRE is a benchmark for evaluating retrieval (in particular, embedding compression) across corpus sizes, with a
+fixed query difficulty at every size. It builds on the MS MARCO v2 passage and document corpora and the TREC 2023
+Deep Learning track queries and relevance judgments.
+</p>
+<p>
+For every query, CoRE fixes 10 relevant documents and 100 <i>distractors</i>: non-relevant documents ranked highly
+by a Reciprocal Rank Fusion of the top TREC 2023 Deep Learning track runs (the bottom 20% of runs excluded), mined
+with the corpus subsampling strategy of Fröbe et al. (2025). Every corpus size contains all relevant documents and
+distractors (the <i>core</i> corpus), topped up with randomly sampled filler documents to reach the target size.
+The corpora are nested: the documents of every smaller corpus are a prefix of every larger one, in
+<kbd>docs_iter()</kbd> order.
+</p>
+<p>
+The qrels do not carry graded relevance: relevant documents are labeled 1, distractors 0.
+</p>
+<ul>
+<li>Passage track (65 queries): <a class="ds-ref">core/passage</a> (100M passages) and its subsets
+<a class="ds-ref">core/passage/core</a>, <a class="ds-ref">core/passage/10k</a>,
+<a class="ds-ref">core/passage/100k</a>, <a class="ds-ref">core/passage/1M</a>,
+<a class="ds-ref">core/passage/10M</a></li>
+<li>Document track (55 queries): <a class="ds-ref">core/document</a> (10M documents) and its subsets
+<a class="ds-ref">core/document/core</a>, <a class="ds-ref">core/document/10k</a>,
+<a class="ds-ref">core/document/100k</a>, <a class="ds-ref">core/document/1M</a></li>
+<li><a href="https://huggingface.co/datasets/PaDaS-Lab/CoRE">Dataset on Hugging Face</a></li>
+<li><a href="https://arxiv.org/abs/2510.19340">Paper</a></li>
+</ul>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage:
+  desc: '
+<p>
+The CoRE passage track at its largest corpus size: 100M passages from MS MARCO v2 (the relevant passages and
+distractors of the 65 queries, plus randomly sampled filler passages).
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage/core:
+  desc: '
+<p>
+The core corpus of the CoRE passage track: only the relevant passages and distractors of its 65 queries.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage/10k:
+  desc: '
+<p>
+The CoRE passage track with a corpus of 10k passages.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage/100k:
+  desc: '
+<p>
+The CoRE passage track with a corpus of 100k passages.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage/1M:
+  desc: '
+<p>
+The CoRE passage track with a corpus of 1M passages.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+passage/10M:
+  desc: '
+<p>
+The CoRE passage track with a corpus of 10M passages.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+document:
+  desc: '
+<p>
+The CoRE document track at its largest corpus size: 10M documents from MS MARCO v2 (the relevant documents and
+distractors of the 55 queries, plus randomly sampled filler documents).
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+document/core:
+  desc: '
+<p>
+The core corpus of the CoRE document track: only the relevant documents and distractors of its 55 queries.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+document/10k:
+  desc: '
+<p>
+The CoRE document track with a corpus of 10k documents.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+document/100k:
+  desc: '
+<p>
+The CoRE document track with a corpus of 100k documents.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']
+
+document/1M:
+  desc: '
+<p>
+The CoRE document track with a corpus of 1M documents.
+</p>
+'
+  bibtex_ids: ['Caspari2025Core', 'Frobe2025CorpusSubsampling', 'Bajaj2016Msmarco']

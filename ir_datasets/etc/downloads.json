@@ -1309,6 +1309,722 @@
     }
   },
   
+  "core": {
+    "queries": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/queries.jsonl",
+      "size_hint": 4781,
+      "expected_md5": "4add6824dc51fa3c426f04b1f3e45d87",
+      "cache_path": "queries.jsonl"
+    },
+    "passage/qrels": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/qrels/passage.jsonl",
+      "size_hint": 598330,
+      "expected_md5": "c26e898a8673faeed3e0027149b76282",
+      "cache_path": "qrels/passage.jsonl"
+    },
+    "passage/docs/core": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_core.jsonl",
+      "size_hint": 2712089,
+      "expected_md5": "8756df7315aa6ca74a6e5aad8c75d32c",
+      "cache_path": "passage/corpus_core.jsonl"
+    },
+    "passage/docs/10k": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000.jsonl",
+      "size_hint": 1065541,
+      "expected_md5": "05c015e511f054e6a8de4596d2b9c0a8",
+      "cache_path": "passage/corpus_10000.jsonl"
+    },
+    "passage/docs/100k": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000.jsonl",
+      "size_hint": 33382351,
+      "expected_md5": "465d4cb9dd709a38f6b7c6759ce1b995",
+      "cache_path": "passage/corpus_100000.jsonl"
+    },
+    "passage/docs/1M": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_1000000.jsonl",
+      "size_hint": 333466010,
+      "expected_md5": "6340b5f7c9393eaac5da02716d1a2f84",
+      "cache_path": "passage/corpus_1000000.jsonl"
+    },
+    "passage/docs/10M/0": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_0.jsonl",
+      "size_hint": 370095869,
+      "expected_md5": "c6a796fe1a948532d3b28cb4a72b7400",
+      "cache_path": "passage/corpus_10000000_0.jsonl"
+    },
+    "passage/docs/10M/1": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_1.jsonl",
+      "size_hint": 370416154,
+      "expected_md5": "112e7fb7a3f1749c9dd74d95af5c7c7b",
+      "cache_path": "passage/corpus_10000000_1.jsonl"
+    },
+    "passage/docs/10M/2": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_2.jsonl",
+      "size_hint": 371028293,
+      "expected_md5": "8da38ca3eca381646eb831fd7a874eba",
+      "cache_path": "passage/corpus_10000000_2.jsonl"
+    },
+    "passage/docs/10M/3": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_3.jsonl",
+      "size_hint": 370185223,
+      "expected_md5": "194ad6644c7384275c4e70ad3eda8957",
+      "cache_path": "passage/corpus_10000000_3.jsonl"
+    },
+    "passage/docs/10M/4": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_4.jsonl",
+      "size_hint": 370139240,
+      "expected_md5": "a02ec95f7f5c2b125f645147ef75531d",
+      "cache_path": "passage/corpus_10000000_4.jsonl"
+    },
+    "passage/docs/10M/5": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_5.jsonl",
+      "size_hint": 370116557,
+      "expected_md5": "4cacd9c660900a0d065a15121aeed977",
+      "cache_path": "passage/corpus_10000000_5.jsonl"
+    },
+    "passage/docs/10M/6": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_6.jsonl",
+      "size_hint": 370098414,
+      "expected_md5": "a31a31c49f21b9af45763df169c1a6a4",
+      "cache_path": "passage/corpus_10000000_6.jsonl"
+    },
+    "passage/docs/10M/7": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_7.jsonl",
+      "size_hint": 370432198,
+      "expected_md5": "c0b95883c6ef93d82bce569b552fcf0c",
+      "cache_path": "passage/corpus_10000000_7.jsonl"
+    },
+    "passage/docs/10M/8": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_10000000_8.jsonl",
+      "size_hint": 370330015,
+      "expected_md5": "19b29a0050a9ba8f02457c6d0313adbe",
+      "cache_path": "passage/corpus_10000000_8.jsonl"
+    },
+    "passage/docs/100M/0": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_0.jsonl",
+      "size_hint": 370367668,
+      "expected_md5": "6ce43d6a638d81a97770242ff5517743",
+      "cache_path": "passage/corpus_100000000_0.jsonl"
+    },
+    "passage/docs/100M/1": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_1.jsonl",
+      "size_hint": 370297259,
+      "expected_md5": "cf2d59b5417821b1cd44859c76c55c7b",
+      "cache_path": "passage/corpus_100000000_1.jsonl"
+    },
+    "passage/docs/100M/2": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_2.jsonl",
+      "size_hint": 370205362,
+      "expected_md5": "07abac7bf13d66698f45bd1e9091218d",
+      "cache_path": "passage/corpus_100000000_2.jsonl"
+    },
+    "passage/docs/100M/3": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_3.jsonl",
+      "size_hint": 370529993,
+      "expected_md5": "a025fcca6a024f05172f969ef983da62",
+      "cache_path": "passage/corpus_100000000_3.jsonl"
+    },
+    "passage/docs/100M/4": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_4.jsonl",
+      "size_hint": 370231118,
+      "expected_md5": "c4462bca6c2a3ee1b6d2ab96865a4bfb",
+      "cache_path": "passage/corpus_100000000_4.jsonl"
+    },
+    "passage/docs/100M/5": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_5.jsonl",
+      "size_hint": 370305090,
+      "expected_md5": "63e912d4a6c60a1e71e822dc18c6e40a",
+      "cache_path": "passage/corpus_100000000_5.jsonl"
+    },
+    "passage/docs/100M/6": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_6.jsonl",
+      "size_hint": 370333428,
+      "expected_md5": "ae0a7e6e20d74b959cbfff6804dd85cb",
+      "cache_path": "passage/corpus_100000000_6.jsonl"
+    },
+    "passage/docs/100M/7": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_7.jsonl",
+      "size_hint": 370784741,
+      "expected_md5": "497c261a5c09ef91519950fe28c22600",
+      "cache_path": "passage/corpus_100000000_7.jsonl"
+    },
+    "passage/docs/100M/8": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_8.jsonl",
+      "size_hint": 370574935,
+      "expected_md5": "c6f8219ff29a5aef3db723219893c06f",
+      "cache_path": "passage/corpus_100000000_8.jsonl"
+    },
+    "passage/docs/100M/9": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_9.jsonl",
+      "size_hint": 370157520,
+      "expected_md5": "bdfa9e2716f00e460bc7ca319523251e",
+      "cache_path": "passage/corpus_100000000_9.jsonl"
+    },
+    "passage/docs/100M/10": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_10.jsonl",
+      "size_hint": 370202491,
+      "expected_md5": "27212ed5d916d8faefd9381b9cecc9dc",
+      "cache_path": "passage/corpus_100000000_10.jsonl"
+    },
+    "passage/docs/100M/11": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_11.jsonl",
+      "size_hint": 370475545,
+      "expected_md5": "45d95a0100f815489b6e4dd85034668f",
+      "cache_path": "passage/corpus_100000000_11.jsonl"
+    },
+    "passage/docs/100M/12": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_12.jsonl",
+      "size_hint": 370293138,
+      "expected_md5": "7e6f668c1ddafce18cb7db1c86bbaafd",
+      "cache_path": "passage/corpus_100000000_12.jsonl"
+    },
+    "passage/docs/100M/13": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_13.jsonl",
+      "size_hint": 370070756,
+      "expected_md5": "d696a7676e431b6e74af7214ef45389a",
+      "cache_path": "passage/corpus_100000000_13.jsonl"
+    },
+    "passage/docs/100M/14": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_14.jsonl",
+      "size_hint": 370241028,
+      "expected_md5": "5d382e9ca4c625142f913b044dce9347",
+      "cache_path": "passage/corpus_100000000_14.jsonl"
+    },
+    "passage/docs/100M/15": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_15.jsonl",
+      "size_hint": 370247868,
+      "expected_md5": "8b19b587fce22f728dea8cd81bb5ed15",
+      "cache_path": "passage/corpus_100000000_15.jsonl"
+    },
+    "passage/docs/100M/16": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_16.jsonl",
+      "size_hint": 370165239,
+      "expected_md5": "64119fabddbdb03561da484d0b2a9f08",
+      "cache_path": "passage/corpus_100000000_16.jsonl"
+    },
+    "passage/docs/100M/17": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_17.jsonl",
+      "size_hint": 370297042,
+      "expected_md5": "c6c3ab3ea505d82393a13f5a02b308e5",
+      "cache_path": "passage/corpus_100000000_17.jsonl"
+    },
+    "passage/docs/100M/18": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_18.jsonl",
+      "size_hint": 370688271,
+      "expected_md5": "6c2b3862dcf16d976a9babc79a3abb6c",
+      "cache_path": "passage/corpus_100000000_18.jsonl"
+    },
+    "passage/docs/100M/19": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_19.jsonl",
+      "size_hint": 370229647,
+      "expected_md5": "c855ffe47adff120e9476b57d66204fb",
+      "cache_path": "passage/corpus_100000000_19.jsonl"
+    },
+    "passage/docs/100M/20": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_20.jsonl",
+      "size_hint": 370305397,
+      "expected_md5": "e4afed67ae5618cb032fa62e46198076",
+      "cache_path": "passage/corpus_100000000_20.jsonl"
+    },
+    "passage/docs/100M/21": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_21.jsonl",
+      "size_hint": 370307801,
+      "expected_md5": "fbb26f1b1d8fb9f7858ab5f9d67faf28",
+      "cache_path": "passage/corpus_100000000_21.jsonl"
+    },
+    "passage/docs/100M/22": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_22.jsonl",
+      "size_hint": 370042071,
+      "expected_md5": "ede4cb181a96a96e80091672d71d1be5",
+      "cache_path": "passage/corpus_100000000_22.jsonl"
+    },
+    "passage/docs/100M/23": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_23.jsonl",
+      "size_hint": 370233361,
+      "expected_md5": "eac0405a5fd0e5c9a018db7036eb16bf",
+      "cache_path": "passage/corpus_100000000_23.jsonl"
+    },
+    "passage/docs/100M/24": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_24.jsonl",
+      "size_hint": 370245866,
+      "expected_md5": "ff3fe56f6f224f1e4c0312d629e16d83",
+      "cache_path": "passage/corpus_100000000_24.jsonl"
+    },
+    "passage/docs/100M/25": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_25.jsonl",
+      "size_hint": 370364571,
+      "expected_md5": "92ab7de8766fc73a0377b9c88ce95f58",
+      "cache_path": "passage/corpus_100000000_25.jsonl"
+    },
+    "passage/docs/100M/26": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_26.jsonl",
+      "size_hint": 370382107,
+      "expected_md5": "0e8c40c7551b22c1b46caaeab93117f1",
+      "cache_path": "passage/corpus_100000000_26.jsonl"
+    },
+    "passage/docs/100M/27": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_27.jsonl",
+      "size_hint": 370029468,
+      "expected_md5": "35105caf50ffe36dc99ae1ddcde01c28",
+      "cache_path": "passage/corpus_100000000_27.jsonl"
+    },
+    "passage/docs/100M/28": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_28.jsonl",
+      "size_hint": 370334394,
+      "expected_md5": "cafe9623cd1697c75c4ebc01f0805855",
+      "cache_path": "passage/corpus_100000000_28.jsonl"
+    },
+    "passage/docs/100M/29": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_29.jsonl",
+      "size_hint": 370140141,
+      "expected_md5": "ca514b2351cfdeee31e53b8653ddcf1f",
+      "cache_path": "passage/corpus_100000000_29.jsonl"
+    },
+    "passage/docs/100M/30": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_30.jsonl",
+      "size_hint": 370422788,
+      "expected_md5": "f66c009a77be02b5b66a6c4fbe1f9317",
+      "cache_path": "passage/corpus_100000000_30.jsonl"
+    },
+    "passage/docs/100M/31": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_31.jsonl",
+      "size_hint": 370340262,
+      "expected_md5": "9abcbae1ece0e31be8b773abd597ca83",
+      "cache_path": "passage/corpus_100000000_31.jsonl"
+    },
+    "passage/docs/100M/32": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_32.jsonl",
+      "size_hint": 370307182,
+      "expected_md5": "3f15390319fa4d2af2782d6e4cf22eca",
+      "cache_path": "passage/corpus_100000000_32.jsonl"
+    },
+    "passage/docs/100M/33": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_33.jsonl",
+      "size_hint": 370548554,
+      "expected_md5": "4a179246c37e551132b4d1b0b3bbcd2d",
+      "cache_path": "passage/corpus_100000000_33.jsonl"
+    },
+    "passage/docs/100M/34": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_34.jsonl",
+      "size_hint": 370086015,
+      "expected_md5": "fad0a0a07d50bede24730d071a2ae3fb",
+      "cache_path": "passage/corpus_100000000_34.jsonl"
+    },
+    "passage/docs/100M/35": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_35.jsonl",
+      "size_hint": 370510892,
+      "expected_md5": "92cdea60b51f8079347854ed5a1a9889",
+      "cache_path": "passage/corpus_100000000_35.jsonl"
+    },
+    "passage/docs/100M/36": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_36.jsonl",
+      "size_hint": 370624324,
+      "expected_md5": "9a70e29eaac86e7681e3f59e29643cd7",
+      "cache_path": "passage/corpus_100000000_36.jsonl"
+    },
+    "passage/docs/100M/37": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_37.jsonl",
+      "size_hint": 370492888,
+      "expected_md5": "0eda5151ef028a087400225fb4e0b488",
+      "cache_path": "passage/corpus_100000000_37.jsonl"
+    },
+    "passage/docs/100M/38": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_38.jsonl",
+      "size_hint": 370681861,
+      "expected_md5": "1a3930f0a679d3d0e94c9a07f830f688",
+      "cache_path": "passage/corpus_100000000_38.jsonl"
+    },
+    "passage/docs/100M/39": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_39.jsonl",
+      "size_hint": 370390000,
+      "expected_md5": "3c23a4895fc81d7f6634e5a45e8b3662",
+      "cache_path": "passage/corpus_100000000_39.jsonl"
+    },
+    "passage/docs/100M/40": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_40.jsonl",
+      "size_hint": 370104275,
+      "expected_md5": "5606c8e9c8f84a802b6b5c791e5a596f",
+      "cache_path": "passage/corpus_100000000_40.jsonl"
+    },
+    "passage/docs/100M/41": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_41.jsonl",
+      "size_hint": 370231000,
+      "expected_md5": "563bf82d64ef72f294b62e1dc0adbe2a",
+      "cache_path": "passage/corpus_100000000_41.jsonl"
+    },
+    "passage/docs/100M/42": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_42.jsonl",
+      "size_hint": 370620626,
+      "expected_md5": "9e7a05afe3bf5c05c54fa937bdd9b720",
+      "cache_path": "passage/corpus_100000000_42.jsonl"
+    },
+    "passage/docs/100M/43": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_43.jsonl",
+      "size_hint": 370266950,
+      "expected_md5": "0cf3b5199890d3df51fddad513028f0a",
+      "cache_path": "passage/corpus_100000000_43.jsonl"
+    },
+    "passage/docs/100M/44": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_44.jsonl",
+      "size_hint": 370315626,
+      "expected_md5": "4e747c11ea11ed77188616b9db4979ec",
+      "cache_path": "passage/corpus_100000000_44.jsonl"
+    },
+    "passage/docs/100M/45": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_45.jsonl",
+      "size_hint": 370472931,
+      "expected_md5": "7a40b74a961cbbdad0a840fb6f45c4f6",
+      "cache_path": "passage/corpus_100000000_45.jsonl"
+    },
+    "passage/docs/100M/46": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_46.jsonl",
+      "size_hint": 370119686,
+      "expected_md5": "5418567d2f112c1d8c75d004f3f9437a",
+      "cache_path": "passage/corpus_100000000_46.jsonl"
+    },
+    "passage/docs/100M/47": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_47.jsonl",
+      "size_hint": 370252898,
+      "expected_md5": "9841eb7f5cdc1f8f519b8f916bc3bec7",
+      "cache_path": "passage/corpus_100000000_47.jsonl"
+    },
+    "passage/docs/100M/48": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_48.jsonl",
+      "size_hint": 370234068,
+      "expected_md5": "ce155ebc6bc165ca537ed854695c0392",
+      "cache_path": "passage/corpus_100000000_48.jsonl"
+    },
+    "passage/docs/100M/49": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_49.jsonl",
+      "size_hint": 370492105,
+      "expected_md5": "fef7c27502b36b2bd5c76ce5d98912c3",
+      "cache_path": "passage/corpus_100000000_49.jsonl"
+    },
+    "passage/docs/100M/50": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_50.jsonl",
+      "size_hint": 370186976,
+      "expected_md5": "8b531257e318e02adfb7a5cb1c4d136d",
+      "cache_path": "passage/corpus_100000000_50.jsonl"
+    },
+    "passage/docs/100M/51": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_51.jsonl",
+      "size_hint": 370299388,
+      "expected_md5": "2bf4723630acdfd9c708aff37b94dbc8",
+      "cache_path": "passage/corpus_100000000_51.jsonl"
+    },
+    "passage/docs/100M/52": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_52.jsonl",
+      "size_hint": 370319876,
+      "expected_md5": "89676d1b7135877a4ca409a356d28698",
+      "cache_path": "passage/corpus_100000000_52.jsonl"
+    },
+    "passage/docs/100M/53": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_53.jsonl",
+      "size_hint": 370221931,
+      "expected_md5": "5613ddd4dabc3e75b63d06392b71b5ab",
+      "cache_path": "passage/corpus_100000000_53.jsonl"
+    },
+    "passage/docs/100M/54": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_54.jsonl",
+      "size_hint": 370502503,
+      "expected_md5": "91b8fd5486d109386b719af38d031b70",
+      "cache_path": "passage/corpus_100000000_54.jsonl"
+    },
+    "passage/docs/100M/55": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_55.jsonl",
+      "size_hint": 370247826,
+      "expected_md5": "73e7c77d2457c63fb25afb081b726ada",
+      "cache_path": "passage/corpus_100000000_55.jsonl"
+    },
+    "passage/docs/100M/56": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_56.jsonl",
+      "size_hint": 370558270,
+      "expected_md5": "39979dbf21a5c7b06409096fd1acef0e",
+      "cache_path": "passage/corpus_100000000_56.jsonl"
+    },
+    "passage/docs/100M/57": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_57.jsonl",
+      "size_hint": 370457056,
+      "expected_md5": "6b1a64b8ec300fe64f29a10316975715",
+      "cache_path": "passage/corpus_100000000_57.jsonl"
+    },
+    "passage/docs/100M/58": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_58.jsonl",
+      "size_hint": 370399683,
+      "expected_md5": "1e44f4f4a9bf8ccb60bc1d8b1c0f94df",
+      "cache_path": "passage/corpus_100000000_58.jsonl"
+    },
+    "passage/docs/100M/59": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_59.jsonl",
+      "size_hint": 370512618,
+      "expected_md5": "4aaba2a365c34f9909342b7e8ffd91d7",
+      "cache_path": "passage/corpus_100000000_59.jsonl"
+    },
+    "passage/docs/100M/60": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_60.jsonl",
+      "size_hint": 370549292,
+      "expected_md5": "ee72d618efd87833be92d343c9cb2212",
+      "cache_path": "passage/corpus_100000000_60.jsonl"
+    },
+    "passage/docs/100M/61": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_61.jsonl",
+      "size_hint": 370227203,
+      "expected_md5": "cdea902d89c6ccd5cd370679d174742b",
+      "cache_path": "passage/corpus_100000000_61.jsonl"
+    },
+    "passage/docs/100M/62": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_62.jsonl",
+      "size_hint": 370250338,
+      "expected_md5": "52cf6ddc2a41e1fe2f1149572adb930e",
+      "cache_path": "passage/corpus_100000000_62.jsonl"
+    },
+    "passage/docs/100M/63": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_63.jsonl",
+      "size_hint": 370312621,
+      "expected_md5": "e166166d985c31c4e4d06b2204176169",
+      "cache_path": "passage/corpus_100000000_63.jsonl"
+    },
+    "passage/docs/100M/64": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_64.jsonl",
+      "size_hint": 370365531,
+      "expected_md5": "2ba988939451079bad8bbcab2712331b",
+      "cache_path": "passage/corpus_100000000_64.jsonl"
+    },
+    "passage/docs/100M/65": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_65.jsonl",
+      "size_hint": 370606005,
+      "expected_md5": "7195c95c88f641ef6ec1b4c567280ebe",
+      "cache_path": "passage/corpus_100000000_65.jsonl"
+    },
+    "passage/docs/100M/66": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_66.jsonl",
+      "size_hint": 370199472,
+      "expected_md5": "ab30e91daca92436fef5c0ef0886e6db",
+      "cache_path": "passage/corpus_100000000_66.jsonl"
+    },
+    "passage/docs/100M/67": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_67.jsonl",
+      "size_hint": 370522428,
+      "expected_md5": "c784bb7e54a3a195b26b2764f54e9302",
+      "cache_path": "passage/corpus_100000000_67.jsonl"
+    },
+    "passage/docs/100M/68": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_68.jsonl",
+      "size_hint": 370286637,
+      "expected_md5": "7f5c06ff8856788edaa91b729a8af883",
+      "cache_path": "passage/corpus_100000000_68.jsonl"
+    },
+    "passage/docs/100M/69": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_69.jsonl",
+      "size_hint": 370394261,
+      "expected_md5": "4d92ee67ac3aa5dbc3a36c3da0e0bafc",
+      "cache_path": "passage/corpus_100000000_69.jsonl"
+    },
+    "passage/docs/100M/70": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_70.jsonl",
+      "size_hint": 370292669,
+      "expected_md5": "f5b6eea2cab8b9cbbb7dec2ae1fe5f82",
+      "cache_path": "passage/corpus_100000000_70.jsonl"
+    },
+    "passage/docs/100M/71": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_71.jsonl",
+      "size_hint": 370660494,
+      "expected_md5": "3907671eda61a72bb1c95950c6d257d9",
+      "cache_path": "passage/corpus_100000000_71.jsonl"
+    },
+    "passage/docs/100M/72": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_72.jsonl",
+      "size_hint": 370238938,
+      "expected_md5": "b61db745345784a374d243263a19df8a",
+      "cache_path": "passage/corpus_100000000_72.jsonl"
+    },
+    "passage/docs/100M/73": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_73.jsonl",
+      "size_hint": 370462106,
+      "expected_md5": "bd7ed069a6a2fb412489ba53a5cd171f",
+      "cache_path": "passage/corpus_100000000_73.jsonl"
+    },
+    "passage/docs/100M/74": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_74.jsonl",
+      "size_hint": 371114827,
+      "expected_md5": "345fbe2c989115854b798d3fba50452b",
+      "cache_path": "passage/corpus_100000000_74.jsonl"
+    },
+    "passage/docs/100M/75": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_75.jsonl",
+      "size_hint": 370523862,
+      "expected_md5": "41f66d4659ddd58ee32b365ecab77655",
+      "cache_path": "passage/corpus_100000000_75.jsonl"
+    },
+    "passage/docs/100M/76": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_76.jsonl",
+      "size_hint": 370169529,
+      "expected_md5": "a6d1c5ffb1f7617f238f298429008da9",
+      "cache_path": "passage/corpus_100000000_76.jsonl"
+    },
+    "passage/docs/100M/77": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_77.jsonl",
+      "size_hint": 370241673,
+      "expected_md5": "32a90e5dea2a1f6cd4f616c02ef9ec84",
+      "cache_path": "passage/corpus_100000000_77.jsonl"
+    },
+    "passage/docs/100M/78": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_78.jsonl",
+      "size_hint": 370551954,
+      "expected_md5": "cd69a5cc3a9ef3517fa056fdb6d0ec7e",
+      "cache_path": "passage/corpus_100000000_78.jsonl"
+    },
+    "passage/docs/100M/79": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_79.jsonl",
+      "size_hint": 370361265,
+      "expected_md5": "6d22e8962eca46f5ed7cf84d84931a35",
+      "cache_path": "passage/corpus_100000000_79.jsonl"
+    },
+    "passage/docs/100M/80": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_80.jsonl",
+      "size_hint": 370273071,
+      "expected_md5": "93fca9615f2aaab0d165da6ac43a389f",
+      "cache_path": "passage/corpus_100000000_80.jsonl"
+    },
+    "passage/docs/100M/81": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_81.jsonl",
+      "size_hint": 370123267,
+      "expected_md5": "202943b2c84dd0c3eb06696cab947481",
+      "cache_path": "passage/corpus_100000000_81.jsonl"
+    },
+    "passage/docs/100M/82": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_82.jsonl",
+      "size_hint": 370470569,
+      "expected_md5": "55c54399b38035d4930ff04353c408e2",
+      "cache_path": "passage/corpus_100000000_82.jsonl"
+    },
+    "passage/docs/100M/83": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_83.jsonl",
+      "size_hint": 370584043,
+      "expected_md5": "553415600930c639f00d81eb4475f4f7",
+      "cache_path": "passage/corpus_100000000_83.jsonl"
+    },
+    "passage/docs/100M/84": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_84.jsonl",
+      "size_hint": 370137000,
+      "expected_md5": "bbd05d18e6704f7f6f29ca3d155ad74c",
+      "cache_path": "passage/corpus_100000000_84.jsonl"
+    },
+    "passage/docs/100M/85": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_85.jsonl",
+      "size_hint": 370331767,
+      "expected_md5": "4d62da4036df74a68b8b12fbcdad9920",
+      "cache_path": "passage/corpus_100000000_85.jsonl"
+    },
+    "passage/docs/100M/86": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_86.jsonl",
+      "size_hint": 370209813,
+      "expected_md5": "36a15a2782145ff05a24d31e164c4da4",
+      "cache_path": "passage/corpus_100000000_86.jsonl"
+    },
+    "passage/docs/100M/87": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_87.jsonl",
+      "size_hint": 370577846,
+      "expected_md5": "aa27c81ffd1f65a65b4bcad3ca41d916",
+      "cache_path": "passage/corpus_100000000_87.jsonl"
+    },
+    "passage/docs/100M/88": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_88.jsonl",
+      "size_hint": 370131501,
+      "expected_md5": "bfa30f260e3a9c84b8813f0790b532ae",
+      "cache_path": "passage/corpus_100000000_88.jsonl"
+    },
+    "passage/docs/100M/89": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/passage/corpus_100000000_89.jsonl",
+      "size_hint": 370222579,
+      "expected_md5": "b3d7e4aa04129002539f68b43eb01aa6",
+      "cache_path": "passage/corpus_100000000_89.jsonl"
+    },
+    "document/qrels": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/qrels/document.jsonl",
+      "size_hint": 485624,
+      "expected_md5": "d154978e02d4af752abb36f02e09ad3a",
+      "cache_path": "qrels/document.jsonl"
+    },
+    "document/docs/core": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_core.jsonl",
+      "size_hint": 91711400,
+      "expected_md5": "088b01c81d1f25aeb9c0dc560a51bebc",
+      "cache_path": "document/corpus_core.jsonl"
+    },
+    "document/docs/10k": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000.jsonl",
+      "size_hint": 38457420,
+      "expected_md5": "eb27568754c04c6b2b0d5b03c26947aa",
+      "cache_path": "document/corpus_10000.jsonl"
+    },
+    "document/docs/100k": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_100000.jsonl",
+      "size_hint": 883536440,
+      "expected_md5": "25af17ba58d9c208fb2a1bf12529cebe",
+      "cache_path": "document/corpus_100000.jsonl"
+    },
+    "document/docs/1M": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_1000000.jsonl",
+      "size_hint": 8850694962,
+      "expected_md5": "ae6cb3a51e30995b4a77a290dc3f4cb0",
+      "cache_path": "document/corpus_1000000.jsonl"
+    },
+    "document/docs/10M/0": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_0.jsonl",
+      "size_hint": 9866734377,
+      "expected_md5": "327674e4d44bcd248fe34513fd6d04e6",
+      "cache_path": "document/corpus_10000000_0.jsonl"
+    },
+    "document/docs/10M/1": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_1.jsonl",
+      "size_hint": 9865194032,
+      "expected_md5": "3df9add60d607cb573894bb453338e3c",
+      "cache_path": "document/corpus_10000000_1.jsonl"
+    },
+    "document/docs/10M/2": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_2.jsonl",
+      "size_hint": 9855530031,
+      "expected_md5": "cd679fdd07e3f34b3429082e5d63c9f6",
+      "cache_path": "document/corpus_10000000_2.jsonl"
+    },
+    "document/docs/10M/3": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_3.jsonl",
+      "size_hint": 9864539259,
+      "expected_md5": "5a64440042ed9080eb213f66f5c6698c",
+      "cache_path": "document/corpus_10000000_3.jsonl"
+    },
+    "document/docs/10M/4": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_4.jsonl",
+      "size_hint": 9862013230,
+      "expected_md5": "2ccd19dc5c7aa00d4169105e05ce8d1e",
+      "cache_path": "document/corpus_10000000_4.jsonl"
+    },
+    "document/docs/10M/5": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_5.jsonl",
+      "size_hint": 9816601128,
+      "expected_md5": "920dd3ebf1e3791cf3240bb4b921a829",
+      "cache_path": "document/corpus_10000000_5.jsonl"
+    },
+    "document/docs/10M/6": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_6.jsonl",
+      "size_hint": 9851067788,
+      "expected_md5": "39dcb9863ecf13a3badb3b76cbf4507a",
+      "cache_path": "document/corpus_10000000_6.jsonl"
+    },
+    "document/docs/10M/7": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_7.jsonl",
+      "size_hint": 9858306782,
+      "expected_md5": "0a75da61181d402a295a86b192d2ef10",
+      "cache_path": "document/corpus_10000000_7.jsonl"
+    },
+    "document/docs/10M/8": {
+      "url": "https://huggingface.co/datasets/PaDaS-Lab/CoRE/resolve/9e9300956b4719bed3a6f5e913a0b795819fb331/document/corpus_10000000_8.jsonl",
+      "size_hint": 9849352307,
+      "expected_md5": "561dc6058f92be2c9149e47e4aeac9e7",
+      "cache_path": "document/corpus_10000000_8.jsonl"
+    }
+  },
   "cord19": {
     "docs/2020-07-16": {
       "url": "https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-07-16.tar.gz",
