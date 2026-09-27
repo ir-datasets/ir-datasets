@@ -19,7 +19,7 @@ from ir_datasets.datasets.cranfield import (
     CranfieldQueries as _V1CranfieldQueries,
 )
 
-from ir_datasets.v2 import Benchmark, Docs, Parser, Qrels, Queries, Resource, Source, irds
+from ir_datasets.v2 import Benchmark, DocTable, Parser, QrelTable, QueryTable, Resource, Source, irds
 
 QREL_DEFS = {
     -1: 'References of no interest.',
@@ -55,7 +55,7 @@ class _CranfieldQrelsParser(Parser):
 
 # Files
 # -----------------------------------------
-main_file = Resource('cranfield-main.tar.gz',
+main_file = Resource('cranfield.tar.gz',
     sources=['http://ir.dcs.gla.ac.uk/resources/test_collections/cran/cran.tar.gz', Source.irds()],
     md5='1730f7be572d95a5a4b56c59a7b900a5',
     size=506_960,
@@ -63,18 +63,18 @@ main_file = Resource('cranfield-main.tar.gz',
 
 # Tables
 # -----------------------------------------
-docs = Docs('cranfield-docs',
+docs = DocTable('cranfield-docs',
     source=main_file.member('cran.all.1400').cache(BASE / 'docs.txt'),
     parser=_CranfieldDocsParser(),
-    namespace='cranfield', lang='en',
+    lang='en',
     count_hint=1_400,
 )
-queries = Queries('cranfield-queries',
+queries = QueryTable('cranfield-queries',
     source=main_file.member('cran.qry').cache(BASE / 'queries.txt'),
     parser=_CranfieldQueriesParser(),
-    namespace='cranfield', lang='en',
+    lang='en',
 )
-qrels = Qrels('cranfield-qrels',
+qrels = QrelTable('cranfield-qrels',
     source=main_file.member('cranqrel').cache(BASE / 'qrels.txt'),
     parser=_CranfieldQrelsParser(),
     defs=QREL_DEFS,

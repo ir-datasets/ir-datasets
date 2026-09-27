@@ -15,7 +15,7 @@ from ir_datasets.datasets.base import (
 )
 from ir_datasets.util import Lazy
 
-from .nodes import DERIVED_FROM, Edge, TABLE, Table, _deprecated, source_resources
+from .nodes import DERIVED_FROM, Edge, TABLE_TYPES, Table, _deprecated, source_resources
 
 _FILTERED = {
     'queries': FilteredQueries,
@@ -36,14 +36,13 @@ class DerivedTable(Table):
 
     def __init__(self, name, entity, handler, derived_from, *,
                  extra_derived_from=(), filtered_by=()):
-        self.type = TABLE
+        self.type = TABLE_TYPES[entity]
         self.entity = entity
         self.derived_from = derived_from
         super().__init__(
             name,
             handler=handler,
             lang=getattr(derived_from, 'lang', None),
-            namespace=getattr(derived_from, 'namespace', None),
             defs=getattr(derived_from, 'defs', None))
         # A table may be derived from more than one node at once -- e.g. a
         # "/judged" queries table is filtered *from* the parent's queries but
@@ -64,7 +63,7 @@ class DerivedTable(Table):
         if attr == entity:
             return self
         # ...and forwarding legacy queries_iter / qrels_defs / *_cls to the
-        # handler, since a DerivedTable is not a Queries/Qrels subclass with
+        # handler, since a DerivedTable is not a QueryTable/QrelTable subclass with
         # its own deprecated wrapper methods to call through.
         if entity and attr.startswith(f'{entity}_'):
             _deprecated(attr, entity)

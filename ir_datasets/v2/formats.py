@@ -3,7 +3,7 @@
     docs   = TsvDocs('antique-docs', source=docs_file, lang='en')
     qrels  = TrecQrels('antique-test-qrels', source=qrels_file, defs=QREL_DEFS)
 
-Each class subclasses its entity base (``Docs``, ``Queries``, ``Qrels``, ...), so
+Each class subclasses its entity base (``DocTable``, ``QueryTable``, ``QrelTable``, ...), so
 it inherits everything entity-shaped -- the default/legacy record API, docstore
 handling, lookup -- and adds only how bytes become records. This mirrors v1,
 where ``ir_datasets.formats.TsvDocs`` is itself a docs handler.
@@ -20,7 +20,7 @@ from ir_datasets import formats as _v1
 from ir_datasets.formats import GenericDoc, GenericDocPair, GenericQuery, TrecQuery
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 
-from .nodes import DocPairs, Docs, Qrels, Queries, ScoredDocs
+from .nodes import DocPairTable, DocTable, QrelTable, QueryTable, RunTable
 
 
 class _V1TsvDocs(_v1.TsvDocs):
@@ -76,7 +76,6 @@ class _TsvDocsParser(Parser):
             source,
             doc_cls=self.cls,
             doc_store_index_fields=self.index_fields,
-            namespace=node.namespace,
             lang=node.lang,
             skip_first_line=self.skip_first_line,
             docstore_size_hint=node.docstore_size_hint,
@@ -92,8 +91,7 @@ class _TsvQueriesParser(Parser):
         self.cls = cls
 
     def build(self, source, node):
-        return _v1.TsvQueries(source, query_cls=self.cls,
-                              namespace=node.namespace, lang=node.lang)
+        return _v1.TsvQueries(source, query_cls=self.cls, lang=node.lang)
 
 
 class _TrecQrelsParser(Parser):
@@ -147,7 +145,6 @@ class _TrecDocsParser(Parser):
             path_globs=self.path_globs,
             parser=self.parser,
             expected_file_count=self.expected_file_count,
-            namespace=node.namespace,
             lang=node.lang,
             docstore_size_hint=node.docstore_size_hint,
             count_hint=node.count_hint,
@@ -167,13 +164,13 @@ class _TrecQueriesParser(Parser):
     def build(self, source, node):
         return _v1.TrecQueries(
             source, qtype=self.qtype, qtype_map=self.qtype_map,
-            encoding=self.encoding, namespace=node.namespace, lang=node.lang,
+            encoding=self.encoding, lang=node.lang,
             remove_tags=self.remove_tags)
 
 
 # ── Public format nodes ──────────────────────────────────────────────────────
 
-class TsvDocs(Docs):
+class TsvDocs(DocTable):
     """``doc_id<TAB>text`` per line."""
 
     def __init__(self, name, *, cls=GenericDoc, skip_first_line=False,
@@ -184,21 +181,21 @@ class TsvDocs(Docs):
             **kwargs)
 
 
-class TsvQueries(Queries):
+class TsvQueries(QueryTable):
     """``query_id<TAB>text`` per line."""
 
     def __init__(self, name, *, cls=GenericQuery, **kwargs):
         super().__init__(name, parser=_TsvQueriesParser(cls), **kwargs)
 
 
-class TrecQrels(Qrels):
+class TrecQrels(QrelTable):
     """``query_id iteration doc_id relevance`` (or 3-column)."""
 
     def __init__(self, name, *, format_3col=False, **kwargs):
         super().__init__(name, parser=_TrecQrelsParser(format_3col), **kwargs)
 
 
-class TrecScoredDocs(ScoredDocs):
+class TrecScoredDocs(RunTable):
     """``query_id iteration doc_id rank score [runtag]``."""
 
     def __init__(self, name, *, negate_score=False, **kwargs):
@@ -206,14 +203,14 @@ class TrecScoredDocs(ScoredDocs):
                          **kwargs)
 
 
-class TsvDocPairs(DocPairs):
+class TsvDocPairs(DocPairTable):
     """``query_id doc_id doc_id`` per line."""
 
     def __init__(self, name, *, cls=GenericDocPair, **kwargs):
         super().__init__(name, parser=_TsvDocPairsParser(cls), **kwargs)
 
 
-class TrecDocs(Docs):
+class TrecDocs(DocTable):
     """TREC SGML-ish docs (``<DOC><DOCNO>...</DOCNO>...</DOC>``), from a plain
     file or (with ``path_globs``) globbed out of a tar archive."""
 
@@ -225,7 +222,7 @@ class TrecDocs(Docs):
             **kwargs)
 
 
-class TrecQueries(Queries):
+class TrecQueries(QueryTable):
     """TREC SGML-ish queries (``<top><num>...<title>...</top>``)."""
 
     def __init__(self, name, *, qtype=TrecQuery, qtype_map=None, encoding=None,

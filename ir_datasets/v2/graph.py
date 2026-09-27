@@ -1,9 +1,17 @@
 """``Graph``: the knowledge graph assembled from every installed provider.
 
-Nothing registers *into* a Graph. It reads providers: routes lookups by prefix,
-unions their edge indexes so a reverse lookup sees edges from every package (an
-extension's ``see_also`` about another package's node; every dataset citing a
-paper), enumerates and searches, and validates the whole.
+Nothing registers *into* a Graph, and a Graph asks nothing of a provider
+beyond ``protocols.Provider``: ``load(name)`` to resolve one node, and
+``discover_edges()`` to get its whole catalog as RDF-ready
+``(subject, predicate, object)`` triples -- ``object`` wrapped in
+``base.Literal`` when it's a property value rather than another node's name
+(see ``registry.row_triples``). Everything
+below -- traversal, listing, export, validation, even legacy-alias
+resolution (an alias is just an ``irds:alias`` edge, discovered like any
+other) -- is built from those two calls. A provider's catalog is cached the
+first time a ``Graph`` reads it, since ``discover_edges()`` always does full
+discovery and may be a live crawl (see ``hf``) -- so a query doesn't repeat
+that work, but only for as long as this particular ``Graph`` lives.
 
 ``default_graph()`` is the one over every installed entry point in the
 ``ir_datasets.providers`` group. This package declares no providers of its own
@@ -16,7 +24,9 @@ resolves only if some provider declared it as a (legacy) alias.
 """
 import sys
 
-from .vocabulary import structural_kinds
+from .base import Literal
+from .registry import ALIAS_KIND
+from .vocabulary import is_subtype, structural_kinds
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
 
@@ -24,6 +34,7 @@ ENTRY_POINT_GROUP = 'ir_datasets.providers'
 class Graph:
     def __init__(self, providers=()):
         self.providers = {}     # prefix -> Provider
+        self._catalogs = {}     # prefix -> catalog dict, from discover_edges()
         for provider in providers:
             self.add(provider)
 
@@ -39,14 +50,45 @@ class Graph:
     def __repr__(self):
         return f'Graph({sorted(self.providers)})'
 
+    # -- catalog --------------------------------------------------------------
+
+    def _catalog(self, provider):
+        """``{'types', 'aliases', 'fwd', 'rev'}`` for one provider, built once
+        from ``discover_edges()`` and cached -- everything else in this class
+        reads from here rather than calling the provider again."""
+        cached = self._catalogs.get(provider.prefix)
+        if cached is None:
+            types, aliases, fwd, rev = {}, {}, {}, {}
+            for subject, kind, obj in provider.discover_edges():
+                if isinstance(obj, Literal):
+                    continue
+                if kind == 'type':
+                    types[subject] = obj
+                elif kind == ALIAS_KIND:
+                    aliases[subject] = obj
+                elif kind == 'subClassOf':
+                    # Type-hierarchy metadata (vocabulary.py's own
+                    # declare_type/ancestors already track this for
+                    # is_subtype) -- not a node-to-node edge, so it must not
+                    # show up in edges_of/check's dangling-target search.
+                    continue
+                else:
+                    bucket = fwd.setdefault(subject, {}).setdefault(kind, [])
+                    if obj not in bucket:
+                        bucket.append(obj)
+                    rev.setdefault(obj, set()).add((subject, kind))
+            cached = {'types': types, 'aliases': aliases, 'fwd': fwd, 'rev': rev}
+            self._catalogs[provider.prefix] = cached
+        return cached
+
     # -- names --------------------------------------------------------------
 
     def resolve_name(self, name):
         """A legacy alias -> its qualified target; anything else unchanged."""
         for provider in self.providers.values():
-            provider.manifest()  # loads frozen aliases
-            if name in provider.aliases:
-                return provider.aliases[name]
+            aliases = self._catalog(provider)['aliases']
+            if name in aliases:
+                return aliases[name]
         return name
 
     def provider_for(self, name):
@@ -66,7 +108,7 @@ class Graph:
 
     def __getitem__(self, name):
         name = self.resolve_name(name)
-        return self.provider_for(name)[name]
+        return self.provider_for(name).load(name)
 
     def __contains__(self, name):
         try:
@@ -79,10 +121,14 @@ class Graph:
         return self[name]
 
     def generator_for(self, name):
+        """A provider's ``Generator`` for a name, if it has one -- an optional
+        capability (see ``registry.ManifestProvider``), not part of the
+        minimal ``protocols.Provider`` contract."""
         try:
-            return self.provider_for(name).generator_for(name)
+            provider = self.provider_for(name)
         except KeyError:
             return None
+        return getattr(provider, 'generator_for', lambda n: None)(name)
 
     # -- traversal (union over providers; no imports needed) -----------------
 
@@ -92,7 +138,7 @@ class Graph:
         name = self.resolve_name(name)
         out = {}
         for provider in self.providers.values():
-            for kind, targets in provider.indexes()[0].get(name, {}).items():
+            for kind, targets in self._catalog(provider)['fwd'].get(name, {}).items():
                 bucket = out.setdefault(kind, [])
                 bucket.extend(t for t in targets if t not in bucket)
         if structural_only:
@@ -108,7 +154,7 @@ class Graph:
         """Which provider(s) contributed an edge."""
         src, dst = self.resolve_name(src), self.resolve_name(dst)
         return [p.prefix for p in self.providers.values()
-                if dst in p.indexes()[0].get(src, {}).get(kind, [])]
+                if dst in self._catalog(p)['fwd'].get(src, {}).get(kind, [])]
 
     def dependencies(self, name):
         """Direct structural targets of a node."""
@@ -123,7 +169,7 @@ class Graph:
         name = self.resolve_name(name)
         pairs = set()
         for provider in self.providers.values():
-            pairs |= provider.indexes()[1].get(name, set())
+            pairs |= self._catalog(provider)['rev'].get(name, set())
         return sorted({s for s, k in pairs if kind is None or k == kind})
 
     def incoming_edges(self, name):
@@ -133,7 +179,7 @@ class Graph:
         name = self.resolve_name(name)
         pairs = set()
         for provider in self.providers.values():
-            pairs |= provider.indexes()[1].get(name, set())
+            pairs |= self._catalog(provider)['rev'].get(name, set())
         return sorted(pairs)
 
     def dependents(self, name):
@@ -143,7 +189,7 @@ class Graph:
         structural = structural_kinds()
         pairs = set()
         for provider in self.providers.values():
-            pairs |= provider.indexes()[1].get(name, set())
+            pairs |= self._catalog(provider)['rev'].get(name, set())
         return sorted({s for s, k in pairs if k in structural})
 
     def closure(self, name):
@@ -160,7 +206,7 @@ class Graph:
     def names(self):
         out = set()
         for provider in self.providers.values():
-            out |= provider.names()
+            out |= set(self._catalog(provider)['types'])
         return out
 
     def find_cycles(self):
@@ -192,7 +238,7 @@ class Graph:
         problems = ['cycle: ' + ' -> '.join(c) for c in self.find_cycles()]
         known = self.names()
         for provider in self.providers.values():
-            fwd, _ = provider.indexes()
+            fwd = self._catalog(provider)['fwd']
             for src, kinds in fwd.items():
                 for kind, dsts in kinds.items():
                     for dst in dsts:
@@ -213,48 +259,61 @@ class Graph:
     # -- frozen data --------------------------------------------------------
 
     def frozen(self, name):
-        """A node's frozen row, from its own provider."""
+        """A node's frozen row, from its own provider -- an optional
+        capability (a manifest-backed provider has one; a minimal
+        ``protocols.Provider`` need not)."""
         name = self.resolve_name(name)
         try:
-            return self.provider_for(name).frozen(name)
+            provider = self.provider_for(name)
         except KeyError:
             return {}
+        frozen_fn = getattr(provider, 'frozen', None)
+        return frozen_fn(name) if frozen_fn else {}
+
+    def export_triples(self, providers=None):
+        """Every provider's nodes/edges as RDF-ready ``(subject, predicate,
+        object)`` triples (``object`` a ``base.Literal`` for a property
+        value, an unwrapped qualified name for an edge target) -- for
+        materializing the graph into an external triplestore. ``providers``
+        restricts this to a subset of prefixes; each provider's own
+        ``discover_edges()`` decides how (from a manifest, or, like ``hf``,
+        via its own live crawl)."""
+        for prefix, provider in self.providers.items():
+            if providers is not None and prefix not in providers:
+                continue
+            yield from provider.discover_edges()
 
     # -- listing ------------------------------------------------------------
 
     def type_of(self, name):
         name = self.resolve_name(name)
         try:
-            return self.provider_for(name).type_of(name)
+            provider = self.provider_for(name)
         except KeyError:
             return None
+        return self._catalog(provider)['types'].get(name)
 
-    def list(self, type=None, discover=False):
-        """Names from every provider, without importing their modules. ``type``
-        is a qualified node type (``irds:docs``). Every registered node is
-        listed -- there's no "hidden"/internal-only tier; a node either exists
-        in the graph, addressable, or it was never registered.
+    def list(self, type=None):
+        """Names from every provider's catalog (``discover_edges()``), without
+        importing or downloading anything a node's own data would need.
+        ``type`` is a qualified node type (``irds:QrelTable``) -- matched by
+        subtype, so ``type='irds:Table'`` also finds
+        ``irds:QrelTable``/``irds:DocTable``/... nodes (see
+        ``vocabulary.is_subtype``). Every registered node is listed -- there's
+        no "hidden"/internal-only tier; a node either exists in the graph,
+        addressable, or it was never registered.
 
-        ``discover=True`` additionally asks each provider for its
-        ``known_names()`` -- for a dynamic provider (e.g. ``hf``) with nothing
-        to bootstrap or freeze locally, a live/expensive lookup of what's out
-        there. Off by default since it's not a free operation like the rest
-        of this method. A provider's ``known_names()`` may or may not resolve
-        what it finds as a side effect (``hf``'s does, so its entries come
-        back with a real type); one that only names things without resolving
-        them would have those silently excluded by a ``type=`` filter, since
-        ``provider.type_of`` falls through to ``None`` for anything not
-        actually registered.
+        Always the provider's full, current catalog: ``discover_edges()``
+        always does full discovery (see ``protocols.Provider``), so for a
+        provider whose catalog is genuinely live (``hf``, crawling the Hub)
+        that's exactly what runs here -- once per ``Graph``, since the result
+        is cached (see ``_catalog``).
         """
         out = []
         for provider in self.providers.values():
-            if not provider.manifest()['nodes']:
-                provider._bootstrap()
-            names = set(provider.names())
-            if discover:
-                names |= provider.known_names()
-            for name in names:
-                if type is not None and provider.type_of(name) != type:
+            types = self._catalog(provider)['types']
+            for name, node_type in types.items():
+                if type is not None and not is_subtype(node_type, type):
                     continue
                 out.append(name)
         return sorted(out)

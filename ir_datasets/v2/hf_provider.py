@@ -73,13 +73,14 @@ is the URL *fragment* delimiter, so browsers strip anything after a literal
 ``#`` before the request ever reaches the server -- a pasted or typed link
 would silently lose it.
 
-No vocabulary of its own: nodes are built from the existing ``Docs``/
-``Queries``/``Qrels``/``Benchmark``/``Resource`` classes (already declared by
-the ``irds`` provider), reused exactly as a third party would -- see the
-package docstring's own "a third-party Table is exactly as valid a node as
-any of ours."
+No vocabulary of its own: nodes are built from the existing ``DocTable``/
+``QueryTable``/``QrelTable``/``Benchmark``/``Resource`` classes (already
+declared by the ``irds`` provider), reused exactly as a third party would --
+see the package docstring's own "a third-party Table is exactly as valid a
+node as any of ours."
 """
 import collections
+import datetime as _dt
 import re
 
 import ir_datasets
@@ -90,8 +91,10 @@ from ir_datasets.lazy_libs import yaml as _yaml_lib
 
 from .base import Generator, Param
 from .formats import Parser
-from .nodes import Benchmark, Docs, ENTITIES, GitRepo, Qrels, Queries, TABLE
-from .registry import Provider
+from .nodes import (
+    Benchmark, DocTable, ENTITIES, GitRepo, QrelTable, QueryTable, TABLE,
+)
+from .registry import ManifestProvider, row_triples
 
 _logger = ir_datasets.log.easy()
 
@@ -103,7 +106,7 @@ TAG = 'ir-datasets'
 #: branded both ways). Exactly one may be present.
 CARD_KEYS = ('ir_datasets', 'ir-datasets')
 
-_TABLE_TYPES = {'docs': Docs, 'queries': Queries, 'qrels': Qrels}
+_TABLE_CLASSES = {'docs': DocTable, 'queries': QueryTable, 'qrels': QrelTable}
 #: Fields every record of an entity must have, regardless of what else a
 #: ``columns:`` mapping adds -- everything downstream (lookup, docstores,
 #: qrels dicts) keys off these.
@@ -152,7 +155,27 @@ def _apply_column_map(source_columns, column_map):
     return fields, columns
 
 
-hf = Provider('hf')
+class HfProvider(ManifestProvider):
+    """No manifest to freeze from (see the module docstring: a repo can't be
+    enumerated or frozen ahead of time) -- ``discover_edges`` overrides the
+    manifest-based default entirely: it runs the live Hub crawl (``known()``,
+    defined below), which resolves and registers every repo it finds into
+    ``self.nodes`` with a real type, then reports exactly that -- and nothing
+    else -- as triples, the same shape a frozen manifest would report. See
+    ``known()`` for what "every repo it finds" means and its own caveats."""
+    def discover_edges(self):
+        from .freeze import row_for
+        known()
+        snapshot_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
+        for name, node in sorted(self.nodes.items()):
+            row = row_for(node)
+            row['snapshot_at'] = snapshot_at
+            yield from row_triples(name, row)
+        for src, kind, dst in self.edge_rows():
+            yield src, kind, dst
+
+
+hf = HfProvider('hf')
 
 
 # ── addressing ────────────────────────────────────────────────────────────
@@ -235,8 +258,8 @@ class HfDataset(GitRepo):
     really is the repo's git tree), not how every read path happens to fetch
     it.
     """
-    def _clone_url(self):
-        return f'https://huggingface.co/datasets/{self.repo}.git'
+    def url(self):
+        return f'https://huggingface.co/datasets/{self.repo}'
 
     def path(self, force=True):
         hub = _hf_lib()
@@ -247,7 +270,7 @@ class HfDataset(GitRepo):
         return _resolve_commit(self.repo, None)
 
     def __repr__(self):
-        return f'HfDataset({self._clone_url()!r}, commit={self.commit!r})'
+        return f'HfDataset({self.url()!r}, commit={self.commit!r})'
 
 
 _repo_cache = {}
@@ -435,7 +458,7 @@ class _HfFileParser(Parser):
 
 def _build_table(name, hf_dataset, key, spec):
     entity = spec['entity']
-    cls = _TABLE_TYPES[entity]
+    cls = _TABLE_CLASSES[entity]
     # {source_column: field_name} (None to drop); anything unmentioned passes
     # through under its own name. Resolved lazily -- see the parsers.
     column_map = spec.get('column_map')
@@ -487,7 +510,7 @@ def _cached_benchmark(repo, revision, name, key, card, table_fn):
     benchmark facet's raw ``tables:`` key into its (cached) Table, for a facet
     that lives in this same card. A facet may instead name a node from
     *elsewhere* in the graph -- another ``hf:`` repo (``hf:other/name/docs``)
-    or a different provider entirely (``irds:msmarco-passage-docs``) -- by
+    or a different provider entirely (``irds:msmarco-passage``) -- by
     giving its fully qualified name instead of a raw key; a local key never
     contains ``:``, so that's what distinguishes the two. Such a string is
     passed straight through as the facet: ``Benchmark`` already resolves a
@@ -629,10 +652,12 @@ def _HfResolver(spec):
 hf.register_generator(Generator(
     '{spec}', params={'spec': Param(pattern=r'.+')},
     # A generator declares one produced type; ours actually varies between
-    # irds:Table and irds:Benchmark depending on what's requested. TABLE is
-    # the representative common case -- this field is descriptive metadata
-    # only (see registry.Provider.register_generator), not a runtime check
-    # against what resolve_node() actually returns.
+    # a per-entity DocTable/QueryTable/QrelTable type and irds:Benchmark
+    # depending on what's requested. The generic TABLE (irds:Table, the
+    # shared parent of all of those) is the honest common description --
+    # this field is descriptive metadata only (see
+    # registry.ManifestProvider.register_generator), not a runtime check against
+    # what resolve_node() actually returns.
     type=TABLE, resolver=_HfResolver, enumerable=False))
 
 
@@ -697,13 +722,10 @@ def known():
     ``_HfFileParser`` stay lazy, so no download of the data itself happens
     here). A tagged repo that turns out not to carry a valid card, or one
     whose card fails to resolve, is skipped, not an error -- the tag is a
-    hint, not a guarantee. Used by ``Provider.known_names()``/
-    ``list_datasets(discover=True)`` so a listing shows real types/subtypes
-    without every page having to be visited first."""
+    hint, not a guarantee. Called by ``HfProvider.discover_edges`` (always --
+    there is no opt-in flag) so a listing shows real types/subtypes without
+    every page having to be visited first by hand."""
     names = []
     for repo in search(None):
         names.extend(_expand(repo))
     return names
-
-
-hf.register_known(known)

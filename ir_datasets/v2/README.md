@@ -11,12 +11,15 @@ built on it. The two used to be split across two packages (`ir_graph` +
 `ir_datasets.v2`); they were merged back into one once it was clear this paper
 only needs one domain — see [Deferred to a later
 paper](#deferred-to-a-later-paper) below. The generic machinery still declares
-no vocabulary of its own — it's `nodes.py` that declares exactly four node
+no vocabulary of its own — it's `nodes.py` that declares nine node
 types, all owned by the `irds` provider:
 
 - **`Resource`** — bytes, and where to get them
-- **`Table`** (`Docs`/`Queries`/`Qrels`/`ScoredDocs`/`DocPairs`) — a structured set
-  of records, parsed from a source
+- **`Table`** — a structured set of records, parsed from a source — and its
+  five per-entity subtypes, `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`,
+  each its own declared graph type (a subtype of `Table`, not just the same
+  `Table` type distinguished by an `.entity` attribute) — so a type-filtered
+  listing can ask for either the specific kind or the whole family
 - **`Benchmark`** — docs + queries + qrels (etc.) bundled into an evaluable task,
   plus flat metadata (`citation`, `metrics`)
 - **`Suite`** — a named, structural set of related Benchmarks (e.g. BEIR)
@@ -27,9 +30,12 @@ edges) are explicitly out of scope for this iteration — see
 plain metadata.
 
 The design still decentralizes: a third-party package can declare its own
-`Provider`, its own node types and edge kinds, and its own entry point in the
-`ir_datasets.providers` group — pointing at `irds`'s nodes or vice versa —
-without either package importing the other until a node is actually resolved.
+provider — anything satisfying the two-method `Provider` protocol
+(`load(name)`, `discover_edges()`); `ManifestProvider` is the batteries-included
+implementation most datasets use, not a requirement — its own node types and
+edge kinds, and its own entry point in the `ir_datasets.providers` group —
+pointing at `irds`'s nodes or vice versa — without either package importing
+the other until a node is actually resolved.
 There is no default provider: every name has a home, and the home is in the
 name — `irds:antique-test`, type `irds:Benchmark`, edge kind `irds:derived_from`.
 Types are capitalized (RDF/OWL convention: classes are UpperCamelCase);
@@ -50,7 +56,7 @@ years plus an external fold list), and `dev/2` (its ids come from
 
 MS MARCO (document), [`datasets/msmarco_document.py`](datasets/msmarco_document.py),
 is a third worked example, and the first case of **cross-file shared
-reference**: its TREC-DL 2019/2020 benchmarks reuse the *same Queries table
+reference**: its TREC-DL 2019/2020 benchmarks reuse the *same QueryTable
 objects* `msmarco_passage.py` already registered (`trec_dl_2019_queries`,
 imported directly, not re-declared) — one node, two independent Benchmarks in
 two different files, exactly the "docs/queries/qrels shared by reference"
@@ -67,10 +73,10 @@ benchmarks at a smaller scale (`datasets/nano_beir.py`).
 BRIGHT, [`datasets/bright.py`](datasets/bright.py), is a fourth worked
 example, and the first case of **one Resource serving two Tables**: its
 qrels are embedded in the same parquet file as its queries (not a separate
-qrels file), so `Queries` and `Qrels` both declare that file as their
+qrels file), so `QueryTable` and `QrelTable` both declare that file as their
 `source=` rather than one deriving from the other. It's also a second case
 of cross-benchmark shared reference within one file: each of the 8 "long"
-document variants reuses the short variant's *same* `Queries` object,
+document variants reuses the short variant's *same* `QueryTable` object,
 differing only in docs (long-form) and qrels (re-derived from the queries
 file's `gold_ids_long` field). All 20 benchmarks (12 short + 8 long) fold
 into one `irds:bright` suite, consistent with the BEIR precedent.
@@ -96,13 +102,14 @@ python -m unittest test.v2_conformance
 | `protocols.py` | `Node`, `Resource`, `Table`, `Benchmark`, `Suite` as `typing.Protocol`s — the actual contract; no inheritance required to satisfy them |
 | `base.py` | `Node` (a convenient, optional base class implementing the protocol above), `Edge`, `Generator`, `Param` — generic, no vocabulary of their own |
 | `vocabulary.py` | The process-wide index of declared node types / edge kinds, and which providers own them |
-| `context.py` | The `defaults()` stack (`Provider.defaults()` pushes onto it) |
-| `registry.py` | `Provider` — a package's registry: nodes, edges, generators, aliases, manifest, and the vocabulary it declares |
-| `graph.py` | `Graph`, `default_graph()`, `discover()` — the union over installed providers, entry-point discovery |
-| `freeze.py` | `python -m ir_datasets.v2.freeze [provider] [--verify]` — writes a provider's manifest |
+| `context.py` | The `defaults()` stack (`ManifestProvider.defaults()` pushes onto it) |
+| `protocols.py` (`Provider`) | The two-method contract a package joins the graph with: `prefix`, `load(name)`, `discover_edges()` — not a class to inherit |
+| `registry.py` | `ManifestProvider` — one (batteries-included) implementation of `Provider`: nodes, edges, generators, aliases, manifest, and the vocabulary it declares |
+| `graph.py` | `Graph`, `default_graph()`, `discover()` — the union over installed providers, entry-point discovery; touches a provider through nothing but `Provider`'s two methods |
+| `freeze.py` | `python -m ir_datasets.v2.freeze [provider] [--verify]` — writes a `ManifestProvider`'s manifest |
 | `verify.py` | `Divergence`, `verify()`, `verify_all()` — advisory checks against a frozen manifest, bound to the installed graph |
-| `provider.py` | The `irds` `Provider` instance itself |
-| `nodes.py` | `Resource`, `Table` (+ `Docs`/`Queries`/`Qrels`/`ScoredDocs`/`DocPairs`), `Benchmark`, `Suite` — the dataset vocabulary, declared on `irds` |
+| `provider.py` | The `irds` `ManifestProvider` instance itself |
+| `nodes.py` | `Resource`, `Table` (+ `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`), `Benchmark`, `Suite` — the dataset vocabulary, declared on `irds` |
 | `formats.py`, `sources.py`, `filters.py` | Format subclasses, download/cache machinery, derivation (`Filter`) |
 | `datasets/*.py` | One authored file per dataset family |
 
@@ -114,17 +121,17 @@ python -m unittest test.v2_conformance
 | **No default provider**: nodes, node types, edge kinds all `prefix:name`; legacy ids are explicit aliases | `Graph.provider_for` |
 | Node types, edge kinds and defaultable fields are **owned by a provider** (`irds.node_type('Table')`, `irds.edge_kind('derived_from', structural=True)`, `with irds.defaults(...)`) — types capitalized (RDF/OWL convention), kinds lowercase; the generic machinery declares none of its own | `nodes.py` top, `vocabulary.py` |
 | **One `derived_from` kind covers both "parsed from these bytes" and "filtered from this other table"** — a table's dependency on a `Resource` and its dependency on a parent `Table` are the same shape of relationship (this node would not exist without that one), so there's no separate `source` kind | `nodes.Table.__init__`, `filters.DerivedTable` |
-| **Exactly four node types**: `Resource`, `Table`, `Benchmark`, `Suite` — `Table`'s entity (docs/queries/qrels/...) is a plain attribute, not a separate declared type | `nodes.py` |
+| **Nine node types**: `Resource`, `Table`, `Benchmark`, `Suite`, and one `Table` subtype per entity — `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable` — each its own declared graph type, a subtype of `Table` (`.entity` is still a plain attribute, used for format-specific behavior) | `nodes.py` |
 | First-class **edges**; structural (DAG) vs informational split | `base.Edge` |
-| Nodes declare `structural_edges()`; providers store edges (fwd + indexed reverse) | `Provider.register` |
-| Any provider may add *informational* edges about any node — they ship in *its* manifest; *structural* edges are the owner's alone | `Provider.add_edge` |
-| Graph traversal without imports, from each provider's adjacency list | `Graph` |
+| Nodes declare `structural_edges()`; a `ManifestProvider` stores edges (fwd + indexed reverse) | `ManifestProvider.register` |
+| Any provider may add *informational* edges about any node — they ship in *its* manifest; *structural* edges are the owner's alone | `ManifestProvider.add_edge` |
+| Graph traversal without imports, from each provider's `discover_edges()`, cached per `Graph` | `Graph` |
 | Every node named and directly loadable — files and tables included, every registered node listed (no hidden/internal tier) | `nodes.py`, `Graph.list` |
 | Single-type nodes; facets by reference, never multi-type | `Benchmark.edge` |
-| **`Provider`** = a package's own registry; `irds.register(*roots)` is explicit and pulls in dependencies | `registry.Provider` |
-| **`Graph`** = the union over installed providers (entry points + on-import subscription): routing, indexed reverse lookups, validation | `graph.Graph` |
+| **`Provider`** is a two-method protocol (`load`, `discover_edges`), not a registry to inherit; **`ManifestProvider`** is the batteries-included registry most datasets actually use — `irds.register(*roots)` is explicit and pulls in dependencies | `protocols.Provider`, `registry.ManifestProvider` |
+| **`Graph`** = the union over installed providers (entry points + on-import subscription): routing, indexed reverse lookups, validation — built entirely from `Provider.load`/`discover_edges`, nothing more | `graph.Graph` |
 | Construction is inert — ad-hoc/test nodes never touch any registry | `base.Node` |
-| **Node/Resource/Table/Benchmark/Suite are `Protocol`s, not base classes** — `Provider.register()` only ever checks the shape (a `hasattr` check on the three methods it calls), never `isinstance` against a concrete class; a node needs no particular ancestor | `protocols.py`, `TestV2Protocols` |
+| **Node/Resource/Table/Benchmark/Suite are `Protocol`s, not base classes** — `ManifestProvider.register()` only ever checks the shape (a `hasattr` check on the three methods it calls), never `isinstance` against a concrete class; a node needs no particular ancestor | `protocols.py`, `TestV2Protocols` |
 | A Resource's `sources` accept bare URLs or `Source`/`Source.irds()`/`Source.local()` for headers, auth, or manual acquisition | `sources.py` |
 | **Multi-algorithm integrity**: `hashes=['sha256:...', 'md5:...']` (OCI/pip's `algo:hexdigest` convention; `md5=` stays as shorthand for the common single-hash case). Checked in one streamed pass at `verify` time, against the *author's declared* value — not a frozen row, unlike `Table` | `nodes.parse_hash`, `Resource.verify`, `TestV2ResourceHashes` |
 | Declarative stream pipeline (`.member().gunzip().pipe()`) over a `Readable` — distinct from a Resource's `Source`s (where to fetch bytes) | `sources.Readable` |
@@ -136,8 +143,8 @@ python -m unittest test.v2_conformance
 | **`citation`** is a generic field on `Node` — any node can carry one — and `metrics` is plain metadata on `Benchmark`; neither is an edge (yet) | `nodes.Benchmark` |
 | `Table` is the base type of docs/queries/qrels/… (schema + rows + key) | `nodes.Table` |
 | v1's "beta" API is the **default** (`len(ds.docs)`, `ds.docs[:10]`, `ds.docs.lookup(...)`); legacy methods still provided | `nodes.Table` |
-| Import-free discovery: manifest rows, one module imported per `load()`; derived facets register with their benchmark (no special case) | `Provider.__getitem__`, `Benchmark.structural_edges` |
-| Legacy v1 ids as permanent aliases (`/` vs `-` makes them unambiguous) | `Provider.alias` |
+| Import-free discovery: manifest rows, one module imported per `load()`; derived facets register with their benchmark (no special case) | `ManifestProvider.__getitem__`, `Benchmark.structural_edges` |
+| Legacy v1 ids as permanent aliases, discovered as an `irds:alias` edge like any other — no separate alias API on `Graph` | `ManifestProvider.alias`, `registry.ALIAS_KIND` |
 | Existing caches read **in place** — nothing moved, nothing re-downloaded | `cache_path` in `datasets/antique.py` |
 
 ## One authored file replaces four

@@ -21,14 +21,16 @@ generic shape -- BEIR's whole point is that these corpora are heterogeneous,
 so flattening their schemas would lose exactly what the suite demonstrates.
 
 Multi-split families (msmarco, nfcorpus, hotpotqa, fiqa, quora,
-dbpedia-entity, fever, scifact) mirror v1's structure precisely: one *bare*
-Benchmark (docs + the full, unfiltered query set, no qrels -- there is no
-single "the" qrels for these), plus one *derived* Benchmark per split, whose
-queries are the bare Benchmark's queries filtered down to the ids the split's
-own qrels file judges (``Filter(query_ids=ids_of(...), mode='include')``) and
-whose qrels are that split's real qrels table, set explicitly rather than
-derived. Single-split families (trec-covid, nq, arguana, ...) and CQADupStack's
-12 sub-forums need no derivation: one flat Benchmark each.
+dbpedia-entity, fever, scifact) have one *derived* Benchmark per split, whose
+queries are the full, unfiltered query set filtered down to the ids the
+split's own qrels file judges (``Filter(query_ids=ids_of(...),
+mode='include')``) and whose qrels are that split's real qrels table, set
+explicitly rather than derived. The full query set has no single "the" qrels
+for these families, so it is not itself a usable benchmark and is not
+registered -- it lives only as an unregistered parent (see ``bare`` below)
+for the splits to derive from. Single-split families (trec-covid, nq,
+arguana, ...) and CQADupStack's 12 sub-forums need no derivation: one flat
+Benchmark each.
 """
 from ir_datasets.datasets.beir import (
     BeirCordDoc, BeirCovidQuery, BeirCqaDoc, BeirCqaQuery, BeirDocs as _V1BeirDocs,
@@ -37,7 +39,7 @@ from ir_datasets.datasets.beir import (
 )
 from ir_datasets.formats import GenericDoc, GenericQuery
 
-from ir_datasets.v2 import Benchmark, Docs, Filter, Qrels, Queries, Resource, Suite, ids_of, irds
+from ir_datasets.v2 import Benchmark, DocTable, Filter, QrelTable, QueryTable, Resource, Suite, ids_of, irds
 from ir_datasets.v2.formats import Parser
 
 CITATION = 'Thakur et al., 2021, "BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models" (arxiv:2104.08663)'
@@ -89,13 +91,13 @@ CQA_ZIP = ('https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/c
 
 #: The 14 headline benchmarks -- the 13 NanoBEIR also mirrors, plus trec-covid
 #: (the 14th of the commonly-reported "main" BEIR results, omitted from
-#: NanoBEIR only because it's large) -- plus all 12 CQADupStack sub-forums.
+#: NanoBEIR only because it's large). CQADupStack's 12 sub-forums are their
+#: own nested suite (see registration below), not flattened in here.
 SUITE_MEMBERS = [
     'beir-trec-covid', 'beir-nfcorpus-test', 'beir-nq', 'beir-hotpotqa-test',
     'beir-fiqa-test', 'beir-arguana', 'beir-webis-touche2020-v2', 'beir-quora-test',
     'beir-dbpedia-entity-test', 'beir-scidocs', 'beir-fever-test',
     'beir-climate-fever', 'beir-scifact-test', 'beir-msmarco-dev',
-    *[f'beir-cqadupstack-{sub}' for sub in CQA_SUBFORUMS],
 ]
 
 
@@ -135,14 +137,14 @@ def _flat(v1_id):
 
 def _docs(v1_id, zip_resource, doc_type):
     zip_folder = v1_id.split('/')[0]  # the /v2 zip still unpacks to the v1 folder name
-    return Docs(f'beir-{_flat(v1_id)}-docs',
+    return DocTable(f'beir-{_flat(v1_id)}-docs',
                source=zip_resource.zip_member(f'{zip_folder}/corpus.jsonl'),
                parser=_BeirDocsParser(v1_id, doc_type))
 
 
 def _queries(v1_id, zip_resource, query_type):
     zip_folder = v1_id.split('/')[0]
-    return Queries(f'beir-{_flat(v1_id)}-queries',
+    return QueryTable(f'beir-{_flat(v1_id)}-queries',
                    source=zip_resource.zip_member(f'{zip_folder}/queries.jsonl'),
                    parser=_BeirQueriesParser(v1_id, query_type))
 
@@ -150,7 +152,7 @@ def _queries(v1_id, zip_resource, query_type):
 def _qrels(v1_id, zip_resource, split=None):
     zip_folder = v1_id.split('/')[0]
     suffix = f'-{split}' if split else ''
-    return Qrels(f'beir-{_flat(v1_id)}{suffix}-qrels',
+    return QrelTable(f'beir-{_flat(v1_id)}{suffix}-qrels',
                 source=zip_resource.zip_member(f'{zip_folder}/qrels/{split or "test"}.tsv'),
                 parser=_BeirQrelsParser())
 
@@ -172,11 +174,13 @@ with irds.defaults(lang='en'):
                                          citation=CITATION,
                                          desc=f'BEIR: {v1_id}.')
         else:
-            bare_name = f'beir-{_flat(v1_id)}'
-            bare = Benchmark(bare_name, docs=docs, queries=queries, citation=CITATION,
-                             desc=f'BEIR: {v1_id} (all queries; no single qrels -- see '
-                                  f'the per-split benchmarks).')
-            benchmarks[bare_name] = bare
+            # Not registered: a private parent for the per-split Benchmarks
+            # below to inherit docs/queries from (filtered by each split's
+            # qrels) via derived_from. There is no single qrels for the full
+            # query set, so this itself would not be a usable benchmark --
+            # see the per-split ones instead.
+            bare = Benchmark(f'beir-{_flat(v1_id)}', docs=docs, queries=queries,
+                             citation=CITATION)
             for split in splits:
                 split_name = f'beir-{_flat(v1_id)}-{split}'
                 split_qrels = _qrels(v1_id, zip_resource, split)
@@ -193,13 +197,13 @@ with irds.defaults(lang='en'):
     cqa_zip = Resource('beir-cqadupstack.zip', sources=[cqa_url], md5=cqa_md5, size=cqa_size)
     for sub in CQA_SUBFORUMS:
         v1_id = f'cqadupstack/{sub}'
-        docs = Docs(f'beir-cqadupstack-{sub}-docs',
+        docs = DocTable(f'beir-cqadupstack-{sub}-docs',
                    source=cqa_zip.zip_member(f'cqadupstack/{sub}/corpus.jsonl'),
                    parser=_BeirDocsParser(v1_id, BeirCqaDoc))
-        queries = Queries(f'beir-cqadupstack-{sub}-queries',
+        queries = QueryTable(f'beir-cqadupstack-{sub}-queries',
                           source=cqa_zip.zip_member(f'cqadupstack/{sub}/queries.jsonl'),
                           parser=_BeirQueriesParser(v1_id, BeirCqaQuery))
-        qrels = Qrels(f'beir-cqadupstack-{sub}-qrels',
+        qrels = QrelTable(f'beir-cqadupstack-{sub}-qrels',
                       source=cqa_zip.zip_member(f'cqadupstack/{sub}/qrels/test.tsv'),
                       parser=_BeirQrelsParser())
         name = f'beir-cqadupstack-{sub}'
@@ -211,11 +215,23 @@ with irds.defaults(lang='en'):
 # -----------------------------------------
 irds.register(*benchmarks.values())
 
+cqa_suite = Suite('beir-cqadupstack',
+                  benchmarks=[benchmarks[f'beir-cqadupstack-{sub}'] for sub in CQA_SUBFORUMS],
+                  citation=CITATION,
+                  desc="CQADupStack: BEIR's 12 StackExchange sub-forums, "
+                       'aggregated from a single shared download -- its own '
+                       'suite since it is itself commonly reported as one '
+                       'sub-benchmark group, and nested into the main BEIR '
+                       'suite below rather than flattened into it.')
+irds.register(cqa_suite)
+
 irds.register(Suite('beir', benchmarks=[benchmarks[n] for n in SUITE_MEMBERS],
+                    suites=[cqa_suite],
                     citation=CITATION,
                     desc='The BEIR evaluation suite: 14 headline zero-shot '
                          'retrieval benchmarks across heterogeneous domains, '
-                         "plus CQADupStack's 12 StackExchange sub-forums."))
+                         "plus CQADupStack's 12 StackExchange sub-forums "
+                         '(nested as the beir-cqadupstack suite).'))
 
 # Aliases (old ir-datasets ID mapping)
 # -----------------------------------------

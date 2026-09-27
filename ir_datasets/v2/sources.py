@@ -146,7 +146,7 @@ def legacy_path(md5):
 def migrate_legacy(legacy, cache_path):
     """Move a v1 cache file (or directory -- a v1 docstore is one) to its v2
     location, once, the first time it's found (see ``Resource.existing_path``/
-    ``Docs.docstore_path``) -- not a separate migration step the user has to
+    ``DocTable.docstore_path``) -- not a separate migration step the user has to
     remember to run, since there's no reason to make them: nothing else needs
     the old v1 layout left untouched, and every future lookup (this run's, or
     a later one's) should hit ``cache_path`` directly without consulting

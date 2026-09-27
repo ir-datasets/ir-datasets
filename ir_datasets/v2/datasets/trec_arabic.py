@@ -66,14 +66,14 @@ docs = TrecDocs('trec-arabic-docs',
     source=docs_file,
     encoding='utf8',
     path_globs=['arabic_newswire_a/transcripts/*/*.sgm.gz'],
-    namespace='trec-arabic', lang='ar',
+    lang='ar',
     count_hint=383_872,
 )
 
 ar2001_queries = TrecQueries('trec-arabic-2001-queries',
     source=ar2001_queries_file,
     qtype_map=QTYPE_MAP, encoding='ISO-8859-6',
-    namespace='trec-arabic', lang='ar',
+    lang='ar',
 )
 ar2001_qrels = TrecQrels('trec-arabic-2001-qrels',
     source=ar2001_qrels_file, defs=QREL_DEFS)
@@ -81,7 +81,7 @@ ar2001_qrels = TrecQrels('trec-arabic-2001-qrels',
 ar2002_queries = TrecQueries('trec-arabic-2002-queries',
     source=ar2002_queries_file,
     qtype_map=QTYPE_MAP, encoding='ISO-8859-6',
-    namespace='trec-arabic', lang='ar',
+    lang='ar',
 )
 ar2002_qrels = TrecQrels('trec-arabic-2002-qrels',
     source=ar2002_qrels_file, defs=QREL_DEFS)

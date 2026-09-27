@@ -26,7 +26,7 @@ def _scratch(prefix='test'):
     """An isolated provider + graph; nothing here touches the real ones."""
     src = v2.Resource('scratch-file', sources=['https://example.org/x.tsv'])
     table = v2.TsvQueries('scratch-queries', source=src)
-    provider = v2.Provider(prefix)
+    provider = v2.ManifestProvider(prefix)
     return provider, src, table
 
 
@@ -42,14 +42,15 @@ class TestV2Graph(unittest.TestCase):
                 self.assertIsNotNone(graph[name])
 
     def test_node_types_are_known(self):
-        known = {v2.RESOURCE, v2.TABLE, v2.BENCHMARK, v2.SUITE}
+        known = {v2.RESOURCE, v2.BENCHMARK, v2.SUITE, *v2.TABLE_TYPES.values()}
         for name in irds.manifest()['nodes']:
             with self.subTest(node=name):
                 self.assertIn(graph.type_of(name), known)
 
-    def test_exactly_four_node_types(self):
-        """The paper's whole point: Resource, Table, Benchmark, Suite -- no more."""
-        self.assertEqual({v2.RESOURCE, v2.TABLE, v2.BENCHMARK, v2.SUITE},
+    def test_exactly_nine_node_types(self):
+        """The paper's whole point: Resource, Table (+ one subtype per entity),
+        Benchmark, Suite -- no more."""
+        self.assertEqual({v2.RESOURCE, v2.TABLE, v2.BENCHMARK, v2.SUITE, *v2.TABLE_TYPES.values()},
                          set(irds.types))
 
     def test_benchmark_edges_resolve(self):
@@ -87,31 +88,53 @@ class TestV2Graph(unittest.TestCase):
 
     def test_vocabulary_is_owned_and_qualified(self):
         self.assertEqual('irds:Benchmark', graph['irds:antique-test'].type)
-        self.assertEqual('irds:Table', v2.TsvDocs.type)
-        self.assertEqual('irds', v2.node_types()['irds:Table']['owner'])
+        self.assertEqual('irds:DocTable', v2.TsvDocs.type)
+        self.assertEqual('irds:QrelTable', v2.TrecQrels.type)
+        self.assertEqual('irds', v2.node_types()['irds:DocTable']['owner'])
         self.assertEqual('irds', v2.edge_kinds()['irds:derived_from']['owner'])
-        tables = v2.list_datasets(type='irds:Table')
-        self.assertIn('irds:antique-docs', tables)
-        self.assertIn('irds:antique-test-qrels', tables)
-        self.assertTrue(all(v2.graph.type_of(n) == 'irds:Table' for n in tables))
+        docs = v2.list_datasets(type='irds:DocTable')
+        self.assertIn('irds:antique-docs', docs)
+        self.assertTrue(all(v2.graph.type_of(n) == 'irds:DocTable' for n in docs))
+        qrels = v2.list_datasets(type='irds:QrelTable')
+        self.assertIn('irds:antique-test-qrels', qrels)
+        self.assertTrue(all(v2.graph.type_of(n) == 'irds:QrelTable' for n in qrels))
         # the manifest records the provider's vocabulary
         m = irds.manifest()
-        self.assertIn('irds:Table', m['types'])
+        self.assertIn('irds:DocTable', m['types'])
+        self.assertIn('irds:QrelTable', m['types'])
         self.assertTrue(m['edge_kinds']['irds:derived_from']['structural'])
-        self.assertEqual(['deprecated', 'dua', 'lang', 'namespace'], m['defaultable'])
+        self.assertEqual(['deprecated', 'dua', 'lang'], m['defaultable'])
+
+    def test_table_types_are_subtypes_of_table(self):
+        """Each per-entity type is a declared subtype of the generic
+        irds:Table -- so a type-filtered listing can ask for either the
+        specific kind or the whole family."""
+        for entity, qualified in v2.TABLE_TYPES.items():
+            with self.subTest(entity=entity):
+                self.assertTrue(v2.is_subtype(qualified, 'irds:Table'))
+                self.assertTrue(v2.is_subtype(qualified, qualified))
+        self.assertFalse(v2.is_subtype('irds:Table', 'irds:QrelTable'))
+        self.assertFalse(v2.is_subtype('irds:Benchmark', 'irds:Table'))
+
+        tables = v2.list_datasets(type='irds:Table')
+        self.assertIn('irds:antique-docs', tables)         # a DocTable
+        self.assertIn('irds:antique-test-qrels', tables)    # a QrelTable
+        self.assertNotIn('irds:antique-test', tables)       # a Benchmark
+        self.assertTrue(all(v2.is_subtype(v2.graph.type_of(n), 'irds:Table')
+                            for n in tables))
 
     def test_undeclared_type_cannot_register(self):
         class Rogue(v2.Node):
             type = 'acme:never-declared'
         with self.assertRaisesRegex(ValueError, 'undeclared node type'):
-            v2.Provider('acme').register(Rogue('x'))
+            v2.ManifestProvider('acme').register(Rogue('x'))
         class Typeless(v2.Node):
             pass
         with self.assertRaises(ValueError):
-            v2.Provider('acme').register(Typeless('x'))
+            v2.ManifestProvider('acme').register(Typeless('x'))
 
     def test_provider_declares_only_in_its_own_namespace(self):
-        acme = v2.Provider('acme')
+        acme = v2.ManifestProvider('acme')
         self.assertEqual('acme:thing', acme.node_type('thing'))
         self.assertEqual('acme:made_from', acme.edge_kind('made_from', structural=True))
         with self.assertRaises(ValueError):
@@ -120,18 +143,27 @@ class TestV2Graph(unittest.TestCase):
             acme.edge_kind('irds:derived_from', structural=True)
 
     def test_providers_subscribe_to_the_default_graph(self):
-        self.assertEqual(['hf', 'irds'], sorted(graph.providers))
+        self.assertEqual(['clirmatrix', 'hf', 'irds'], sorted(graph.providers))
         self.assertIs(v2.default_graph().providers, graph.providers)
 
-    def test_known_names_are_opt_in_via_discover(self):
-        """A provider's known_names() (a live/expensive lookup a dynamic
-        provider may register) never leaks into the default list(); only
-        discover=True merges it in."""
-        provider, _, _ = _scratch('scratchknown')
-        provider.register_known(lambda: ['made-up-name'])
+    def test_minimal_provider_satisfies_the_protocol(self):
+        """A provider need not be a ManifestProvider -- protocols.Provider is
+        just `prefix`, `load(name)`, `discover_edges()`; no registration, no
+        vocabulary, no manifest required. discover_edges() always runs its
+        full discovery (there is no cheap/expensive flag to opt into)."""
+        class MadeUp:
+            prefix = 'scratchknown'
+
+            def load(self, name):
+                raise KeyError(name)
+
+            def discover_edges(self):
+                yield 'scratchknown:made-up-name', 'type', 'irds:Table'
+
+        provider = MadeUp()
+        self.assertIsInstance(provider, v2.Provider)
         scratch_graph = v2.Graph([provider])
-        self.assertNotIn('scratchknown:made-up-name', scratch_graph.list())
-        self.assertIn('scratchknown:made-up-name', scratch_graph.list(discover=True))
+        self.assertIn('scratchknown:made-up-name', scratch_graph.list())
 
     def test_entry_points_name_the_prefix(self):
         """pyproject declares each provider under the prefix it owns."""
@@ -169,7 +201,7 @@ class TestV2Registration(unittest.TestCase):
         provider, _, table = _scratch()
         provider.register(table)
         with self.assertRaises(ValueError):
-            v2.Provider('other').register(table)
+            v2.ManifestProvider('other').register(table)
 
     def test_duplicate_name_from_different_module_is_an_error(self):
         provider, _, table = _scratch()
@@ -216,7 +248,7 @@ class TestV2Registration(unittest.TestCase):
         with self.assertRaises(ValueError):
             v2.Resource('acme:file', sources=['https://x/y'])
         with self.assertRaises(ValueError):
-            v2.Provider('')
+            v2.ManifestProvider('')
 
 
 class _FromScratchTable:
@@ -283,7 +315,7 @@ class TestV2Protocols(unittest.TestCase):
         the shape, never an isinstance check against a concrete class."""
         table = _FromScratchTable('scratch-table', [('r1', 'hello'), ('r2', 'world')])
         self.assertIsInstance(table, v2.TableProtocol)
-        provider = v2.Provider('acme')
+        provider = v2.ManifestProvider('acme')
         provider.node_type('scratch-table')   # qualifies to 'acme:scratch-table'
         provider.register(table)
         self.assertEqual('acme:scratch-table', table.qualified_name)
@@ -300,7 +332,7 @@ class TestV2Protocols(unittest.TestCase):
         class NotANode:
             pass
         with self.assertRaisesRegex(TypeError, 'does not look like a Node'):
-            v2.Provider('acme3').register(NotANode())
+            v2.ManifestProvider('acme3').register(NotANode())
 
 
 class TestV2Edges(unittest.TestCase):
@@ -333,16 +365,13 @@ class TestV2Edges(unittest.TestCase):
     def test_structural_vs_informational(self):
         self.assertTrue(v2.Edge('irds:docs', 'x').structural)
         self.assertFalse(v2.Edge('irds:same_corpus_as', 'x').structural)
-        for kind in v2.INFORMATIONAL_EDGES:
-            self.assertNotIn(kind, v2.STRUCTURAL_EDGES)
         # this package declares no vocabulary except irds' own (other tests
         # may register their own kinds in the process-wide vocabulary index,
         # so check subset rather than exact equality)
         self.assertLessEqual(set(v2.STRUCTURAL_EDGES), v2.structural_kinds())
-        self.assertLessEqual(set(v2.INFORMATIONAL_EDGES), v2.informational_kinds())
 
     def test_edge_kinds_must_be_declared(self):
-        acme = v2.Provider('acme')
+        acme = v2.ManifestProvider('acme')
         with self.assertRaisesRegex(ValueError, 'undeclared edge kind'):
             acme.add_edge('irds:antique-docs', 'indexed_frm', 'acme:idx')
         with self.assertRaises(ValueError):      # disagreeing re-declaration
@@ -370,7 +399,7 @@ class TestV2Edges(unittest.TestCase):
         self.assertFalse([r for r in manifest['nodes'].values() if 'edges' in r])
 
     def test_traversal_needs_no_imports(self):
-        fresh = v2.Graph([v2.Provider('irds', package=irds.package,
+        fresh = v2.Graph([v2.ManifestProvider('irds', package=irds.package,
                                       manifest_path=irds.manifest_path)])
         self.assertIn('irds:antique-test', fresh.dependents('irds:antique-docs'))
         self.assertFalse(fresh.providers['irds'].nodes)   # nothing was imported
@@ -380,7 +409,7 @@ class TestV2Authority(unittest.TestCase):
     """Structural edges belong to the owner; informational edges to anyone."""
 
     def setUp(self):
-        self.acme = v2.Provider('acme')
+        self.acme = v2.ManifestProvider('acme')
         self.acme.edge_kind('see_also', structural=False)
         self.graph = v2.Graph([irds, self.acme])
 
@@ -403,7 +432,7 @@ class TestV2Authority(unittest.TestCase):
 
     def test_prefix_collision_is_an_error(self):
         with self.assertRaises(ValueError):
-            v2.Graph([irds, v2.Provider('irds')])
+            v2.Graph([irds, v2.ManifestProvider('irds')])
 
 
 class TestV2ResourceHashes(unittest.TestCase):
@@ -547,7 +576,7 @@ class TestV2IdsFromLines(unittest.TestCase):
 
 
 class TestV2CachePath(unittest.TestCase):
-    """A Resource's cache path (and a Docs' docstore path) is
+    """A Resource's cache path (and a DocTable's docstore path) is
     `<home>/<provider>/<qualified name>` (not md5-keyed), computed lazily
     since it needs the registered provider/qualified_name -- and an existing
     v1 cache file/docstore is migrated to it, once, the first time it's
@@ -559,14 +588,14 @@ class TestV2CachePath(unittest.TestCase):
         self.assertEqual(home / '_local' / 'scratch-cache-path', r.cache_path)
 
     def test_registered_resource_is_partitioned_by_provider(self):
-        provider = v2.Provider('acmecache')
+        provider = v2.ManifestProvider('acmecache')
         r = v2.Resource('scratch-cache-path2', sources=['https://x/y'])
         provider.register(r)
         home = Path(ir_datasets.util.home_path())
         self.assertEqual(home / 'acmecache' / 'scratch-cache-path2', r.cache_path)
 
     def test_slash_in_name_nests_the_path(self):
-        provider = v2.Provider('acmecache2')
+        provider = v2.ManifestProvider('acmecache2')
         r = v2.Resource('owner/name/key', sources=['https://x/y'])
         provider.register(r)
         home = Path(ir_datasets.util.home_path())
@@ -583,7 +612,7 @@ class TestV2CachePath(unittest.TestCase):
                 with mock.patch.object(
                         sourcesmod, '_legacy_cache',
                         return_value={md5: 'v1-dataset/collection.tsv'}):
-                    provider = v2.Provider('acmecache3')
+                    provider = v2.ManifestProvider('acmecache3')
                     r = v2.Resource('migrated-file', sources=['https://x/y'], md5=md5)
                     provider.register(r)
 
@@ -603,7 +632,7 @@ class TestV2CachePath(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with mock.patch.dict(os.environ, {'IR_DATASETS_HOME': tmp}):
                 with mock.patch.object(sourcesmod, '_legacy_cache', return_value={}):
-                    provider = v2.Provider('acmecache4')
+                    provider = v2.ManifestProvider('acmecache4')
                     r = v2.Resource('never-cached', sources=['https://x/y'], md5='b' * 32)
                     provider.register(r)
                     self.assertIsNone(r.existing_path())
@@ -624,7 +653,7 @@ class TestV2CachePath(unittest.TestCase):
                 with mock.patch.object(
                         sourcesmod, '_legacy_cache',
                         return_value={md5: 'v1-docs-dataset/collection.tsv'}):
-                    provider = v2.Provider('acmedocstore')
+                    provider = v2.ManifestProvider('acmedocstore')
                     resource = v2.Resource('raw-docs', sources=['https://x/y'], md5=md5)
                     table = v2.TsvDocs('parsed-docs', source=resource)
                     provider.register(table)
@@ -675,7 +704,7 @@ class TestV2Suite(unittest.TestCase):
     """A Suite is a named, structural set of Benchmarks (e.g. BEIR)."""
 
     def setUp(self):
-        self.provider = v2.Provider('acme')
+        self.provider = v2.ManifestProvider('acme')
         src = v2.Resource('acme-src', sources=['https://example.org/x.tsv'])
         docs = v2.TsvDocs('acme-docs', source=src)
         self.b1 = v2.Benchmark('acme-task1', docs=docs,
@@ -697,8 +726,8 @@ class TestV2Suite(unittest.TestCase):
     def test_structural_edges_to_each_benchmark(self):
         edges = self.graph.edges_of('acme:acme-suite')
         self.assertEqual(sorted(['acme:acme-task1', 'acme:acme-task2']),
-                         sorted(edges['irds:benchmark']))
-        self.assertTrue(v2.Edge('irds:benchmark', 'x').structural)
+                         sorted(edges['irds:member']))
+        self.assertTrue(v2.Edge('irds:member', 'x').structural)
 
     def test_membership_pulls_benchmarks_in_transitively(self):
         self.assertIn('acme:acme-task1', self.provider.nodes)
@@ -718,24 +747,24 @@ class TestV2Suite(unittest.TestCase):
         other = v2.Suite('acme-other-suite', benchmarks=[self.b1])
         self.provider.register(other)
         self.assertEqual(sorted(['acme:acme-suite', 'acme:acme-other-suite']),
-                         sorted(self.graph.referrers('acme:acme-task1', kind='irds:benchmark')))
+                         sorted(self.graph.referrers('acme:acme-task1', kind='irds:member')))
 
     def test_dangling_membership_is_reported(self):
-        bad = v2.Provider('acme2')
+        bad = v2.ManifestProvider('acme2')
         bad.register(v2.Suite('bad-suite', benchmarks=['acme2:no-such-benchmark']))
         g = v2.Graph([bad])
-        self.assertIn('dangling: acme2:bad-suite --irds:benchmark--> acme2:no-such-benchmark',
+        self.assertIn('dangling: acme2:bad-suite --irds:member--> acme2:no-such-benchmark',
                       g.check())
 
     def test_names_may_be_used_instead_of_objects(self):
-        provider2 = v2.Provider('acme3')
+        provider2 = v2.ManifestProvider('acme3')
         src = v2.Resource('acme3-src', sources=['https://example.org/x.tsv'])
         b = v2.Benchmark('acme3-task', docs=v2.TsvDocs('acme3-docs', source=src))
         provider2.register(b)
         suite = v2.Suite('acme3-suite', benchmarks=['acme3-task'])  # bare name -> own namespace
         provider2.register(suite)
         g = v2.Graph([provider2])
-        self.assertEqual(['acme3:acme3-task'], g.edges_of('acme3:acme3-suite')['irds:benchmark'])
+        self.assertEqual(['acme3:acme3-task'], g.edges_of('acme3:acme3-suite')['irds:member'])
 
 
 class TestV2Defaults(unittest.TestCase):
@@ -754,7 +783,7 @@ class TestV2Defaults(unittest.TestCase):
         self.assertEqual('de', node.lang)
 
     def test_identity_and_data_fields_are_rejected(self):
-        self.assertEqual({'dua', 'lang', 'namespace', 'deprecated'}, irds.defaultable_fields)
+        self.assertEqual({'dua', 'lang', 'deprecated'}, irds.defaultable_fields)
         for field in ('md5', 'source', 'defs', 'name', 'parser'):
             with self.subTest(field=field), self.assertRaises(ValueError):
                 with irds.defaults(**{field: 'x'}):
@@ -763,7 +792,7 @@ class TestV2Defaults(unittest.TestCase):
     def test_defaults_are_the_providers(self):
         """Another provider may not default fields it has not declared, even
         ones irds did."""
-        acme = v2.Provider('acme')
+        acme = v2.ManifestProvider('acme')
         with self.assertRaisesRegex(ValueError, 'cannot default lang'):
             with acme.defaults(lang='en'):
                 pass

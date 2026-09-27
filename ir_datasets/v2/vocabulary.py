@@ -9,17 +9,73 @@ lowercase (properties aren't). This module is only the process-wide index
 tell structural kinds from informational ones when traversing -- including
 kinds owned by a provider that is installed but not imported, which the index
 learns from that provider's manifest.
+
+A type may declare a ``parent`` (another qualified type, same or different
+provider's namespace) -- a single-inheritance hierarchy, not a lattice, so
+"is this a Table" stays a plain walk-to-root rather than a graph search. This
+is what lets ``irds:QrelTable``/``irds:DocTable``/... each be their own
+first-class type (so ``list(type='irds:QrelTable')`` finds exactly qrels
+tables) while ``list(type='irds:Table')`` still finds all of them -- and lets
+a third-party provider declare ``ext:MyTable`` as a subtype of ``irds:Table``
+without ``irds`` knowing ``ext`` exists.
 """
 
-_TYPES = {}   # qualified type -> {'desc': ..., 'owner': prefix}
+_TYPES = {}   # qualified type -> {'desc': ..., 'owner': prefix, 'parent': qualified | None}
 _KINDS = {}   # qualified kind -> {'structural': bool, 'desc': ..., 'owner': prefix}
 
 
-def declare_type(qualified, *, owner, desc=None):
+def declare_type(qualified, *, owner, desc=None, parent=None):
+    """Idempotent, like ``declare_kind`` below -- a type may be declared more
+    than once (a live import's ``node_type()`` call, then that same
+    provider's own manifest reloaded from disk on top of it, or vice versa).
+    A re-declaration with ``parent=None`` is treated as "not specified" rather
+    than "no parent" -- an older, pre-hierarchy manifest on disk has no
+    ``parent`` field at all, and reloading it must not erase a parent the live
+    class hierarchy already established. Only a genuine conflict (two
+    *different*, both non-``None`` parents) is an error.
+    """
     entry = _TYPES.get(qualified)
-    if entry is None:
-        _TYPES[qualified] = {'desc': desc, 'owner': owner}
+    if entry is not None:
+        if parent is not None:
+            if entry.get('parent') not in (None, parent):
+                raise ValueError(
+                    f'node type {qualified!r} is already declared with parent '
+                    f'{entry["parent"]!r}, not {parent!r}')
+            entry['parent'] = parent
+        return qualified
+    # `parent` is stored as given even if it isn't declared *yet* -- a
+    # provider that isn't imported may have its own manifest loaded before
+    # the provider owning its parent type does; `ancestors()` just stops
+    # early until that entry shows up too (same "degrade gracefully for an
+    # unknown/not-yet-loaded provider" posture as `is_structural` below).
+    _TYPES[qualified] = {'desc': desc, 'owner': owner, 'parent': parent}
     return qualified
+
+
+def parent_of(qualified):
+    entry = _TYPES.get(qualified)
+    return entry.get('parent') if entry else None
+
+
+def ancestors(qualified):
+    """``qualified`` and every declared ancestor, closest first."""
+    out, seen, cur = [], set(), qualified
+    while cur is not None and cur not in seen:
+        seen.add(cur)
+        out.append(cur)
+        cur = parent_of(cur)
+    return out
+
+
+def is_subtype(sub, of):
+    """Whether ``sub`` is ``of`` itself, or a (transitive) subtype of it.
+
+    An undeclared/unknown ``sub`` (e.g. from a provider that isn't installed)
+    matches nothing but itself would -- there's no hierarchy to consult.
+    """
+    if sub is None:
+        return False
+    return of in ancestors(sub)
 
 
 def declare_kind(qualified, *, structural, owner, desc=None):

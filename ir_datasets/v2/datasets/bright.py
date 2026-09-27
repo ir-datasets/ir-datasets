@@ -3,13 +3,13 @@
 12 domains (StackExchange topics, coding, theorem-proving, competition math),
 each with docs + queries + qrels. Unlike most families in this catalog,
 BRIGHT's qrels are embedded in the *same* parquet file as its queries (not a
-separate qrels file) -- reflected here by ``Queries`` and ``Qrels`` both
+separate qrels file) -- reflected here by ``QueryTable`` and ``QrelTable`` both
 declaring the same queries Resource as their ``source``. Queries also carry
 up to 5 auxiliary "reasoning" fields, one per LLM, each sourced from its own
 parquet file and joined in by v1's own ``BrightQueries.queries_iter``.
 
 8 of the 12 domains additionally have a "long" variant: same queries (the
-Queries Table object is reused verbatim, not re-declared) against long-form
+QueryTable object is reused verbatim, not re-declared) against long-form
 documents, with qrels re-derived from the same queries file's
 ``gold_ids_long`` field instead of ``gold_ids``.
 
@@ -27,7 +27,7 @@ from ir_datasets.datasets.bright import (
     REASONING_FIELDS,
 )
 
-from ir_datasets.v2 import Benchmark, Docs, Qrels, Queries, Resource, Suite, irds
+from ir_datasets.v2 import Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
 from ir_datasets.v2.formats import Parser
 
 CITATION = ('Su et al., 2024, "BRIGHT: A Realistic and Challenging Benchmark '
@@ -190,12 +190,12 @@ class _BrightQrelsParser(Parser):
 
 with irds.defaults(lang='en'):
     benchmarks = {}          # flat name -> Benchmark, for suite assembly + aliasing
-    queries_by_subset = {}   # subset -> (queries_file Resource, Queries table)
+    queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table)
 
     for subset in SHORT_SUBSETS:
         docs_url, docs_md5, docs_size = DOCS_SOURCES[subset]
         docs_file = Resource(f'bright-{subset}-docs.parquet', sources=[docs_url], md5=docs_md5, size=docs_size)
-        docs = Docs(f'bright-{subset}-docs', source=docs_file, parser=_BrightDocsParser(subset))
+        docs = DocTable(f'bright-{subset}-docs', source=docs_file, parser=_BrightDocsParser(subset))
 
         queries_url, queries_md5, queries_size = QUERIES_SOURCES[subset]
         queries_file = Resource(f'bright-{subset}-queries.parquet', sources=[queries_url], md5=queries_md5, size=queries_size)
@@ -206,9 +206,9 @@ with irds.defaults(lang='en'):
             reasoning_sources[v1_field] = Resource(
                 f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], md5=r_md5, size=r_size)
 
-        queries = Queries(f'bright-{subset}-queries', source=queries_file,
+        queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
                           parser=_BrightQueriesParser(reasoning_sources))
-        qrels = Qrels(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
+        qrels = QrelTable(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
                       parser=_BrightQrelsParser(gold_field='gold_ids'))
 
         queries_by_subset[subset] = (queries_file, queries)
@@ -221,12 +221,12 @@ with irds.defaults(lang='en'):
     for subset in LONG_SUBSETS:
         long_url, long_md5, long_size = LONG_DOCS_SOURCES[subset]
         long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], md5=long_md5, size=long_size)
-        long_docs = Docs(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset))
+        long_docs = DocTable(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset))
 
         queries_file, queries = queries_by_subset[subset]
-        # Same Queries object as the short variant -- the long variant only
+        # Same QueryTable object as the short variant -- the long variant only
         # differs in docs (long-form) and qrels (ids mapped to those docs).
-        long_qrels = Qrels(f'bright-{subset}-long-qrels', source=queries_file, defs=QRELS_DEFS,
+        long_qrels = QrelTable(f'bright-{subset}-long-qrels', source=queries_file, defs=QRELS_DEFS,
                            parser=_BrightQrelsParser(gold_field='gold_ids_long'))
 
         name = f'bright-{subset}-long'

@@ -20,7 +20,7 @@ from ir_datasets.datasets.nano_beir import (
 )
 from ir_datasets.formats import GenericDoc, GenericQuery
 
-from ir_datasets.v2 import Benchmark, Docs, Qrels, Queries, Resource, Suite, irds
+from ir_datasets.v2 import Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
 from ir_datasets.v2.formats import Parser
 
 CITATION = ('zeta-alpha-ai/NanoBEIR (huggingface.co/collections/zeta-alpha-ai/nanobeir); '
@@ -141,11 +141,11 @@ with irds.defaults(lang='en'):
         qrels_file = Resource(f'nano-beir-{v1_id}-qrels.parquet',
                               sources=[qrels_url], md5=qrels_md5, size=qrels_size)
 
-        docs = Docs(f'nano-beir-{v1_id}-docs', source=docs_file,
+        docs = DocTable(f'nano-beir-{v1_id}-docs', source=docs_file,
                    parser=_NanoBeirDocsParser(v1_id))
-        queries = Queries(f'nano-beir-{v1_id}-queries', source=queries_file,
+        queries = QueryTable(f'nano-beir-{v1_id}-queries', source=queries_file,
                           parser=_NanoBeirQueriesParser(v1_id))
-        qrels = Qrels(f'nano-beir-{v1_id}-qrels', source=qrels_file,
+        qrels = QrelTable(f'nano-beir-{v1_id}-qrels', source=qrels_file,
                       defs={1: 'relevant'}, parser=_NanoBeirQrelsParser())
 
         name = f'nano-beir-{v1_id}'

@@ -7,14 +7,25 @@ ideas can be exercised on real data without reimplementing any of it.
 
 The generic graph machinery -- ``Node``, ``Edge``, ``Provider``, ``Graph``,
 ``Generator``, ``freeze``/``verify`` -- lives in this package (``base.py``,
-``registry.py``, ``graph.py``, ``vocabulary.py``, ``context.py``) but declares
-no vocabulary of its own; a *provider* declares vocabulary, and any package
-(this one included) may be one. ``ir_datasets.v2`` contributes exactly four
-node types, all owned by its own ``irds`` provider:
+``protocols.py``, ``registry.py``, ``graph.py``, ``vocabulary.py``,
+``context.py``) but declares no vocabulary of its own; a *provider* declares
+vocabulary, and any package (this one included) may be one. ``Provider``
+(``protocols.py``) is a two-method contract -- resolve a node by name, report
+the provider's whole catalog as edges -- not a class to inherit; a provider
+is free to keep a list of registered datasets internally however it likes.
+``ManifestProvider`` (``registry.py``) is the batteries-included
+implementation of it -- registration, vocabulary declaration, generators, a
+frozen manifest -- and what ``irds`` (this package's own provider) is built
+from. ``ir_datasets.v2`` contributes nine node types, all owned by its own
+``irds`` provider:
 
 * ``Resource`` — bytes, and where to get them
-* ``Table`` (``Docs``/``Queries``/``Qrels``/``ScoredDocs``/``DocPairs`` and their
-  format subclasses) — a structured set of records, parsed from a source
+* ``Table`` — a structured set of records, parsed from a source -- and its five
+  per-entity subtypes, ``DocTable``, ``QueryTable``, ``QrelTable``,
+  ``RunTable``, ``DocPairTable`` (and their format subclasses). Each is
+  its own declared graph type (``is_subtype('irds:QrelTable', 'irds:Table')``
+  is true), so ``list_datasets(type='irds:Table')`` finds all five kinds while
+  ``list_datasets(type='irds:QrelTable')`` finds only qrels tables.
 * ``Benchmark`` — docs + queries + qrels (etc.) bundled into an evaluable task,
   plus flat metadata (``citation``, ``metrics``)
 * ``Suite`` — a named, structural set of related Benchmarks (e.g. BEIR)
@@ -26,7 +37,10 @@ The design still decentralizes: a third-party package can declare its own
 ``Provider``, its own node types and edge kinds, and its own entry point in the
 ``ir_datasets.providers`` group (``ENTRY_POINT_GROUP``) -- pointing at nodes
 this package's ``irds`` provider owns, or vice versa -- without either package
-importing the other until a node is actually resolved.
+importing the other until a node is actually resolved. A type it declares may
+also be a *subtype* of one of ours (``ext.node_type('MyTable', parent=TABLE)``),
+so a new entity kind this package never enumerated still shows up under
+``list(type='irds:Table')``.
 
 Nothing about being a node requires inheriting from this package's classes,
 either. ``Resource``/``Table``/``Benchmark``/``Suite`` (and their common shape,
@@ -58,20 +72,28 @@ Every table is also loadable on its own::
 
     len(ir_datasets.v2.load('irds:antique-test-queries'))
 """
-from .base import Edge, Generator, Node, Param
-from .registry import DuplicateNameError, Provider
+from .base import Edge, Generator, Literal, Node, Param
+from .registry import DuplicateNameError, ManifestProvider
 from .graph import ENTRY_POINT_GROUP, Graph, default_graph, discover
 from .vocabulary import (
-    edge_kinds, informational_kinds, is_structural, node_types, structural_kinds,
+    edge_kinds, informational_kinds, is_structural, is_subtype, node_types,
+    structural_kinds,
 )
 
 from .provider import irds
 from .hf_provider import hf
+from .clirmatrix_provider import clirmatrix
+# clirmatrix is generator-only (no frozen node rows of its own to trigger a
+# lazy per-name import the way every hand-written irds module does -- see
+# registry.ManifestProvider.__getitem__'s `row = self.frozen(name)` path) --
+# so, like hf above, its module needs importing here to register its
+# Generators at all, rather than only on first (already-too-late) lookup.
+from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 from .nodes import (
-    BENCHMARK, Benchmark, DEFAULTABLE, Directory, DocPairs, Docs, ENTITIES, File,
-    GitRepo, RESOURCE, Resource,
-    INFORMATIONAL_EDGES, Qrels, Queries, STRUCTURAL_EDGES, SUITE,
-    SUITE_BENCHMARK, ScoredDocs, Suite, TABLE, Table, source_resources,
+    BENCHMARK, Benchmark, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
+    File, GitRepo, RESOURCE, Resource,
+    QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
+    SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
 )
 from .formats import (
     Parser, TrecDocs, TrecQrels, TrecQueries, TrecScoredDocs, TsvDocPairs,
@@ -84,12 +106,17 @@ from .protocols import Resource as ResourceProtocol
 from .protocols import Table as TableProtocol
 from .protocols import Benchmark as BenchmarkProtocol
 from .protocols import Suite as SuiteProtocol
+#: The minimal contract a provider must satisfy to join a Graph -- see
+#: ``protocols.Provider``'s own docstring. ``ManifestProvider`` above is one
+#: (big) implementation of it, not the contract itself.
+from .protocols import Provider
 
 # Subscribe: our providers join the default graph. (Also declared as entry
 # points, which is how an installed package is found without being imported.)
 graph = default_graph()
 graph.add(irds)
 graph.add(hf)
+graph.add(clirmatrix)
 
 
 def load(name):
@@ -98,11 +125,12 @@ def load(name):
     return graph[name]
 
 
-def list_datasets(type=None, discover=False):
+def list_datasets(type=None):
     """Qualified node names; ``type`` is a qualified type (``irds:Benchmark``).
-    ``discover=True`` also asks providers with nothing to bootstrap/enumerate
-    locally (e.g. ``hf``) to report their known names via a live lookup."""
-    return graph.list(type=type, discover=discover)
+    Always each provider's full, current catalog -- for a provider whose
+    discovery is live (``hf``, crawling the Hub) that crawl runs to build it,
+    once per process (``graph`` caches it; see ``Graph.list``)."""
+    return graph.list(type=type)
 
 
 def citation(name):
@@ -113,18 +141,19 @@ def citation(name):
 
 __all__ = [
     # generic graph machinery
-    'Node', 'Edge', 'Generator', 'Param', 'Provider', 'Graph', 'DuplicateNameError',
-    'default_graph', 'discover', 'ENTRY_POINT_GROUP',
+    'Node', 'Edge', 'Literal', 'Generator', 'Param', 'Provider', 'ManifestProvider', 'Graph',
+    'DuplicateNameError', 'default_graph', 'discover', 'ENTRY_POINT_GROUP',
     'node_types', 'edge_kinds', 'structural_kinds', 'informational_kinds', 'is_structural',
+    'is_subtype',
     # nodes
-    'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'Docs', 'Queries', 'Qrels',
-    'ScoredDocs', 'DocPairs', 'Benchmark', 'Suite', 'ENTITIES',
+    'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'DocTable', 'QueryTable',
+    'QrelTable', 'RunTable', 'DocPairTable', 'Benchmark', 'Suite', 'ENTITIES',
     # protocols: the structural contracts Resource/Table/Benchmark/Suite/Node above
     # are one implementation of, not requirements to inherit from
     'NodeProtocol', 'ResourceProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',
     # vocabulary (declared on the irds provider)
-    'RESOURCE', 'TABLE', 'BENCHMARK', 'SUITE', 'SUITE_BENCHMARK',
-    'STRUCTURAL_EDGES', 'INFORMATIONAL_EDGES', 'DEFAULTABLE', 'source_resources',
+    'RESOURCE', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
+    'STRUCTURAL_EDGES', 'DEFAULTABLE', 'source_resources',
     # sources
     'Source', 'Readable', 'transform',
     # formats (the node type IS the format)
@@ -133,6 +162,6 @@ __all__ = [
     # derivation
     'Filter', 'DerivedTable', 'ids_of', 'ids_from_lines',
     # providers and the graph
-    'irds', 'hf', 'graph',
+    'irds', 'hf', 'clirmatrix', 'graph',
     'load', 'list_datasets', 'citation',
 ]

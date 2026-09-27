@@ -96,7 +96,7 @@ docs = TrecDocs('trec-mandarin-docs',
     source=docs_file,
     encoding='GB18030',
     path_globs=['**/xinhua/x*', '**/peoples-daily/pd*'],
-    namespace='trec-mandarin', lang='zh',
+    lang='zh',
     count_hint=164_789,
 )
 
@@ -105,7 +105,7 @@ docs = TrecDocs('trec-mandarin-docs',
 trec5_queries = TrecQueries('trec-mandarin-5-queries',
     source=trec5_queries_file.gunzip(),
     qtype=TrecMandarinQuery, qtype_map=QTYPE_MAP, encoding='GBK',
-    namespace='trec-mandarin', lang=None,
+    lang=None,
 )
 trec5_qrels = TrecQrels('trec-mandarin-5-qrels',
     source=trec5_qrels_file.gunzip(), defs=QREL_DEFS)
@@ -113,7 +113,7 @@ trec5_qrels = TrecQrels('trec-mandarin-5-qrels',
 trec6_queries = TrecQueries('trec-mandarin-6-queries',
     source=trec6_queries_file.gunzip(),
     qtype=TrecMandarinQuery, qtype_map=QTYPE_MAP, encoding='GBK',
-    namespace='trec-mandarin', lang=None,
+    lang=None,
 )
 trec6_qrels = TrecQrels('trec-mandarin-6-qrels',
     source=trec6_qrels_file.gunzip(), defs=QREL_DEFS)

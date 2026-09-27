@@ -89,3 +89,45 @@ class Benchmark(Node, Protocol):
 class Suite(Node, Protocol):
     """A named set of related Benchmarks."""
     benchmarks: list
+
+
+@runtime_checkable
+class Provider(Protocol):
+    """What joins a package to the graph. ``Graph`` touches a provider through
+    exactly these two members -- nothing else is load-bearing.
+
+    ``registry.ManifestProvider`` is one implementation of this (a big one:
+    registration, vocabulary declaration, a frozen manifest, generators) --
+    a convenient default for a provider with a static catalog to freeze, not
+    the contract itself. A provider can be as small as a ``name``, a
+    ``load()``, and a ``discover_edges()`` that yields nothing; a typical one
+    keeps a list of registered datasets internally, however it likes.
+    """
+    #: The namespace prefix this provider owns (``irds``, ``hf``, ...).
+    #: Every node it resolves is named ``{prefix}:...``.
+    prefix: str
+
+    def load(self, name: str) -> Node:
+        """Resolve one (already-qualified) name to a node. KeyError if this
+        provider has nothing by that name."""
+        ...
+
+    def discover_edges(self):
+        """This provider's whole current catalog, as RDF-ready
+        ``(subject, predicate, object)`` rows -- ``object`` wrapped in
+        ``base.Literal`` when it's a property value rather than another
+        node's name (see ``registry.row_triples``) -- a ``type`` row per node
+        plus one row per field/edge, the same shape a
+        manifest export uses. Never materializes a real node (``load()`` does
+        that); this is the cheap-to-read side of the graph -- listing,
+        traversal, validation -- that works without importing or downloading
+        anything a node itself would need.
+
+        Always does full discovery -- a live crawl, if that's what finding
+        everything takes (see ``hf``, which lists the Hub here). There is no
+        separate cheap/expensive mode: a provider that wants a fast default
+        should cache its own result and invalidate it on its own terms;
+        ``Graph`` caches its own call to this per provider so a query doesn't
+        repeat the work, but only for that ``Graph``'s lifetime.
+        """
+        ...

@@ -1,11 +1,17 @@
-"""``Provider``: a package's own registry.
+"""``ManifestProvider``: a package's own registry, and one implementation of
+``protocols.Provider``.
 
-A provider is the unit of decentralization. Each package that contributes
-nodes has one, declares it via an entry point whose *name* is the prefix it
-owns, and registers its nodes into it::
+``Graph`` requires nothing more of a provider than ``protocols.Provider``:
+a ``prefix``, ``load(name)``, and ``discover_edges()``. ``ManifestProvider``
+is the batteries-included way to satisfy that for a package with a static
+catalog worth freezing ahead of time -- registration, vocabulary declaration,
+generators, aliases, and a frozen manifest all come with it. A provider
+doesn't have to be one of these (see ``hf_provider.HfProvider``, which mixes
+this in but overrides ``discover_edges`` for a live crawl instead of a
+manifest), and a minimal third-party provider need not use it at all::
 
     # acme/__init__.py               [project.entry-points."ir_datasets.providers"]
-    acme = Provider('acme')             # acme = "acme:acme"
+    acme = ManifestProvider('acme')     # acme = "acme:acme"
 
     # acme/things.py
     from acme import acme
@@ -33,15 +39,49 @@ import sys
 from pathlib import Path
 
 from . import context
+from .base import Literal
 from .vocabulary import (
     check_kind, check_type, declare_kind, declare_type, is_structural,
 )
 
 PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 
+#: The predicate a legacy id -> qualified name mapping is reported under in
+#: ``discover_edges()`` -- ``Graph`` special-cases it into its own alias
+#: table rather than treating it as an ordinary node-to-node edge (it isn't
+#: declared through ``vocabulary.declare_kind`` the way a real edge kind is).
+ALIAS_KIND = 'irds:alias'
+
 
 class DuplicateNameError(LookupError):
     pass
+
+
+def row_triples(name, row):
+    """A manifest row (``freeze.row_for``'s shape, or a frozen row loaded from
+    disk) as RDF-ready ``(subject, predicate, object)`` triples: one ``type``
+    triple, then one triple per non-identity field -- repeated for each
+    element of a list-valued field (RDF's natural multi-valued-property
+    idiom), or a single JSON-string literal for a dict-valued one
+    (``samples``, ``defs``: display blobs, not graph structure). Every field
+    value is wrapped in ``base.Literal`` -- only a ``type`` object (another
+    node's declared type, not a property value) is left as a plain qualified
+    name. ``name``/``module`` are identity/implementation detail, never
+    triples. Shared by ``ManifestProvider.discover_edges`` and any provider
+    (e.g. ``hf``) that builds rows from live nodes instead of a frozen
+    manifest."""
+    if row.get('type'):
+        yield name, 'type', row['type']
+    for field, value in row.items():
+        if field in ('name', 'type', 'module'):
+            continue
+        if isinstance(value, list):
+            for item in value:
+                yield name, field, Literal(item)
+        elif isinstance(value, dict):
+            yield name, f'{field}_json', Literal(json.dumps(value, sort_keys=True))
+        else:
+            yield name, field, Literal(value)
 
 
 def _caller_module(depth=2):
@@ -52,7 +92,7 @@ def _caller_module(depth=2):
         return None
 
 
-class Provider:
+class ManifestProvider:
     def __init__(self, prefix, *, package=None, manifest_path=None):
         if not PREFIX.match(prefix or ''):
             raise ValueError(f'invalid provider prefix {prefix!r}')
@@ -67,7 +107,7 @@ class Provider:
         self.generators = []
         self.aliases = {}          # legacy id -> qualified name
         # Vocabulary this provider owns.
-        self.types = {}            # qualified type -> {'desc'}
+        self.types = {}            # qualified type -> {'desc', 'parent'}
         self.edge_kinds = {}       # qualified kind -> {'structural', 'desc'}
         self.defaultable_fields = set()
         # Edges this provider contributes: src -> kind -> [dst]; dst -> {(src, kind)}.
@@ -76,10 +116,9 @@ class Provider:
         self._manifest = None
         self._manifest_index = None
         self._bootstrapped = False
-        self._known_fn = None
 
     def __repr__(self):
-        return f'Provider({self.prefix!r})'
+        return f'{type(self).__name__}({self.prefix!r})'
 
     def qualify(self, name):
         """Apply this provider's prefix to a bare name; qualified names pass."""
@@ -91,18 +130,25 @@ class Provider:
 
     # -- vocabulary ---------------------------------------------------------
 
-    def node_type(self, name, *, desc=None):
+    def node_type(self, name, *, desc=None, parent=None):
         """Declare a node type this provider owns; returns the qualified type
         for a Node subclass to set as ``type``::
 
-            class Docs(Table):
-                type = irds.node_type('Docs')
+            class DocTable(Table):
+                type = irds.node_type('DocTable', parent=TABLE)
+
+        ``parent`` is another qualified type -- this provider's own, or
+        another provider's entirely (a third-party ``ext:MyTable`` may set
+        ``parent='irds:Table'``) -- making this one a subtype of it for
+        ``is_subtype``/``Graph.list(type=...)`` purposes. The type itself is
+        still owned (and only ever registerable) by this provider; ``parent``
+        is a graph relationship, not a transfer of ownership.
         """
         qualified = self.qualify(name)
         if not self.owns(qualified):
             raise ValueError(f'{self} cannot declare the type {name!r}')
-        self.types[qualified] = {'desc': desc}
-        return declare_type(qualified, owner=self.prefix, desc=desc)
+        self.types[qualified] = {'desc': desc, 'parent': parent}
+        return declare_type(qualified, owner=self.prefix, desc=desc, parent=parent)
 
     def edge_kind(self, name, *, structural, desc=None):
         """Declare an edge kind this provider owns. Structural kinds form the
@@ -270,7 +316,8 @@ class Provider:
             # A frozen provider's vocabulary is known without importing it.
             for qualified, entry in self._manifest.get('types', {}).items():
                 if self.owns(qualified):
-                    declare_type(qualified, owner=self.prefix, desc=entry.get('desc'))
+                    declare_type(qualified, owner=self.prefix, desc=entry.get('desc'),
+                                parent=entry.get('parent'))
             for qualified, entry in self._manifest.get('edge_kinds', {}).items():
                 if self.owns(qualified):
                     declare_kind(qualified, structural=entry['structural'],
@@ -293,28 +340,76 @@ class Provider:
     def names(self):
         return set(self.nodes) | set(self.manifest()['nodes'])
 
-    def register_known(self, fn, module=None):
-        """Register a callable returning this provider's known-but-unresolved
-        names -- for a dynamic provider with no manifest, a live/expensive way
-        to advertise what's out there without resolving any of it. Optional; a
-        provider with nothing to add here just has no known_names(). Not
-        merged into names()/__contains__ -- see Graph.list(discover=...)."""
-        self._known_fn = fn
-        return fn
-
-    def known_names(self):
-        """Qualified names from register_known's callable, or empty if unset."""
-        if self._known_fn is None:
-            return set()
-        return {self.qualify(n) for n in self._known_fn()}
-
     def type_of(self, name):
         node = self.nodes.get(name)
         if node is not None:
             return node.type
         return self.frozen(name).get('type')
 
+    # -- protocols.Provider ---------------------------------------------------
+
+    def discover_edges(self):
+        """This provider's whole current catalog, as RDF-ready
+        ``(subject, predicate, object)`` triples (``object`` wrapped in
+        ``base.Literal`` when it's a property value rather than another
+        node's name -- see ``row_triples``) -- live-registered nodes (not yet
+        frozen) merged with whatever the
+        frozen manifest already has, plus every edge either contributes.
+        Never triggers a generator expansion (a parametric family is a rule,
+        not a catalog entry -- see ``freeze.build_manifest``'s own
+        ``generated`` skip). Bootstraps first (imports every module) if
+        nothing has been frozen yet, so an editable checkout with no
+        ``manifest.json`` still reports its full catalog; a subclass with a
+        genuinely live catalog (``hf_provider.HfProvider``) overrides this
+        entirely instead of relying on a manifest at all.
+        """
+        from .freeze import row_for
+        self._bootstrap()
+        seen = set()
+        for name, node in self.nodes.items():
+            if name in self.generated:
+                continue
+            yield from row_triples(name, row_for(node))
+            seen.add(name)
+        for name, row in self.manifest()['nodes'].items():
+            if name not in seen:
+                yield from row_triples(name, row)
+        fwd, _ = self.indexes()
+        for src, kinds in fwd.items():
+            for kind, dsts in kinds.items():
+                for dst in dsts:
+                    yield src, kind, dst
+        types = {**self.manifest()['types'], **self.types}
+        for qualified, entry in types.items():
+            if self.owns(qualified) and entry.get('parent'):
+                yield qualified, 'subClassOf', entry['parent']
+        for legacy, target in self.aliases.items():
+            yield legacy, ALIAS_KIND, target
+        # Enumerable generators (every param has a closed values= set, e.g.
+        # CLIRMatrix's languages/splits) report a type row per name they
+        # could produce, plus whatever structural edges the generator
+        # declared (see Generator.edges) -- e.g. a Benchmark generator
+        # naming its docs/queries/qrels facets, or a Table generator naming
+        # the Resource it's parsed from. All by name-template substitution,
+        # cheap (no resolution, no download, no network) -- so a listing
+        # sees the whole family's real shape without visiting each member
+        # first. A non-enumerable one (hf's single open-ended pattern= param)
+        # has no finite cross product to report here; that provider
+        # discovers its own names some other way (see
+        # HfProvider.discover_edges).
+        for generator in self.generators:
+            if generator.enumerable:
+                for name in generator.enumerate():
+                    yield name, 'type', generator.node_type
+                yield from generator.enumerate_edges()
+
     # -- lookup -------------------------------------------------------------
+
+    def load(self, name):
+        """Resolve one of this provider's (already-qualified) names to a
+        node -- the ``protocols.Provider`` entry point; ``__getitem__``
+        additionally accepts a bare, unqualified name."""
+        return self[name]
 
     def __getitem__(self, name):
         """Resolve one of this provider's nodes by (qualified or bare) name."""

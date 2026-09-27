@@ -94,7 +94,7 @@ def extract_qid_pid(stream):
         yield qid + b'\t' + did + b'\n'
 
 
-with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
+with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
     collectionandqueries_file = Resource('msmarco-passage-collectionandqueries.tar.gz',
@@ -117,12 +117,12 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
         md5='733fb9fe12d93e497f7289409316eccf',
         size=10_589_532,
     )
-    train_docpairs_file = Resource('msmarco-passage-train-docpairs.gz',
+    train_docpairs_file = Resource('msmarco-passage-train-docpairs.tsv.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz', headers=_MS_HEADERS)],
         md5='215a5204288820672f5e9451d9e202c5',
         size=2_633_557_579,
     )
-    train_docpairs_v2_file = Resource('msmarco-passage-train-docpairs-v2.gz',
+    train_docpairs_v2_file = Resource('msmarco-passage-train-docpairs-v2.tsv.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz', headers=_MS_HEADERS)],
         md5='219083e80a0a751c08b968c2f31a4e0b',
         size=1_841_693_309,
@@ -156,12 +156,12 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
         md5='2f4be390198da108f6845c822e5ada14',
         size=187_092,
     )
-    trec_dl_2019_queries_file = Resource('trec-dl-2019-queries.gz',
+    trec_dl_2019_queries_file = Resource('trec-dl-2019-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2019-queries.tsv.gz'],
         md5='eda71eccbe4d251af83150abe065368c',
         size=4_276,
     )
-    trec_dl_2019_scoreddocs_file = Resource('trec-dl-2019-passage-scoreddocs.gz',
+    trec_dl_2019_scoreddocs_file = Resource('trec-dl-2019-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2019-top1000.tsv.gz'],
         md5='ec9e012746aa9763c7ff10b3336a3ce1',
         size=26_634_062,
@@ -171,12 +171,12 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
         md5='0355ccee7509ac0463e8278186cdd8d1',
         size=218_617,
     )
-    trec_dl_2020_queries_file = Resource('trec-dl-2020-queries.gz',
+    trec_dl_2020_queries_file = Resource('trec-dl-2020-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2020-queries.tsv.gz'],
         md5='00a406fb0d14ed3752d70d1e4eb98600',
         size=4_131,
     )
-    trec_dl_2020_scoreddocs_file = Resource('trec-dl-2020-passage-scoreddocs.gz',
+    trec_dl_2020_scoreddocs_file = Resource('trec-dl-2020-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2020-top1000.tsv.gz'],
         md5='aa6fbc51d66bd1dc745964c0e140a727',
         size=26_230_218,
@@ -190,7 +190,7 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
     # same as v1, every tar member feeding a Tsv* format is materialized to a
     # real file with .cache() first; TrecQrels/TrecScoredDocs read through
     # codecs.getreader instead and don't need it.
-    docs = TsvDocs('msmarco-passage-docs',
+    docs = TsvDocs('msmarco-passage',
         source=collectionandqueries_file.member('collection.tsv').pipe(fix_encoding).cache(BASE / 'collection.tsv'),
         docstore_size_hint=14_373_971_970,
         count_hint=8_841_823,
@@ -340,7 +340,6 @@ irds.register(
 # Aliases (old ir-datasets ID mapping)
 # -----------------------------------------
 irds.alias({
-    'msmarco-passage': 'msmarco-passage-docs',
     'msmarco-passage/train': 'msmarco-passage-train',
     'msmarco-passage/train/judged': 'msmarco-passage-train-judged',
     'msmarco-passage/train/triples-v2': 'msmarco-passage-train-triples-v2',

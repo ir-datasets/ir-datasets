@@ -4,8 +4,8 @@ third-party provider's build on.
 
 This module knows nothing about datasets. It declares no vocabulary of its
 own -- no node type, no edge kind -- because that's a provider's job (see
-``registry.Provider.node_type``/``edge_kind``). ``nodes.py`` is where the
-dataset vocabulary actually gets declared, on the ``irds`` provider.
+``registry.ManifestProvider.node_type``/``edge_kind``). ``nodes.py`` is where
+the dataset vocabulary actually gets declared, on the ``irds`` provider.
 
 A subclass participates in the graph through four optional hooks on ``Node``,
 all derived from its own constructor arguments -- nothing is discovered by
@@ -22,11 +22,38 @@ carry: "how do I cite this" is not specific to any one node type. It is plain
 text here; a richer citation model (papers as nodes, citations as edges) is
 future work -- see the README.
 """
+import itertools
 import re
 from typing import NamedTuple, Union
 
 from .context import default
 from .vocabulary import is_structural
+
+
+class Literal:
+    """Marks a triple's object as literal data (a string, number, or JSON
+    blob) rather than another node's qualified name -- the only thing
+    ``discover_edges()``'s ``(subject, predicate, object)`` triples need to
+    say to distinguish "this is an edge" from "this is a property value";
+    everything else about the triple (which predicates are edge kinds vs.
+    field names) is already known from the vocabulary. Named after RDF's own
+    "literal" (a value, not a resource reference) -- unrelated to Python's
+    ``typing.Literal``, which is a static-typing annotation, not a runtime
+    value wrapper; don't confuse the two.
+    """
+    __slots__ = ('value',)
+
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return f'Literal({self.value!r})'
+
+    def __eq__(self, other):
+        return isinstance(other, Literal) and self.value == other.value
+
+    def __hash__(self):
+        return hash(('ir_datasets.v2.Literal', self.value))
 
 
 class Edge(NamedTuple):
@@ -144,7 +171,7 @@ class Generator:
     """
 
     def __init__(self, template, *, params, type, resolver, constraints=(),
-                 enumerable=True, defined_in=None, **meta):
+                 enumerable=True, edges=(), defined_in=None, **meta):
         self.template = template
         self.params = params
         self.node_type = type
@@ -154,6 +181,15 @@ class Generator:
         self.resolver = resolver
         self.constraints = list(constraints)
         self.enumerable = enumerable
+        #: [(kind, target_template), ...] -- this generator's products'
+        #: structural edges, declared the same way `template` names the
+        #: product itself: a format string over the same params, not a real
+        #: lookup. Lets `discover_edges()` report a product's dependencies
+        #: (e.g. a Benchmark generator's `docs`/`queries`/`qrels` facets)
+        #: for every enumerated name without resolving it -- descriptive
+        #: metadata only, like `type`; never checked against what
+        #: `resolve_node()` actually builds.
+        self.edges = list(edges)
         self.meta = meta
         # Assigned by provider.register_generator.
         self.provider = None
@@ -195,6 +231,50 @@ class Generator:
         self.validate(**params)
         return self.resolver(**params)
 
+    def enumerate_params(self):
+        """Every valid params dict this generator's closed value sets
+        produce -- the cross product of every param's ``values``,
+        constraint-filtered. Only meaningful when every param has one (an
+        open-ended ``pattern=`` param, like ``hf``'s, has no finite cross
+        product -- that's exactly why ``hf`` declares ``enumerable=False``);
+        a caller is expected to only ever call this when ``enumerable`` is
+        true, so a mismatch here is a real bug, not a routine case to
+        degrade gracefully from."""
+        missing = [k for k, p in self.params.items() if not p.values]
+        if missing:
+            raise ValueError(
+                f'{self!r} cannot be enumerated: {", ".join(missing)} has no '
+                f'closed values= set')
+        keys = list(self.params)
+        for combo in itertools.product(*(self.params[k].values for k in keys)):
+            params = dict(zip(keys, combo))
+            if all(c(**params) for c in self.constraints):
+                yield params
+
+    def _qualify(self, name):
+        return self.provider.qualify(name) if self.provider else name
+
+    def enumerate(self):
+        """Every (qualified) name this generator can produce -- see
+        ``enumerate_params``."""
+        for params in self.enumerate_params():
+            yield self._qualify(self.template.format(**params))
+
+    def enumerate_edges(self):
+        """``(name, kind, target)`` for every name this generator can produce
+        and every edge declared in ``edges=`` -- both this generator's own
+        template and each edge's target template are formatted with the same
+        params, so a Benchmark generator's
+        ``edges=[('irds:docs', 'family-{lang}-docs')]`` reports the real
+        target name without resolving anything. ``target`` is always another
+        node's (qualified) name, never wrapped in ``Literal`` -- matching the
+        shape ``discover_edges()`` uses everywhere else."""
+        for params in self.enumerate_params():
+            name = self._qualify(self.template.format(**params))
+            for kind, target_template in self.edges:
+                yield (name, self._qualify(kind),
+                      self._qualify(target_template.format(**params)))
+
     def metadata(self):
         resolver = getattr(self.resolver, '__qualname__', repr(self.resolver))
         return {'name_template': self.template, 'kind': 'generator',
@@ -203,6 +283,7 @@ class Generator:
                 'params': {k: {'values': list(v.values) if v.values else None,
                                'pattern': v.pattern, 'desc': v.desc}
                            for k, v in self.params.items()},
+                'edges': [{'kind': k, 'target_template': t} for k, t in self.edges],
                 **self.meta}
 
     def __repr__(self):

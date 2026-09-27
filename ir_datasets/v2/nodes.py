@@ -10,11 +10,16 @@ Nodes are single-type. A benchmark does not *become* docs by wearing a second
 type-hat; it has a ``docs`` edge pointing at a docs table. Facets are therefore
 always unambiguous, and a shared corpus is shared by reference.
 
-Node kinds defined here -- exactly four, matching the paper's scope:
+Node kinds defined here -- nine, matching the paper's scope:
 
-    Resource        bytes + where to get them (+ integrity/access metadata)
+    Resource    bytes + where to get them (+ integrity/access metadata)
     Table       one kind of record (docs/queries/qrels/scoreddocs/docpairs),
-               parsed from a source; ``.entity`` distinguishes which kind
+               parsed from a source; ``.entity`` names which kind
+      DocTable, QueryTable, QrelTable, RunTable, DocPairTable
+                   -- Table's five per-entity subtypes (``TABLE_TYPES``); each
+                   is its own declared graph type (a subtype of ``Table``, not
+                   just ``.entity`` alone), so a type-filtered lookup can ask
+                   for the specific kind or the whole family
     Benchmark   docs + queries + qrels (etc.) bundled into an evaluable task,
                plus flat metadata (``citation``, ``metrics``)
     Suite       a named, structural set of Benchmarks (e.g. BEIR)
@@ -64,17 +69,38 @@ def _deprecated(old, new):
 
 ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs')
 
-#: Node types. Qualified (``irds:Table``) because the provider declares them --
+#: Node types. Qualified (``irds:DocTable``) because the provider declares them --
 #: capitalized, RDF/OWL-convention-style, matching the Python class name
 #: (a type is class-like); edge kinds below stay lowercase (property-like).
-#: Table has exactly one graph type regardless of entity -- ``.entity`` is a
-#: plain Python attribute (used for format-specific behavior), not a separate
-#: declared type, so the graph's type vocabulary stays at exactly four: Resource,
-#: Table, Benchmark, Suite.
+#: ``TABLE`` is the shared parent of the five per-entity table types declared
+#: below it (``irds:DocTable``, ``irds:QueryTable``, ...) rather than every
+#: Table subclass sharing it *as their own* type -- each entity is its own
+#: first-class type (``list(type='irds:QrelTable')`` finds exactly qrels
+#: tables), while ``list(type='irds:Table')`` still finds all of them, by
+#: walking the declared ``parent`` chain (see ``vocabulary.is_subtype``). This
+#: also keeps the hierarchy open to extension: a third-party provider may
+#: declare its own ``ext:MyTable`` with ``parent=TABLE`` (a new entity kind
+#: this module never enumerated) or register a bare ``Table`` instance
+#: directly under the generic ``irds:Table`` type.
 RESOURCE = irds.node_type('Resource', desc='bytes (a file, or a directory tree), and where to get them')
-TABLE = irds.node_type('Table', desc='a structured set of records (docs/queries/qrels/...)')
+TABLE = irds.node_type('Table', desc='a structured set of records (docs/queries/qrels/...); '
+                                     'the shared parent of the per-entity table types below')
 BENCHMARK = irds.node_type('Benchmark', desc='an evaluable task: tables + citation + metrics')
 SUITE = irds.node_type('Suite', desc='a named set of related benchmarks (e.g. BEIR)')
+
+#: One declared node type per entity, each a subtype of ``TABLE`` -- what
+#: ``DocTable``/``QueryTable``/``QrelTable``/``RunTable``/``DocPairTable``
+#: (and their format subclasses, e.g. ``TsvDocs``) set as their class ``type``.
+#: Keyed by the same entity strings as ``ENTITIES`` so ``TABLE_TYPES[entity]``
+#: is the one place that mapping lives (``DerivedTable`` also uses it, to pick
+#: its type from a runtime ``entity=`` argument rather than a class attribute).
+TABLE_TYPES = {
+    'docs': irds.node_type('DocTable', parent=TABLE, desc='A Table representing a collection of documents (a corpus). Each row has a doc_id field.'),
+    'queries': irds.node_type('QueryTable', parent=TABLE, desc='A Table representing a collection of queries (topis). Each row has a query_id field.'),
+    'qrels': irds.node_type('QrelTable', parent=TABLE, desc='A Table representing a collection of relevance assessments (qrels). Each row has query_id, doc_id, and relevnace fields.'),
+    'scoreddocs': irds.node_type('RunTable', parent=TABLE, desc='A Table representing a collection of retrieved and scored documents for a set of queries (a run). Each row has query_id, doc_id, and score fields.'),
+    'docpairs': irds.node_type('DocPairTable', parent=TABLE, desc='A Table representing paired documents for a query (e.g. positive/negative pairs for training). Each row has query_id, doc_id_a, and doc_id_b fields.'),
+}
 
 #: Structural edges form a DAG and are what builds, caching and verification
 #: follow. Keeping them separate from informational edges is what stops a
@@ -94,19 +120,18 @@ DERIVED_FROM = irds.edge_kind('derived_from', structural=True,
                               desc='what a node is built from: bytes it is '
                                    'parsed from, another table it is filtered '
                                    'from, or a node its filter took ids from')
-SUITE_BENCHMARK = irds.edge_kind('benchmark', structural=True, desc='suite -> a benchmark it contains')
-STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_BENCHMARK)
-
-#: Informational edges may cycle and never affect builds. Citations-as-papers
-#: and metrics-as-measures are future work; for now they're plain metadata on
-#: Benchmark/Suite (see ``base.Node.citation`` and ``Benchmark.metrics``).
-#: No informational kinds declared yet (``same_corpus_as`` was dropped --
-#: unused, no real dataset needed it); the tuple stays as the extension point.
-INFORMATIONAL_EDGES = ()
+#: Suite membership. Not ``derived_from``: like a Benchmark (a bundle of facet
+#: edges), a Suite is a bundle, not a derived thing. One kind whether the
+#: member is a Benchmark or a nested Suite (e.g. BEIR nests CQADupStack) --
+#: the member's own ``.type`` already says which, so a second kind would only
+#: duplicate it.
+SUITE_MEMBER = irds.edge_kind('member', structural=True,
+                              desc='suite -> a benchmark or nested suite it contains')
+STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
 #: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
 #: data (``name``, ``source``, ``md5``, ``defs``, ...).
-DEFAULTABLE = irds.defaultable('dua', 'lang', 'namespace', 'deprecated')
+DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated')
 
 
 # ── Attestation of tables ────────────────────────────────────────────────────
@@ -163,14 +188,15 @@ def _cache_base(node):
     """The ``<home>/<provider>/<qualified name>`` path a node's own cache
     artifacts are rooted at (see ``sources.default_cache_path``) -- shared by
     ``Resource.cache_path`` (used directly, as the file itself) and
-    ``Docs.docstore_path`` (used as a base, with its own suffix appended, so
+    ``DocTable.docstore_path`` (used as a base, with its own suffix appended, so
     a docstore never collides with its source Resource's own bytes even when
     both happen to be registered under the same name). Lazy, not cached at
     construction: ``provider``/``qualified_name`` aren't set until the node
-    is registered (``Provider.register()``). An ad hoc node that's never
-    registered (a local test fixture, a one-off script -- see
-    ``registry.Provider``'s own docstring on that being legitimate) falls
-    back to a fixed ``_local`` bucket instead of a real provider's directory.
+    is registered (``ManifestProvider.register()``). An ad hoc node that's
+    never registered (a local test fixture, a one-off script -- see
+    ``registry.ManifestProvider``'s own docstring on that being legitimate)
+    falls back to a fixed ``_local`` bucket instead of a real provider's
+    directory.
     """
     if node.provider is None:
         return default_cache_path(None, node.name)
@@ -246,7 +272,7 @@ class Resource(Node, Readable):
     def cache_path(self):
         """Where this Resource's bytes live -- see ``_cache_base``, used
         directly (this node *is* the file, unlike a derived artifact such as
-        ``Docs.docstore_path``, which appends its own suffix)."""
+        ``DocTable.docstore_path``, which appends its own suffix)."""
         return _cache_base(self)
 
     def _compute_hashes(self, algos):
@@ -390,6 +416,20 @@ class GitRepo(Directory):
         super().__init__(name, **meta)
         self.metadata['repo'] = repo
         self.metadata['commit'] = commit
+        try:
+            self.metadata['url'] = self.url()
+        except NotImplementedError:
+            pass  # a host that hasn't implemented url() yet -- repo/commit still identify it
+
+    def url(self):
+        """A human-visitable URL for this exact repo -- what you'd paste into
+        a browser to look at it, not necessarily how ``path()`` actually
+        fetches it (see class docstring). ``self.repo`` alone (e.g.
+        "neuclir/csl") isn't enough to tell one host's repos apart from
+        another's, so this -- not ``repo`` -- is what a caller (the graph
+        export, a UI) should use to distinguish/link to the repo. Override
+        per host; the default means "no known URL for this host."""
+        raise NotImplementedError
 
     def _resolve_live_commit(self):
         """The current commit of ``self.repo``'s default branch -- used by
@@ -416,12 +456,20 @@ class GitRepo(Directory):
 # ── Tables ───────────────────────────────────────────────────────────────────
 
 class Table(Node):
-    """The base type of docs/queries/qrels/scoreddocs/docpairs.
+    """The abstract base of the per-entity table types: ``DocTable``,
+    ``QueryTable``, ``QrelTable``, ``RunTable``, ``DocPairTable``.
 
     A table is a named set of homogeneous records: a schema (the NamedTuple in
     ``record_type``), rows, and usually a primary key (``doc_id``, ``query_id``).
-    Subclasses fix *which* kind of record via ``entity``; the format subclasses
-    in ``formats.py`` fix how bytes become those records.
+    Subclasses fix *which* kind of record via ``entity`` (and, correspondingly,
+    a more specific ``type`` -- see ``TABLE_TYPES``); the format subclasses in
+    ``formats.py`` fix how bytes become those records. ``Table`` itself carries
+    the generic ``TABLE`` type (``irds:Table``) -- every concrete entity type
+    below is declared as a *subtype* of it (``parent=TABLE``), so a bare
+    ``Table`` can still be constructed and registered directly (for a record
+    kind that doesn't fit ``ENTITIES``, or in a third-party extension) and is
+    found by ``list(type='irds:Table')`` right alongside every ``DocTable``/
+    ``QueryTable``/... -- see ``vocabulary.is_subtype``.
 
     Records come either from a ``source`` + ``parser``, or from a prebuilt
     ``handler`` (which is how a derived table wraps a filtered view of another).
@@ -429,7 +477,7 @@ class Table(Node):
     v1 offered this shape behind a ``_BetaPythonApi*`` wrapper around a handler,
     with ``docs_iter()``/``docs_store()`` as the default. Here it is the
     default, and it needs no wrapper at all: ``collection.docs`` already returns
-    the Docs *node*, so the node simply is the accessor::
+    the DocTable *node*, so the node simply is the accessor::
 
         len(collection.docs)                # count
         for doc in collection.docs: ...     # iterate
@@ -455,6 +503,7 @@ class Table(Node):
     * ``metadata()`` is a method returning the frozen manifest row, a superset of
       what v1's ``.metadata`` property exposed.
     """
+    type = TABLE
     entity = None  # 'docs' | 'queries' | 'qrels' | 'scoreddocs' | 'docpairs'
 
     def __getattr__(self, attr):
@@ -471,14 +520,13 @@ class Table(Node):
         raise AttributeError(attr)
 
     def __init__(self, name, *, source=None, parser=None, handler=None,
-                 lang=None, namespace=None, defs=None, count_hint=None,
+                 lang=None, defs=None, count_hint=None,
                  docstore_size_hint=None, **meta):
         if (source is None) == (handler is None):
             raise ValueError('pass exactly one of source= or handler=')
         self.source = source
         self.parser = parser
         self.lang = lang = default('lang', lang)
-        self.namespace = namespace = default('namespace', namespace)
         self.defs = defs
         self._count_hint = count_hint
         self.docstore_size_hint = docstore_size_hint
@@ -495,7 +543,6 @@ class Table(Node):
             metadata={
                 'format': repr(parser) if parser is not None else None,
                 'lang': lang,
-                'namespace': namespace,
                 'defs': ({str(k): v for k, v in defs.items()} if defs else None),
                 **meta.pop('metadata', {}),
             },
@@ -705,8 +752,8 @@ class _MemoryIndex:
                 yield self._mapping[key]
 
 
-class Docs(Table):
-    type = TABLE
+class DocTable(Table):
+    type = TABLE_TYPES['docs']
     entity = 'docs'
 
     def __init__(self, name, *, docstore='auto', **kwargs):
@@ -765,8 +812,8 @@ class Docs(Table):
         return self.count()
 
 
-class Queries(Table):
-    type = TABLE
+class QueryTable(Table):
+    type = TABLE_TYPES['queries']
     entity = 'queries'
 
     # -- legacy API (deprecated) ---------------------------------------------
@@ -784,8 +831,8 @@ class Queries(Table):
         return self.count()
 
 
-class Qrels(Table):
-    type = TABLE
+class QrelTable(Table):
+    type = TABLE_TYPES['qrels']
     entity = 'qrels'
 
     # -- legacy API (deprecated) ---------------------------------------------
@@ -812,8 +859,8 @@ class Qrels(Table):
         return qrels_dict(self.handler)
 
 
-class ScoredDocs(Table):
-    type = TABLE
+class RunTable(Table):
+    type = TABLE_TYPES['scoreddocs']
     entity = 'scoreddocs'
 
     # -- legacy API (deprecated) ---------------------------------------------
@@ -823,8 +870,8 @@ class ScoredDocs(Table):
         return self.handler.scoreddocs_iter()
 
 
-class DocPairs(Table):
-    type = TABLE
+class DocPairTable(Table):
+    type = TABLE_TYPES['docpairs']
     entity = 'docpairs'
 
     # -- legacy API (deprecated) ---------------------------------------------
@@ -1089,19 +1136,48 @@ class Suite(Node):
     Membership is structural: what's in a suite is a fact about the suite's
     identity, fixed at construction, not a curated list that might drift. A
     benchmark may belong to more than one suite -- nothing here prevents it,
-    and ``graph.referrers(name, kind=SUITE_BENCHMARK)`` answers "which suites
-    contain this benchmark?" without either side needing a back-reference.
+    and ``graph.referrers(name, kind=SUITE_MEMBER)`` answers "which suites
+    directly contain this benchmark?" without either side needing a
+    back-reference.
+
+    A suite may also nest other suites (``suites=``) -- e.g. BEIR nests a
+    ``beir-cqadupstack`` suite (its 12 StackExchange sub-forums) rather than
+    flattening all 12 into BEIR's own direct member list. ``.benchmarks``
+    still returns every benchmark the suite contains *transitively*, so
+    existing code that just wants "all benchmarks in this suite" doesn't need
+    to know nesting exists; ``.direct_benchmarks``/``.suites`` expose the
+    unflattened structure for anything that cares about it (e.g. a site
+    wanting to render CQADupStack as its own collapsible group). Structural
+    edges are ``SUITE_MEMBER`` to direct members only -- a benchmark reached
+    via a nested suite is not redundantly double-edged.
 
     Unlike Benchmark, a Suite has no lazy facet resolution -- membership is
-    fixed at construction, so ``structural_edges()`` is all there is.
+    fixed at construction (a nested suite's own membership was already fixed
+    at *its* construction), so ``structural_edges()`` is all there is.
     """
     type = SUITE
 
-    def __init__(self, name, *, benchmarks, **meta):
-        self.benchmarks = list(benchmarks)
+    def __init__(self, name, *, benchmarks=(), suites=(), **meta):
+        self.direct_benchmarks = list(benchmarks)
+        self.suites = list(suites)
         super().__init__(name, **meta)
 
+    @property
+    def benchmarks(self):
+        """Every benchmark this suite contains, transitively through any
+        nested suites. Recomputed on each access rather than cached -- cheap
+        (list concatenation over what's already fixed), and avoids the
+        question of whose construction time it would otherwise be frozen at.
+        A nested suite given by bare name (not an object) can't be expanded
+        here without a graph, so it contributes nothing; its edge still exists.
+        """
+        result = list(self.direct_benchmarks)
+        for suite in self.suites:
+            if isinstance(suite, Suite):
+                result.extend(suite.benchmarks)
+        return result
+
     def structural_edges(self):
-        return [Edge(SUITE_BENCHMARK, b) for b in self.benchmarks]
+        return [Edge(SUITE_MEMBER, m) for m in (*self.direct_benchmarks, *self.suites)]
 
 

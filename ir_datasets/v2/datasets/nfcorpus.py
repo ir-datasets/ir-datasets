@@ -37,7 +37,7 @@ from ir_datasets.formats import GenericQuery
 
 import ir_datasets
 from ir_datasets.v2 import (
-    Benchmark, Filter, Parser, Queries, Resource, Source, TrecQrels, TsvDocs,
+    Benchmark, Filter, Parser, QueryTable, Resource, Source, TrecQrels, TsvDocs,
     TsvQueries, ids_from_lines, irds,
 )
 
@@ -139,7 +139,7 @@ with irds.defaults(lang='en'):
             BASE / _split / 'queries.titles.tsv')
         all_member = main_file.member(f'nfcorpus/{_split}.all.queries').cache(
             BASE / _split / 'queries.all.tsv')
-        queries = Queries(f'nfcorpus-{_split}-queries',
+        queries = QueryTable(f'nfcorpus-{_split}-queries',
             source=[title_member, all_member],
             parser=_ZipQueriesParser(NfCorpusQuery),
         )
@@ -170,7 +170,7 @@ with irds.defaults(lang='en'):
             BASE / _split / 'video' / 'queries.titles.tsv')
         vid_desc_member = main_file.member(f'nfcorpus/{_split}.vid-desc.queries').cache(
             BASE / _split / 'video' / 'queries.desc.tsv')
-        video_queries = Queries(f'nfcorpus-{_split}-video-queries',
+        video_queries = QueryTable(f'nfcorpus-{_split}-video-queries',
             source=[vid_title_member, vid_desc_member],
             parser=_ZipQueriesParser(NfCorpusVideoQuery),
         )

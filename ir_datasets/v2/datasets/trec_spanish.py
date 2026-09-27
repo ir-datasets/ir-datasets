@@ -20,7 +20,7 @@ from ir_datasets.datasets.trec_spanish import (
     TrecSpanishTranslateQueries as _V1TrecSpanishTranslateQueries,
 )
 
-from ir_datasets.v2 import Benchmark, Parser, Qrels, Queries, Resource, Source, TrecDocs, TrecQrels, irds
+from ir_datasets.v2 import Benchmark, Parser, QrelTable, QueryTable, Resource, Source, TrecDocs, TrecQrels, irds
 from ir_datasets.v2.formats import _v1
 
 DATA_ACCESS = (
@@ -63,7 +63,7 @@ class _TrecSpanishQueriesParser(Parser):
 
     def build(self, source, node):
         inner = _v1.TrecQueries(source, qtype=self.inner_qtype, qtype_map=self.qtype_map,
-                                encoding='ISO-8859-1', namespace=node.namespace, lang=node.lang)
+                                encoding='ISO-8859-1', lang=node.lang)
         return _V1TrecSpanishTranslateQueries(inner, self.target_qtype)
 
 
@@ -100,24 +100,24 @@ docs = TrecDocs('trec-spanish-docs',
     source=docs_file,
     encoding='ISO-8859-1',
     path_globs=['**/afp_text/af*', '**/infosel_data/ism_*'],
-    namespace='trec-spanish', lang='es',
+    lang='es',
     count_hint=120_605,
 )
 
 # Query text mixes Spanish and English fields, so no single lang applies --
 # same reasoning as trec_mandarin.py.
-trec3_queries = Queries('trec-spanish-3-queries',
+trec3_queries = QueryTable('trec-spanish-3-queries',
     source=trec3_queries_file.gunzip(),
     parser=_TrecSpanishQueriesParser(TrecQuery, QTYPE_MAP_3, TrecSpanish3Query),
-    namespace='trec-spanish', lang=None,
+    lang=None,
 )
 trec3_qrels = TrecQrels('trec-spanish-3-qrels',
     source=trec3_qrels_file.gunzip(), defs=QREL_DEFS)
 
-trec4_queries = Queries('trec-spanish-4-queries',
+trec4_queries = QueryTable('trec-spanish-4-queries',
     source=trec4_queries_file.gunzip(),
     parser=_TrecSpanishQueriesParser(TrecDescOnlyQuery, QTYPE_MAP_4, TrecSpanish4Query),
-    namespace='trec-spanish', lang=None,
+    lang=None,
 )
 trec4_qrels = TrecQrels('trec-spanish-4-qrels',
     source=trec4_qrels_file.gunzip(), defs=QREL_DEFS)

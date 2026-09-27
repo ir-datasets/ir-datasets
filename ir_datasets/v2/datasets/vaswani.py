@@ -20,7 +20,7 @@ from ir_datasets.datasets.vaswani import (
     VaswaniQueries as _V1VaswaniQueries,
 )
 
-from ir_datasets.v2 import Benchmark, Docs, Parser, Qrels, Queries, Resource, Source, irds
+from ir_datasets.v2 import Benchmark, DocTable, Parser, QrelTable, QueryTable, Resource, Source, irds
 
 QREL_DEFS = {
     1: 'Relevant',
@@ -52,7 +52,7 @@ class _VaswaniQrelsParser(Parser):
 
 # Files
 # -----------------------------------------
-main_file = Resource('vaswani-main.tar.gz',
+main_file = Resource('vaswani.tar.gz',
     sources=['http://ir.dcs.gla.ac.uk/resources/test_collections/npl/npl.tar.gz', Source.irds()],
     md5='23e5607081191b153738e81fbd834680',
     size=2_125_168,
@@ -60,18 +60,18 @@ main_file = Resource('vaswani-main.tar.gz',
 
 # Tables
 # -----------------------------------------
-docs = Docs('vaswani-docs',
+docs = DocTable('vaswani-docs',
     source=main_file.member('doc-text').cache(BASE / 'docs.txt'),
     parser=_VaswaniDocsParser(),
-    namespace='vaswani', lang='en',
+    lang='en',
     count_hint=11_429,
 )
-queries = Queries('vaswani-queries',
+queries = QueryTable('vaswani-queries',
     source=main_file.member('query-text').cache(BASE / 'queries.txt'),
     parser=_VaswaniQueriesParser(),
-    namespace='vaswani', lang='en',
+    lang='en',
 )
-qrels = Qrels('vaswani-qrels',
+qrels = QrelTable('vaswani-qrels',
     source=main_file.member('rlv-ass').cache(BASE / 'qrels.txt'),
     parser=_VaswaniQrelsParser(),
     defs=QREL_DEFS,

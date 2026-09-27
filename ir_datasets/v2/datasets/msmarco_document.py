@@ -8,7 +8,7 @@ TREC-DL queries without a corpus prefix specifically anticipating this:
 different docs/qrels/scoreddocs per corpus)". This is that second family --
 ``trec_dl_2019_queries``/``trec_dl_2020_queries`` below are the *same Python
 objects* imported from that module, not re-declared, so the graph shows one
-Queries table referenced by two independent Benchmarks in two different
+QueryTable node referenced by two independent Benchmarks in two different
 files. (v1 agrees: its download config points both families' TREC-DL query
 URLs at the identical bytes -- same URL, same md5.)
 
@@ -34,7 +34,7 @@ own noted gaps):
 from ir_datasets.datasets.msmarco_document import MsMarcoDocument, MsMarcoTrecDocs
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 
-from ir_datasets.v2 import Benchmark, Docs, Filter, Qrels, Resource, ScoredDocs, TrecQrels, TrecScoredDocs, TsvQueries, irds
+from ir_datasets.v2 import Benchmark, DocTable, Filter, QrelTable, Resource, RunTable, TrecQrels, TrecScoredDocs, TsvQueries, irds
 from ir_datasets.v2.datasets.msmarco_passage import DUA, MEASURES, TREC_DL_MEASURES, trec_dl_2019_queries, trec_dl_2020_queries
 from ir_datasets.v2.formats import Parser
 
@@ -87,20 +87,20 @@ class _MsMarcoDocsParser(Parser):
         return _MsMarcoDocs(source, node.docstore_path)
 
 
-with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
+with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
-    docs_file = Resource('msmarco-document-docs.gz',
+    docs_file = Resource('msmarco-document-docs.trec.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docs.trec.gz'],
         md5='d4863e4f342982b51b9a8fc668b2d0c0',
         size=8_501_799_926,
     )
-    train_queries_file = Resource('msmarco-document-train-queries.gz',
+    train_queries_file = Resource('msmarco-document-train-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctrain-queries.tsv.gz'],
         md5='4086d31a9cf2d7b69c4932609058111d',
         size=6_457_962,
     )
-    train_qrels_file = Resource('msmarco-document-train-qrels.gz',
+    train_qrels_file = Resource('msmarco-document-train-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctrain-qrels.tsv.gz'],
         md5='9d1609e240113b0504fd2e61cb36d924',
         size=2_385_717,
@@ -110,12 +110,12 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
         md5='be32fa12eb71e93014c84775d7465976',
         size=403_564_127,
     )
-    dev_queries_file = Resource('msmarco-document-dev-queries.gz',
+    dev_queries_file = Resource('msmarco-document-dev-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docdev-queries.tsv.gz'],
         md5='ac20593d71b9c32ab2633230f9cdf10d',
         size=91_837,
     )
-    dev_qrels_file = Resource('msmarco-document-dev-qrels.gz',
+    dev_qrels_file = Resource('msmarco-document-dev-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docdev-qrels.tsv.gz'],
         md5='5eeafaeb4960979a62e7fed93273254e',
         size=38_553,
@@ -125,22 +125,22 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
         md5='ac10255edf321821b0ccd0f123037780',
         size=5_701_839,
     )
-    eval_queries_file = Resource('msmarco-document-eval-queries.gz',
+    eval_queries_file = Resource('msmarco-document-eval-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docleaderboard-queries.tsv.gz'],
         md5='50fe4285d64444c9ffc933b66a79f775',
         size=102_131,
     )
-    eval_scoreddocs_file = Resource('msmarco-document-eval-scoreddocs.gz',
+    eval_scoreddocs_file = Resource('msmarco-document-eval-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docleaderboard-top100.tsv.gz'],
         md5='a039a00356c09606962f3c07c68d02ef',
         size=6_362_021,
     )
-    orcas_queries_file = Resource('msmarco-document-orcas-queries.gz',
+    orcas_queries_file = Resource('msmarco-document-orcas-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/orcas-doctrain-queries.tsv.gz'],
         md5='519c5f522294406e3b0574d7d53cf233',
         size=104_209_356,
     )
-    orcas_qrels_file = Resource('msmarco-document-orcas-qrels.gz',
+    orcas_qrels_file = Resource('msmarco-document-orcas-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/orcas-doctrain-qrels.tsv.gz'],
         md5='3f94db106374be649782022c3018acd0',
         size=109_824_304,
@@ -176,7 +176,7 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
 
     # Tables
     # -----------------------------------------
-    docs = Docs('msmarco-document-docs',
+    docs = DocTable('msmarco-document-docs',
         source=docs_file.gunzip(),
         parser=_MsMarcoDocsParser(),
     )
@@ -223,12 +223,12 @@ with irds.defaults(dua=DUA, lang='en', namespace='msmarco'):
     orcas = Benchmark('msmarco-document-orcas',
         docs=docs, queries=orcas_queries, qrels=orcas_qrels, scoreddocs=orcas_scoreddocs,
         citation=CITATION, metrics=MEASURES,
-        desc='ORCAS: real user click data as relevance signal (queries in the '
-             '"orcas" namespace, distinct from the "msmarco" query set).')
+        desc='ORCAS: real user click data as relevance signal (a separate '
+             'query set from the official "msmarco" queries).')
 
     # Named without the msmarco-document prefix on the queries: TREC-DL is
     # its own benchmark identity, and its queries are literally the same
-    # Queries table msmarco-passage's version of this benchmark uses.
+    # QueryTable node msmarco-passage's version of this benchmark uses.
     trec_dl_2019 = Benchmark('trec-dl-2019-document',
         docs=docs, queries=trec_dl_2019_queries, qrels=trec_dl_2019_doc_qrels,
         scoreddocs=trec_dl_2019_doc_scoreddocs,
