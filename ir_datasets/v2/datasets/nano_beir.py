@@ -162,7 +162,3 @@ irds.register(Suite('nano-beir', benchmarks=list(nano_benchmarks.values()),
                     desc="A small, fast preview of BEIR's headline benchmarks "
                          '(13 of 14) -- for quick sanity checks, not for '
                          'reporting comparable numbers.'))
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({f'nano-beir/{v1_id}': f'nano-beir-{v1_id}' for v1_id in SOURCES})

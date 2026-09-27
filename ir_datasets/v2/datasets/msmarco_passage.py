@@ -30,7 +30,7 @@ BASE = ir_datasets.util.home_path() / 'msmarco-passage'
 DUA = ("Please confirm you agree to the MSMARCO data usage agreement found at "
        "<http://www.msmarco.org/dataset.aspx>")
 
-CITATION = 'Bajaj2016Msmarco'
+CITATION = 'dblp:conf/nips/NguyenRSGTMD16'
 MEASURES = ['RR@10']
 TREC_DL_MEASURES = ['nDCG@10', 'RR(rel=2)', 'AP(rel=2)']
 
@@ -335,24 +335,3 @@ irds.register(
     trec_dl_2019, trec_dl_2019_judged,
     trec_dl_2020, trec_dl_2020_judged,
 )
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'msmarco-passage/train': 'msmarco-passage-train',
-    'msmarco-passage/train/judged': 'msmarco-passage-train-judged',
-    'msmarco-passage/train/triples-v2': 'msmarco-passage-train-triples-v2',
-    'msmarco-passage/train/split200-train': 'msmarco-passage-train-split200-train',
-    'msmarco-passage/train/split200-valid': 'msmarco-passage-train-split200-valid',
-    'msmarco-passage/train/medical': 'msmarco-passage-train-medical',
-    'msmarco-passage/dev': 'msmarco-passage-dev',
-    'msmarco-passage/dev/judged': 'msmarco-passage-dev-judged',
-    'msmarco-passage/dev/small': 'msmarco-passage-dev-small',
-    'msmarco-passage/eval': 'msmarco-passage-eval',
-    'msmarco-passage/eval/small': 'msmarco-passage-eval-small',
-    'msmarco-passage/trec-dl-2019': 'trec-dl-2019-passage',
-    'msmarco-passage/trec-dl-2019/judged': 'trec-dl-2019-passage-judged',
-    'msmarco-passage/trec-dl-2020': 'trec-dl-2020-passage',
-    'msmarco-passage/trec-dl-2020/judged': 'trec-dl-2020-passage-judged',
-})

@@ -30,8 +30,7 @@ from ir_datasets.v2 import (
     Benchmark, DocTable, Parser, QueryTable, Resource, Source, TrecQrels, irds,
 )
 
-CITATION = ('Lawrie et al., 2022, "HC4: A New Suite of Test Collections for '
-           'Ad Hoc CLIR" (ECIR 2022; arXiv:2201.09992)')
+CITATION = 'dblp:conf/ecir/LawrieMOY22'
 
 DATA_ACCESS = (
     "HC4's documents are Common Crawl web pages that must be fetched and "
@@ -140,7 +139,6 @@ QRELS_FILES = {
 }
 
 _benchmarks = []
-_aliases = {}
 
 for _lang in ('zh', 'fa', 'ru'):
     _docs_local_path = ir_datasets.util.home_path() / 'hc4' / LANG3[_lang] / 'hc4_docs.jsonl'
@@ -149,7 +147,6 @@ for _lang in ('zh', 'fa', 'ru'):
     _docs = DocTable(f'hc4-{_lang}-docs',
         source=_docs_file, parser=_Hc4DocsParser(_lang), lang=_lang,
         desc=f'The HC4 {_lang} Common Crawl document corpus.')
-    _aliases[f'hc4/{_lang}'] = f'hc4-{_lang}-docs'
 
     for _split in ('train', 'dev', 'test'):
         _name = f'hc4-{_lang}-{_split}'
@@ -161,7 +158,6 @@ for _lang in ('zh', 'fa', 'ru'):
             docs=_docs, queries=_queries, qrels=_qrels,
             citation=CITATION,
             desc=f'HC4 {_lang}, {_split} split.'))
-        _aliases[f'hc4/{_lang}/{_split}'] = _name
 
 
 # Registration
@@ -169,7 +165,3 @@ for _lang in ('zh', 'fa', 'ru'):
 irds.register(*_benchmarks, *TOPICS_FILES.values(),
               *[r for shards in IDS_FILES.values() for r in shards])
 
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias(_aliases)

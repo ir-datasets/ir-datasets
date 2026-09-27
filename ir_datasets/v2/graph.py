@@ -5,10 +5,14 @@ beyond ``protocols.Provider``: ``load(name)`` to resolve one node, and
 ``discover_edges()`` to get its whole catalog as RDF-ready
 ``(subject, predicate, object)`` triples -- ``object`` wrapped in
 ``base.Literal`` when it's a property value rather than another node's name
-(see ``registry.row_triples``). Everything
-below -- traversal, listing, export, validation, even legacy-alias
-resolution (an alias is just an ``irds:alias`` edge, discovered like any
-other) -- is built from those two calls. A provider's catalog is cached the
+(see ``registry.row_triples``). Everything below -- traversal, listing,
+export, validation -- is built from those two calls. Legacy-alias resolution
+is the one exception: it reads a provider's own ``aliases`` dict directly
+(``getattr``-guarded, so a minimal third-party provider without one simply
+has none), not a triple -- a legacy id is bookkeeping for ``load()``, never a
+node ``discover_edges()`` itself reports (see ``registry.ManifestProvider
+.alias()``; ``legacy_provider.py``'s ``legacy:`` provider is what makes v1
+ids into real, browsable nodes instead). A provider's catalog is cached the
 first time a ``Graph`` reads it, since ``discover_edges()`` always does full
 discovery and may be a live crawl (see ``hf``) -- so a query doesn't repeat
 that work, but only for as long as this particular ``Graph`` lives.
@@ -25,7 +29,6 @@ resolves only if some provider declared it as a (legacy) alias.
 import sys
 
 from .base import Literal
-from .registry import ALIAS_KIND
 from .vocabulary import is_subtype, structural_kinds
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
@@ -58,14 +61,12 @@ class Graph:
         reads from here rather than calling the provider again."""
         cached = self._catalogs.get(provider.prefix)
         if cached is None:
-            types, aliases, fwd, rev = {}, {}, {}, {}
+            types, fwd, rev = {}, {}, {}
             for subject, kind, obj in provider.discover_edges():
                 if isinstance(obj, Literal):
                     continue
                 if kind == 'type':
                     types[subject] = obj
-                elif kind == ALIAS_KIND:
-                    aliases[subject] = obj
                 elif kind == 'subClassOf':
                     # Type-hierarchy metadata (vocabulary.py's own
                     # declare_type/ancestors already track this for
@@ -77,6 +78,8 @@ class Graph:
                     if obj not in bucket:
                         bucket.append(obj)
                     rev.setdefault(obj, set()).add((subject, kind))
+            # Not from discover_edges() -- see the module docstring.
+            aliases = dict(getattr(provider, 'aliases', {}))
             cached = {'types': types, 'aliases': aliases, 'fwd': fwd, 'rev': rev}
             self._catalogs[provider.prefix] = cached
         return cached

@@ -143,7 +143,7 @@ class TestV2Graph(unittest.TestCase):
             acme.edge_kind('irds:derived_from', structural=True)
 
     def test_providers_subscribe_to_the_default_graph(self):
-        self.assertEqual(['clirmatrix', 'hf', 'irds'], sorted(graph.providers))
+        self.assertEqual(['clirmatrix', 'hf', 'irds', 'legacy'], sorted(graph.providers))
         self.assertIs(v2.default_graph().providers, graph.providers)
 
     def test_minimal_provider_satisfies_the_protocol(self):

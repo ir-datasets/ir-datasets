@@ -38,7 +38,7 @@ from ir_datasets.v2 import Benchmark, DocTable, Filter, QrelTable, Resource, Run
 from ir_datasets.v2.datasets.msmarco_passage import DUA, MEASURES, TREC_DL_MEASURES, trec_dl_2019_queries, trec_dl_2020_queries
 from ir_datasets.v2.formats import Parser
 
-CITATION = 'Bajaj2016Msmarco'
+CITATION = 'dblp:conf/nips/NguyenRSGTMD16'
 
 QRELS_DEFS = {
     1: 'Document contains a passage labeled as relevant in msmarco-passage',
@@ -257,18 +257,3 @@ irds.register(
     trec_dl_2019, trec_dl_2019_judged,
     trec_dl_2020, trec_dl_2020_judged,
 )
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'msmarco-document': 'msmarco-document-docs',
-    'msmarco-document/train': 'msmarco-document-train',
-    'msmarco-document/dev': 'msmarco-document-dev',
-    'msmarco-document/eval': 'msmarco-document-eval',
-    'msmarco-document/orcas': 'msmarco-document-orcas',
-    'msmarco-document/trec-dl-2019': 'trec-dl-2019-document',
-    'msmarco-document/trec-dl-2019/judged': 'trec-dl-2019-document-judged',
-    'msmarco-document/trec-dl-2020': 'trec-dl-2020-document',
-    'msmarco-document/trec-dl-2020/judged': 'trec-dl-2020-document-judged',
-})

@@ -50,9 +50,7 @@ from ir_datasets.v2.datasets.hc4 import (
     TOPICS_FILES as HC4_TOPICS_FILES,
 )
 
-CITATION = ('The TREC NeuCLIR track <https://neuclir.github.io/>; see also '
-           'hc4.py\'s Lawrie et al., 2022 citation for the related HC4 '
-           'collection this one is designed to be compatible with.')
+CITATION = 'dblp:conf/trec/LawrieMMMOSY22'
 
 DOC_COUNTS = {'zh': 3_179_209, 'fa': 2_232_016, 'ru': 4_627_543}
 
@@ -173,7 +171,6 @@ DOCS_FILES = {
 }
 
 _benchmarks = []
-_aliases = {}
 
 for _lang in DOCS:
     _lang3 = LANG3[_lang]
@@ -182,7 +179,6 @@ for _lang in DOCS:
     _docs = DocTable(f'neuclir-{_lang}-docs',
         source=_docs_file.gunzip(), parser=_NeuclirDocsParser(_lang, DOC_COUNTS[_lang]),
         lang=_lang, desc=f'NeuCLIR collection 1, {_lang} Common Crawl documents.')
-    _aliases[f'neuclir/1/{_lang}'] = f'neuclir-{_lang}-docs'
 
     # -- TREC 2022: shared multi-language qrels file, filtered by iteration --
     # TrecQrels' own parser= is fixed (_TrecQrelsParser); the language filter
@@ -199,7 +195,6 @@ for _lang in DOCS:
         docs=_docs, queries=_queries_2022, qrels=_qrels_2022,
         citation=CITATION,
         desc=f'NeuCLIR collection 1, {_lang}: TREC 2022 NeuCLIR track benchmark.'))
-    _aliases[f'neuclir/1/{_lang}/trec-2022'] = _name_2022
 
     # -- TREC 2023: one tar, a qrels member per language --
     _name_2023 = f'neuclir-{_lang}-trec-2023'
@@ -213,7 +208,6 @@ for _lang in DOCS:
         docs=_docs, queries=_queries_2023, qrels=_qrels_2023,
         citation=CITATION,
         desc=f'NeuCLIR collection 1, {_lang}: TREC 2023 NeuCLIR track benchmark.'))
-    _aliases[f'neuclir/1/{_lang}/trec-2023'] = _name_2023
 
     # -- hc4-filtered: NeuCLIR's own corpus, subset to HC4's overlap -- HC4's
     # dev+test queries/qrels stand in for a NeuCLIR-native judged set.
@@ -235,14 +229,12 @@ for _lang in DOCS:
         citation=CITATION,
         desc=f'NeuCLIR collection 1, {_lang}, filtered to intersect with HC4 '
             '-- HC4\'s combined dev+test queries and qrels.'))
-    _aliases[f'neuclir/1/{_lang}/hc4-filtered'] = _name_hc4f
 
 # -- Combined tri-lingual corpus, TREC 2023's cross-language "multi" task --
 _multi_docs = DocTable('neuclir-multi-docs',
     source=[DOCS_FILES[_lang].gunzip() for _lang in ('zh', 'fa', 'ru')],
     parser=_NeuclirDocsParser(None, sum(DOC_COUNTS.values())),
     desc='NeuCLIR collection 1, the three languages (zh/fa/ru) combined.')
-_aliases['neuclir/1/multi'] = 'neuclir-multi-docs'
 
 _multi_qrels = TrecQrels('neuclir-multi-trec-2023-qrels',
     source=QRELS_2023_TAR.member('qrels.final.gains'), defs=QREL_DEFS)
@@ -253,14 +245,9 @@ _benchmarks.append(Benchmark('neuclir-multi-trec-2023',
     citation=CITATION,
     desc='NeuCLIR collection 1: TREC 2023\'s cross-language "multi" task '
         '(one combined tri-lingual ranking per query).'))
-_aliases['neuclir/1/multi/trec-2023'] = 'neuclir-multi-trec-2023'
 
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks)
 
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias(_aliases)

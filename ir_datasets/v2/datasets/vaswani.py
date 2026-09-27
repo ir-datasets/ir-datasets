@@ -87,8 +87,3 @@ vaswani = Benchmark('vaswani',
 # Registration
 # -----------------------------------------
 irds.register(vaswani)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({'vaswani': 'vaswani'})

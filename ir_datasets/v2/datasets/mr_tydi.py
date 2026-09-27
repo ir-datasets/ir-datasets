@@ -33,8 +33,7 @@ from ir_datasets.v2 import (
     Benchmark, DocTable, Parser, Resource, TrecQrels, TsvQueries, irds,
 )
 
-CITATION = ('Zhang et al., 2021, "Mr. TyDi: A Multi-lingual Benchmark for '
-           'Dense Retrieval" (arXiv:2108.08787)')
+CITATION = 'dblp:journals/corr/abs-2108-08787'
 
 QREL_DEFS = {
     1: "Passage identified within Wikipedia article from top Google search results",
@@ -77,7 +76,6 @@ class _MrTydiDocsParser(Parser):
 
 
 _benchmarks = []
-_aliases = {}
 
 for _lang, (_dir, _url, _md5, _size) in LANGS.items():
     _tar = Resource(f'mrtydi-{_lang}.tar.gz', sources=[_url], md5=_md5, size=_size)
@@ -97,14 +95,9 @@ for _lang, (_dir, _url, _md5, _size) in LANGS.items():
                 source=_tar.member(f'{_dir}/qrels.{_split}.txt'), defs=QREL_DEFS),
             citation=CITATION,
             desc=f'Mr. TyDi {_lang}, {_split} split.'))
-        _aliases[f'mr-tydi/{_lang}/{_split}'] = _name
 
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks)
 
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias(_aliases)

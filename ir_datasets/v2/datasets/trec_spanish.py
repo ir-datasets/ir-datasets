@@ -140,12 +140,3 @@ trec4 = Benchmark('trec-spanish-4',
 # Registration
 # -----------------------------------------
 irds.register(trec3, trec4)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'trec-spanish': 'trec-spanish-docs',
-    'trec-spanish/trec3': 'trec-spanish-3',
-    'trec-spanish/trec4': 'trec-spanish-4',
-})

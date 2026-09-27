@@ -43,7 +43,7 @@ from ir_datasets.v2 import (
 
 BASE = ir_datasets.util.home_path() / 'nfcorpus'
 
-CITATION = 'Boteva2016Nfcorpus'
+CITATION = 'dblp:conf/ecir/BotevaGSR16'
 
 QREL_DEFS = {
     2: "A direct link from the query to the document the cited sources section of a page.",
@@ -185,18 +185,7 @@ with irds.defaults(lang='en'):
         _benchmarks[f'{_split}-nontopic'] = nontopic_bm
         _benchmarks[f'{_split}-video'] = video_bm
 
-        irds.alias({
-            f'nfcorpus/{_split}': f'nfcorpus-{_split}',
-            f'nfcorpus/{_split}/nontopic': f'nfcorpus-{_split}-nontopic',
-            f'nfcorpus/{_split}/video': f'nfcorpus-{_split}-video',
-        })
-
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks.values())
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({'nfcorpus': 'nfcorpus-docs'})

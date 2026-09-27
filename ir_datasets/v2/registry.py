@@ -46,11 +46,15 @@ from .vocabulary import (
 
 PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 
-#: The predicate a legacy id -> qualified name mapping is reported under in
-#: ``discover_edges()`` -- ``Graph`` special-cases it into its own alias
-#: table rather than treating it as an ordinary node-to-node edge (it isn't
-#: declared through ``vocabulary.declare_kind`` the way a real edge kind is).
-ALIAS_KIND = 'irds:alias'
+#: A provider's own ``.aliases`` dict (legacy id -> qualified target) is how
+#: ``Graph.resolve_name`` supports loading a node by its old v1 id -- see
+#: ``alias()`` and ``graph.py``'s ``_catalog``/``resolve_name``. A legacy id
+#: is never itself a node in *this* provider's catalog (it's bookkeeping, not
+#: something ``discover_edges()`` reports); the ``legacy:`` provider
+#: (``legacy_provider.py``) is what makes every v1 id -- across every
+#: bundled provider, not just this one's own aliases -- into a real,
+#: addressable ``legacy:V1Dataset`` node with a ``legacy:replaced_by`` edge
+#: to its v2 counterpart where one is known.
 
 
 class DuplicateNameError(LookupError):
@@ -383,8 +387,6 @@ class ManifestProvider:
         for qualified, entry in types.items():
             if self.owns(qualified) and entry.get('parent'):
                 yield qualified, 'subClassOf', entry['parent']
-        for legacy, target in self.aliases.items():
-            yield legacy, ALIAS_KIND, target
         # Enumerable generators (every param has a closed values= set, e.g.
         # CLIRMatrix's languages/splits) report a type row per name they
         # could produce, plus whatever structural edges the generator
@@ -397,10 +399,22 @@ class ManifestProvider:
         # has no finite cross product to report here; that provider
         # discovers its own names some other way (see
         # HfProvider.discover_edges).
+        #
+        # A generator that also declared row_metadata= (e.g. CLIRMatrix's
+        # per-file Resource generators, backed by one cached remote index --
+        # see datasets/clirmatrix.py) reports real per-name properties
+        # (sources, hashes) here too, via enumerate_rows() instead of the
+        # bare type row -- still no per-name network cost as long as
+        # row_metadata amortizes its own work (see Generator.row_metadata's
+        # docstring); a generator without one keeps reporting bare type rows.
         for generator in self.generators:
             if generator.enumerable:
-                for name in generator.enumerate():
-                    yield name, 'type', generator.node_type
+                if generator.row_metadata is not None:
+                    for name, row in generator.enumerate_rows():
+                        yield from row_triples(name, row)
+                else:
+                    for name in generator.enumerate():
+                        yield name, 'type', generator.node_type
                 yield from generator.enumerate_edges()
 
     # -- lookup -------------------------------------------------------------

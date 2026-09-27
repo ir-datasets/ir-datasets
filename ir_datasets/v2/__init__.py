@@ -89,6 +89,9 @@ from .clirmatrix_provider import clirmatrix
 # so, like hf above, its module needs importing here to register its
 # Generators at all, rather than only on first (already-too-late) lookup.
 from .datasets import clirmatrix as _clirmatrix  # noqa: F401
+# legacy is also generator-only for its CLIRMatrix share, and its eager ids
+# depend on irds's own alias table -- see legacy_provider.py's own docstring.
+from .legacy_provider import legacy
 from .nodes import (
     BENCHMARK, Benchmark, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
     File, GitRepo, RESOURCE, Resource,
@@ -117,6 +120,7 @@ graph = default_graph()
 graph.add(irds)
 graph.add(hf)
 graph.add(clirmatrix)
+graph.add(legacy)
 
 
 def load(name):
@@ -162,6 +166,6 @@ __all__ = [
     # derivation
     'Filter', 'DerivedTable', 'ids_of', 'ids_from_lines',
     # providers and the graph
-    'irds', 'hf', 'clirmatrix', 'graph',
+    'irds', 'hf', 'clirmatrix', 'legacy', 'graph',
     'load', 'list_datasets', 'citation',
 ]

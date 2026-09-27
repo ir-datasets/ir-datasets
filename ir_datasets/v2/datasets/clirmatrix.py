@@ -11,8 +11,12 @@ resolve nodes on demand instead; ``freeze`` records only the rule, not the
 expansion (see ``ManifestProvider.generated``). Each declares its structural
 ``edges=`` too (see ``base.Generator``), so a listing sees a Benchmark's real
 docs/queries/qrels facets, and a table's real backing Resource, purely by
-name-template substitution -- no resolution, no network, no per-row cost even
-across a family this size.
+name-template substitution -- no resolution, no per-row cost even across a
+family this size. The two Resource generators additionally declare
+``row_metadata=`` (see ``_docs_resource_row``/``_qrel_resource_row`` below),
+so a listing sees each file's real ``sources``/``hashes`` too -- at the cost
+of one network fetch for the whole family (``DOWNLOADS_INDEX``, cached), not
+per name.
 
 Its own provider (``clirmatrix_provider.py``), not ``irds`` -- unlike every
 other bundled family, which shares ``irds``'s registry because there's a
@@ -77,10 +81,6 @@ downloadable file this family depends on having *existed*, even unused.
 Neither has any edges: nothing is structurally derived from either of them --
 they're inputs to how other Resources get their URLs, not bytes any node is
 parsed from.
-**Known issue carried over from v1, not introduced by this port**: the
-index's host (``www.cs.jhu.edu/~shuosun/clirmatrix``) appears to be
-unreachable as of this writing -- resolving any bilingual/docs node will
-fail until that's fixed or a mirror is found; this affects v1 identically.
 """
 import json
 
@@ -96,9 +96,7 @@ from ir_datasets.v2.nodes import (
 )
 from ir_datasets.v2.clirmatrix_provider import clirmatrix
 
-CITATION = ('Sun and Duh, 2020, "CLIRMatrix: A Massively Large Collection of '
-           'Bilingual and Multilingual Datasets for Cross-Lingual Information '
-           'Retrieval" (EMNLP 2020)')
+CITATION = 'dblp:conf/emnlp/SunD20'
 
 #: Verbatim from ir_datasets.datasets.clirmatrix -- the 139 Wikipedia
 #: language codes this family covers.
@@ -148,7 +146,7 @@ DOWNLOADS_INDEX = Resource('downloads.json.gz',
     sources=['http://www.cs.jhu.edu/~shuosun/clirmatrix/data/downloads.json.gz'],
     md5='371cc532aca236759bd3602eb6ce2181',
     size=5_143_717,
-    desc='The per-file {url, expected_md5, size_hint} index this family '
+    desc='The per-file {url, cache_path, expected_md5} index this family '
         'resolves every other download from -- see _fetch_index below.')
 
 METADATA_FILE = Resource('metadata.json.lz4',
@@ -162,7 +160,7 @@ clirmatrix.register(DOWNLOADS_INDEX, METADATA_FILE)
 
 
 def _fetch_index():
-    """The remote per-file {url, expected_md5, size_hint} index -- one small
+    """The remote per-file {url, cache_path, expected_md5} index -- one small
     gzip'd JSON (~150k entries), fetched and cached once."""
     with DOWNLOADS_INDEX.gunzip().stream() as f:
         return json.load(f)
@@ -173,8 +171,7 @@ _index = Lazy(_fetch_index)
 
 def _resource(name, dlc_context, key):
     entry = _index()[dlc_context][key]
-    return Resource(name, sources=[entry['url']], md5=entry.get('expected_md5'),
-                    size=entry.get('size_hint'))
+    return Resource(name, sources=[entry['url']], md5=entry.get('expected_md5'))
 
 
 class _ClirMatrixQueriesParser(Parser):
@@ -211,6 +208,16 @@ def _docs_resource(lang):
     return _docs_resource_cache[lang]
 
 
+def _docs_resource_row(lang):
+    """``Generator(row_metadata=...)`` for the docs Resource generator below
+    -- real sources/hashes for a listing (``discover_edges()``), not just a
+    bare type row, without running the docs Table's own resolver (a parser,
+    the TsvDocs wrapper, ...). Still cheap: ``_docs_resource`` only ever
+    touches ``_index()`` (fetched once, cached by ``Lazy``) plus a dict
+    lookup, same as if this name were actually resolved."""
+    return _docs_resource(lang).metadata
+
+
 #: lang -> the one DocTable for that language's Wikipedia corpus, shared by
 #: every bilingual pair using it as the doc side (v1's own ``_docs_cache``).
 _docs_cache = {}
@@ -244,14 +251,30 @@ def _qrel_resource(variant, doc_lang, query_lang, split):
     return _qrel_resource_cache[key]
 
 
+def _qrel_resource_row(variant, doc_lang, query_lang, split):
+    """``row_metadata=`` for the shared queries+qrels Resource generator --
+    see ``_docs_resource_row``."""
+    return _qrel_resource(variant, doc_lang, query_lang, split).metadata
+
+
 #: (doc_lang, variant, query_lang, split) -> the one Benchmark for it.
 _benchmark_cache = {}
 
 
-def _multi8_constraint(variant, doc_lang, query_lang, split):
-    if variant == 'multi8':
-        return doc_lang in MULTI8_LANGS and query_lang in MULTI8_LANGS
-    return True
+def _bilingual_constraint(variant, doc_lang, query_lang, split):
+    """CLIR pairs a doc language against a *different* query language --
+    there's no same-language ``en-en`` split in any variant (verified
+    against the real ``downloads.json.gz`` index: every ``dlc_context`` has
+    exactly ``n * (n - 1) * len(SPLITS)`` entries, never ``n * n * ...``).
+    Without this, ``_BILINGUAL_PARAMS``'s cross product overclaims ~1,100
+    same-language names per variant that ``_resource``'s index lookup would
+    ``KeyError`` on the first time anything actually resolves one -- row
+    metadata during enumeration (see ``_qrel_resource_row``) now does that
+    for every enumerated name, not just a name someone happens to load."""
+    if variant == 'multi8' and not (
+        doc_lang in MULTI8_LANGS and query_lang in MULTI8_LANGS):
+        return False
+    return doc_lang != query_lang
 
 
 def _benchmark(variant, doc_lang, query_lang, split):
@@ -291,6 +314,7 @@ def _qrels(variant, doc_lang, query_lang, split):
 clirmatrix.register_generator(Generator(
     '{lang}-docs.txt.gz', params={'lang': Param(values=LANGS)},
     type=RESOURCE, resolver=_docs_resource, enumerable=True,
+    row_metadata=_docs_resource_row,
     desc='The downloaded Wikipedia-derived corpus file backing one '
         'language\'s docs table.'))
 
@@ -309,29 +333,30 @@ _BILINGUAL_PARAMS = {
 
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}.jsonl.gz',
-    params=_BILINGUAL_PARAMS, constraints=[_multi8_constraint],
+    params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
     type=RESOURCE, resolver=_qrel_resource, enumerable=True,
+    row_metadata=_qrel_resource_row,
     desc='The downloaded file backing one pair+split\'s queries and qrels '
         '(one query per line, its judged docs inline) -- shared by both '
         'tables.'))
 
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}-queries',
-    params=_BILINGUAL_PARAMS, constraints=[_multi8_constraint],
+    params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
     type=TABLE_TYPES['queries'], resolver=_queries, enumerable=True,
     edges=[(DERIVED_FROM, '{variant}-{doc_lang}-{query_lang}-{split}.jsonl.gz')],
     desc='The queries for one bilingual pair+split.'))
 
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}-qrels',
-    params=_BILINGUAL_PARAMS, constraints=[_multi8_constraint],
+    params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
     type=TABLE_TYPES['qrels'], resolver=_qrels, enumerable=True,
     edges=[(DERIVED_FROM, '{variant}-{doc_lang}-{query_lang}-{split}.jsonl.gz')],
     desc='The (automatic, BM25-derived) qrels for one bilingual pair+split.'))
 
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}',
-    params=_BILINGUAL_PARAMS, constraints=[_multi8_constraint],
+    params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
     type=BENCHMARK, resolver=_benchmark, enumerable=True,
     edges=[(FACET['docs'], '{doc_lang}-docs'),
           (FACET['queries'], '{variant}-{doc_lang}-{query_lang}-{split}-queries'),

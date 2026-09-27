@@ -90,8 +90,3 @@ cranfield = Benchmark('cranfield',
 # Registration
 # -----------------------------------------
 irds.register(cranfield)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({'cranfield': 'cranfield'})

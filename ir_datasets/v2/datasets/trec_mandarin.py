@@ -138,12 +138,3 @@ trec6 = Benchmark('trec-mandarin-6',
 # Registration
 # -----------------------------------------
 irds.register(trec5, trec6)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'trec-mandarin': 'trec-mandarin-docs',
-    'trec-mandarin/trec5': 'trec-mandarin-5',
-    'trec-mandarin/trec6': 'trec-mandarin-6',
-})

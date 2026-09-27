@@ -164,15 +164,3 @@ with irds.defaults(dua=DUA, lang='en'):
 # benchmarks pulls in everything they depend on (tables, then files), so only
 # the roots are listed. Anything not registered here simply isn't in the graph.
 irds.register(train, test, split200_train, split200_valid, non_offensive)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'antique': 'antique-docs',
-    'antique/train': 'antique-train',
-    'antique/test': 'antique-test',
-    'antique/train/split200-train': 'antique-split200-train',
-    'antique/train/split200-valid': 'antique-split200-valid',
-    'antique/test/non-offensive': 'antique-test-non-offensive',
-})

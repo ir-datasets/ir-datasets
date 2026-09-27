@@ -42,7 +42,7 @@ from ir_datasets.formats import GenericDoc, GenericQuery
 from ir_datasets.v2 import Benchmark, DocTable, Filter, QrelTable, QueryTable, Resource, Suite, ids_of, irds
 from ir_datasets.v2.formats import Parser
 
-CITATION = 'Thakur et al., 2021, "BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models" (arxiv:2104.08663)'
+CITATION = 'dblp:conf/nips/Thakur0RSG21'
 
 #: (v1 id, qrel splits, doc record type, query record type) -- transcribed
 #: verbatim from ir_datasets.datasets.beir's own ``benchmarks`` dict.
@@ -232,12 +232,3 @@ irds.register(Suite('beir', benchmarks=[benchmarks[n] for n in SUITE_MEMBERS],
                          'retrieval benchmarks across heterogeneous domains, '
                          "plus CQADupStack's 12 StackExchange sub-forums "
                          '(nested as the beir-cqadupstack suite).'))
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({f'beir/{v1_id}': benchmarks[f'beir-{_flat(v1_id)}'].name
-           for v1_id, splits, *_ in BENCHMARKS if len(splits) == 1})
-irds.alias({f'beir/{v1_id}/{split}': benchmarks[f'beir-{_flat(v1_id)}-{split}'].name
-           for v1_id, splits, *_ in BENCHMARKS if len(splits) > 1 for split in splits})
-irds.alias({f'beir/cqadupstack/{sub}': benchmarks[f'beir-cqadupstack-{sub}'].name
-           for sub in CQA_SUBFORUMS})

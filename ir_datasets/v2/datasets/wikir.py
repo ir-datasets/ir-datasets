@@ -27,12 +27,7 @@ from ir_datasets.v2 import (
     irds,
 )
 
-CITATION = ('Frej et al., 2020, "WIKIR: A Python toolkit for building a '
-           'large-scale Wikipedia-based English Information Retrieval '
-           'Dataset" (LREC 2020); Frej et al., 2020, "MLWIKIR: A Python '
-           'Toolkit for Building Large-scale Wikipedia-based Information '
-           'Retrieval Datasets in Chinese, English, French, Italian, '
-           'Japanese, Spanish and More" (CIRCLE 2020)')
+CITATION = 'dblp:conf/lrec/FrejSC20; dblp:conf/circle/FrejSC20a'
 
 QRELS_DEFS = {
     2: "Query is the article title",
@@ -79,7 +74,6 @@ class _WikirQueriesParser(Parser):
 
 
 _benchmarks = []
-_aliases = {}
 
 for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
     _zip = Resource(f'wikir-{_code}.zip', sources=[_url], md5=_md5, size=_size)
@@ -88,7 +82,6 @@ for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
         source=_zip.zip_member(f'{_zip_dir}/documents.csv'),
         parser=_WikirDocsParser(), lang=_lang,
         desc=f'The WikIR {_code} document corpus.')
-    _aliases[f'wikir/{_code}'] = f'wikir-{_code}-docs'
 
     for _split, _suffix in SPLITS:
         _name = f'wikir-{_code}-{_suffix}'
@@ -105,14 +98,9 @@ for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
             citation=CITATION,
             desc=f'WikIR {_code}, {_split} split. Scoreddocs are the '
                  'provided BM25 run.'))
-        _aliases[f'wikir/{_code}/{_split}'] = _name
 
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks)
 
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias(_aliases)

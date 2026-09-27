@@ -30,8 +30,7 @@ from ir_datasets.datasets.bright import (
 from ir_datasets.v2 import Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
 from ir_datasets.v2.formats import Parser
 
-CITATION = ('Su et al., 2024, "BRIGHT: A Realistic and Challenging Benchmark '
-           'for Reasoning-Intensive Retrieval" (arxiv:2407.12883)')
+CITATION = 'dblp:conf/iclr/SuYXSMWLSST0YA025'
 METRICS = ['nDCG@10']
 QRELS_DEFS = {1: 'Relevant', -100: 'Excluded from evaluation'}
 
@@ -243,8 +242,3 @@ irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CIT
                     desc='The BRIGHT evaluation suite: reasoning-intensive retrieval '
                          'across 12 domains (StackExchange topics, coding, theorem-proving, '
                          'competition math), plus long-document variants for 8 of them.'))
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({f'bright/{subset}': f'bright-{subset}' for subset in SHORT_SUBSETS})
-irds.alias({f'bright/{subset}-long': f'bright-{subset}-long' for subset in LONG_SUBSETS})

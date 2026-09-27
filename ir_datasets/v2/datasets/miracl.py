@@ -28,8 +28,7 @@ from ir_datasets.v2 import (
     Benchmark, DocTable, Parser, QueryTable, Resource, TrecQrels, irds,
 )
 
-CITATION = ('Zhang et al., 2022, "Making a MIRACL: Multilingual Information '
-           'Retrieval Across a Continuum of Languages" (arXiv:2210.09984)')
+CITATION = 'dblp:journals/tacl/0018TOKAL0RL23'
 
 QREL_DEFS = {
     0: 'Not Relevant',
@@ -219,7 +218,6 @@ class _MiraclQueriesParser(Parser):
 
 
 _benchmarks = []
-_aliases = {}
 
 for _lang, _topic_sets in SPLITS.items():
     _corpus_resources = [
@@ -231,7 +229,6 @@ for _lang, _topic_sets in SPLITS.items():
         source=[r.gunzip() for r in _corpus_resources],
         parser=_MiraclDocsParser(), lang=_lang,
         desc=f'The MIRACL {_lang} Wikipedia passage corpus.')
-    _aliases[f'miracl/{_lang}'] = f'miracl-{_lang}-docs'
 
     for _split in _topic_sets:
         _topics_md5, _topics_size = TOPICS[(_lang, _split)]
@@ -259,14 +256,9 @@ for _lang, _topic_sets in SPLITS.items():
                 citation=CITATION,
                 desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
                      'no public qrels).'))
-        _aliases[f'miracl/{_lang}/{_split}'] = _name
 
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks)
 
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias(_aliases)

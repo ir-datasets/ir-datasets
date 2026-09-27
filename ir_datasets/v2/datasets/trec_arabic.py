@@ -104,12 +104,3 @@ ar2002 = Benchmark('trec-arabic-2002',
 # Registration
 # -----------------------------------------
 irds.register(ar2001, ar2002)
-
-
-# Aliases (old ir-datasets ID mapping)
-# -----------------------------------------
-irds.alias({
-    'trec-arabic': 'trec-arabic-docs',
-    'trec-arabic/ar2001': 'trec-arabic-2001',
-    'trec-arabic/ar2002': 'trec-arabic-2002',
-})

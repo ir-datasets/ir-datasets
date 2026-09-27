@@ -171,7 +171,8 @@ class Generator:
     """
 
     def __init__(self, template, *, params, type, resolver, constraints=(),
-                 enumerable=True, edges=(), defined_in=None, **meta):
+                 enumerable=True, edges=(), row_metadata=None,
+                 defined_in=None, **meta):
         self.template = template
         self.params = params
         self.node_type = type
@@ -190,6 +191,16 @@ class Generator:
         #: metadata only, like `type`; never checked against what
         #: `resolve_node()` actually builds.
         self.edges = list(edges)
+        #: Optional ``**params -> dict``, called once per enumerated name
+        #: (see ``enumerate_rows``) to report cheap per-name properties --
+        #: e.g. a Resource generator's ``sources``/``hashes`` -- without
+        #: running the full ``resolver`` (which may build a parser, wrap a
+        #: docstore, ...). "Cheap" is the caller's responsibility: this is
+        #: still invoked once per enumerated name, so it should amortize any
+        #: real work (a remote index fetch, say) behind its own cache rather
+        #: than repeating it -- unlike `edges=`, which is pure string
+        #: substitution and therefore always free.
+        self.row_metadata = row_metadata
         self.meta = meta
         # Assigned by provider.register_generator.
         self.provider = None
@@ -274,6 +285,16 @@ class Generator:
             for kind, target_template in self.edges:
                 yield (name, self._qualify(kind),
                       self._qualify(target_template.format(**params)))
+
+    def enumerate_rows(self):
+        """(name, row) for every name this generator can produce, ``row``
+        being ``{'type': ..., **row_metadata(**params)}`` -- only meaningful
+        when ``row_metadata=`` is set (a caller checks that first; this
+        doesn't degrade to bare-type rows on its own, since a caller wanting
+        those already has the cheaper ``enumerate()``)."""
+        for params in self.enumerate_params():
+            name = self._qualify(self.template.format(**params))
+            yield name, {'type': self.node_type, **self.row_metadata(**params)}
 
     def metadata(self):
         resolver = getattr(self.resolver, '__qualname__', repr(self.resolver))
