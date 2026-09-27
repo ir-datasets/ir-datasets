@@ -1,16 +1,4 @@
-"""MS MARCO (document) — a v2 dataset family, sharing TREC-DL queries with
-``msmarco-passage``.
-
-The TREC-DL 2019/2020 tasks judge both a passage corpus and a document
-corpus against the *same* queries -- ``msmarco_passage.py`` named its
-TREC-DL queries without a corpus prefix specifically anticipating this:
-"shared with msmarco-document's version of the same track (same query set,
-different docs/qrels/scoreddocs per corpus)". This is that second family --
-``trec_dl_2019_queries``/``trec_dl_2020_queries`` below are the *same Python
-objects* imported from that module, not re-declared, so the graph shows one
-QueryTable node referenced by two independent Benchmarks in two different
-files. (v1 agrees: its download config points both families' TREC-DL query
-URLs at the identical bytes -- same URL, same md5.)
+"""MS MARCO (document) — a v2 dataset family.
 
 Reuses v1's ``MsMarcoTrecDocs`` (a ``TrecDocs`` subclass reformatting the raw
 TREC-SGML-ish records into a 4-field ``MsMarcoDocument``) as the docs parser,
@@ -30,26 +18,22 @@ own noted gaps):
   corpus would need a same-corpus-ish edge kind, which doesn't exist yet
   (``same_corpus_as`` was declared in ``nodes.py`` at one point but was
   dropped, unused) -- a good next addition, not this one.
+
+TREC-DL (2019/2020), which judges this corpus (and ``msmarco-passage``'s)
+against a shared query set, is not defined here -- see ``trec_dl.py``, which
+imports ``docs`` (below) by reference rather than duplicating it.
 """
 from ir_datasets.datasets.msmarco_document import MsMarcoDocument, MsMarcoTrecDocs
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 
-from ir_datasets.v2 import Benchmark, DocTable, Filter, QrelTable, Resource, RunTable, TrecQrels, TrecScoredDocs, TsvQueries, irds
-from ir_datasets.v2.datasets.msmarco_passage import DUA, MEASURES, TREC_DL_MEASURES, trec_dl_2019_queries, trec_dl_2020_queries
+from ir_datasets.v2 import Benchmark, DocTable, QrelTable, Resource, RunTable, TrecQrels, TrecScoredDocs, TsvQueries, irds
+from ir_datasets.v2.datasets.msmarco_passage import DUA, MEASURES
 from ir_datasets.v2.formats import Parser
 
 CITATION = 'dblp:conf/nips/NguyenRSGTMD16'
 
 QRELS_DEFS = {
     1: 'Document contains a passage labeled as relevant in msmarco-passage',
-}
-
-TREC_DL_QRELS_DEFS = {
-    3: "Perfectly relevant: Document is dedicated to the query, it is worthy of being a top result "
-       "in a search engine.",
-    2: "Highly relevant: The content of this document provides substantial information on the query.",
-    1: "Relevant: Document provides some information relevant to the query, which may be minimal.",
-    0: "Irrelevant: Document does not provide any useful information about the query",
 }
 
 ORCAS_QRELS_DEFS = {
@@ -150,33 +134,10 @@ with irds.defaults(dua=DUA, lang='en'):
         md5='118d0884638fd405e111157a124ef0b2',
         size=10_724_320_629,
     )
-    # TREC-DL queries are NOT declared here -- trec_dl_2019_queries/
-    # trec_dl_2020_queries (imported above) already own them; same URL, same
-    # md5 as msmarco-passage's copy, per v1's own download config.
-    trec_dl_2019_qrels_file = Resource('trec-dl-2019-document-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2019qrels-docs.txt'],
-        md5='d7ef53b995ef7e01676ea85d7ec01dda',
-        size=339_438,
-    )
-    trec_dl_2019_scoreddocs_file = Resource('trec-dl-2019-document-scoreddocs.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctest2019-top100.gz'],
-        md5='91071b89dd52124057a87d53cd22028d',
-        size=220_457,
-    )
-    trec_dl_2020_qrels_file = Resource('trec-dl-2020-document-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2020qrels-docs.txt'],
-        md5='e10f3545583b124a4ed5e7992293e15a',
-        size=182_852,
-    )
-    trec_dl_2020_scoreddocs_file = Resource('trec-dl-2020-document-scoreddocs.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctest2020-top100.gz'],
-        md5='96f39dae3443736bd6393bd09a5a0a20',
-        size=208_679,
-    )
 
     # Tables
     # -----------------------------------------
-    docs = DocTable('msmarco-document-docs',
+    docs = DocTable('msmarco-document',
         source=docs_file.gunzip(),
         parser=_MsMarcoDocsParser(),
     )
@@ -195,16 +156,6 @@ with irds.defaults(dua=DUA, lang='en'):
     orcas_queries = TsvQueries('msmarco-document-orcas-queries', source=orcas_queries_file.gunzip())
     orcas_qrels = TrecQrels('msmarco-document-orcas-qrels', source=orcas_qrels_file.gunzip(), defs=ORCAS_QRELS_DEFS)
     orcas_scoreddocs = TrecScoredDocs('msmarco-document-orcas-scoreddocs', source=orcas_scoreddocs_file.gunzip())
-
-    # Named without a corpus prefix in msmarco_passage.py; reused here as-is.
-    trec_dl_2019_doc_qrels = TrecQrels('trec-dl-2019-document-qrels',
-        source=trec_dl_2019_qrels_file, defs=TREC_DL_QRELS_DEFS)
-    trec_dl_2019_doc_scoreddocs = TrecScoredDocs('trec-dl-2019-document-scoreddocs',
-        source=trec_dl_2019_scoreddocs_file.gunzip())
-    trec_dl_2020_doc_qrels = TrecQrels('trec-dl-2020-document-qrels',
-        source=trec_dl_2020_qrels_file, defs=TREC_DL_QRELS_DEFS)
-    trec_dl_2020_doc_scoreddocs = TrecScoredDocs('trec-dl-2020-document-scoreddocs',
-        source=trec_dl_2020_scoreddocs_file.gunzip())
 
     # Benchmarks
     # -----------------------------------------
@@ -226,34 +177,9 @@ with irds.defaults(dua=DUA, lang='en'):
         desc='ORCAS: real user click data as relevance signal (a separate '
              'query set from the official "msmarco" queries).')
 
-    # Named without the msmarco-document prefix on the queries: TREC-DL is
-    # its own benchmark identity, and its queries are literally the same
-    # QueryTable node msmarco-passage's version of this benchmark uses.
-    trec_dl_2019 = Benchmark('trec-dl-2019-document',
-        docs=docs, queries=trec_dl_2019_queries, qrels=trec_dl_2019_doc_qrels,
-        scoreddocs=trec_dl_2019_doc_scoreddocs,
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='TREC Deep Learning 2019 document ranking task.')
-    trec_dl_2019_judged = Benchmark('trec-dl-2019-document-judged',
-        derived_from=trec_dl_2019, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='trec-dl-2019-document restricted to queries with >= 1 qrel.')
-
-    trec_dl_2020 = Benchmark('trec-dl-2020-document',
-        docs=docs, queries=trec_dl_2020_queries, qrels=trec_dl_2020_doc_qrels,
-        scoreddocs=trec_dl_2020_doc_scoreddocs,
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='TREC Deep Learning 2020 document ranking task.')
-    trec_dl_2020_judged = Benchmark('trec-dl-2020-document-judged',
-        derived_from=trec_dl_2020, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='trec-dl-2020-document restricted to queries with >= 1 qrel.')
-
 
 # Registration
 # -----------------------------------------
 irds.register(
     train, dev, eval_, orcas,
-    trec_dl_2019, trec_dl_2019_judged,
-    trec_dl_2020, trec_dl_2020_judged,
 )

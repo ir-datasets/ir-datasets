@@ -12,9 +12,13 @@ Counts, content hashes and sample records come from
 
 Not every v1 subset is covered here (see "Known gaps" at the bottom of this
 docstring / the package README): ``train/triples-small`` (needs a doc/query
-text->id hash-join, not just a stream transform), ``trec-dl-hard`` and its
-folds (queries drawn from two prior years plus an external fold list),
-and ``dev/2`` (its ids come from ``msmarco-passage-v2``, not yet a v2 family).
+text->id hash-join, not just a stream transform) and ``dev/2`` (its ids come
+from ``msmarco-passage-v2``, not yet a v2 family).
+
+TREC-DL (2019/2020) is not defined here -- it judges this corpus and
+``msmarco-document``'s corpus against the same query set, so it lives in its
+own file, ``trec_dl.py``, which imports ``docs`` (below) and
+``extract_qid_pid`` by reference rather than duplicating them.
 """
 import ir_datasets
 from ir_datasets.v2 import (
@@ -32,18 +36,9 @@ DUA = ("Please confirm you agree to the MSMARCO data usage agreement found at "
 
 CITATION = 'dblp:conf/nips/NguyenRSGTMD16'
 MEASURES = ['RR@10']
-TREC_DL_MEASURES = ['nDCG@10', 'RR(rel=2)', 'AP(rel=2)']
 
 QRELS_DEFS = {
     1: 'Labeled by crowd worker as relevant',
-}
-
-TREC_DL_QRELS_DEFS = {
-    3: "Perfectly relevant: The passage is dedicated to the query and contains the exact answer.",
-    2: "Highly relevant: The passage has some answer for the query, but the answer may be a bit "
-       "unclear, or hidden amongst extraneous information.",
-    1: "Related: The passage seems related to the query but does not answer it.",
-    0: "Irrelevant: The passage has nothing to do with the query.",
 }
 
 # 200 training queries held out for validation.
@@ -147,41 +142,6 @@ with irds.defaults(dua=DUA, lang='en'):
         md5='73778cd99f6e0632d12d0b5731b20a02',
         size=673_440_221,
     )
-    # Named to match their tables (see the queries/qrels/scoreddocs Tables
-    # below): the queries file is shared (no "-passage"; the same bytes a
-    # future msmarco-document family would reuse by reference), qrels/
-    # scoreddocs are corpus-specific and carry "-passage".
-    trec_dl_2019_qrels_file = Resource('trec-dl-2019-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2019qrels-pass.txt', Source.irds()],
-        md5='2f4be390198da108f6845c822e5ada14',
-        size=187_092,
-    )
-    trec_dl_2019_queries_file = Resource('trec-dl-2019-queries.tsv.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2019-queries.tsv.gz'],
-        md5='eda71eccbe4d251af83150abe065368c',
-        size=4_276,
-    )
-    trec_dl_2019_scoreddocs_file = Resource('trec-dl-2019-passage-scoreddocs.tsv.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2019-top1000.tsv.gz'],
-        md5='ec9e012746aa9763c7ff10b3336a3ce1',
-        size=26_634_062,
-    )
-    trec_dl_2020_qrels_file = Resource('trec-dl-2020-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2020qrels-pass.txt', Source.irds()],
-        md5='0355ccee7509ac0463e8278186cdd8d1',
-        size=218_617,
-    )
-    trec_dl_2020_queries_file = Resource('trec-dl-2020-queries.tsv.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2020-queries.tsv.gz'],
-        md5='00a406fb0d14ed3752d70d1e4eb98600',
-        size=4_131,
-    )
-    trec_dl_2020_scoreddocs_file = Resource('trec-dl-2020-passage-scoreddocs.tsv.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2020-top1000.tsv.gz'],
-        md5='aa6fbc51d66bd1dc745964c0e140a727',
-        size=26_230_218,
-    )
-
     # Tables
     # -----------------------------------------
     # NOTE: TsvDocs/TsvQueries read their source through io.TextIOWrapper,
@@ -225,26 +185,6 @@ with irds.defaults(dua=DUA, lang='en'):
         source=collectionandqueries_file.member('queries.eval.small.tsv').cache(BASE / 'eval' / 'small' / 'queries.tsv'))
     eval_small_scoreddocs = TrecScoredDocs('msmarco-passage-eval-small-scoreddocs',
         source=eval_small_scoreddocs_file.member('top1000.eval').pipe(extract_qid_pid))
-
-    # TREC-DL is its own benchmark identity, not msmarco-passage's -- and its
-    # queries are shared with msmarco-document's version of the same track
-    # (same query set, different docs/qrels/scoreddocs per corpus). So the
-    # queries are named without a corpus prefix (shared by reference, once a
-    # msmarco-document family exists); qrels/scoreddocs/the benchmark itself
-    # are corpus-specific and carry "-passage".
-    trec_dl_2019_queries = TsvQueries('trec-dl-2019-queries',
-        source=trec_dl_2019_queries_file.gunzip())
-    trec_dl_2019_qrels = TrecQrels('trec-dl-2019-passage-qrels',
-        source=trec_dl_2019_qrels_file, defs=TREC_DL_QRELS_DEFS)
-    trec_dl_2019_scoreddocs = TrecScoredDocs('trec-dl-2019-passage-scoreddocs',
-        source=trec_dl_2019_scoreddocs_file.gunzip().pipe(extract_qid_pid))
-
-    trec_dl_2020_queries = TsvQueries('trec-dl-2020-queries',
-        source=trec_dl_2020_queries_file.gunzip())
-    trec_dl_2020_qrels = TrecQrels('trec-dl-2020-passage-qrels',
-        source=trec_dl_2020_qrels_file, defs=TREC_DL_QRELS_DEFS)
-    trec_dl_2020_scoreddocs = TrecScoredDocs('trec-dl-2020-passage-scoreddocs',
-        source=trec_dl_2020_scoreddocs_file.gunzip().pipe(extract_qid_pid))
 
     # Benchmarks
     # -----------------------------------------
@@ -302,28 +242,6 @@ with irds.defaults(dua=DUA, lang='en'):
         citation=CITATION, metrics=MEASURES,
         desc='Official "small" eval set (6,837 queries).')
 
-    # Named without the msmarco-passage prefix: TREC-DL is its own benchmark
-    # identity (not hierarchical under this family), same as its queries above.
-    trec_dl_2019 = Benchmark('trec-dl-2019-passage',
-        docs=docs, queries=trec_dl_2019_queries, qrels=trec_dl_2019_qrels,
-        scoreddocs=trec_dl_2019_scoreddocs,
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='TREC Deep Learning 2019 passage ranking task.')
-    trec_dl_2019_judged = Benchmark('trec-dl-2019-passage-judged',
-        derived_from=trec_dl_2019, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='trec-dl-2019-passage restricted to queries with >= 1 qrel.')
-
-    trec_dl_2020 = Benchmark('trec-dl-2020-passage',
-        docs=docs, queries=trec_dl_2020_queries, qrels=trec_dl_2020_qrels,
-        scoreddocs=trec_dl_2020_scoreddocs,
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='TREC Deep Learning 2020 passage ranking task.')
-    trec_dl_2020_judged = Benchmark('trec-dl-2020-passage-judged',
-        derived_from=trec_dl_2020, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=TREC_DL_MEASURES,
-        desc='trec-dl-2020-passage restricted to queries with >= 1 qrel.')
-
 
 # Registration
 # -----------------------------------------
@@ -332,6 +250,4 @@ irds.register(
     train_split200_valid, train_medical,
     dev, dev_judged, dev_small,
     eval_, eval_small,
-    trec_dl_2019, trec_dl_2019_judged,
-    trec_dl_2020, trec_dl_2020_judged,
 )
