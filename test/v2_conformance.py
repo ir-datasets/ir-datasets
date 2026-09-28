@@ -47,9 +47,12 @@ class TestV2Graph(unittest.TestCase):
             with self.subTest(node=name):
                 self.assertIn(graph.type_of(name), known)
 
-    def test_exactly_nine_node_types(self):
-        """The paper's whole point: Resource, Table (+ one subtype per entity),
-        Benchmark, Suite -- no more."""
+    def test_exactly_ten_node_types(self):
+        """The paper's original nine (Resource, Table (+ one subtype per
+        benchmark-facet entity), Benchmark, Suite), plus one: QlogTable, a
+        Table subtype for an entity (raw query logs) that is never a
+        Benchmark facet -- see nodes.py's ENTITIES/TABLE_TYPES docstrings.
+        No more than that."""
         self.assertEqual({v2.RESOURCE, v2.TABLE, v2.BENCHMARK, v2.SUITE, *v2.TABLE_TYPES.values()},
                          set(irds.types))
 
@@ -70,20 +73,30 @@ class TestV2Graph(unittest.TestCase):
         for name in antique_resource_names:
             self.assertIsNotNone(graph[name])
 
-    def test_legacy_aliases_resolve(self):
-        aliases = irds.manifest().get('aliases', {})
-        self.assertTrue(aliases)
-        for legacy, target in aliases.items():
-            with self.subTest(alias=legacy):
-                self.assertEqual(target, graph[legacy].qualified_name)
+    def test_legacy_ids_resolve_to_their_v2_replacement(self):
+        """graph[v1_id] loads legacy:v1_id, sees a legacy:V1Dataset, and
+        follows its replaced_by edge -- see graph.py's own docstring."""
+        from ir_datasets.v2.legacy_provider import _REPLACED_BY
+        self.assertTrue(_REPLACED_BY)
+        for v1_id, target in _REPLACED_BY.items():
+            with self.subTest(v1_id=v1_id):
+                self.assertEqual(target, graph[v1_id].qualified_name)
 
-    def test_no_default_provider(self):
-        """Every name has a home, and the home is in the name."""
+    def test_legacy_id_without_replacement_raises(self):
+        from ir_datasets.v2.legacy_provider import _REPLACED_BY, _V1_IDS
+        orphan = next(v1_id for v1_id in _V1_IDS if v1_id not in _REPLACED_BY)
+        with self.assertRaisesRegex(KeyError, 'no known v2 replacement'):
+            graph[orphan]
+
+    def test_bare_names_fall_back_to_irds_then_legacy(self):
+        """No general default provider -- but load() tries irds: first, then
+        legacy:, for a bare name (see graph.py's docstring)."""
         node = graph['irds:antique-test']
         self.assertEqual('irds:antique-test', node.qualified_name)
+        self.assertIs(node, graph['antique-test'])       # bare -> irds: fallback
+        self.assertIs(node, graph['antique/test'])        # bare -> legacy: fallback, then replaced_by
         with self.assertRaisesRegex(KeyError, 'not a qualified name'):
-            graph['antique-test']
-        self.assertIs(node, graph['antique/test'])              # legacy alias: explicit
+            graph['totally-bogus-name-that-does-not-exist-anywhere']
         self.assertTrue(all(':' in n for n in v2.list_datasets()))
 
     def test_vocabulary_is_owned_and_qualified(self):
@@ -241,8 +254,6 @@ class TestV2Registration(unittest.TestCase):
         provider.add_edge('scratch-queries', 'like', 'other')
         self.assertEqual([['acme:scratch-queries', 'acme:like', 'acme:other']],
                          [r for r in provider.edge_rows() if r[1] == 'acme:like'])
-        provider.alias('old/id', 'scratch-queries')
-        self.assertEqual('acme:scratch-queries', provider.aliases['old/id'])
 
     def test_names_may_not_contain_colons(self):
         with self.assertRaises(ValueError):

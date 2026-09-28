@@ -611,21 +611,17 @@ def _HfResolver(spec):
                 # `underlying` is either a local `tables:` key, or (see
                 # `_cached_benchmark`) a fully qualified name of a node
                 # elsewhere in the graph -- distinguished the same way there:
-                # a local key never contains `:`.
+                # a local key never contains `:`. Either way this is the same
+                # node a direct lookup of `underlying` would give -- `table()`
+                # and `default_graph()[...]` are themselves memoized (see
+                # `_cached_table`/module-level caches), so re-resolving this
+                # facet name later just re-derives the same object cheaply,
+                # rather than needing its own alias entry.
                 if ':' in underlying:
                     from .graph import default_graph
                     node = default_graph()[underlying]
-                    alias_target = node.qualified_name
                 else:
                     node = table(underlying)
-                    alias_target = node.name
-                # The facet name (/docs) and the raw key it resolves to
-                # (/corpus) both address the same underlying node (unless
-                # `key` is the default -- caught above); alias the one not
-                # actually constructed under this name so a later lookup
-                # hits the cache instead of rebuilding a duplicate.
-                if default_ref != ('table', underlying):
-                    hf.alias(f'hf:{base}/{key}', alias_target)
                 return node
         raise KeyError(f'{repo}: no such fragment {key!r}; declared tables: '
                        f'{sorted(card["tables"])}'

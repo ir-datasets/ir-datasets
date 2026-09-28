@@ -16,16 +16,19 @@ is free to keep a list of registered datasets internally however it likes.
 ``ManifestProvider`` (``registry.py``) is the batteries-included
 implementation of it -- registration, vocabulary declaration, generators, a
 frozen manifest -- and what ``irds`` (this package's own provider) is built
-from. ``ir_datasets.v2`` contributes nine node types, all owned by its own
+from. ``ir_datasets.v2`` contributes ten node types, all owned by its own
 ``irds`` provider:
 
 * ``Resource`` — bytes, and where to get them
-* ``Table`` — a structured set of records, parsed from a source -- and its five
+* ``Table`` — a structured set of records, parsed from a source -- and its six
   per-entity subtypes, ``DocTable``, ``QueryTable``, ``QrelTable``,
-  ``RunTable``, ``DocPairTable`` (and their format subclasses). Each is
-  its own declared graph type (``is_subtype('irds:QrelTable', 'irds:Table')``
-  is true), so ``list_datasets(type='irds:Table')`` finds all five kinds while
-  ``list_datasets(type='irds:QrelTable')`` finds only qrels tables.
+  ``RunTable``, ``DocPairTable``, ``QlogTable`` (and their format subclasses).
+  Each is its own declared graph type (``is_subtype('irds:QrelTable',
+  'irds:Table')`` is true), so ``list_datasets(type='irds:Table')`` finds all
+  six kinds while ``list_datasets(type='irds:QrelTable')`` finds only qrels
+  tables. ``QlogTable`` (raw query logs, e.g. AOL's/TripClick's session data)
+  is the one entity that is never a Benchmark facet -- see ``nodes.py``'s
+  ``ENTITIES``/``TABLE_TYPES`` docstrings for why.
 * ``Benchmark`` — docs + queries + qrels (etc.) bundled into an evaluable task,
   plus flat metadata (``citation``, ``metrics``)
 * ``Suite`` — a named, structural set of related Benchmarks (e.g. BEIR)
@@ -53,7 +56,9 @@ downloaded ``Resource`` is exactly as valid a graph node as any of ours.
 
 Every name has a home and the home is in the name: ``irds:antique-test``,
 type ``irds:Benchmark``, edge kind ``irds:derived_from``. There is no default
-provider; legacy v1 ids (``antique/test``) still resolve, as explicit aliases.
+provider, beyond ``load()``'s own bare-name fallback to ``irds:``/``legacy:``
+(see ``graph.py``'s docstring); legacy v1 ids (``antique/test``) still
+resolve that way, to whatever v2 node replaced them.
 
 The default API is property access (what v1 called the "beta" API), with the
 legacy method API available on the same objects::
@@ -89,12 +94,12 @@ from .clirmatrix_provider import clirmatrix
 # so, like hf above, its module needs importing here to register its
 # Generators at all, rather than only on first (already-too-late) lookup.
 from .datasets import clirmatrix as _clirmatrix  # noqa: F401
-# legacy is also generator-only for its CLIRMatrix share, and its eager ids
-# depend on irds's own alias table -- see legacy_provider.py's own docstring.
+# legacy is also generator-only for its CLIRMatrix share -- see
+# legacy_provider.py's own docstring.
 from .legacy_provider import legacy
 from .nodes import (
     BENCHMARK, Benchmark, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
-    File, GitRepo, RESOURCE, Resource,
+    File, GitRepo, QlogTable, RESOURCE, Resource,
     QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
 )
@@ -151,7 +156,7 @@ __all__ = [
     'is_subtype',
     # nodes
     'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'DocTable', 'QueryTable',
-    'QrelTable', 'RunTable', 'DocPairTable', 'Benchmark', 'Suite', 'ENTITIES',
+    'QrelTable', 'RunTable', 'DocPairTable', 'QlogTable', 'Benchmark', 'Suite', 'ENTITIES',
     # protocols: the structural contracts Resource/Table/Benchmark/Suite/Node above
     # are one implementation of, not requirements to inherit from
     'NodeProtocol', 'ResourceProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',

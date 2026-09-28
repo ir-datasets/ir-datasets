@@ -5,7 +5,7 @@
 a ``prefix``, ``load(name)``, and ``discover_edges()``. ``ManifestProvider``
 is the batteries-included way to satisfy that for a package with a static
 catalog worth freezing ahead of time -- registration, vocabulary declaration,
-generators, aliases, and a frozen manifest all come with it. A provider
+generators, and a frozen manifest all come with it. A provider
 doesn't have to be one of these (see ``hf_provider.HfProvider``, which mixes
 this in but overrides ``discover_edges`` for a live crawl instead of a
 manifest), and a minimal third-party provider need not use it at all::
@@ -25,8 +25,8 @@ The prefix is intrinsic to the provider object -- there is no ambient "current
 provider" state anywhere.
 
 A provider owns: its nodes, the edges *it* contributes (including informational
-edges about other providers' nodes), its generators, its legacy aliases, and its
-manifest -- and its **vocabulary**: the node types and edge kinds it declares
+edges about other providers' nodes), its generators, and its manifest -- and its
+**vocabulary**: the node types and edge kinds it declares
 (``irds:docs``, ``irds:derived_from``) and the fields it allows ``defaults()`` to set.
 Everything in the graph has a home, and the home is in the name. The union over
 all installed providers is a ``Graph``.
@@ -46,15 +46,14 @@ from .vocabulary import (
 
 PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 
-#: A provider's own ``.aliases`` dict (legacy id -> qualified target) is how
-#: ``Graph.resolve_name`` supports loading a node by its old v1 id -- see
-#: ``alias()`` and ``graph.py``'s ``_catalog``/``resolve_name``. A legacy id
-#: is never itself a node in *this* provider's catalog (it's bookkeeping, not
-#: something ``discover_edges()`` reports); the ``legacy:`` provider
-#: (``legacy_provider.py``) is what makes every v1 id -- across every
-#: bundled provider, not just this one's own aliases -- into a real,
-#: addressable ``legacy:V1Dataset`` node with a ``legacy:replaced_by`` edge
-#: to its v2 counterpart where one is known.
+#: Loading a node by its old v1 id (``ir_datasets.v2.load('antique/test')``)
+#: is not a per-provider concern any more -- see ``graph.py``'s own docstring
+#: and ``Graph.__getitem__``. The ``legacy:`` provider (``legacy_provider.py``)
+#: makes every v1 id -- across every bundled provider -- into a real,
+#: addressable ``legacy:V1Dataset`` node with a ``legacy:replaced_by`` edge to
+#: its v2 counterpart where one is known; ``Graph`` is what turns a lookup
+#: that lands on one of those into its replacement (or fails, if there is
+#: none).
 
 
 class DuplicateNameError(LookupError):
@@ -109,7 +108,6 @@ class ManifestProvider:
         self.nodes = {}            # qualified name -> node
         self.generated = set()     # names of nodes a generator produced
         self.generators = []
-        self.aliases = {}          # legacy id -> qualified name
         # Vocabulary this provider owns.
         self.types = {}            # qualified type -> {'desc', 'parent'}
         self.edge_kinds = {}       # qualified kind -> {'structural', 'desc'}
@@ -243,13 +241,6 @@ class ManifestProvider:
         self.generators.append(generator)
         return generator
 
-    def alias(self, legacy_name, name=None):
-        """Map legacy ids onto this provider's node names -- a mapping, or a
-        single pair. Aliases are permanent: old ids appear in published papers."""
-        items = legacy_name.items() if name is None else [(legacy_name, name)]
-        for legacy, target in items:
-            self.aliases[legacy] = self.qualify(target)
-
     # -- edges --------------------------------------------------------------
 
     def _name(self, node_or_name):
@@ -312,11 +303,8 @@ class ManifestProvider:
                     self._manifest = json.load(fin)
             else:
                 self._manifest = {'nodes': {}, 'edges': [], 'generators': [],
-                                  'aliases': {}, 'types': {},
-                                  'edge_kinds': {}, 'defaultable': []}
+                                  'types': {}, 'edge_kinds': {}, 'defaultable': []}
             self._manifest_index = None
-            for legacy, target in self._manifest.get('aliases', {}).items():
-                self.aliases.setdefault(legacy, target)
             # A frozen provider's vocabulary is known without importing it.
             for qualified, entry in self._manifest.get('types', {}).items():
                 if self.owns(qualified):
@@ -427,7 +415,7 @@ class ManifestProvider:
 
     def __getitem__(self, name):
         """Resolve one of this provider's nodes by (qualified or bare) name."""
-        name = self.aliases.get(name, self.qualify(name))
+        name = self.qualify(name)
         if name in self.nodes:
             return self.nodes[name]
         # Import the ONE module that defines it, per the manifest.

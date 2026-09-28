@@ -6,10 +6,11 @@ narrower version of this lived directly in ``ManifestProvider`` -- see
 ``registry.py``'s and ``graph.py``'s history). A ``legacy:replaced_by`` edge
 points at that v2 node wherever one is actually known -- and, since a legacy
 id is a real graph node here rather than a special-cased triple, resolving
-one the old way (``ir_datasets.v2.load('antique/test')``) is just this
-provider's own ``.alias()`` table (``_REPLACED_BY`` below, the same data as
-each node's ``replaced_by`` edge), picked up by ``Graph.resolve_name`` like
-any other provider's aliases.
+one the old way (``ir_datasets.v2.load('antique/test')``) is just ``Graph``
+following that same edge: it loads the bare name as ``legacy:antique/test``,
+sees a ``legacy:V1Dataset``, and follows its ``replaced_by`` edge to the v2
+node (see ``graph.py``'s own docstring and ``Graph.__getitem__``) -- or
+raises, if the id has none.
 
 Exposed as the ``legacy`` entry point in the ``ir_datasets.providers`` group
 (see pyproject.toml), and added to the default graph when ``ir_datasets.v2``
@@ -840,6 +841,17 @@ _REPLACED_BY = {
     'trec-arabic': 'irds:trec-arabic-docs',
     'trec-arabic/ar2001': 'irds:trec-arabic-2001',
     'trec-arabic/ar2002': 'irds:trec-arabic-2002',
+    'trec-cast/v0': 'irds:trec-cast-v0-docs',
+    'trec-cast/v0/train': 'irds:trec-cast-v0-train',
+    'trec-cast/v0/train/judged': 'irds:trec-cast-v0-train-judged',
+    'trec-cast/v1': 'irds:trec-cast-v1-docs',
+    'trec-cast/v1/2019': 'irds:trec-cast-v1-2019',
+    'trec-cast/v1/2019/judged': 'irds:trec-cast-v1-2019-judged',
+    'trec-cast/v1/2020': 'irds:trec-cast-v1-2020',
+    'trec-cast/v1/2020/judged': 'irds:trec-cast-v1-2020-judged',
+    'trec-fair-2021': 'irds:trec-fair-2021-docs',
+    'trec-fair-2021/eval': 'irds:trec-fair-2021-eval',
+    'trec-fair-2021/train': 'irds:trec-fair-2021-train',
     'trec-mandarin': 'irds:trec-mandarin-docs',
     'trec-mandarin/trec5': 'irds:trec-mandarin-5',
     'trec-mandarin/trec6': 'irds:trec-mandarin-6',
@@ -852,7 +864,51 @@ _REPLACED_BY = {
     'trec-spanish': 'irds:trec-spanish-docs',
     'trec-spanish/trec3': 'irds:trec-spanish-3',
     'trec-spanish/trec4': 'irds:trec-spanish-4',
+    'tripclick': 'irds:tripclick',
+    'tripclick/train/head': 'irds:tripclick-train-head',
+    'tripclick/train/head/dctr': 'irds:tripclick-train-head-dctr',
+    'tripclick/train/tail': 'irds:tripclick-train-tail',
+    'tripclick/train/torso': 'irds:tripclick-train-torso',
+    'tripclick/train': 'irds:tripclick-train',
+    'tripclick/train/hofstaetter-triples': 'irds:tripclick-train-hofstaetter-triples',
+    'tripclick/val/head': 'irds:tripclick-val-head',
+    'tripclick/val/head/dctr': 'irds:tripclick-val-head-dctr',
+    'tripclick/val/tail': 'irds:tripclick-val-tail',
+    'tripclick/val/torso': 'irds:tripclick-val-torso',
+    'tripclick/val': 'irds:tripclick-val',
+    'tripclick/test/head': 'irds:tripclick-test-head',
+    'tripclick/test/tail': 'irds:tripclick-test-tail',
+    'tripclick/test/torso': 'irds:tripclick-test-torso',
+    'tripclick/test': 'irds:tripclick-test',
+    'tweets2013-ia': 'irds:tweets2013-ia',
+    'tweets2013-ia/trec-mb-2013': 'irds:trec-mb-2013',
+    'tweets2013-ia/trec-mb-2014': 'irds:trec-mb-2014',
     'vaswani': 'irds:vaswani',
+    'wikiclir/ar': 'irds:wikiclir-ar',
+    'wikiclir/ca': 'irds:wikiclir-ca',
+    'wikiclir/cs': 'irds:wikiclir-cs',
+    'wikiclir/de': 'irds:wikiclir-de',
+    'wikiclir/en-simple': 'irds:wikiclir-en-simple',
+    'wikiclir/es': 'irds:wikiclir-es',
+    'wikiclir/fi': 'irds:wikiclir-fi',
+    'wikiclir/fr': 'irds:wikiclir-fr',
+    'wikiclir/it': 'irds:wikiclir-it',
+    'wikiclir/ja': 'irds:wikiclir-ja',
+    'wikiclir/ko': 'irds:wikiclir-ko',
+    'wikiclir/nl': 'irds:wikiclir-nl',
+    'wikiclir/nn': 'irds:wikiclir-nn',
+    'wikiclir/no': 'irds:wikiclir-no',
+    'wikiclir/pl': 'irds:wikiclir-pl',
+    'wikiclir/pt': 'irds:wikiclir-pt',
+    'wikiclir/ro': 'irds:wikiclir-ro',
+    'wikiclir/ru': 'irds:wikiclir-ru',
+    'wikiclir/sv': 'irds:wikiclir-sv',
+    'wikiclir/sw': 'irds:wikiclir-sw',
+    'wikiclir/tl': 'irds:wikiclir-tl',
+    'wikiclir/tr': 'irds:wikiclir-tr',
+    'wikiclir/uk': 'irds:wikiclir-uk',
+    'wikiclir/vi': 'irds:wikiclir-vi',
+    'wikiclir/zh': 'irds:wikiclir-zh',
     'wikir/en1k': 'irds:wikir-en1k-docs',
     'wikir/en1k/test': 'irds:wikir-en1k-test',
     'wikir/en1k/training': 'irds:wikir-en1k-train',
@@ -893,11 +949,10 @@ def _register_eager_ids():
         legacy.register(node, module=__name__)
         target = _REPLACED_BY.get(v1_id)
         if target:
-            legacy.add_edge(node, 'replaced_by', target)
             # So ir_datasets.v2.load(v1_id) still resolves the old way --
-            # Graph.resolve_name reads this provider's own alias table like
-            # any other's (see graph.py's module docstring).
-            legacy.alias(v1_id, target)
+            # Graph.__getitem__ follows this edge for any legacy:V1Dataset
+            # it loads (see graph.py's module docstring).
+            legacy.add_edge(node, 'replaced_by', target)
 
 
 def _register_all():

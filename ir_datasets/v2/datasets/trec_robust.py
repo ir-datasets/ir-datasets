@@ -1,23 +1,38 @@
-"""TREC Robust 2004 -- a v2 dataset family.
+"""TREC Robust 2004 & 2005 -- a v2 dataset family.
 
-Judges ``disks45-nocr-docs`` (imported by reference from ``disks45.py``, same
-cross-file pattern as ``trec_adhoc.py``) against the Robust track's own 250
-topics. The five cross-validation folds from Huston & Croft (2014) are each a
-``Filter(query_ids=..., mode='include')`` derived from the base benchmark --
-same shape as ``msmarco_passage.py``'s split200 train/valid -- named
-``trec-robust-2004-foldN`` rather than chaining ``disks45``/``nocr`` into the
-name (see the flat-naming rule: a fold's provenance is already the
+TREC Robust 2004 judges ``disks45-nocr-docs`` (imported by reference from
+``disks45.py``, same cross-file pattern as ``trec_adhoc.py``) against the
+track's own 250 topics. The five cross-validation folds from Huston & Croft
+(2014) are each a ``Filter(query_ids=..., mode='include')`` derived from the
+base benchmark -- same shape as ``msmarco_passage.py``'s split200 train/valid
+-- named ``trec-robust-2004-foldN`` rather than chaining ``disks45``/``nocr``
+into the name (see the flat-naming rule: a fold's provenance is already the
 ``derived_from``/``filtered_by`` edges, not the name).
+
+TREC Robust 2005 judges a different corpus (``aquaint``, imported by
+reference from ``aquaint.py``) against a 50-"hard"-topic subset of 2004's own
+250, using the same ``<num>``/``<title>``/``<desc>``/``<narr>`` topic format
+-- close enough in shape to 2004 to share this module (same QREL_DEFS, same
+family docstring) rather than live in a same-named-but-separate file.
 """
 from ir_datasets.v2 import Benchmark, Filter, Resource, Source, TrecQrels, TrecQueries, irds
-from ir_datasets.v2.datasets.disks45 import DUA, docs
+from ir_datasets.v2.datasets.aquaint import docs as aquaint_docs
+from ir_datasets.v2.datasets.disks45 import DUA, docs as disks45_docs
 
-CITATION = 'Voorhees1996Disks45; Voorhees2004Robust; Huston2014ACO'
+CITATION_2004 = 'Voorhees1996Disks45; Voorhees2004Robust; Huston2014ACO'
+CITATION_2005 = 'Graff2002Aquaint; Voorhees2005Robust'
 
 QREL_DEFS = {
     2: 'highly relevant',
     1: 'relevant',
     0: 'not relevant',
+}
+
+QTYPE_MAP_2005 = {
+    '<num> *(Number:)?': 'query_id',
+    '<title> *(Topic:)?': 'title',
+    '<desc> *(Description:)?': 'description',
+    '<narr> *(Narrative:)?': 'narrative',
 }
 
 # folds from Huston & Croft 2014 <http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.646.7749>
@@ -32,12 +47,12 @@ FOLDS = {
 with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
-    queries_file = Resource('trec-robust-2004-queries.gz',
+    queries_2004_file = Resource('trec-robust-2004-queries.gz',
         sources=['https://trec.nist.gov/data/robust/04.testset.gz', Source.irds()],
         md5='5eac3d774a2f87da61c08a94f945beff',
         size=34_293,
     )
-    qrels_file = Resource('trec-robust-2004-qrels.txt',
+    qrels_2004_file = Resource('trec-robust-2004-qrels.txt',
         sources=['https://trec.nist.gov/data/robust/qrels.robust2004.txt', Source.irds()],
         md5='123c2a0ba2ec31178cb1050995dcfdfa',
         size=6_543_541,
@@ -45,14 +60,14 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    queries = TrecQueries('trec-robust-2004-queries', source=queries_file.gunzip(), count_hint=250)
-    qrels = TrecQrels('trec-robust-2004-qrels', source=qrels_file, defs=QREL_DEFS, count_hint=311_410)
+    queries_2004 = TrecQueries('trec-robust-2004-queries', source=queries_2004_file.gunzip(), count_hint=250)
+    qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QREL_DEFS, count_hint=311_410)
 
     # Benchmarks
     # -----------------------------------------
     robust2004 = Benchmark('trec-robust-2004',
-        docs=docs, queries=queries, qrels=qrels,
-        citation=CITATION,
+        docs=disks45_docs, queries=queries_2004, qrels=qrels_2004,
+        citation=CITATION_2004,
         desc='TREC Robust 2004: focuses on improving the consistency of retrieval '
              'technology by targeting poorly-performing topics.')
 
@@ -60,11 +75,44 @@ with irds.defaults(dua=DUA, lang='en'):
     for fold, qids in FOLDS.items():
         folds[fold] = Benchmark(f'trec-robust-2004-{fold}',
             derived_from=robust2004, filter=Filter(query_ids=qids, mode='include'),
-            citation=CITATION,
+            citation=CITATION_2004,
             desc=f'TREC Robust 2004, {fold} of the 5-fold cross-validation split '
                  f'proposed by Huston & Croft (2014).')
+
+# TREC Robust 2005 -- its own topics/qrels, no NIST DUA (unlike 2004's disks45
+# corpus), so outside the irds.defaults(dua=...) block above.
+# Files
+# -----------------------------------------
+queries_2005_file = Resource('trec-robust-2005-queries.txt',
+    sources=['https://trec.nist.gov/data/robust/05/05.50.topics.txt', Source.irds()],
+    md5='c2e722e6bdfd00f088c6f6517db564ce',
+    size=25_116,
+)
+qrels_2005_file = Resource('trec-robust-2005-qrels.txt',
+    sources=['https://trec.nist.gov/data/robust/05/TREC2005.qrels.txt', Source.irds()],
+    md5='9186021c74090464c50f577d4826e2e2',
+    size=944_950,
+)
+
+# Tables
+# -----------------------------------------
+queries_2005 = TrecQueries('trec-robust-2005-queries',
+    source=queries_2005_file,
+    qtype_map=QTYPE_MAP_2005, lang='en',
+    count_hint=50,
+)
+qrels_2005 = TrecQrels('trec-robust-2005-qrels',
+    source=qrels_2005_file, defs=QREL_DEFS, count_hint=37_798)
+
+# Benchmarks
+# -----------------------------------------
+robust2005 = Benchmark('trec-robust-2005',
+    docs=aquaint_docs, queries=queries_2005, qrels=qrels_2005,
+    citation=CITATION_2005,
+    desc='TREC Robust 2005: a 50 "hard" topic subset of TREC Robust 2004\'s '
+         'query set, judged against the AQUAINT corpus.')
 
 
 # Registration
 # -----------------------------------------
-irds.register(robust2004, *folds.values())
+irds.register(robust2004, *folds.values(), robust2005)

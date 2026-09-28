@@ -7,7 +7,7 @@ those modules*:
 * the node catalog (names, types, metadata)
 * the edges it contributes (adjacency list), incl. edges about other providers' nodes
 * each node's attestation (``Node.attest``): counts, hashes, ...
-* its generators, legacy aliases, and the vocabulary it owns (types, edge kinds)
+* its generators, and the vocabulary it owns (types, edge kinds)
 
 Two tiers:
 
@@ -68,7 +68,6 @@ def build_manifest(provider, graph=None, *, verify=False, only=None, **options):
         'nodes': nodes,
         'edges': provider.edge_rows(),
         'generators': [g.metadata() for g in provider.generators],
-        'aliases': dict(sorted(provider.aliases.items())),
         'types': dict(sorted(provider.types.items())),
         'edge_kinds': dict(sorted(provider.edge_kinds.items())),
         'defaultable': sorted(provider.defaultable_fields),
@@ -108,8 +107,7 @@ def main(argv=None):
         json.dump(manifest, fout, indent=2, sort_keys=False)
         fout.write('\n')
     print(f'wrote {out}: {len(manifest["nodes"])} nodes, {len(manifest["edges"])} '
-          f'edges, {len(manifest["generators"])} generators, '
-          f'{len(manifest["aliases"])} aliases')
+          f'edges, {len(manifest["generators"])} generators')
     # Dangling/cycle checks run over the whole graph: an edge from this provider
     # to another's node is validated against that provider.
     for problem in graph.check():

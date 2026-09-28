@@ -6,16 +6,11 @@ beyond ``protocols.Provider``: ``load(name)`` to resolve one node, and
 ``(subject, predicate, object)`` triples -- ``object`` wrapped in
 ``base.Literal`` when it's a property value rather than another node's name
 (see ``registry.row_triples``). Everything below -- traversal, listing,
-export, validation -- is built from those two calls. Legacy-alias resolution
-is the one exception: it reads a provider's own ``aliases`` dict directly
-(``getattr``-guarded, so a minimal third-party provider without one simply
-has none), not a triple -- a legacy id is bookkeeping for ``load()``, never a
-node ``discover_edges()`` itself reports (see ``registry.ManifestProvider
-.alias()``; ``legacy_provider.py``'s ``legacy:`` provider is what makes v1
-ids into real, browsable nodes instead). A provider's catalog is cached the
-first time a ``Graph`` reads it, since ``discover_edges()`` always does full
-discovery and may be a live crawl (see ``hf``) -- so a query doesn't repeat
-that work, but only for as long as this particular ``Graph`` lives.
+export, validation -- is built from those two calls, unchanged. A provider's
+catalog is cached the first time a ``Graph`` reads it, since
+``discover_edges()`` always does full discovery and may be a live crawl (see
+``hf``) -- so a query doesn't repeat that work, but only for as long as this
+particular ``Graph`` lives.
 
 ``default_graph()`` is the one over every installed entry point in the
 ``ir_datasets.providers`` group. This package declares no providers of its own
@@ -23,8 +18,22 @@ beyond ``irds`` (added explicitly in ``ir_datasets/v2/__init__.py``). A package
 may also add its provider directly when it is imported (``default_graph().add``),
 which is what makes an editable checkout work before its entry points exist.
 
-There is no default provider. Every name is ``prefix:name``; a bare name
-resolves only if some provider declared it as a (legacy) alias.
+There is no default provider -- with one exception, purely for ``load()``'s
+own convenience: a bare name (no ``prefix:``) tries ``irds:`` first, then
+``legacy:``, since those are the two places an unqualified name is actually
+expected -- a plain v2 dataset name, or an old v1 id. Every *other* name still
+needs its ``prefix:``.
+
+That ``legacy:`` fallback is also where a v1 id actually gets resolved to its
+v2 replacement. ``legacy_provider.py``'s ``legacy:`` provider makes every v1
+id a real, browsable ``legacy:V1Dataset`` node, with a ``legacy:replaced_by``
+edge to its v2 counterpart where one is known -- an ordinary node and edge,
+nothing ``Graph`` needs to special-case to list or traverse. Loading one is
+the one deliberate exception: whenever ``Graph.__getitem__`` resolves *any*
+name (bare or qualified) to a ``legacy:V1Dataset``, it follows that node's
+``replaced_by`` edge and returns the v2 node instead -- or raises, if the v1
+id has no known replacement, since a ``V1Dataset`` placeholder is browsable
+but never itself a working dataset.
 """
 import sys
 
@@ -32,6 +41,12 @@ from .base import Literal
 from .vocabulary import is_subtype, structural_kinds
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
+
+#: The one node type ``Graph.__getitem__`` treats specially (see the module
+#: docstring) -- not part of the generic ``Provider``/vocabulary contract,
+#: just the two things needed to resolve a legacy id to its replacement.
+_V1_DATASET_TYPE = 'legacy:V1Dataset'
+_REPLACED_BY_KIND = 'legacy:replaced_by'
 
 
 class Graph:
@@ -56,8 +71,8 @@ class Graph:
     # -- catalog --------------------------------------------------------------
 
     def _catalog(self, provider):
-        """``{'types', 'aliases', 'fwd', 'rev'}`` for one provider, built once
-        from ``discover_edges()`` and cached -- everything else in this class
+        """``{'types', 'fwd', 'rev'}`` for one provider, built once from
+        ``discover_edges()`` and cached -- everything else in this class
         reads from here rather than calling the provider again."""
         cached = self._catalogs.get(provider.prefix)
         if cached is None:
@@ -78,28 +93,18 @@ class Graph:
                     if obj not in bucket:
                         bucket.append(obj)
                     rev.setdefault(obj, set()).add((subject, kind))
-            # Not from discover_edges() -- see the module docstring.
-            aliases = dict(getattr(provider, 'aliases', {}))
-            cached = {'types': types, 'aliases': aliases, 'fwd': fwd, 'rev': rev}
+            cached = {'types': types, 'fwd': fwd, 'rev': rev}
             self._catalogs[provider.prefix] = cached
         return cached
 
     # -- names --------------------------------------------------------------
 
-    def resolve_name(self, name):
-        """A legacy alias -> its qualified target; anything else unchanged."""
-        for provider in self.providers.values():
-            aliases = self._catalog(provider)['aliases']
-            if name in aliases:
-                return aliases[name]
-        return name
-
     def provider_for(self, name):
         """The provider whose namespace a qualified name falls in."""
         if ':' not in name:
             raise KeyError(
-                f'{name!r} is not a qualified name and not a known alias; every '
-                f'node lives in a provider (<prefix>:{name}; installed prefixes: '
+                f'{name!r} is not a qualified name; every node lives in a '
+                f'provider (<prefix>:{name}; installed prefixes: '
                 f'{", ".join(sorted(self.providers)) or "none"})')
         prefix = name.split(':', 1)[0]
         try:
@@ -109,9 +114,37 @@ class Graph:
                 f'no provider for prefix {prefix!r} (needed by {name!r}); is '
                 f'the package that provides it installed?') from None
 
+    def _load_bare(self, name):
+        """A bare name (no ``prefix:``) tries ``irds:`` then ``legacy:`` --
+        see the module docstring -- and fails otherwise. Returns
+        ``(node, qualified_name)`` rather than just the node, so the caller
+        can still run the ``legacy:V1Dataset`` check below against the right
+        name."""
+        for prefix in ('irds', 'legacy'):
+            provider = self.providers.get(prefix)
+            if provider is None:
+                continue
+            candidate = f'{prefix}:{name}'
+            try:
+                return provider.load(candidate), candidate
+            except KeyError:
+                continue
+        raise KeyError(
+            f'{name!r} is not a qualified name; tried irds:{name} and '
+            f'legacy:{name}; every node lives in a provider (<prefix>:{name})')
+
     def __getitem__(self, name):
-        name = self.resolve_name(name)
-        return self.provider_for(name).load(name)
+        if ':' not in name:
+            node, name = self._load_bare(name)
+        else:
+            node = self.provider_for(name).load(name)
+        if node.type == _V1_DATASET_TYPE:
+            targets = self.edges_of(name).get(_REPLACED_BY_KIND)
+            if not targets:
+                raise KeyError(
+                    f'{name!r} is a v1 id with no known v2 replacement')
+            return self[targets[0]]
+        return node
 
     def __contains__(self, name):
         try:
@@ -138,7 +171,6 @@ class Graph:
     def edges_of(self, name, structural_only=False):
         """``{kind: [target, ...]}`` for a node, from every provider -- an
         informational edge about a node may live in another package."""
-        name = self.resolve_name(name)
         out = {}
         for provider in self.providers.values():
             for kind, targets in self._catalog(provider)['fwd'].get(name, {}).items():
@@ -155,7 +187,6 @@ class Graph:
 
     def edge_provenance(self, src, kind, dst):
         """Which provider(s) contributed an edge."""
-        src, dst = self.resolve_name(src), self.resolve_name(dst)
         return [p.prefix for p in self.providers.values()
                 if dst in self._catalog(p)['fwd'].get(src, {}).get(kind, [])]
 
@@ -169,7 +200,6 @@ class Graph:
         """Nodes with an edge of any kind (or of `kind`) pointing at `name`.
         Indexed, across every provider: "which datasets should cite this
         paper?" is ``referrers(article, 'citation')``."""
-        name = self.resolve_name(name)
         pairs = set()
         for provider in self.providers.values():
             pairs |= self._catalog(provider)['rev'].get(name, set())
@@ -179,7 +209,6 @@ class Graph:
         """``(subject, kind)`` pairs for every edge pointing at `name` --
         the reverse-direction counterpart to ``edges_of``, kind preserved
         (unlike ``referrers``, which drops it)."""
-        name = self.resolve_name(name)
         pairs = set()
         for provider in self.providers.values():
             pairs |= self._catalog(provider)['rev'].get(name, set())
@@ -188,7 +217,6 @@ class Graph:
     def dependents(self, name):
         """Nodes that structurally depend on this one: "what uses this corpus?"
         is an edge query, not a prefix grep."""
-        name = self.resolve_name(name)
         structural = structural_kinds()
         pairs = set()
         for provider in self.providers.values():
@@ -197,7 +225,6 @@ class Graph:
 
     def closure(self, name):
         """Every node reachable from this one via structural edges."""
-        name = self.resolve_name(name)
         seen, stack = set(), [name]
         while stack:
             for target in self.dependencies(stack.pop()):
@@ -265,7 +292,6 @@ class Graph:
         """A node's frozen row, from its own provider -- an optional
         capability (a manifest-backed provider has one; a minimal
         ``protocols.Provider`` need not)."""
-        name = self.resolve_name(name)
         try:
             provider = self.provider_for(name)
         except KeyError:
@@ -289,7 +315,6 @@ class Graph:
     # -- listing ------------------------------------------------------------
 
     def type_of(self, name):
-        name = self.resolve_name(name)
         try:
             provider = self.provider_for(name)
         except KeyError:

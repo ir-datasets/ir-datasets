@@ -10,18 +10,21 @@ Nodes are single-type. A benchmark does not *become* docs by wearing a second
 type-hat; it has a ``docs`` edge pointing at a docs table. Facets are therefore
 always unambiguous, and a shared corpus is shared by reference.
 
-Node kinds defined here -- nine, matching the paper's scope:
+Node kinds defined here -- ten, extending the paper's original nine scope by
+one (``QlogTable`` -- see the note by ``TABLE_TYPES`` below for why it is a
+``Table`` subtype but not a Benchmark facet):
 
     Resource    bytes + where to get them (+ integrity/access metadata)
-    Table       one kind of record (docs/queries/qrels/scoreddocs/docpairs),
-               parsed from a source; ``.entity`` names which kind
-      DocTable, QueryTable, QrelTable, RunTable, DocPairTable
-                   -- Table's five per-entity subtypes (``TABLE_TYPES``); each
+    Table       one kind of record (docs/queries/qrels/scoreddocs/docpairs/
+               qlogs), parsed from a source; ``.entity`` names which kind
+      DocTable, QueryTable, QrelTable, RunTable, DocPairTable, QlogTable
+                   -- Table's six per-entity subtypes (``TABLE_TYPES``); each
                    is its own declared graph type (a subtype of ``Table``, not
                    just ``.entity`` alone), so a type-filtered lookup can ask
                    for the specific kind or the whole family
     Benchmark   docs + queries + qrels (etc.) bundled into an evaluable task,
-               plus flat metadata (``citation``, ``metrics``)
+               plus flat metadata (``citation``, ``metrics``) -- ``qlogs`` is
+               deliberately not one of ``etc.`` here; see below
     Suite       a named, structural set of Benchmarks (e.g. BEIR)
 
 Citations as papers-with-edges and metrics as measures-with-edges are future
@@ -67,6 +70,17 @@ def _deprecated(old, new):
 
 # ── Vocabulary (owned by the irds provider) ──────────────────────────────────
 
+#: Benchmark *facet* entities only -- what an evaluable task is built from
+#: (``FACET`` and ``Benchmark.__init__``'s ``docs=``/``queries=``/... keywords
+#: are both keyed from this tuple). ``qlogs`` is deliberately not a member:
+#: a query log is a standalone artifact alongside a corpus (v1 never treats
+#: ``Dataset(docs, qlogs)`` as an evaluable benchmark -- see aol_ia.py's and
+#: tripclick.py's own v1 modules, where the log sits next to docs/queries/
+#: qrels but is never one of a Benchmark's own facets), not a component a
+#: retrieval task is scored against. ``TABLE_TYPES`` below is the fuller,
+#: six-entry vocabulary of *table* kinds (this tuple's five plus ``qlogs``);
+#: keep the distinction in mind before adding something here versus only to
+#: ``TABLE_TYPES``.
 ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs')
 
 #: Node types. Qualified (``irds:DocTable``) because the provider declares them --
@@ -89,17 +103,26 @@ BENCHMARK = irds.node_type('Benchmark', desc='an evaluable task: tables + citati
 SUITE = irds.node_type('Suite', desc='a named set of related benchmarks (e.g. BEIR)')
 
 #: One declared node type per entity, each a subtype of ``TABLE`` -- what
-#: ``DocTable``/``QueryTable``/``QrelTable``/``RunTable``/``DocPairTable``
-#: (and their format subclasses, e.g. ``TsvDocs``) set as their class ``type``.
-#: Keyed by the same entity strings as ``ENTITIES`` so ``TABLE_TYPES[entity]``
-#: is the one place that mapping lives (``DerivedTable`` also uses it, to pick
-#: its type from a runtime ``entity=`` argument rather than a class attribute).
+#: ``DocTable``/``QueryTable``/``QrelTable``/``RunTable``/``DocPairTable``/
+#: ``QlogTable`` (and their format subclasses, e.g. ``TsvDocs``) set as their
+#: class ``type``. Keyed by entity string so ``TABLE_TYPES[entity]`` is the
+#: one place that mapping lives (``DerivedTable`` also uses it, to pick its
+#: type from a runtime ``entity=`` argument rather than a class attribute).
+#: **Not** the same keys as ``ENTITIES``: this dict has six entries, one more
+#: than ``ENTITIES``' five -- ``qlogs`` is a first-class table kind (raw
+#: query-log records, e.g. AOL's or TripClick's session logs) but is not a
+#: Benchmark facet (see the comment on ``ENTITIES`` above for why), so it is
+#: declared here and not there. ``FACET``/``Benchmark`` iterate ``ENTITIES``;
+#: anything that means "every table kind that exists" (e.g.
+#: ``test_exactly_nine_node_types`` in test/v2_conformance.py, generalized to
+#: ten when this was added) should iterate ``TABLE_TYPES`` instead.
 TABLE_TYPES = {
     'docs': irds.node_type('DocTable', parent=TABLE, desc='A Table representing a collection of documents (a corpus). Each row has a doc_id field.'),
     'queries': irds.node_type('QueryTable', parent=TABLE, desc='A Table representing a collection of queries (topis). Each row has a query_id field.'),
     'qrels': irds.node_type('QrelTable', parent=TABLE, desc='A Table representing a collection of relevance assessments (qrels). Each row has query_id, doc_id, and relevnace fields.'),
     'scoreddocs': irds.node_type('RunTable', parent=TABLE, desc='A Table representing a collection of retrieved and scored documents for a set of queries (a run). Each row has query_id, doc_id, and score fields.'),
     'docpairs': irds.node_type('DocPairTable', parent=TABLE, desc='A Table representing paired documents for a query (e.g. positive/negative pairs for training). Each row has query_id, doc_id_a, and doc_id_b fields.'),
+    'qlogs': irds.node_type('QlogTable', parent=TABLE, desc='A Table representing a raw query log (e.g. search-session records issued against a live system). Not a Benchmark facet -- a log is a standalone artifact alongside a corpus, not a component an evaluable task is built from. Row shape is family-specific, but typically carries a user/session id, the (possibly hashed) query, and the ranked/clicked items shown for it.'),
 }
 
 #: Structural edges form a DAG and are what builds, caching and verification
@@ -457,7 +480,8 @@ class GitRepo(Directory):
 
 class Table(Node):
     """The abstract base of the per-entity table types: ``DocTable``,
-    ``QueryTable``, ``QrelTable``, ``RunTable``, ``DocPairTable``.
+    ``QueryTable``, ``QrelTable``, ``RunTable``, ``DocPairTable``,
+    ``QlogTable``.
 
     A table is a named set of homogeneous records: a schema (the NamedTuple in
     ``record_type``), rows, and usually a primary key (``doc_id``, ``query_id``).
@@ -504,7 +528,7 @@ class Table(Node):
       what v1's ``.metadata`` property exposed.
     """
     type = TABLE
-    entity = None  # 'docs' | 'queries' | 'qrels' | 'scoreddocs' | 'docpairs'
+    entity = None  # 'docs' | 'queries' | 'qrels' | 'scoreddocs' | 'docpairs' | 'qlogs'
 
     def __getattr__(self, attr):
         # Self-reference: `docs_table.docs is docs_table`, keyed off whatever
@@ -879,6 +903,32 @@ class DocPairTable(Table):
     def docpairs_iter(self):
         _deprecated('docpairs_iter', 'docpairs')
         return self.handler.docpairs_iter()
+
+
+class QlogTable(Table):
+    """A raw query log (v1's ``BaseQlogs``) -- e.g. AOL's or TripClick's
+    search-session records. Deliberately **not** wired into ``Benchmark`` as
+    a facet (see the comment on ``ENTITIES``/``TABLE_TYPES`` above): a log is
+    a standalone artifact registered alongside a family's docs/queries/qrels,
+    not one of the pieces an evaluable task is scored from -- v1 itself never
+    bundles a qlogs handler into a ``Dataset`` that also has qrels.
+    """
+    type = TABLE_TYPES['qlogs']
+    entity = 'qlogs'
+
+    # -- legacy API (deprecated) ---------------------------------------------
+
+    def qlogs_iter(self):
+        _deprecated('qlogs_iter', 'qlogs')
+        return self.handler.qlogs_iter()
+
+    def qlogs_cls(self):
+        _deprecated('qlogs_cls', 'qlogs.record_type')
+        return self.record_type
+
+    def qlogs_count(self):
+        _deprecated('qlogs_count', 'qlogs (via len)')
+        return self.count()
 
 
 def source_resources(source):

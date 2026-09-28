@@ -49,11 +49,11 @@ transcription of v1's shape, both intentional:
 
 Because the shape changed, a legacy v1 id doesn't become a valid v2 name for
 free the way it would have under a literal ``/``-segment transcription --
-but that only matters for an *alias* table, and one was never in scope here
-regardless of naming: ``ManifestProvider.alias()`` is for a finite,
-hand-listed set (see ``beir.py``), and this family has ~150,000 ids. There is
-no alias for any CLIRMatrix v1 id, bare or otherwise; only the new
-``clirmatrix:...`` form works.
+but that only matters for a ``legacy:replaced_by`` edge, and one was never in
+scope here regardless of naming: ``legacy_provider.py``'s ``_REPLACED_BY`` is
+a finite, hand-listed set (see ``beir.py``), and this family has ~150,000
+ids. There is no ``replaced_by`` edge for any CLIRMatrix v1 id, bare or
+otherwise; only the new ``clirmatrix:...`` form works.
 
 Reuses v1's ``CLIRMatrixQueries``/``CLIRMatrixQrels`` handler classes
 directly as v2 ``parser=`` wrappers (the same "thin layer over v1 machinery"

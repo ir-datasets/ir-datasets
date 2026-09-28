@@ -1,0 +1,240 @@
+v2 migration TODO
+==================
+
+TODO
+---------------------
+- csl.py's csl-trec-2023 (TREC NeuCLIR 2023 technical-document task) should split into
+  trec_neuclir.py, referencing csl.py's docs by reference -- same "every TREC-branded benchmark
+  gets its own per-track file with an unprefixed id" convention just applied to
+  trec_core.py/trec_news.py/trec_covid.py/trec_cds.py/trec_mb.py/trec_ct.py (see Done section).
+  Deliberately deferred, on request -- do NOT split yet.
+- Convert all citations to DBLP (where possible)
+- Citation format consistency
+- *-docs for corpora? I think this should generally be avoided for named corpora (e.g., aquaint), except in special cases. Do a review of what's done where/how.
+- Places where the query set name is distinct from the corpus
+- I think I'd like to move external resources (e.g., clueweb09, nyt, etc) to somewhere special like ~/.ir_datasets/external/... And in general make the handling
+  of these external resources nicer.
+- Display sources better in webapp (corresponding graph changes), including note about mirror in ui
+- Fields shouldn't need a freeze
+- Check on naming of files
+- Dynamic loading of modules?
+- Make trec_cast nicer (and fix/migrate broken bits?)
+- Consider adding suites, e.g., for wikiclir, mmarco, ...
+
+Verification notes
+---------------------
+- Corpora that are DUA/LDC-gated (aquaint, car v1.5/v2.0, gov, gov2,
+  clinicaltrials 2017-2021) can't be `--verify`'d without the real data;
+  only their freely-downloadable queries/qrels were verified against
+  upstream trec.nist.gov/etc. counts in ir_datasets/etc/metadata.json.
+- highwire/medline aren't DUA-gated, but weren't `--verify`'d against live
+  downloads either (multi-hundred-GB corpora); their count_hints come from
+  the exact counts already asserted in test/integration/highwire.py and
+  test/integration/medline.py (not re-derived by hand).
+- None of the other ~25 modules in the Done section below (argsme, c4,
+  clueweb09/12, csl, dpr_w100, istella22, kilt, natural_questions, cord19,
+  nyt, pmc, sara, codesearchnet, touche/touche_image, trec_fair, trec_tot,
+  wapo, tripclick, tweets2013_ia, wikiclir, trec_cast, aol_ia) are attested
+  in manifest.json either -- this was undocumented, not actually verified.
+  As a weak proxy, most of their count_hint literals do overlap the
+  corresponding v1 test/integration/*.py counts, except:
+    - clueweb09.py/clueweb12.py: no numeric overlap found at all.
+    - wikiclir.py: count_hints are computed from variables, not literals,
+      so overlap couldn't even be checked this way.
+    - sara.py: 2 of 3 counts (docs/qrels) actually MISMATCH the v1
+      integration test -- likely because v2 now points at a different
+      upstream (Zenodo) than the old test fixture. Worth checking directly,
+      this could be a real bug rather than just missing documentation.
+  Revisit all of these (proper `--verify` runs) later.
+- After any node rename/split, refreeze with:
+    python3 -m ir_datasets.v2.freeze --only irds:<name1>,irds:<name2>,...
+  then confirm no nodes were unexpectedly removed:
+    python3 -c "import json,subprocess; new=json.load(open('ir_datasets/v2/manifest.json')); old=json.loads(subprocess.check_output(['git','show','HEAD:ir_datasets/v2/manifest.json'])); print(set(old['nodes'])-set(new['nodes']))"
+  and run:
+    python3 -m pytest test/v2_conformance.py -q
+
+Done
+------------------
+- aquaint.py (corpus only)
+- trec_robust.py (TREC Robust 2004 + 2005, merged into one file; judges
+  disks45-nocr and aquaint respectively)
+- car.py (TREC CAR / Complex Answer Retrieval, all versions/folds)
+- clinicaltrials.py (ClinicalTrials.gov corpora; TREC PM/CT benchmarks originally bundled here,
+  later split out into trec_pm.py/trec_ct.py -- see those files' Done entries below)
+- codec.py
+- gov.py (corpus only) + trec_web.py (TREC Web Track 2002-2004 benchmarks)
+- gov2.py (corpus only) + trec_tb.py (TREC Terabyte + Million Query
+  benchmarks)
+- highwire.py (corpus only; 58 per-journal zip Resources + a "legalspans"
+  Resource walked in lockstep by v1's HighwireDocs -- see the module
+  docstring for how that's threaded through a single flat source= list.
+  TREC Genomics 2006/2007 benchmarks originally bundled here, later split
+  out into trec_genomics.py -- see that file's Done entry below)
+- medline.py (corpus only. TREC Genomics 2004/2005 and TREC Precision
+  Medicine 2017/2018 abstracts sub-task benchmarks originally bundled here,
+  later split out into trec_genomics.py/trec_pm.py -- see those files' Done
+  entries below)
+- argsme.py (args.me / computational argumentation corpora; combined
+  argsme-2020-04-01-docs is a derived table over five plain subsets --
+  touche.py's argsme-backed benchmarks are still not migrated)
+- QlogTable: a sixth per-entity Table type (ir_datasets/v2/nodes.py), for raw
+  query logs (v1's BaseQlogs -- AOL's/TripClick's search-session records).
+  Record shape is family-specific (no generic schema the way TsvDocs/
+  TrecQrels/etc. assume one), so no formats.py addition was needed --
+  each family's Parser just reuses its own v1 qlogs handler directly
+  (AolQlogs, TripClickQlogs), same "thin layer over v1 machinery" shape as
+  aol_ia.py's/tweets2013_ia.py's doc handlers. Benchmark-wiring decision:
+  qlogs is deliberately NOT one of Benchmark's facets (ENTITIES stays five
+  entries; TABLE_TYPES grows to six) -- a query log is a standalone artifact
+  registered alongside a family's docs/queries/qrels, not a component an
+  evaluable task is scored from; v1 itself never bundles a qlogs handler
+  into a Dataset that also carries qrels. See the comments on ENTITIES/
+  TABLE_TYPES in nodes.py for the full reasoning, and QlogTable's own
+  docstring there for its legacy-API surface (qlogs_iter/qlogs_cls/
+  qlogs_count, mirroring docpairs'/qrels' shape). test_exactly_nine_node_types
+  in test/v2_conformance.py was renamed/generalized to reflect the new count
+  (ten).
+- aol_ia.py (docs/queries/qrels/qlogs -- all four v1 entities; qlogs is a
+  QlogTable, see the QlogTable bullet above)
+- c4.py (en-noclean-tr split + TREC Misinfo 2021 queries only, matching what
+  v1's own module builds; the ~7168-shard corpus manifest is fetched lazily
+  by v1's own C4Docs, not enumerated as Resources -- see module docstring)
+- clueweb09.py (corpus, 11 language views + catb, DUA-gated Directory) +
+  ClueWeb09's TREC Web 2009-2012 (ad hoc/diversity x en/catb) folded into the
+  existing trec_web.py, and its 2009 Million Query benchmark folded into the
+  existing trec_mq.py -- per-track files, not per-corpus, so a track that
+  spans corpora (trec-web) stays in one file across all of them
+- clueweb12.py (corpus + b13 subset, the latter requiring an external Java
+  tool the user runs themselves -- see module docstring) + ClueWeb12's TREC
+  Web 2013/2014 folded into trec_web.py (same file as clueweb09's and gov's
+  web-track years). Non-TREC benchmark families split into their own files:
+  ntcir_www.py (NTCIR-WWW 1-3) and clef_ehealth.py (CLEF eHealth, English +
+  6 language variants sharing one set of qrels files via a query_id suffix).
+  TREC Misinfo 2019 split into trec_misinfo.py (a TREC track, so it follows
+  the same per-track-file convention as trec_web.py; c4.py's separate
+  trec-misinfo-2021 is a different year/corpus and stays where it is).
+- csl.py (CSL corpus + TREC NeuCLIR 2023 technical-document task, bundled in
+  one file since the corpus has no other use -- not split out like trec_web.py
+  etc., same reasoning car.py bundles its own trec-y1)
+- dpr_w100.py (DPR Wikipedia-100-word-split corpus + 4 benchmarks: Natural
+  Questions dev/train, Trivia QA dev/train, each via its own DprW100Manager
+  reused unmodified from v1)
+- istella22.py (corpus + test benchmark + 5 filtered folds via Filter/a
+  custom lazy id-set callable, since the fold id files need the same
+  leading-zero-stripping v1's fold_qids_factory does, which ids_from_lines
+  doesn't support)
+- kilt.py (KILT Wikipedia corpus + kilt-codec entity-ranking benchmark,
+  reusing CODEC's own 42 queries and per-domain query subsets from codec.py
+  by reference; KILT's own qrels/CODEC_QREL_DEFS are distinct from codec.py's)
+- natural_questions.py (docs/queries/qrels/scoreddocs for dev+train, all via
+  one shared NqManager reused unmodified from v1 -- see module docstring for
+  the DownloadConfig-context duck-typing shim it needed, and the
+  never-cached-in-v1 simplification)
+- cord19.py (CORD-19 corpus, 5 dated snapshots + a full-text variant, docs tables named by
+  snapshot date -- e.g. cord19-2020-05-01-docs. TREC-COVID benchmarks originally bundled here,
+  later split out into trec_covid.py -- see that file's Done entry below)
+- nyt.py (NYT corpus. TREC Core 2017 benchmark originally bundled here, later split out into
+  trec_core.py -- see that file's Done entry below. wksup benchmarks are entirely self-derived
+  from the corpus itself -- headline-as-query, self-referential qrels -- filtered by a hardcoded
+  VALID_IDS set via Filter for the train/valid split)
+- pmc.py (PMC corpus, 2 versions (4-part tar.gz each, v1 also skips known duplicates). TREC CDS
+  2014/2015/2016 benchmarks originally bundled here, later split out into trec_cds.py -- see that
+  file's Done entry below)
+- sara.py (small single-benchmark family: docs/queries/qrels, no subsets)
+- codesearchnet.py (6 per-language zip corpus + train/valid/test splits, plus
+  a separately-sourced "challenge" benchmark whose qrels are joined to query
+  ids by looking up each row's query text against the queries table's own
+  handler)
+- touche_image.py (one corpus, no benchmark of its own -- judged only by
+  touche.py's 2022 task 3)
+- touche.py (Touché 2020-2022, all four tasks; judges argsme.py/clueweb12.py/
+  touche_image.py by reference -- same "track spans multiple corpora" shape
+  as trec_web.py. Task 2 2022 judges its own passage-level TouchePassageDocs
+  table, not clueweb12-docs directly)
+- trec_fair.py (TREC Fair Ranking 2021/2022, each with its own corpus --
+  self-contained, no cross-dataset dependency)
+- legacy_provider.py: trec-fair-2021/trec-fair-2021/train/trec-fair-2021/eval
+  were registered as legacy V1Dataset ids but missing from _REPLACED_BY (v1
+  deprecated these in favor of trec-fair/2021 etc., same shape as
+  trec-robust04 -> trec-robust-2004, but the alias was never wired up when
+  trec_fair.py was migrated) -- now mapped to irds:trec-fair-2021-docs/
+  -train/-eval
+- trec_tot.py (TREC Tip-of-the-Tongue 2023/2024/2025, migrated from TWO
+  legacy modules -- trec_tot.py and trec_tot_2025.py, which share one
+  namespace -- into this single v2 file; 2025 reuses v1's offset-based
+  random-access docstore unmodified for its ~6.4M-doc corpus)
+- wapo.py (Washington Post corpus, v2/v4. TREC Core 2018 and TREC News 2018/2019/2020 background
+  linking benchmarks originally bundled here, later split out into trec_core.py/trec_news.py --
+  see those files' Done entries below; trec-news-2020 has no docs facet at all, preserved as-is
+  from v1, which never defined a v3 collection either)
+- tripclick.py (clinical-search click data; head/torso/tail query-frequency
+  slices x train/val/test, plus dctr-relevance variants of head and a
+  hofstaetter-triples docpairs variant of train -- all DUA-gated Source.local()
+  Resources except the auto-downloadable hofstaetter-triples file; combined
+  train/val/test benchmarks reuse v1's ConcatQueries/ConcatQrels/
+  ConcatScoreddocs, rebuilt from the raw per-slice files rather than the
+  already-built per-slice Tables, same shape argsme.py's combined docs table
+  uses. The `logs` subset is now migrated too: tripclick-logs-docs (a
+  DocTable, TripClickPartialDoc rows, via v1's FixAllarticles/Cache pipeline
+  over allarticles.txt, unmodified) and tripclick-logs-qlogs (a QlogTable,
+  via v1's TripClickQlogs, unmodified) -- both standalone nodes, not a
+  Benchmark, per the QlogTable bullet above)
+- tweets2013_ia.py (Internet-Archive-sourced tweets corpus; v1's Tweets2013IaDocs handler -- its
+  from-scratch lookup-optimized on-disk layout -- reused unmodified. TREC Microblog 2013/2014
+  benchmarks originally bundled here, later split out into trec_mb.py -- see that file's Done
+  entry below)
+- wikiclir.py (Wikipedia cross-lingual IR, 25 target-language corpora judged
+  by inter-language links against one shared English query set; each
+  language's queries are v1's own FilteredQueries over that shared set,
+  filtered to that language's own qrels' query ids at parse time -- not a
+  Filter/Benchmark.derived_from derivation, since only queries are shared/
+  filtered, not docs or qrels)
+- trec_cast.py (TREC CAsT v0/v0-train/v1/v1-2019/v1-2020, each's own /judged
+  variant via Filter(queries_with_qrels=True) -- v2/2021 and v3/2022 stay
+  unmigrated since v1 itself has them commented out). Migrated with
+  **degraded provenance**, by deliberate choice, not oversight: the two docs
+  tables (trec-cast-v0-docs = WaPo v2 + MS MARCO passage + TREC CAR v2.0,
+  trec-cast-v1-docs = MS MARCO passage + TREC CAR v2.0) reuse v1's own
+  PrefixedDocs/LazyDocs/IterDocs wholesale -- each Table's Parser just calls
+  v1's own (not v2's) ir_datasets.load('trec-cast/v0').docs_handler() and
+  returns whatever v1 already built, source=[] (no Resources). That means
+  these two nodes carry **no derived_from edges at all** into wapo.py's/
+  msmarco_passage.py's/car.py's own v2 docs nodes -- unlike every other
+  cross-file reuse in this codebase (kilt.py/touche.py import an actual v2
+  Table object, so the edge is real); v1's PrefixedDocs bottoms out in v1's
+  own registry, which has no v2 node to point at. Queries/qrels/scoreddocs
+  have no such problem and are ordinary source=Resource-backed v2 Tables
+  (CastQueries reused from v1 as a Parser, same "thin layer" shape as
+  car.py's CarQueries). See the module docstring for the full tradeoff.
+- trec_robust04.py -- deprecated in v1 (message points users at
+  disks45/nocr/trec-robust-2004), already covered by trec_robust.py's
+  robust2004 benchmark.
+- Per-track TREC benchmark files, split out of their corpus files (highwire.py/medline.py/
+  clinicaltrials.py/nyt.py/wapo.py/cord19.py/pmc.py/tweets2013_ia.py), unprefixed ids, docs
+  imported by reference from the corpus file -- the "TREC track's home shouldn't depend on how
+  many corpora happen to be migrated for it yet" convention now applied uniformly (overturns the
+  older "single TREC-branded consumer stays bundled in its corpus file" convention those files'
+  docstrings used to argue for; csl.py's csl-trec-2023 and car.py's car-trec-y1 are the two
+  remaining/deliberate exceptions -- see TODO and the note below):
+    - trec_genomics.py: unifies highwire.py's 2006/2007 + medline.py's 2004/2005.
+    - trec_pm.py: unifies medline.py's abstracts sub-task + clinicaltrials.py's clinical-trials
+      sub-task (2017/2018/2019), renamed trec-pm-2017-abstracts/-trials etc. to disambiguate
+      sub-tasks now sharing one file.
+    - trec_core.py: unifies nyt.py's 2017 + wapo.py's 2018.
+    - trec_news.py: wapo.py's 2018/2019/2020.
+    - trec_covid.py: cord19.py's trec-covid/round1-5 (cord19.py's own doc tables were renamed by
+      snapshot date instead of TREC-COVID round number, since "round" is a judging concept, not a
+      corpus property).
+    - trec_cds.py: pmc.py's 2014/2015/2016.
+    - trec_mb.py: tweets2013_ia.py's 2013/2014.
+    - trec_ct.py: clinicaltrials.py's 2021/2022.
+  car.py's car-trec-y1/-auto/-manual was deliberately NOT moved: the track name and the corpus are
+  the same thing (TREC Complex Answer Retrieval *is* the CAR corpus's own track, unlike
+  Core/News/Covid/CDS/MB/CT/PM/Genomics, which are corpus-agnostic track names that only happen to
+  have one corpus migrated so far). dpr_w100.py's ids (natural-questions-*, trivia-qa-*) were never
+  a candidate -- not TREC-branded, just the corpus's own benchmark naming.
+  legacy_provider.py's _REPLACED_BY updated where a mapping existed (only
+  tweets2013-ia/trec-mb-2013/2014 had one -- the rest were undocumented v1 legacy ids with no
+  mapping at all, a pre-existing gap, not introduced by this rename). Freeze +
+  test/v2_conformance.py re-run clean after each split (0 nodes unexpectedly removed, 90 tests
+  pass).
