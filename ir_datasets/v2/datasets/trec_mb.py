@@ -17,7 +17,8 @@ from ir_datasets.datasets.tweets2013_ia import QREL_DEFS, QTYPE_MAP_13, QTYPE_MA
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, irds
 from ir_datasets.v2.datasets.tweets2013_ia import docs as tweets2013_ia_docs
 
-CITATION = 'Lin2013Overview; Lin2014Overview; Sequiera2017Finally'
+CITATION_2013 = 'dblp:conf/trec/LinE13'
+CITATION_2014 = 'dblp:conf/trec/LinWES14'
 
 # Files
 # -----------------------------------------
@@ -47,7 +48,7 @@ qrels_2014_file = Resource('trec-mb-2014-qrels.txt',
 queries_2013 = TrecQueries('trec-mb-2013-queries',
     source=queries_2013_file,
     qtype=TrecMb13Query, qtype_map=QTYPE_MAP_13, remove_tags=RM_TAGS,
-    lang='en', count_hint=60,
+    lang='en', count_hint=60, citation=CITATION_2013,
 )
 qrels_2013 = TrecQrels('trec-mb-2013-qrels',
     source=qrels_2013_file, defs=QREL_DEFS, count_hint=71_279)
@@ -55,7 +56,7 @@ qrels_2013 = TrecQrels('trec-mb-2013-qrels',
 queries_2014 = TrecQueries('trec-mb-2014-queries',
     source=queries_2014_file,
     qtype=TrecMb14Query, qtype_map=QTYPE_MAP_14, remove_tags=RM_TAGS,
-    lang='en', count_hint=55,
+    lang='en', count_hint=55, citation=CITATION_2014,
 )
 qrels_2014 = TrecQrels('trec-mb-2014-qrels',
     source=qrels_2014_file, defs=QREL_DEFS, count_hint=57_985)
@@ -64,10 +65,10 @@ qrels_2014 = TrecQrels('trec-mb-2014-qrels',
 # -----------------------------------------
 mb_2013 = Benchmark('trec-mb-2013',
     docs=tweets2013_ia_docs, queries=queries_2013, qrels=qrels_2013,
-    citation=CITATION, desc='TREC Microblog 2013.')
+    desc='TREC Microblog 2013.')
 mb_2014 = Benchmark('trec-mb-2014',
     docs=tweets2013_ia_docs, queries=queries_2014, qrels=qrels_2014,
-    citation=CITATION, desc='TREC Microblog 2014.')
+    desc='TREC Microblog 2014.')
 
 
 # Registration

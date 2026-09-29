@@ -11,8 +11,8 @@ plain member of its own tar, no further gzip.
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, irds
 from ir_datasets.v2.datasets.disks45 import DUA, docs
 
-CITATION_TREC7 = 'Voorhees1996Disks45; Voorhees1998Trec7'
-CITATION_TREC8 = 'Voorhees1996Disks45; Voorhees1999Trec8'
+CITATION_TREC7 = 'Voorhees1998Trec7'
+CITATION_TREC8 = 'dblp:conf/trec/VoorheesH99'
 
 QREL_DEFS = {
     1: 'relevant',
@@ -45,7 +45,8 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    trec7_queries = TrecQueries('trec-adhoc-7-queries', source=trec7_queries_file.gunzip(), count_hint=50)
+    trec7_queries = TrecQueries('trec-adhoc-7-queries', source=trec7_queries_file.gunzip(), count_hint=50,
+        citation=CITATION_TREC7)
     trec7_qrels = TrecQrels('trec-adhoc-7-qrels',
         source=[
             trec7_qrels_file.member('qrels.trec7.adhoc.part1.gz').gunzip(),
@@ -53,12 +54,13 @@ with irds.defaults(dua=DUA, lang='en'):
             trec7_qrels_file.member('qrels.trec7.adhoc.part3.gz').gunzip(),
             trec7_qrels_file.member('qrels.trec7.adhoc.part4.gz').gunzip(),
             trec7_qrels_file.member('qrels.trec7.adhoc.part5.gz').gunzip(),
-        ], defs=QREL_DEFS, count_hint=80_345)
+        ], defs=QREL_DEFS, count_hint=80_345, citation=CITATION_TREC7)
 
-    trec8_queries = TrecQueries('trec-adhoc-8-queries', source=trec8_queries_file.gunzip(), count_hint=50)
+    trec8_queries = TrecQueries('trec-adhoc-8-queries', source=trec8_queries_file.gunzip(), count_hint=50,
+        citation=CITATION_TREC8)
     trec8_qrels = TrecQrels('trec-adhoc-8-qrels',
         source=trec8_qrels_file.member('qrels.trec8.adhoc.parts1-5'),
-        defs=QREL_DEFS, count_hint=86_830)
+        defs=QREL_DEFS, count_hint=86_830, citation=CITATION_TREC8)
 
     # Benchmarks
     # -----------------------------------------

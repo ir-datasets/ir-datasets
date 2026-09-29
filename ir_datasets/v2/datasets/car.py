@@ -27,6 +27,10 @@ from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 from ir_datasets.v2 import Benchmark, DocTable, QueryTable, Resource, TrecQrels, irds
 from ir_datasets.v2.formats import Parser
 
+CITATION_CORPUS = 'Dietz2017Car'
+CITATION_Y1 = 'dblp:conf/trec/DietzVRC17'
+CITATION_TEST200 = 'dblp:conf/ictir/NanniMMD17'
+
 AUTO_QRELS = {
     1: 'Paragraph appears under heading',
 }
@@ -115,12 +119,14 @@ docs_v15 = DocTable('car-v1.5-docs',
     parser=_CarDocsParser(),
     lang='en',
     count_hint=29_678_367,
+    citation=CITATION_CORPUS,
 )
 docs_v20 = DocTable('car-v2.0-docs',
     source=docs_v20_file.member('paragraphCorpus/dedup.articles-paragraphs.cbor', compression='xz'),
     parser=_CarDocsParser(),
     lang='en',
     count_hint=29_794_697,
+    citation=CITATION_CORPUS,
 )
 
 trec_y1_queries = QueryTable('car-trec-y1-queries',
@@ -128,13 +134,14 @@ trec_y1_queries = QueryTable('car-trec-y1-queries',
     parser=_CarQueriesParser(),
     lang='en',
     count_hint=2_287,
+    citation=CITATION_Y1,
 )
 trec_y1_manual_qrels = TrecQrels('car-trec-y1-manual-qrels',
     source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/manual.benchmarkY1test.cbor.hierarchical.qrels'),
-    defs=MANUAL_QRELS, count_hint=29_571)
+    defs=MANUAL_QRELS, count_hint=29_571, citation=CITATION_Y1)
 trec_y1_auto_qrels = TrecQrels('car-trec-y1-auto-qrels',
     source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/automatic.benchmarkY1test.cbor.hierarchical.qrels'),
-    defs=AUTO_QRELS, count_hint=5_820)
+    defs=AUTO_QRELS, count_hint=5_820, citation=CITATION_Y1)
 
 test200_queries = QueryTable('car-test200-queries',
     source=test200_file.member('test200/train.test200.cbor.outlines', compression='xz'),
@@ -178,6 +185,7 @@ trec_y1_auto = Benchmark('car-trec-y1-auto',
 
 test200 = Benchmark('car-test200',
     docs=docs_v15, queries=test200_queries, qrels=test200_qrels,
+    citation=CITATION_TEST200,
     desc='TREC CAR v1.5, a small 200-query sample of the train set, useful for quick tests.')
 
 train_benchmarks = {}

@@ -54,6 +54,7 @@ docs = DocTable('tweets2013-ia',
     parser=_Tweets2013IaDocsParser(),
     lang=None,  # multiple languages
     count_hint=252_713_133,
+    citation='dblp:conf/sigir/SequieraL17',
 )
 
 

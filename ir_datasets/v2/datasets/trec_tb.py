@@ -130,63 +130,63 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    tb2004_queries = TrecQueries('trec-tb-2004-queries', source=tb2004_queries_file, count_hint=50)
-    tb2004_qrels = TrecQrels('trec-tb-2004-qrels', source=tb2004_qrels_file, defs=QREL_DEFS, count_hint=58_077)
+    tb2004_queries = TrecQueries('trec-tb-2004-queries', source=tb2004_queries_file, count_hint=50, citation=CITATION_TB_2004)
+    tb2004_qrels = TrecQrels('trec-tb-2004-qrels', source=tb2004_qrels_file, defs=QREL_DEFS, count_hint=58_077, citation=CITATION_TB_2004)
 
-    tb2005_queries = TrecQueries('trec-tb-2005-queries', source=tb2005_queries_file, count_hint=50)
-    tb2005_qrels = TrecQrels('trec-tb-2005-qrels', source=tb2005_qrels_file, defs=QREL_DEFS, count_hint=45_291)
+    tb2005_queries = TrecQueries('trec-tb-2005-queries', source=tb2005_queries_file, count_hint=50, citation=CITATION_TB_2005)
+    tb2005_qrels = TrecQrels('trec-tb-2005-qrels', source=tb2005_qrels_file, defs=QREL_DEFS, count_hint=45_291, citation=CITATION_TB_2005)
     tb2005_np_queries = TrecQueries('trec-tb-2005-named-page-queries',
-        source=tb2005_np_queries_file, qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP, count_hint=252)
+        source=tb2005_np_queries_file, qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP, count_hint=252, citation=CITATION_TB_2005)
     tb2005_np_qrels = TrecQrels('trec-tb-2005-named-page-qrels',
-        source=tb2005_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=11_729)
+        source=tb2005_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=11_729, citation=CITATION_TB_2005)
     tb2005_eff_queries = QueryTable('trec-tb-2005-efficiency-queries',
         source=tb2005_eff_queries_file.gunzip(),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=50_000)
+        count_hint=50_000, citation=CITATION_TB_2005)
     tb2005_eff_qrels = QrelTable('trec-tb-2005-efficiency-qrels',
         source=tb2005_qrels_file,
         parser=_RewriteQidsParser(EFF_MAP_05),
-        defs=QREL_DEFS, count_hint=45_291)
+        defs=QREL_DEFS, count_hint=45_291, citation=CITATION_TB_2005)
 
-    tb2006_queries = TrecQueries('trec-tb-2006-queries', source=tb2006_queries_file, count_hint=50)
-    tb2006_qrels = TrecQrels('trec-tb-2006-qrels', source=tb2006_qrels_file, defs=QREL_DEFS, count_hint=31_984)
+    tb2006_queries = TrecQueries('trec-tb-2006-queries', source=tb2006_queries_file, count_hint=50, citation=CITATION_TB_2006)
+    tb2006_qrels = TrecQrels('trec-tb-2006-qrels', source=tb2006_qrels_file, defs=QREL_DEFS, count_hint=31_984, citation=CITATION_TB_2006)
     tb2006_np_queries = TrecQueries('trec-tb-2006-named-page-queries',
-        source=tb2006_np_queries_file, qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP, count_hint=181)
+        source=tb2006_np_queries_file, qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP, count_hint=181, citation=CITATION_TB_2006)
     tb2006_np_qrels = TrecQrels('trec-tb-2006-named-page-qrels',
-        source=tb2006_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=2_361)
+        source=tb2006_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=2_361, citation=CITATION_TB_2006)
 
     tb2006_eff_all_queries = QueryTable('trec-tb-2006-efficiency-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.all'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=100_000)
+        count_hint=100_000, citation=CITATION_TB_2006)
     tb2006_eff_all_qrels = QrelTable('trec-tb-2006-efficiency-qrels',
         source=tb2006_qrels_file,
         parser=_RewriteQidsParser(EFF_MAP_06),
-        defs=QREL_DEFS, count_hint=31_984)
+        defs=QREL_DEFS, count_hint=31_984, citation=CITATION_TB_2006)
     tb2006_eff_10k_queries = QueryTable('trec-tb-2006-efficiency-10k-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.10k'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=10_000)
+        count_hint=10_000, citation=CITATION_TB_2006)
     tb2006_eff_stream1_queries = QueryTable('trec-tb-2006-efficiency-stream1-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.stream-1'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=25_000)
+        count_hint=25_000, citation=CITATION_TB_2006)
     tb2006_eff_stream2_queries = QueryTable('trec-tb-2006-efficiency-stream2-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.stream-2'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=25_000)
+        count_hint=25_000, citation=CITATION_TB_2006)
     tb2006_eff_stream3_queries = QueryTable('trec-tb-2006-efficiency-stream3-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.stream-3'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=25_000)
+        count_hint=25_000, citation=CITATION_TB_2006)
     tb2006_eff_stream3_qrels = QrelTable('trec-tb-2006-efficiency-stream3-qrels',
         source=tb2006_qrels_file,
         parser=_RewriteQidsParser(EFF_MAP_06),
-        defs=QREL_DEFS, count_hint=31_984)
+        defs=QREL_DEFS, count_hint=31_984, citation=CITATION_TB_2006)
     tb2006_eff_stream4_queries = QueryTable('trec-tb-2006-efficiency-stream4-queries',
         source=tb2006_eff_queries_file.member('06.efficiency_topics.stream-4'),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=25_000)
+        count_hint=25_000, citation=CITATION_TB_2006)
 
     # Benchmarks
     # -----------------------------------------

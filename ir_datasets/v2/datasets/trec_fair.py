@@ -41,9 +41,8 @@ metadata file, both ``.gunzip()``-wrapped ``Resource``s) so
 though the parser reads them positionally rather than through some combined
 pipeline object.
 
-No ``bibtex_ids`` are declared for this track in ``docs/trec-fair.yaml``, so
-no ``citation=`` is set anywhere in this module (omitted rather than
-guessed, per the migration brief).
+``docs/trec-fair.yaml`` declares no ``bibtex_ids``; the Benchmarks cite the
+TREC 2021/2022 Fair Ranking track overviews (added in the DBLP pass).
 """
 from ir_datasets.datasets.trec_fair import (
     FairTrec2022Doc, FairTrec2022TrainQuery, FairTrecDoc,
@@ -215,14 +214,17 @@ train_2022_qrels = QrelTable('trec-fair-2022-train-qrels',
 # -----------------------------------------
 trec_fair_2021_train = Benchmark('trec-fair-2021-train',
     docs=docs_2021, queries=train_2021_queries, qrels=train_2021_qrels,
+    citation='dblp:conf/trec/EkstrandRM021',
     desc='TREC Fair Ranking 2021, official train set.')
 
 trec_fair_2021_eval = Benchmark('trec-fair-2021-eval',
     docs=docs_2021, queries=eval_2021_queries, qrels=eval_2021_qrels,
+    citation='dblp:conf/trec/EkstrandRM021',
     desc='TREC Fair Ranking 2021, official evaluation set.')
 
 trec_fair_2022_train = Benchmark('trec-fair-2022-train',
     docs=docs_2022, queries=train_2022_queries, qrels=train_2022_qrels,
+    citation='dblp:conf/trec/EkstrandMR022',
     desc='TREC Fair Ranking 2022, official train set.')
 
 

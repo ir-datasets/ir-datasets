@@ -130,12 +130,14 @@ with irds.defaults(lang='en'):
         source=[en_noclean_sources_file, en_noclean_checkpoints_file],
         parser=_C4DocsParser(source_name_filter=r'en\.noclean\.c4-train', filter_name='train'),
         count_hint=1_063_805_381,
+        citation='dblp:journals/jmlr/RaffelSRLNMZLL20',
     )
 
     trec_misinfo_2021_queries = QueryTable('c4-en-noclean-tr-trec-misinfo-2021-queries',
         source=trec_misinfo_2021_queries_file,
         parser=_TrecXmlQueriesParser(MisinfoQuery, qtype_map=misinfo_map),
         count_hint=50,
+        citation='dblp:conf/trec/ClarkeMS21',
     )
 
     # Benchmarks

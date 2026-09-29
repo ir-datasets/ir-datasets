@@ -89,6 +89,7 @@ qrels = TrecQrels('csl-trec-2023-qrels',
 # -----------------------------------------
 csl_trec_2023 = Benchmark('csl-trec-2023',
     docs=docs, queries=queries, qrels=qrels,
+    citation='dblp:conf/coling/LiZ0S0MZ22',
     desc='TREC NeuCLIR 2023 technical-document task.')
 
 

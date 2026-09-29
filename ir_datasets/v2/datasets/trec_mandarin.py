@@ -26,8 +26,8 @@ DATA_ACCESS = (
     "for access. Once obtained, symlink or copy it here: {path}"
 )
 
-CITATION_TREC5 = 'dblp:conf/trec/Smeaton96; corpus: Rogers2000Mandarin'
-CITATION_TREC6 = 'dblp:conf/trec/Wilkinson97; corpus: Rogers2000Mandarin'
+CITATION_TREC5 = 'dblp:conf/trec/Smeaton96'
+CITATION_TREC6 = 'dblp:conf/trec/Wilkinson97'
 
 
 class TrecMandarinQuery(NamedTuple):
@@ -98,6 +98,7 @@ docs = TrecDocs('trec-mandarin-docs',
     path_globs=['**/xinhua/x*', '**/peoples-daily/pd*'],
     lang='zh',
     count_hint=164_789,
+    citation='Rogers2000Mandarin',
 )
 
 # Query text mixes English and Chinese fields (title_en/title_zh/...), so no
@@ -106,17 +107,21 @@ trec5_queries = TrecQueries('trec-mandarin-5-queries',
     source=trec5_queries_file.gunzip(),
     qtype=TrecMandarinQuery, qtype_map=QTYPE_MAP, encoding='GBK',
     lang=None,
+    citation=CITATION_TREC5,
 )
 trec5_qrels = TrecQrels('trec-mandarin-5-qrels',
-    source=trec5_qrels_file.gunzip(), defs=QREL_DEFS)
+    source=trec5_qrels_file.gunzip(), defs=QREL_DEFS,
+    citation=CITATION_TREC5)
 
 trec6_queries = TrecQueries('trec-mandarin-6-queries',
     source=trec6_queries_file.gunzip(),
     qtype=TrecMandarinQuery, qtype_map=QTYPE_MAP, encoding='GBK',
     lang=None,
+    citation=CITATION_TREC6,
 )
 trec6_qrels = TrecQrels('trec-mandarin-6-qrels',
-    source=trec6_qrels_file.gunzip(), defs=QREL_DEFS)
+    source=trec6_qrels_file.gunzip(), defs=QREL_DEFS,
+    citation=CITATION_TREC6)
 
 # Benchmarks
 # -----------------------------------------

@@ -24,7 +24,7 @@ from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, 
 from ir_datasets.v2.datasets.nyt import docs as nyt_docs
 from ir_datasets.v2.datasets.wapo import docs_v2 as wapo_v2_docs
 
-CITATION_2017 = 'dblp:conf/trec/AllanHKLGV17; Sandhaus2008Nyt'
+CITATION_2017 = 'dblp:conf/trec/AllanHKLGV17'
 
 with irds.defaults(lang='en'):
     # Files
@@ -53,9 +53,11 @@ with irds.defaults(lang='en'):
     # Tables
     # -----------------------------------------
     core_2017_queries = TrecQueries('trec-core-2017-queries',
-        source=core_2017_queries_file, count_hint=50)
+        source=core_2017_queries_file, count_hint=50,
+        citation=CITATION_2017)
     core_2017_qrels = TrecQrels('trec-core-2017-qrels',
-        source=core_2017_qrels_file, defs=NYT_CORE_QREL_DEFS, count_hint=30_030)
+        source=core_2017_qrels_file, defs=NYT_CORE_QREL_DEFS, count_hint=30_030,
+        citation=CITATION_2017)
 
     core_2018_queries = TrecQueries('trec-core-2018-queries',
         source=core_2018_queries_file, count_hint=50)

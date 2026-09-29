@@ -75,20 +75,20 @@ with irds.defaults(dua=DUA, lang='en'):
     mq2007_queries = QueryTable('trec-mq-2007-queries',
         source=mq2007_queries_file.gunzip(),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=10_000)
+        count_hint=10_000, citation=CITATION_MQ_2007)
     mq2007_qrels = QrelTable('trec-mq-2007-qrels',
         source=mq2007_qrels_file,
         parser=_TrecPrelsParser(),
-        defs=QREL_DEFS, count_hint=73_015)
+        defs=QREL_DEFS, count_hint=73_015, citation=CITATION_MQ_2007)
 
     mq2008_queries = QueryTable('trec-mq-2008-queries',
         source=mq2008_queries_file.gunzip(),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=10_000)
+        count_hint=10_000, citation=CITATION_MQ_2008)
     mq2008_qrels = QrelTable('trec-mq-2008-qrels',
         source=mq2008_qrels_file.member('2008.RC1/prels'),
         parser=_TrecPrelsParser(),
-        defs=QREL_DEFS, count_hint=15_211)
+        defs=QREL_DEFS, count_hint=15_211, citation=CITATION_MQ_2008)
 
     # Benchmarks
     # -----------------------------------------
@@ -122,11 +122,11 @@ with irds.defaults(dua=CW09_DUA, lang='en'):
     mq2009_queries = QueryTable('trec-mq-2009-queries',
         source=mq2009_queries_file.gunzip(),
         parser=_TrecColonQueriesParser(encoding='latin1'),
-        count_hint=40_000)
+        count_hint=40_000, citation=CITATION_MQ_2009)
     mq2009_qrels = QrelTable('trec-mq-2009-qrels',
         source=mq2009_qrels_file.gunzip(),
         parser=_TrecPrelsParser(),
-        defs=QREL_DEFS_09, count_hint=34_534)
+        defs=QREL_DEFS_09, count_hint=34_534, citation=CITATION_MQ_2009)
 
     # Benchmarks
     # -----------------------------------------

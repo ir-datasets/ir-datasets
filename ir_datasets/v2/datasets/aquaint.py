@@ -42,6 +42,7 @@ docs = TrecDocs('aquaint',
     path_globs=['aquaint_comp/apw/*/*.gz', 'aquaint_comp/nyt/*/*.gz', 'aquaint_comp/xie/*/*.gz'],
     lang='en',
     count_hint=1_033_461,
+    citation='Graff2002Aquaint',
 )
 
 

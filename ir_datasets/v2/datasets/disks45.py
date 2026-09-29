@@ -56,6 +56,7 @@ docs = TrecDocs('disks45-nocr',
     expected_file_count=2295,
     lang='en',
     count_hint=528_155,
+    citation='Voorhees1996Disks45',
 )
 
 

@@ -65,13 +65,13 @@ with irds.defaults(lang='en'):
         source=trec_misinfo_2019_queries_file,
         parser=_TrecXmlQueriesParser(MisinfoQuery, qtype_map=misinfo_map),
         count_hint=51,
-    )
+    citation=CITATION)
     trec_misinfo_2019_qrels = QrelTable('trec-misinfo-2019-qrels',
         source=trec_misinfo_2019_qrels_file,
         parser=_MsinfoQrelsParser(),
         defs=MISINFO_QREL_DEFS,
         count_hint=22_859,
-    )
+    citation=CITATION)
 
     # Benchmarks
     # -----------------------------------------

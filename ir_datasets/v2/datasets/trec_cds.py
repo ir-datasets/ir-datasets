@@ -81,6 +81,7 @@ with irds.defaults(lang='en'):
         source=cds_2014_queries_file,
         parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
         count_hint=30,
+        citation='dblp:conf/trec/SimpsonVH14',
     )
     cds_2014_qrels = TrecQrels('trec-cds-2014-qrels',
         source=cds_2014_qrels_file,
@@ -91,6 +92,7 @@ with irds.defaults(lang='en'):
         source=cds_2015_queries_file,
         parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
         count_hint=30,
+        citation='dblp:conf/trec/RobertsSVH15',
     )
     cds_2015_qrels = TrecQrels('trec-cds-2015-qrels',
         source=cds_2015_qrels_file,
@@ -101,6 +103,7 @@ with irds.defaults(lang='en'):
         source=cds_2016_queries_file,
         parser=_TrecXmlQueriesParser(TrecCds2016Query, QUERY_FILE_MAP),
         count_hint=30,
+        citation='dblp:conf/trec/RobertsDVH16',
     )
     cds_2016_qrels = TrecQrels('trec-cds-2016-qrels',
         source=cds_2016_qrels_file,

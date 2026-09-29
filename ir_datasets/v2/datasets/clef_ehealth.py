@@ -162,47 +162,47 @@ queries_sv_file = Resource('clef-ehealth-sv-queries.xml',
 # -----------------------------------------
 queries_en = QueryTable('clef-ehealth-queries',
     source=queries_en_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='en', count_hint=300)
+    lang='en', count_hint=300, citation=CITATION)
 queries_cs = QueryTable('clef-ehealth-cs-queries',
     source=queries_cs_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='cs', count_hint=300)
+    lang='cs', count_hint=300, citation=CITATION)
 queries_de = QueryTable('clef-ehealth-de-queries',
     source=queries_de_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='de', count_hint=300)
+    lang='de', count_hint=300, citation=CITATION)
 queries_fr = QueryTable('clef-ehealth-fr-queries',
     source=queries_fr_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='fr', count_hint=300)
+    lang='fr', count_hint=300, citation=CITATION)
 queries_hu = QueryTable('clef-ehealth-hu-queries',
     source=queries_hu_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='hu', count_hint=300)
+    lang='hu', count_hint=300, citation=CITATION)
 queries_pl = QueryTable('clef-ehealth-pl-queries',
     source=queries_pl_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='pl', count_hint=300)
+    lang='pl', count_hint=300, citation=CITATION)
 queries_sv = QueryTable('clef-ehealth-sv-queries',
     source=queries_sv_file, parser=_EhealthQueriesParser(ehealth_map),
-    lang='sv', count_hint=300)
+    lang='sv', count_hint=300, citation=CITATION)
 
 qrels_en = QrelTable('clef-ehealth-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix=''),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_cs = QrelTable('clef-ehealth-cs-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-cs'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_de = QrelTable('clef-ehealth-de-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-de'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_fr = QrelTable('clef-ehealth-fr-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-fr'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_hu = QrelTable('clef-ehealth-hu-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-hu'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_pl = QrelTable('clef-ehealth-pl-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-pl'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 qrels_sv = QrelTable('clef-ehealth-sv-qrels',
     source=_QRELS_SOURCE, parser=_EhealthQrelsParser(query_id_suffix='-sv'),
-    defs=EHEALTH_QREL_DEFS, count_hint=269_232)
+    defs=EHEALTH_QREL_DEFS, count_hint=269_232, citation=CITATION)
 
 # Benchmarks
 # -----------------------------------------

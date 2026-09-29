@@ -206,32 +206,32 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    web2002_queries = TrecQueries('trec-web-2002-queries', source=web2002_queries_file.gunzip(), count_hint=50)
-    web2002_qrels = TrecQrels('trec-web-2002-qrels', source=web2002_qrels_file.gunzip(), defs=QREL_DEFS, count_hint=56_650)
+    web2002_queries = TrecQueries('trec-web-2002-queries', source=web2002_queries_file.gunzip(), count_hint=50, citation='dblp:conf/trec/CraswellH02')
+    web2002_qrels = TrecQrels('trec-web-2002-qrels', source=web2002_qrels_file.gunzip(), defs=QREL_DEFS, count_hint=56_650, citation='dblp:conf/trec/CraswellH02')
     web2002_np_queries = TrecQueries('trec-web-2002-named-page-queries',
         source=web2002_np_queries_file.gunzip(),
         qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
-        count_hint=150)
+        count_hint=150, citation='dblp:conf/trec/CraswellH02')
     web2002_np_qrels = TrecQrels('trec-web-2002-named-page-qrels',
-        source=web2002_np_qrels_file.gunzip(), defs=NAMED_PAGE_QREL_DEFS, count_hint=170)
+        source=web2002_np_qrels_file.gunzip(), defs=NAMED_PAGE_QREL_DEFS, count_hint=170, citation='dblp:conf/trec/CraswellH02')
 
     web2003_queries = TrecQueries('trec-web-2003-queries',
         source=web2003_queries_file,
         qtype=GovWeb02Query, qtype_map=WEB03_QTYPE_MAP,
-        count_hint=50)
-    web2003_qrels = TrecQrels('trec-web-2003-qrels', source=web2003_qrels_file, defs=QREL_DEFS, count_hint=51_062)
+        count_hint=50, citation='dblp:conf/trec/CraswellHWW03')
+    web2003_qrels = TrecQrels('trec-web-2003-qrels', source=web2003_qrels_file, defs=QREL_DEFS, count_hint=51_062, citation='dblp:conf/trec/CraswellHWW03')
     web2003_np_queries = TrecQueries('trec-web-2003-named-page-queries',
         source=web2003_np_queries_file,
         qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
-        count_hint=300)
+        count_hint=300, citation='dblp:conf/trec/CraswellHWW03')
     web2003_np_qrels = TrecQrels('trec-web-2003-named-page-qrels',
-        source=web2003_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=352)
+        source=web2003_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=352, citation='dblp:conf/trec/CraswellHWW03')
 
     web2004_queries = TrecQueries('trec-web-2004-queries',
         source=web2004_queries_file,
         qtype=GenericQuery, qtype_map=WEB04_QTYPE_MAP,
-        count_hint=225)
-    web2004_qrels = TrecQrels('trec-web-2004-qrels', source=web2004_qrels_file, defs=QREL_DEFS, count_hint=88_566)
+        count_hint=225, citation='dblp:conf/trec/CraswellH04')
+    web2004_qrels = TrecQrels('trec-web-2004-qrels', source=web2004_qrels_file, defs=QREL_DEFS, count_hint=88_566, citation='dblp:conf/trec/CraswellH04')
 
     # Benchmarks
     # -----------------------------------------
@@ -329,72 +329,72 @@ with irds.defaults(dua=CW09_DUA, lang='en'):
     # Tables (ClueWeb09)
     # -----------------------------------------
     web2009_queries = QueryTable('trec-web-2009-queries',
-        source=web2009_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2009_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCS09')
     web2009_qrels_adhoc = QrelTable('trec-web-2009-qrels-adhoc',
         source=web2009_qrels_adhoc_file.gunzip(), parser=_TrecPrelsParser(),
-        defs=QREL_DEFS_09, count_hint=23_601)
+        defs=QREL_DEFS_09, count_hint=23_601, citation='dblp:conf/trec/ClarkeCS09')
     web2009_qrels_all = QrelTable('trec-web-2009-qrels-all',
         source=web2009_qrels_all_file.gunzip(), parser=_TrecSubQrelsParser(),
-        defs=SQREL_DEFS_09, count_hint=27_964)
+        defs=SQREL_DEFS_09, count_hint=27_964, citation='dblp:conf/trec/ClarkeCS09')
     web2009_catb_qrels_adhoc = QrelTable('trec-web-2009-catb-qrels-adhoc',
         source=web2009_qrels_adhoc_file.gunzip(),
         parser=_CatBQrelsParser(_TrecPrelsParser()),
-        defs=QREL_DEFS_09, count_hint=13_118)
+        defs=QREL_DEFS_09, count_hint=13_118, citation='dblp:conf/trec/ClarkeCS09')
     web2009_catb_qrels_all = QrelTable('trec-web-2009-catb-qrels-all',
         source=web2009_qrels_all_file.gunzip(),
         parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=SQREL_DEFS_09, count_hint=16_347)
+        defs=SQREL_DEFS_09, count_hint=16_347, citation='dblp:conf/trec/ClarkeCS09')
 
     web2010_queries = QueryTable('trec-web-2010-queries',
-        source=web2010_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2010_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSC10')
     web2010_qrels_adhoc = QrelTable('trec-web-2010-qrels-adhoc',
         source=web2010_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=25_329)
+        defs=QREL_DEFS_CW, count_hint=25_329, citation='dblp:conf/trec/ClarkeCSC10')
     web2010_qrels_all = QrelTable('trec-web-2010-qrels-all',
         source=web2010_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=9_006)
+        defs=QREL_DEFS_CW, count_hint=9_006, citation='dblp:conf/trec/ClarkeCSC10')
     web2010_catb_qrels_adhoc = QrelTable('trec-web-2010-catb-qrels-adhoc',
         source=web2010_qrels_adhoc_file,
         parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=15_845)
+        defs=QREL_DEFS_CW, count_hint=15_845, citation='dblp:conf/trec/ClarkeCSC10')
     web2010_catb_qrels_all = QrelTable('trec-web-2010-catb-qrels-all',
         source=web2010_qrels_all_file,
         parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=5_522)
+        defs=QREL_DEFS_CW, count_hint=5_522, citation='dblp:conf/trec/ClarkeCSC10')
 
     web2011_queries = QueryTable('trec-web-2011-queries',
-        source=web2011_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2011_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSV11')
     web2011_qrels_adhoc = QrelTable('trec-web-2011-qrels-adhoc',
         source=web2011_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=19_381)
+        defs=QREL_DEFS_CW, count_hint=19_381, citation='dblp:conf/trec/ClarkeCSV11')
     web2011_qrels_all = QrelTable('trec-web-2011-qrels-all',
         source=web2011_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=64_868)
+        defs=QREL_DEFS_CW, count_hint=64_868, citation='dblp:conf/trec/ClarkeCSV11')
     web2011_catb_qrels_adhoc = QrelTable('trec-web-2011-catb-qrels-adhoc',
         source=web2011_qrels_adhoc_file,
         parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=13_081)
+        defs=QREL_DEFS_CW, count_hint=13_081, citation='dblp:conf/trec/ClarkeCSV11')
     web2011_catb_qrels_all = QrelTable('trec-web-2011-catb-qrels-all',
         source=web2011_qrels_all_file,
         parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=43_889)
+        defs=QREL_DEFS_CW, count_hint=43_889, citation='dblp:conf/trec/ClarkeCSV11')
 
     web2012_queries = QueryTable('trec-web-2012-queries',
-        source=web2012_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2012_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCV12')
     web2012_qrels_adhoc = QrelTable('trec-web-2012-qrels-adhoc',
         source=web2012_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=16_055)
+        defs=QREL_DEFS_CW, count_hint=16_055, citation='dblp:conf/trec/ClarkeCV12')
     web2012_qrels_all = QrelTable('trec-web-2012-qrels-all',
         source=web2012_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=62_394)
+        defs=QREL_DEFS_CW, count_hint=62_394, citation='dblp:conf/trec/ClarkeCV12')
     web2012_catb_qrels_adhoc = QrelTable('trec-web-2012-catb-qrels-adhoc',
         source=web2012_qrels_adhoc_file,
         parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=10_022)
+        defs=QREL_DEFS_CW, count_hint=10_022, citation='dblp:conf/trec/ClarkeCV12')
     web2012_catb_qrels_all = QrelTable('trec-web-2012-catb-qrels-all',
         source=web2012_qrels_all_file,
         parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=38_992)
+        defs=QREL_DEFS_CW, count_hint=38_992, citation='dblp:conf/trec/ClarkeCV12')
 
     # Benchmarks (ClueWeb09)
     # -----------------------------------------
@@ -504,22 +504,22 @@ with irds.defaults(dua=CW12_DUA, lang='en'):
     # Tables (ClueWeb12)
     # -----------------------------------------
     web2013_queries = QueryTable('trec-web-2013-queries',
-        source=web2013_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2013_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson13')
     web2013_qrels_adhoc = QrelTable('trec-web-2013-qrels-adhoc',
         source=web2013_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=14_474)
+        defs=QREL_DEFS_CW, count_hint=14_474, citation='dblp:conf/trec/Collins-Thompson13')
     web2013_qrels_all = QrelTable('trec-web-2013-qrels-all',
         source=web2013_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=46_985)
+        defs=QREL_DEFS_CW, count_hint=46_985, citation='dblp:conf/trec/Collins-Thompson13')
 
     web2014_queries = QueryTable('trec-web-2014-queries',
-        source=web2014_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50)
+        source=web2014_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson14')
     web2014_qrels_adhoc = QrelTable('trec-web-2014-qrels-adhoc',
         source=web2014_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=14_432)
+        defs=QREL_DEFS_CW, count_hint=14_432, citation='dblp:conf/trec/Collins-Thompson14')
     web2014_qrels_all = QrelTable('trec-web-2014-qrels-all',
         source=web2014_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=43_840)
+        defs=QREL_DEFS_CW, count_hint=43_840, citation='dblp:conf/trec/Collins-Thompson14')
 
     # Benchmarks (ClueWeb12)
     # -----------------------------------------

@@ -86,24 +86,24 @@ with irds.defaults(lang='en'):
         source=ntcir_www_1_queries_file,
         parser=_TrecXmlQueriesParser(GenericQuery, qtype_map={'qid': 'query_id', 'content': 'text'}),
         count_hint=100,
-    )
+    citation='dblp:conf/ntcir/0001S0DXX17')
     ntcir_www_1_qrels = QrelTable('ntcir-www-1-qrels',
         source=ntcir_www_1_qrels_file,
         parser=_NtcirQrelsParser(),
         defs=NTCIR_QREL_DEFS,
         count_hint=25_465,
-    )
+    citation='dblp:conf/ntcir/0001S0DXX17')
     ntcir_www_2_queries = QueryTable('ntcir-www-2-queries',
         source=ntcir_www_2_queries_file,
         parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),
         count_hint=80,
-    )
+    citation='dblp:conf/ntcir/MaoS0X0D19')
     ntcir_www_2_qrels = QrelTable('ntcir-www-2-qrels',
         source=ntcir_www_2_qrels_file,
         parser=_NtcirQrelsParser(),
         defs=NTCIR_QREL_DEFS,
         count_hint=27_627,
-    )
+    citation='dblp:conf/ntcir/MaoS0X0D19')
     ntcir_www_3_queries = QueryTable('ntcir-www-3-queries',
         source=ntcir_www_3_queries_file,
         parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),

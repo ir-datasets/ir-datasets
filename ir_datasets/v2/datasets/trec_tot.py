@@ -53,10 +53,8 @@ per split. ``test`` has no qrels (v1's own ``_init()`` comment: "datasets that
 currently do not have qrels"), the same queries-only shape as
 ``trec-tot-2024-test``.
 
-No ``bibtex_ids`` are declared for any trec-tot year/subset in
-``docs/trec-tot.yaml``/``docs/trec-tot-2025.yaml`` (only ``desc``/
-``pretty_name``), so no ``citation=`` is set on any Benchmark here -- same as
-``c4.py``'s queries-only TREC Misinfo 2021 benchmark.
+``docs/trec-tot.yaml``/``docs/trec-tot-2025.yaml`` declare no ``bibtex_ids``;
+each Benchmark cites its year's track overview (added in the DBLP pass).
 """
 import ir_datasets
 from ir_datasets.datasets.trec_tot import (
@@ -159,9 +157,11 @@ with irds.defaults(lang='en'):
     # Benchmarks -- 2023
     # -----------------------------------------
     trec_tot_2023_train = Benchmark('trec-tot-2023-train',
+        citation='dblp:conf/trec/ArguelloBDKM23',
         docs=docs_2023, queries=train_2023_queries, qrels=train_2023_qrels,
         desc='TREC Tip-of-the-Tongue 2023: train query set.')
     trec_tot_2023_dev = Benchmark('trec-tot-2023-dev',
+        citation='dblp:conf/trec/ArguelloBDKM23',
         docs=docs_2023, queries=dev_2023_queries, qrels=dev_2023_qrels,
         desc='TREC Tip-of-the-Tongue 2023: dev query set.')
 
@@ -191,6 +191,7 @@ with irds.defaults(lang='en'):
     # Benchmarks -- 2024
     # -----------------------------------------
     trec_tot_2024_test = Benchmark('trec-tot-2024-test',
+        citation='dblp:conf/trec/Arguello00KHK024',
         docs=docs_2024, queries=test_2024_queries,
         desc='TREC Tip-of-the-Tongue 2024: test query set (queries only; '
              'v1 does not wire up qrels for this dataset).')
@@ -287,18 +288,23 @@ with irds.defaults(lang='en'):
     # Benchmarks -- 2025
     # -----------------------------------------
     trec_tot_2025_train = Benchmark('trec-tot-2025-train',
+        citation='dblp:journals/corr/abs-2601-20671',
         docs=docs_2025, queries=train_2025_queries, qrels=train_2025_qrels,
         desc='TREC Tip-of-the-Tongue 2025: train query set.')
     trec_tot_2025_dev1 = Benchmark('trec-tot-2025-dev1',
+        citation='dblp:journals/corr/abs-2601-20671',
         docs=docs_2025, queries=dev1_2025_queries, qrels=dev1_2025_qrels,
         desc='TREC Tip-of-the-Tongue 2025: dev-1 query set (the original 2023 dev set).')
     trec_tot_2025_dev2 = Benchmark('trec-tot-2025-dev2',
+        citation='dblp:journals/corr/abs-2601-20671',
         docs=docs_2025, queries=dev2_2025_queries, qrels=dev2_2025_qrels,
         desc='TREC Tip-of-the-Tongue 2025: dev-2 query set (the original 2023 test set).')
     trec_tot_2025_dev3 = Benchmark('trec-tot-2025-dev3',
+        citation='dblp:journals/corr/abs-2601-20671',
         docs=docs_2025, queries=dev3_2025_queries, qrels=dev3_2025_qrels,
         desc='TREC Tip-of-the-Tongue 2025: dev-3 query set (the original 2024 test set).')
     trec_tot_2025_test = Benchmark('trec-tot-2025-test',
+        citation='dblp:journals/corr/abs-2601-20671',
         docs=docs_2025, queries=test_2025_queries,
         desc='TREC Tip-of-the-Tongue 2025: test query set (queries only; '
              'no qrels released yet).')

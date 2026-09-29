@@ -19,8 +19,9 @@ from ir_datasets.v2 import Benchmark, Filter, Resource, Source, TrecQrels, TrecQ
 from ir_datasets.v2.datasets.aquaint import docs as aquaint_docs
 from ir_datasets.v2.datasets.disks45 import DUA, docs as disks45_docs
 
-CITATION_2004 = 'Voorhees1996Disks45; dblp:conf/trec/Voorhees04b; dblp:conf/cikm/HustonC14'
-CITATION_2005 = 'Graff2002Aquaint; dblp:conf/trec/Voorhees05a'
+CITATION_2004 = 'dblp:conf/trec/Voorhees04b'
+CITATION_FOLDS = 'dblp:conf/cikm/HustonC14'
+CITATION_2005 = 'dblp:conf/trec/Voorhees05a'
 
 QREL_DEFS = {
     2: 'highly relevant',
@@ -60,8 +61,10 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    queries_2004 = TrecQueries('trec-robust-2004-queries', source=queries_2004_file.gunzip(), count_hint=250)
-    qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QREL_DEFS, count_hint=311_410)
+    queries_2004 = TrecQueries('trec-robust-2004-queries', source=queries_2004_file.gunzip(), count_hint=250,
+        citation=CITATION_2004)
+    qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QREL_DEFS, count_hint=311_410,
+        citation=CITATION_2004)
 
     # Benchmarks
     # -----------------------------------------
@@ -75,7 +78,7 @@ with irds.defaults(dua=DUA, lang='en'):
     for fold, qids in FOLDS.items():
         folds[fold] = Benchmark(f'trec-robust-2004-{fold}',
             derived_from=robust2004, filter=Filter(query_ids=qids, mode='include'),
-            citation=CITATION_2004,
+            citation=CITATION_FOLDS,
             desc=f'TREC Robust 2004, {fold} of the 5-fold cross-validation split '
                  f'proposed by Huston & Croft (2014).')
 
@@ -100,9 +103,11 @@ queries_2005 = TrecQueries('trec-robust-2005-queries',
     source=queries_2005_file,
     qtype_map=QTYPE_MAP_2005, lang='en',
     count_hint=50,
+    citation=CITATION_2005,
 )
 qrels_2005 = TrecQrels('trec-robust-2005-qrels',
-    source=qrels_2005_file, defs=QREL_DEFS, count_hint=37_798)
+    source=qrels_2005_file, defs=QREL_DEFS, count_hint=37_798,
+    citation=CITATION_2005)
 
 # Benchmarks
 # -----------------------------------------

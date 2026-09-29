@@ -18,6 +18,9 @@ DATA_ACCESS = (
     "for access. Once obtained, symlink or copy it here: {path}"
 )
 
+CITATION_2001 = 'dblp:conf/trec/GeyO01'
+CITATION_2002 = 'Gey2002Arabic'
+
 QREL_DEFS = {
     1: 'relevant',
     0: 'not relevant',
@@ -68,23 +71,26 @@ docs = TrecDocs('trec-arabic-docs',
     path_globs=['arabic_newswire_a/transcripts/*/*.sgm.gz'],
     lang='ar',
     count_hint=383_872,
+    citation='Graff2001Arabic',
 )
 
 ar2001_queries = TrecQueries('trec-arabic-2001-queries',
     source=ar2001_queries_file,
     qtype_map=QTYPE_MAP, encoding='ISO-8859-6',
-    lang='ar',
+    lang='ar', citation=CITATION_2001,
 )
 ar2001_qrels = TrecQrels('trec-arabic-2001-qrels',
-    source=ar2001_qrels_file, defs=QREL_DEFS)
+    source=ar2001_qrels_file, defs=QREL_DEFS,
+    citation=CITATION_2001)
 
 ar2002_queries = TrecQueries('trec-arabic-2002-queries',
     source=ar2002_queries_file,
     qtype_map=QTYPE_MAP, encoding='ISO-8859-6',
-    lang='ar',
+    lang='ar', citation=CITATION_2002,
 )
 ar2002_qrels = TrecQrels('trec-arabic-2002-qrels',
-    source=ar2002_qrels_file, defs=QREL_DEFS)
+    source=ar2002_qrels_file, defs=QREL_DEFS,
+    citation=CITATION_2002)
 
 # Benchmarks
 # -----------------------------------------
@@ -95,9 +101,11 @@ ar2002_qrels = TrecQrels('trec-arabic-2002-qrels',
 # dropped as redundant with "arabic" already in the family name.
 ar2001 = Benchmark('trec-arabic-2001',
     docs=docs, queries=ar2001_queries, qrels=ar2001_qrels,
+    citation=CITATION_2001,
     desc='TREC cross-lingual Arabic benchmark, 2001 (TREC-10).')
 ar2002 = Benchmark('trec-arabic-2002',
     docs=docs, queries=ar2002_queries, qrels=ar2002_qrels,
+    citation=CITATION_2002,
     desc='TREC cross-lingual Arabic benchmark, 2002 (TREC-11).')
 
 

@@ -40,7 +40,8 @@ CODEC_QREL_DEFS = {
     0: 'Not Relevant. This entity is not useful or on topic.',
 }
 
-CITATION = 'dblp:conf/naacl/PetroniPFLYCTJK21; dblp:conf/sigir/MackieOGFM022'
+CITATION_KILT = 'dblp:conf/naacl/PetroniPFLYCTJK21'
+CITATION = 'dblp:conf/sigir/MackieOGFM022'
 
 
 class _KiltDocsParser(Parser):
@@ -70,6 +71,7 @@ docs = DocTable('kilt-docs',
     parser=_KiltDocsParser(),
     lang='en',
     count_hint=5_903_530,
+    citation=CITATION_KILT,
 )
 qrels = TrecQrels('kilt-codec-qrels', source=qrels_file, defs=CODEC_QREL_DEFS, count_hint=11_323)
 
@@ -92,7 +94,6 @@ for _domain, _rcount in _DOMAIN_COUNTS.items():
         derived_from=kilt_codec,
         queries=codec_domain_benchmarks[_domain].queries,
         filter=Filter(query_ids=ids_of(f'irds:codec-{_domain}-queries'), mode='include'),
-        citation=CITATION,
         desc=f'KILT entity-ranking task, {_domain} domain subset.')
 
 

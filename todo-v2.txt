@@ -9,7 +9,13 @@ TODO
   trec_core.py/trec_news.py/trec_covid.py/trec_cds.py/trec_mb.py/trec_ct.py (see Done section).
   Deliberately deferred, on request -- do NOT split yet.
 - *-docs for corpora? I think this should generally be avoided for named corpora (e.g., aquaint), except in special cases. Do a review of what's done where/how.
-- Convert all citations to DBLP (where possible)
+- Decide what to do with the remaining non-DBLP citations (legacy bibtex keys): papers not in
+  DBLP (e.g., TREC-7/News 2019/Decision 2019 overviews, Gey2002Arabic, Dietz2017Car) and
+  corpus records (Disks45, AQUAINT, NYT, LDC Mandarin/Arabic/Spanish). Options: stable URLs
+  (NIST/LDC), own citation node type, or keep bibtex keys.
+- Apply one edge per citation (papers as nodes, `citation` edges) instead of the flat `citation`
+  metadata string.
+- Aggregate citations in the webapp (a node shows its own plus those reached via derived_from edges).
 - Citation format consistency
 - Places where the query set name is distinct from the corpus
 - I think I'd like to move external resources (e.g., clueweb09, nyt, etc) to somewhere special like ~/.ir_datasets/external/... And in general make the handling
@@ -55,6 +61,8 @@ Verification notes
 
 Done
 ------------------
+- Converted citations to DBLP keys (dblp:<key>) where matchable; corpus citations moved to DocTables,
+  track overviews placed on Query/Qrel tables as well as Benchmarks, v1 keys backfilled.
 - aquaint.py (corpus only)
 - trec_robust.py (TREC Robust 2004 + 2005, merged into one file; judges
   disks45-nocr and aquaint respectively)

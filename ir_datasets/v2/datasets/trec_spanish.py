@@ -30,6 +30,9 @@ DATA_ACCESS = (
     "for access. Once obtained, symlink or copy it here: {path}"
 )
 
+CITATION_TREC3 = 'dblp:conf/trec/Harman94'
+CITATION_TREC4 = 'dblp:conf/trec/Harman95'
+
 QREL_DEFS = {
     1: 'relevant',
     0: 'not relevant',
@@ -102,6 +105,7 @@ docs = TrecDocs('trec-spanish-docs',
     path_globs=['**/afp_text/af*', '**/infosel_data/ism_*'],
     lang='es',
     count_hint=120_605,
+    citation='Rogers2000Spanish',
 )
 
 # Query text mixes Spanish and English fields, so no single lang applies --
@@ -110,17 +114,21 @@ trec3_queries = QueryTable('trec-spanish-3-queries',
     source=trec3_queries_file.gunzip(),
     parser=_TrecSpanishQueriesParser(TrecQuery, QTYPE_MAP_3, TrecSpanish3Query),
     lang=None,
+    citation=CITATION_TREC3,
 )
 trec3_qrels = TrecQrels('trec-spanish-3-qrels',
-    source=trec3_qrels_file.gunzip(), defs=QREL_DEFS)
+    source=trec3_qrels_file.gunzip(), defs=QREL_DEFS,
+    citation=CITATION_TREC3)
 
 trec4_queries = QueryTable('trec-spanish-4-queries',
     source=trec4_queries_file.gunzip(),
     parser=_TrecSpanishQueriesParser(TrecDescOnlyQuery, QTYPE_MAP_4, TrecSpanish4Query),
     lang=None,
+    citation=CITATION_TREC4,
 )
 trec4_qrels = TrecQrels('trec-spanish-4-qrels',
-    source=trec4_qrels_file.gunzip(), defs=QREL_DEFS)
+    source=trec4_qrels_file.gunzip(), defs=QREL_DEFS,
+    citation=CITATION_TREC4)
 
 # Benchmarks
 # -----------------------------------------
@@ -131,9 +139,11 @@ trec4_qrels = TrecQrels('trec-spanish-4-qrels',
 # "trec4" is dropped since it's already in the family name.
 trec3 = Benchmark('trec-spanish-3',
     docs=docs, queries=trec3_queries, qrels=trec3_qrels,
+    citation=CITATION_TREC3,
     desc='Spanish-language benchmark from TREC 3.')
 trec4 = Benchmark('trec-spanish-4',
     docs=docs, queries=trec4_queries, qrels=trec4_qrels,
+    citation=CITATION_TREC4,
     desc='Spanish-language benchmark from TREC 4.')
 
 

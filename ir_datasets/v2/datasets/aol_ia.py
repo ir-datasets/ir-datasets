@@ -128,6 +128,7 @@ with irds.defaults(lang='en'):
         source=[logs_file, id2wb_file],
         parser=_AolIaDocsParser(),
         count_hint=1_525_586,
+        citation='dblp:conf/ecir/MacAvaneyMO22',
     )
     queries = QueryTable('aol-ia-queries',
         source=[logs_file, id2wb_file],
@@ -144,6 +145,7 @@ with irds.defaults(lang='en'):
         source=[logs_file, id2wb_file],
         parser=_AolIaQlogsParser(),
         count_hint=36_389_567,
+        citation='dblp:conf/infoscale/PassCT06',
     )
 
 

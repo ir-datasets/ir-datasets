@@ -60,16 +60,18 @@ with irds.defaults(lang='en'):
     news_2018_queries = TrecQueries('trec-news-2018-queries',
         source=news_2018_queries_file,
         qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
-        count_hint=50)
+        count_hint=50, citation=CITATION_2018)
     news_2018_qrels = TrecQrels('trec-news-2018-qrels',
-        source=news_2018_qrels_file, defs=BL_QREL_DEFS, count_hint=8_508)
+        source=news_2018_qrels_file, defs=BL_QREL_DEFS, count_hint=8_508,
+        citation=CITATION_2018)
 
     news_2019_queries = TrecQueries('trec-news-2019-queries',
         source=news_2019_queries_file,
         qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
-        count_hint=60)
+        count_hint=60, citation=CITATION_2019)
     news_2019_qrels = TrecQrels('trec-news-2019-qrels',
-        source=news_2019_qrels_file, defs=BL_QREL_DEFS, count_hint=15_655)
+        source=news_2019_qrels_file, defs=BL_QREL_DEFS, count_hint=15_655,
+        citation=CITATION_2019)
 
     news_2020_queries = TrecQueries('trec-news-2020-queries',
         source=news_2020_queries_file,

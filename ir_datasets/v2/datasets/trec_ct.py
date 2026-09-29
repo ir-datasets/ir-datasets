@@ -82,6 +82,7 @@ with irds.defaults(lang='en'):
         desc='TREC Clinical Trials 2021.')
     ct_2022 = Benchmark('trec-ct-2022',
         docs=clinicaltrials_2021_docs, queries=ct_2022_queries,
+        citation='dblp:conf/trec/RobertsDVBH22',
         desc='TREC Clinical Trials 2022 (queries only; qrels not yet published).')
 
 

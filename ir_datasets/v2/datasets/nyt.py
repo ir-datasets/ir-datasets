@@ -92,7 +92,7 @@ SOURCE_INSTRUCTIONS = (
     "To proceed, symlink the source file here: {path}"
 )
 
-CITATION_WKSUP = 'dblp:conf/sigir/MacAvaneyYHF19; Sandhaus2008Nyt'
+CITATION_WKSUP = 'dblp:conf/sigir/MacAvaneyYHF19'
 
 
 class _NytDocsParser(Parser):
@@ -140,6 +140,7 @@ docs = DocTable('nyt',
     parser=_NytDocsParser(),
     lang='en',
     count_hint=1_864_661,
+    citation='Sandhaus2008Nyt',
 )
 
 wksup_queries = QueryTable('nyt-wksup-queries',

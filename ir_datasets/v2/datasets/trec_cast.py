@@ -199,7 +199,6 @@ v0_train = Benchmark('trec-cast-v0-train',
     desc='TREC CAsT 2019 training set.')
 v0_train_judged = Benchmark('trec-cast-v0-train-judged',
     derived_from=v0_train, filter=Filter(queries_with_qrels=True),
-    citation=CITATION_2019,
     desc='trec-cast-v0-train restricted to queries with >= 1 qrel.')
 
 v1_2019 = Benchmark('trec-cast-v1-2019',
@@ -208,7 +207,6 @@ v1_2019 = Benchmark('trec-cast-v1-2019',
     desc='Official evaluation set for TREC CAsT 2019.')
 v1_2019_judged = Benchmark('trec-cast-v1-2019-judged',
     derived_from=v1_2019, filter=Filter(queries_with_qrels=True),
-    citation=CITATION_2019,
     desc='trec-cast-v1-2019 restricted to queries with >= 1 qrel.')
 
 v1_2020 = Benchmark('trec-cast-v1-2020',
@@ -217,7 +215,6 @@ v1_2020 = Benchmark('trec-cast-v1-2020',
     desc='Official evaluation set for TREC CAsT 2020.')
 v1_2020_judged = Benchmark('trec-cast-v1-2020-judged',
     derived_from=v1_2020, filter=Filter(queries_with_qrels=True),
-    citation=CITATION_2020,
     desc='trec-cast-v1-2020 restricted to queries with >= 1 qrel.')
 
 

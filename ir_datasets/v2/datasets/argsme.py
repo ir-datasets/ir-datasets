@@ -97,6 +97,8 @@ class _ArgsMeCombinedDocsParser(Parser):
             language=node.lang, count_hint=node.count_hint)
 
 
+CITATION = 'dblp:conf/argmining/WachsmuthPKAPQD17; dblp:conf/ki/AjjourWKPHS19'
+
 with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
@@ -149,49 +151,58 @@ with irds.defaults(lang='en'):
         source=docs_1_0_file,
         parser=_ArgsMeDocsParser(),
         count_hint=387_692,
+        citation=CITATION,
     )
     docs_1_0_cleaned = DocTable('argsme-1.0-cleaned-docs',
         source=docs_1_0_cleaned_file,
         parser=_ArgsMeDocsParser(),
         count_hint=382_545,
+        citation=CITATION,
     )
 
     docs_2020_04_01_debateorg = DocTable('argsme-2020-04-01-debateorg-docs',
         source=debateorg_file,
         parser=_ArgsMeDocsParser(),
         count_hint=338_620,
+        citation=CITATION,
     )
     docs_2020_04_01_debatepedia = DocTable('argsme-2020-04-01-debatepedia-docs',
         source=debatepedia_file,
         parser=_ArgsMeDocsParser(),
         count_hint=21_197,
+        citation=CITATION,
     )
     docs_2020_04_01_debatewise = DocTable('argsme-2020-04-01-debatewise-docs',
         source=debatewise_file,
         parser=_ArgsMeDocsParser(),
         count_hint=14_353,
+        citation=CITATION,
     )
     docs_2020_04_01_idebate = DocTable('argsme-2020-04-01-idebate-docs',
         source=idebate_file,
         parser=_ArgsMeDocsParser(),
         count_hint=13_522,
+        citation=CITATION,
     )
     docs_2020_04_01_parliamentary = DocTable('argsme-2020-04-01-parliamentary-docs',
         source=parliamentary_file,
         parser=_ArgsMeDocsParser(),
         count_hint=48,
+        citation=CITATION,
     )
 
     docs_2020_04_01_processed = DocTable('argsme-2020-04-01-processed-docs',
         source=processed_file,
         parser=_ArgsMeProcessedDocsParser(),
         count_hint=365_408,
+        citation=CITATION,
     )
 
     docs_2020_04_01 = DocTable('argsme-2020-04-01-docs',
         source=[debateorg_file, debatepedia_file, debatewise_file, idebate_file, parliamentary_file],
         parser=_ArgsMeCombinedDocsParser([338_620, 21_197, 14_353, 13_522, 48]),
         count_hint=387_740,
+        citation=CITATION,
     )
 
 
