@@ -23,6 +23,17 @@ TODO
 - Make trec_cast nicer (and fix/migrate broken bits?)
 - Consider adding suites, e.g., for wikiclir, mmarco, ...
 - What happend to all the documentation?
+- Migrate datasets that were missed in the first pass (v1 ids currently have no v2 counterpart):
+  the msmarco-document/trec-dl-hard family (+ fold1-5), msmarco-passage/trec-dl-hard (+ fold1-5),
+  msmarco-document/anchor-text, msmarco-document-v2/anchor-text, msmarco-passage-v2/dedup,
+  msmarco-passage/train/triples-small, msmarco-passage/dev/2. Then add their legacy:replaced_by
+  entries in legacy_provider.py.
+- Map the remaining unmapped legacy ids that do have v2 data under a different naming scheme:
+  mmarco, neumarco, miracl (miracl/ru/test-a), lotte, wikir, wikiclir, hc4, trec-cast, trec-fair,
+  trec-tot, car, c4, cord19(/fulltext), disks45, clinicaltrials/2017|2019 trec-pm-*, medline/2017 trec-pm-*.
+  Dataset roots that provide no data (clirmatrix, neuclir, neuclir/1, touche-image, ...) stay unmapped.
+- msmarco-document-v2/trec-dl-2019|2020 (+ /judged) legacy ids are deliberately left unmapped
+  (v2's trec-dl-*-document benchmarks belong to msmarco-document v1 ids).
 
 Verification notes
 ---------------------

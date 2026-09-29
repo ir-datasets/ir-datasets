@@ -11226,6 +11226,32 @@
       "format": "JsonlDocs",
       "lang": "ru"
     },
+    "irds:miracl-ru-test-a": {
+      "name": "irds:miracl-ru-test-a",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.miracl",
+      "desc": "MIRACL ru, test-a split (held-out query set, no public qrels).",
+      "citation": "dblp:journals/tacl/0018TOKAL0RL23"
+    },
+    "irds:miracl-ru-test-a-queries": {
+      "name": "irds:miracl-ru-test-a-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.miracl",
+      "format": "TsvQueries",
+      "lang": "ru"
+    },
+    "irds:miracl-ru-test-a-topics.tsv": {
+      "name": "irds:miracl-ru-test-a-topics.tsv",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.miracl",
+      "hashes": [
+        "md5:cc3e7ca3cb78b3e298b549adaf689317"
+      ],
+      "size": 83173,
+      "sources": [
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://huggingface.co/datasets/macavaney/miracl-noauth/resolve/main/miracl-v1.0-ru/topics/topics.miracl-v1.0-ru-test-a.tsv\"}"
+      ]
+    },
     "irds:miracl-ru-test-b": {
       "name": "irds:miracl-ru-test-b",
       "type": "irds:Benchmark",
@@ -35081,6 +35107,21 @@
       "irds:miracl-ru-docs",
       "irds:derived_from",
       "irds:miracl-ru-corpus-9.jsonl.gz"
+    ],
+    [
+      "irds:miracl-ru-test-a",
+      "irds:docs",
+      "irds:miracl-ru-docs"
+    ],
+    [
+      "irds:miracl-ru-test-a",
+      "irds:queries",
+      "irds:miracl-ru-test-a-queries"
+    ],
+    [
+      "irds:miracl-ru-test-a-queries",
+      "irds:derived_from",
+      "irds:miracl-ru-test-a-topics.tsv"
     ],
     [
       "irds:miracl-ru-test-b",
