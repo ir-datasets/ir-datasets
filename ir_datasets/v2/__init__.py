@@ -159,7 +159,7 @@ def external_status():
                 # (name, where it is now or belongs, present?, instructions)
                 path = src.local_path
                 rows.append((name, str(path), path.exists(),
-                             (src.instructions or '').format(path=src.default_path)))
+                             src.message(src.default_path) if src.instructions else ''))
     return rows
 
 

@@ -37,16 +37,13 @@ from ir_datasets.v2 import Directory, DocTable, Resource, Source, irds
 from ir_datasets.v2.formats import Parser
 
 DUA = ("ClueWeb09 is distributed on hard drives by CMU "
-       "<https://lemurproject.org/clueweb09/>; see "
-       "<https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure.")
+       "<https://lemurproject.org/clueweb09/>; your organization may need to "
+       "file an organizational agreement and pay a fee to CMU.")
 
-DATA_ACCESS = (
-    "ClueWeb09 is available on hard drives from CMU <https://lemurproject.org/clueweb09/>. "
-    "More details about the procedure can be found at "
-    "<https://ir-datasets.com/ClueWeb09.html#DataAccess>. "
-    "Link the ClueWeb09 source files here: {path}\n"
-    "Should contain directories like ClueWeb09_English_1"
-)
+DATA_ACCESS = [
+    "ClueWeb09 is available on hard drives from CMU: <https://lemurproject.org/clueweb09/>.\nYour organization may already have a copy, in which case you may only need to complete a new \"Individual Agreement\". Otherwise your organization must file the \"Organizational agreement\" and pay a fee to CMU; the data are shipped on hard drives.",
+    "Gather the ClueWeb09 source directories into one directory; it should contain directories like ClueWeb09_English_1.",
+]
 
 DOCS_DEFAULT_PATH = 'clueweb09'
 DOCS_OLD_LOCATION = 'clueweb09/corpus'

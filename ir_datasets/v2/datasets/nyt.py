@@ -82,14 +82,10 @@ DUA = ("The New York Times Annotated Corpus is distributed by the LDC "
        "agreement filed with LDC. Many organizations already have an LDC "
        "subscription; check with your library for access details.")
 
-SOURCE_INSTRUCTIONS = (
-    "The New York Times Annotated Corpus. It is available from the LDC via: "
-    "<https://catalog.ldc.upenn.edu/LDC2008T19>.\n"
-    "More details about the procedure can be found here: "
-    "<https://ir-datasets.com/nyt.html#DataAccess>.\n"
-    "The source file is nyt_corpus_LDC2008T19.tgz.\n"
-    "To proceed, place or symlink the source file at: {path}"
-)
+SOURCE_INSTRUCTIONS = [
+    "The New York Times Annotated Corpus is available from the LDC: <https://catalog.ldc.upenn.edu/LDC2008T19>.\nMany organizations already have an LDC subscription, in which case you only need to confirm the data usage agreement; check with your library for access details.",
+    "Download the source file, nyt_corpus_LDC2008T19.tgz.",
+]
 
 CITATION_WKSUP = 'dblp:conf/sigir/MacAvaneyYHF19'
 
@@ -130,6 +126,7 @@ class _NytQrelsParser(Parser):
 docs_file = Resource('nyt-source.tgz',
     sources=[Source.external('nyt.tgz', old_locations=[f'{NAME}/nyt.tgz'], instructions=SOURCE_INSTRUCTIONS)],
     hash='md5:67a1bcf200c448424bf0fba34cef17b0',
+    size=3_248_527_676,
     dua=DUA,
 )
 # Tables

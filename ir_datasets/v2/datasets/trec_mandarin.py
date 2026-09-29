@@ -19,12 +19,10 @@ from typing import NamedTuple
 
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecDocs, TrecQrels, TrecQueries, irds
 
-DATA_ACCESS = (
-    "The TREC Mandarin corpus is based on the LDC's Mandarin news collection "
-    "<https://catalog.ldc.upenn.edu/LDC2000T52> (LDC2000T52.tgz). Many "
-    "organizations already have an LDC subscription; check with your library "
-    "for access. Once obtained, place or symlink it at: {path}"
-)
+DATA_ACCESS = [
+    "Find the LDC's Mandarin news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T52> (LDC2000T52.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
+    "Download LDC2000T52.tgz.",
+]
 
 CITATION_TREC5 = 'dblp:conf/trec/Smeaton96'
 CITATION_TREC6 = 'dblp:conf/trec/Wilkinson97'
@@ -68,6 +66,7 @@ DOCS_OLD_LOCATIONS = ['trec-mandarin/corpus.tgz']  # relative to <home> (v1)
 docs_file = Resource('trec-mandarin-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
     hash=f'md5:{DOCS_MD5}',
+    size=80_467_281,
 )
 trec5_queries_file = Resource('trec-mandarin-5-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.CH1-CH28.chinese.english.gz', Source.mirror()],

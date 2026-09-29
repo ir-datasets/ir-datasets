@@ -1,12 +1,10 @@
 """HC4 -- a v2 dataset family.
 
 Three CLIR test collections (Chinese, Persian, Russian Common Crawl web
-pages), evaluated against English topics. Documents are DUA-gated -- HC4
-distributes only a script that re-crawls and post-processes Common Crawl
-records, not the documents themselves -- so each language's corpus is a
-``Source.external(...)`` Resource, same pattern as ``trec_arabic.py``'s
-LDC-gated corpus: symlink the post-processed jsonl in, then it's read like
-any other Resource.
+pages), evaluated against English topics. Each language's documents are a
+single gzip'd jsonl downloaded from HuggingFace (``neuclir/hc4``) and read
+through ``.gunzip()`` -- hashed with sha256 (the hub's git-LFS digest) rather
+than md5.
 
 Topics are one shared file per split (train/dev/test), not per language --
 ``ExctractedCCQueries``' ``subset_lang=`` picks each language's own
@@ -27,15 +25,19 @@ from ir_datasets.formats import ExctractedCCDocs as _V1ExctractedCCDocs
 from ir_datasets.formats import ExctractedCCQueries as _V1ExctractedCCQueries
 
 from ir_datasets.v2 import (
-    Benchmark, DocTable, Parser, QueryTable, Resource, Source, TrecQrels, irds,
+    Benchmark, DocTable, Parser, QueryTable, Resource, TrecQrels, irds,
 )
 
 CITATION = 'dblp:conf/ecir/LawrieMOY22'
 
-DATA_ACCESS = (
-    "HC4's documents are Common Crawl web pages that must be fetched and "
-    "post-processed with the script at <https://github.com/hltcoe/HC4>. "
-    "Once obtained, symlink or copy the resulting jsonl file here: {path}")
+#: lang -> (docs url, sha256, size), from HuggingFace's neuclir/hc4 (the hub
+#: publishes git-LFS sha256 digests, not md5).
+_HF = 'https://huggingface.co/datasets/neuclir/hc4/resolve/main/data'
+DOCS = {
+    'zh': (f'{_HF}/zho-00000-of-00001.jsonl.gz', '06498130be194e758779b73748e66cbbdbd9e5a13361ea05da617722c9643c15', 576_134_453),
+    'fa': (f'{_HF}/fas-00000-of-00001.jsonl.gz', 'b15f68b9e0b530f3ba5ad6c586a3a8b4288ce833468d87af9ed2ce07ca8202d1', 518_142_839),
+    'ru': (f'{_HF}/rus-00000-of-00001.jsonl.gz', 'bfa3d80f404c0bacfa3321628a605c05ee965ebf7f70951e666b26dcd52e1211', 4_138_605_072),
+}
 
 #: v1's 2-letter -> 3-letter language code (also HC4's own github path segment).
 LANG3 = {'zh': 'zho', 'fa': 'fas', 'ru': 'rus'}
@@ -140,12 +142,10 @@ QRELS_FILES = {
 
 _benchmarks = []
 
-for _lang in ('zh', 'fa', 'ru'):
-    _docs_old_location = f'hc4/{LANG3[_lang]}/hc4_docs.jsonl'
-    _docs_file = Resource(f'hc4-{_lang}-docs.jsonl',
-        sources=[Source.external(f'hc4-{_lang}-docs.jsonl', old_locations=[_docs_old_location], instructions=DATA_ACCESS)])
+for _lang, (_url, _sha, _size) in DOCS.items():
+    _docs_file = Resource(f'hc4-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'sha256:{_sha}', size=_size)
     _docs = DocTable(f'hc4-{_lang}-docs',
-        source=_docs_file, parser=_Hc4DocsParser(_lang), lang=_lang,
+        source=_docs_file.gunzip(), parser=_Hc4DocsParser(_lang), lang=_lang,
         desc=f'The HC4 {_lang} Common Crawl document corpus.')
 
     for _split in ('train', 'dev', 'test'):

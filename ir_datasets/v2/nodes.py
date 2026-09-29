@@ -545,7 +545,7 @@ class Table(Node):
 
     def __init__(self, name, *, source=None, parser=None, handler=None,
                  lang=None, defs=None, count_hint=None,
-                 docstore_size_hint=None, **meta):
+                 docstore_size_hint=None, derived_from=(), **meta):
         if (source is None) == (handler is None):
             raise ValueError('pass exactly one of source= or handler=')
         self.source = source
@@ -561,7 +561,11 @@ class Table(Node):
         # steps themselves are unnamed and are not nodes. Recorded as derived_from,
         # same kind as a filtered-from-another-table derivation -- this table
         # would not exist without these bytes either.
-        self._structural = [Edge(DERIVED_FROM, r) for r in source_resources(source)]
+        # ``derived_from=`` names nodes the parser reads beyond ``source`` (e.g. an
+        # id-membership list a filtering parser consults) -- same edge kind, since
+        # the table would not exist in this form without them either.
+        self._structural = [Edge(DERIVED_FROM, r) for r in
+                            (*source_resources(source), *source_resources(list(derived_from)))]
         super().__init__(
             name,
             metadata={

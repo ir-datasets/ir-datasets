@@ -35,14 +35,10 @@ DUA = ("Please confirm you have (or your organization has) filed a data usage "
        "agreement with the University of Glasgow for GOV2, as described at "
        "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>")
 
-DATA_ACCESS = (
-    "GOV2 is distributed by the University of Glasgow on hard drives shipped "
-    "under a data usage agreement (individual or organizational, depending "
-    "on whether your organization already has one on file); see "
-    "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>. Once "
-    "obtained, place or symlink a directory at {path} containing the "
-    "GOV2_data (and GOV2_extras) directories."
-)
+DATA_ACCESS = [
+    "GOV2 is distributed by the University of Glasgow on hard drives: <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>.\nFile an individual or organizational data usage agreement (skip if your organization already has one on file).",
+    "Copy the hard drive contents; you need a directory containing the GOV2_data (and GOV2_extras) directories.",
+]
 
 DOCS_LOCAL_PATH = 'gov2'  # relative to <home>/external
 DOCS_OLD_LOCATIONS = ['gov2/corpus']  # relative to <home> (v1)

@@ -205,8 +205,10 @@ class Source:
         licensed corpus, ...). ``default`` is where to put it, relative to
         ``external_home()`` (``<home>/external``); ``old_locations`` lists
         where earlier versions looked (relative to the ir_datasets home, or
-        absolute), still honored if the default is absent. ``{path}`` in
-        ``instructions`` is replaced by the default location."""
+        absolute), still honored if the default is absent. ``instructions`` is
+        a list of steps (a bare string is one step); ``{path}`` in a step is
+        replaced by the default location. A final "place the file at ..."
+        step is always added, so steps only cover how to *obtain* the file."""
         return _ManualSource(default, old_locations, instructions)
 
     def _build(self, file):
@@ -227,10 +229,11 @@ class Source:
         """This source as a plain dict -- the shape stored on a Resource's
         ``sources`` metadata (one JSON literal per source; ``order`` is its
         position, since a graph's triples are unordered). Credentials are
-        never included, only whether any are needed."""
+        never included, only whether any are needed. Plain ``headers`` (an API
+        version pin, say) are not credentials, so they don't count."""
         kind = 'gdrive' if (self.url or '').startswith('https://drive.google.com/') else self.kind
         d = {'order': order, 'kind': kind, 'url': self.url}
-        if self.headers or self.auth or self.cookies:
+        if self.auth or self.cookies:
             d['auth'] = True
         return d
 
@@ -287,6 +290,17 @@ class _ManualSource(Source):
         self.instructions = instructions
 
     @property
+    def steps(self):
+        s = self.instructions or []
+        return [s] if isinstance(s, str) else list(s)
+
+    def message(self, path):
+        """The steps as numbered plain text, ending with where to put the file."""
+        steps = [s.format(path=path) for s in self.steps]
+        steps.append(f'Place or symlink the file at: {path}')
+        return '\n'.join(f'{i}. {s}' for i, s in enumerate(steps, 1))
+
+    @property
     def default_path(self):
         p = Path(self.default)
         return p if p.is_absolute() else external_home() / p
@@ -307,9 +321,7 @@ class _ManualSource(Source):
         return self.local_path.exists()
 
     def _build(self, file):
-        msg = self.instructions
-        if msg:
-            msg = msg.format(path=self.default_path)
+        msg = self.message(self.default_path) if self.instructions else None
         return LocalDownload(self.local_path, msg, mkdir=False)
 
     def describe(self, order):
@@ -317,7 +329,7 @@ class _ManualSource(Source):
         if self.old_locations:
             d['old_locations'] = self.old_locations
         if self.instructions:
-            d['instructions'] = self.instructions
+            d['instructions'] = self.steps
         return d
 
     def __repr__(self):

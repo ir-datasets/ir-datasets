@@ -14,12 +14,10 @@ The corpus is a user-supplied file (``Source.external()``) at
 """
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecDocs, TrecQrels, TrecQueries, irds
 
-DATA_ACCESS = (
-    "The TREC Arabic corpus is based on the LDC's Arabic Newswire collection "
-    "<https://catalog.ldc.upenn.edu/LDC2001T55> (LDC2001T55.tgz). Many "
-    "organizations already have an LDC subscription; check with your library "
-    "for access. Once obtained, place or symlink it at: {path}"
-)
+DATA_ACCESS = [
+    "Find the LDC's Arabic Newswire collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2001T55> (LDC2001T55.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
+    "Download LDC2001T55.tgz.",
+]
 
 CITATION_2001 = 'dblp:conf/trec/GeyO01'
 CITATION_2002 = 'Gey2002Arabic'
@@ -45,6 +43,7 @@ DOCS_OLD_LOCATIONS = ['trec-arabic/corpus.tgz']  # relative to <home> (v1)
 docs_file = Resource('trec-arabic-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
     hash=f'md5:{DOCS_MD5}',
+    size=219_822_268,
 )
 ar2001_queries_file = Resource('trec-arabic-2001-queries.txt',
     sources=['https://trec.nist.gov/data/topics_noneng/arabic_topics.txt', Source.mirror()],

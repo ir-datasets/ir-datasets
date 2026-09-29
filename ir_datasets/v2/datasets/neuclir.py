@@ -216,6 +216,7 @@ for _lang in DOCS:
     _hc4f_docs = DocTable(f'{_name_hc4f}-docs',
         source=_docs_file.gunzip(),
         parser=_NeuclirHc4FilteredDocsParser(_lang, _include_doc_id_dlc), lang=_lang,
+        derived_from=HC4_IDS_FILES[_lang],
         desc=f'NeuCLIR collection 1 {_lang} documents, filtered to the ids '
             'HC4 also covers.')
     _hc4f_queries = QueryTable(f'{_name_hc4f}-queries',
@@ -223,7 +224,8 @@ for _lang in DOCS:
         parser=_NeuclirQueriesParser(_lang, ExctractedCCNoReportQuery))
     _hc4f_qrels = _QrelTable(f'{_name_hc4f}-qrels',
         source=[HC4_QRELS_FILES[(_lang, 'dev')], HC4_QRELS_FILES[(_lang, 'test')]],
-        parser=_NeuclirHc4FilteredQrelsParser(_include_doc_id_dlc), defs=QREL_DEFS)
+        parser=_NeuclirHc4FilteredQrelsParser(_include_doc_id_dlc), defs=QREL_DEFS,
+        derived_from=HC4_IDS_FILES[_lang])
     _benchmarks.append(Benchmark(_name_hc4f,
         docs=_hc4f_docs, queries=_hc4f_queries, qrels=_hc4f_qrels,
         citation=CITATION,

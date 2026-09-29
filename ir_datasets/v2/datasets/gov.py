@@ -35,12 +35,10 @@ from ir_datasets.v2.formats import Parser
 DUA = ("Please confirm you agree to the data usage terms found at "
        "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>")
 
-DATA_ACCESS = (
-    "GOV is distributed by the University of Glasgow "
-    "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html> as a hard drive shipment, "
-    "under an individual or organizational data usage agreement filed with UoG. Once obtained, "
-    "copy or symlink the G00, G01, G02, ... directories here: {path}"
-)
+DATA_ACCESS = [
+    "GOV is distributed by the University of Glasgow as a hard drive shipment: <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>.\nFile an individual or organizational data usage agreement with UoG.",
+    "Gather the G00, G01, G02, ... directories into one directory.",
+]
 
 DOCS_DEFAULT_PATH = 'gov'
 DOCS_OLD_LOCATION = 'gov/corpus'

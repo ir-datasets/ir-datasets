@@ -23,12 +23,10 @@ from ir_datasets.datasets.trec_spanish import (
 from ir_datasets.v2 import Benchmark, Parser, QrelTable, QueryTable, Resource, Source, TrecDocs, TrecQrels, irds
 from ir_datasets.v2.formats import _v1
 
-DATA_ACCESS = (
-    "The TREC Spanish corpus is based on the LDC's Spanish news collection "
-    "<https://catalog.ldc.upenn.edu/LDC2000T51> (LDC2000T51.tgz). Many "
-    "organizations already have an LDC subscription; check with your library "
-    "for access. Once obtained, place or symlink it at: {path}"
-)
+DATA_ACCESS = [
+    "Find the LDC's Spanish news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T51> (LDC2000T51.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
+    "Download LDC2000T51.tgz.",
+]
 
 CITATION_TREC3 = 'dblp:conf/trec/Harman94'
 CITATION_TREC4 = 'dblp:conf/trec/Harman95'
@@ -76,6 +74,7 @@ class _TrecSpanishQueriesParser(Parser):
 docs_file = Resource('trec-spanish-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
     hash=f'md5:{DOCS_MD5}',
+    size=118_891_944,
 )
 trec3_queries_file = Resource('trec-spanish-3-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.SP1-SP25.spanish.english.gz', Source.mirror()],

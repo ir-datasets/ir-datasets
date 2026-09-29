@@ -29,14 +29,10 @@ from ir_datasets.v2 import Directory, Source, TrecDocs, irds
 DUA = ("Please confirm you agree to the TREC data usage agreement found at "
        "<https://trec.nist.gov/data/cd45/index.html>")
 
-DATA_ACCESS = (
-    "TREC Disks 4 and 5 are distributed by NIST <https://trec.nist.gov/data/cd45/index.html> "
-    "under a data usage agreement filed with NIST (an individual or organizational agreement, "
-    "depending on whether your organization already has one on file). ir_datasets needs the "
-    "FBIS, FR94, FT, and LATIMES directories from the source (the Congressional Record is not "
-    "used). Once obtained, copy or symlink them (so this path contains FBIS/, FR94/, FT/, and "
-    "LATIMES/ subdirectories) here: {path}"
-)
+DATA_ACCESS = [
+    "TREC Disks 4 and 5 are distributed by NIST: <https://trec.nist.gov/data/cd45/index.html>.\nFile a data usage agreement with NIST (skip if your organization already has one on file).",
+    "Gather the FBIS, FR94, FT, and LATIMES directories from the source (the Congressional Record is not used) into one directory.",
+]
 
 DOCS_DEFAULT_PATH = 'trec-disks-4-5'
 DOCS_OLD_LOCATION = 'disks45/corpus'

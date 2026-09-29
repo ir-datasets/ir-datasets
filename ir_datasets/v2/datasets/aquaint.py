@@ -17,12 +17,10 @@ duplicating it -- same cross-file pattern as ``trec_adhoc.py``/
 import ir_datasets
 from ir_datasets.v2 import Resource, Source, TrecDocs, irds
 
-DATA_ACCESS = (
-    "The AQUAINT corpus is based on the LDC's AQUAINT collection "
-    "<https://catalog.ldc.upenn.edu/LDC2002T31> (aquaint_comp_LDC2002T31.tgz). "
-    "Many organizations already have an LDC subscription; check with your "
-    "library for access. Once obtained, symlink or copy it here: {path}"
-)
+DATA_ACCESS = [
+    "Find the AQUAINT collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2002T31> (aquaint_comp_LDC2002T31.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
+    "Download aquaint_comp_LDC2002T31.tgz.",
+]
 
 DOCS_MD5 = 'ac623257d8dd35326c9d500d5f6834e5'
 DOCS_DEFAULT_PATH = 'aquaint.tgz'
@@ -33,6 +31,7 @@ DOCS_OLD_LOCATION = 'aquaint/aquaint_comp_LDC2002T31.tgz'
 docs_file = Resource('aquaint.tgz',
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     hash=f'md5:{DOCS_MD5}',
+    size=1_073_936_915,
 )
 
 # Tables

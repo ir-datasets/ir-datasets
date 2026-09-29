@@ -385,8 +385,9 @@
       "hashes": [
         "md5:ac623257d8dd35326c9d500d5f6834e5"
       ],
+      "size": 1073936915,
       "sources": [
-        "{\"instructions\": \"The AQUAINT corpus is based on the LDC's AQUAINT collection <https://catalog.ldc.upenn.edu/LDC2002T31> (aquaint_comp_LDC2002T31.tgz). Many organizations already have an LDC subscription; check with your library for access. Once obtained, symlink or copy it here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"aquaint/aquaint_comp_LDC2002T31.tgz\"], \"order\": 0, \"path\": \"aquaint.tgz\"}"
+        "{\"instructions\": [\"Find the AQUAINT collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2002T31> (aquaint_comp_LDC2002T31.tgz).\\nMany organizations already have an LDC subscription; check with your library for access.\", \"Download aquaint_comp_LDC2002T31.tgz.\"], \"kind\": \"manual\", \"old_locations\": [\"aquaint/aquaint_comp_LDC2002T31.tgz\"], \"order\": 0, \"path\": \"aquaint.tgz\"}"
       ]
     },
     "irds:argsme-1.0-cleaned-docs": {
@@ -3773,9 +3774,9 @@
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "sources": [
-        "{\"instructions\": \"ClueWeb09 is available on hard drives from CMU <https://lemurproject.org/clueweb09/>. More details about the procedure can be found at <https://ir-datasets.com/ClueWeb09.html#DataAccess>. Link the ClueWeb09 source files here: {path}\\nShould contain directories like ClueWeb09_English_1\", \"kind\": \"manual\", \"old_locations\": [\"clueweb09/corpus\"], \"order\": 0, \"path\": \"clueweb09\"}"
+        "{\"instructions\": [\"ClueWeb09 is available on hard drives from CMU: <https://lemurproject.org/clueweb09/>.\\nYour organization may already have a copy, in which case you may only need to complete a new \\\"Individual Agreement\\\". Otherwise your organization must file the \\\"Organizational agreement\\\" and pay a fee to CMU; the data are shipped on hard drives.\", \"Gather the ClueWeb09 source directories into one directory; it should contain directories like ClueWeb09_English_1.\"], \"kind\": \"manual\", \"old_locations\": [\"clueweb09/corpus\"], \"order\": 0, \"path\": \"clueweb09\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:clueweb12": {
       "name": "irds:clueweb12",
@@ -3820,9 +3821,9 @@
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clueweb12",
       "sources": [
-        "{\"instructions\": \"ClueWeb12 is available on hard drives from CMU <https://lemurproject.org/clueweb12/>. More details about the procedure can be found at <https://ir-datasets.com/ClueWeb12.html#DataAccess>. Link the ClueWeb12 source files here: {path}\\nShould contain directories ClueWeb12_00 through ClueWeb12_19\", \"kind\": \"manual\", \"old_locations\": [\"clueweb12/corpus\"], \"order\": 0, \"path\": \"clueweb12\"}"
+        "{\"instructions\": [\"ClueWeb12 is available on hard drives from CMU: <https://lemurproject.org/clueweb12/>.\\nYour organization may already have a copy, in which case you may only need to complete a new \\\"Individual Agreement\\\". Otherwise your organization must file the \\\"Organizational agreement\\\" and pay a fee to CMU; the data are shipped on hard drives.\", \"Gather the ClueWeb12 source directories into one directory; it should contain directories ClueWeb12_00 through ClueWeb12_19.\"], \"kind\": \"manual\", \"old_locations\": [\"clueweb12/corpus\"], \"order\": 0, \"path\": \"clueweb12\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:codec": {
       "name": "irds:codec",
@@ -4416,7 +4417,7 @@
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.disks45",
       "sources": [
-        "{\"instructions\": \"TREC Disks 4 and 5 are distributed by NIST <https://trec.nist.gov/data/cd45/index.html> under a data usage agreement filed with NIST (an individual or organizational agreement, depending on whether your organization already has one on file). ir_datasets needs the FBIS, FR94, FT, and LATIMES directories from the source (the Congressional Record is not used). Once obtained, copy or symlink them (so this path contains FBIS/, FR94/, FT/, and LATIMES/ subdirectories) here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"disks45/corpus\"], \"order\": 0, \"path\": \"trec-disks-4-5\"}"
+        "{\"instructions\": [\"TREC Disks 4 and 5 are distributed by NIST: <https://trec.nist.gov/data/cd45/index.html>.\\nFile a data usage agreement with NIST (skip if your organization already has one on file).\", \"Gather the FBIS, FR94, FT, and LATIMES directories from the source (the Congressional Record is not used) into one directory.\"], \"kind\": \"manual\", \"old_locations\": [\"disks45/corpus\"], \"order\": 0, \"path\": \"trec-disks-4-5\"}"
       ],
       "dua": "Please confirm you agree to the TREC data usage agreement found at <https://trec.nist.gov/data/cd45/index.html>"
     },
@@ -4608,7 +4609,7 @@
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.gov",
       "sources": [
-        "{\"instructions\": \"GOV is distributed by the University of Glasgow <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html> as a hard drive shipment, under an individual or organizational data usage agreement filed with UoG. Once obtained, copy or symlink the G00, G01, G02, ... directories here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"gov/corpus\"], \"order\": 0, \"path\": \"gov\"}"
+        "{\"instructions\": [\"GOV is distributed by the University of Glasgow as a hard drive shipment: <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>.\\nFile an individual or organizational data usage agreement with UoG.\", \"Gather the G00, G01, G02, ... directories into one directory.\"], \"kind\": \"manual\", \"old_locations\": [\"gov/corpus\"], \"order\": 0, \"path\": \"gov\"}"
       ],
       "dua": "Please confirm you agree to the data usage terms found at <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>"
     },
@@ -4624,7 +4625,7 @@
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.gov2",
       "sources": [
-        "{\"instructions\": \"GOV2 is distributed by the University of Glasgow on hard drives shipped under a data usage agreement (individual or organizational, depending on whether your organization already has one on file); see <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>. Once obtained, place or symlink a directory at {path} containing the GOV2_data (and GOV2_extras) directories.\", \"kind\": \"manual\", \"old_locations\": [\"gov2/corpus\"], \"order\": 0, \"path\": \"gov2\"}"
+        "{\"instructions\": [\"GOV2 is distributed by the University of Glasgow on hard drives: <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>.\\nFile an individual or organizational data usage agreement (skip if your organization already has one on file).\", \"Copy the hard drive contents; you need a directory containing the GOV2_data (and GOV2_extras) directories.\"], \"kind\": \"manual\", \"old_locations\": [\"gov2/corpus\"], \"order\": 0, \"path\": \"gov2\"}"
       ],
       "dua": "Please confirm you have (or your organization has) filed a data usage agreement with the University of Glasgow for GOV2, as described at <http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>"
     },
@@ -4684,12 +4685,16 @@
       "format": "ExctractedCCDocs",
       "lang": "fa"
     },
-    "irds:hc4-fa-docs.jsonl": {
-      "name": "irds:hc4-fa-docs.jsonl",
+    "irds:hc4-fa-docs.jsonl.gz": {
+      "name": "irds:hc4-fa-docs.jsonl.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.hc4",
+      "hashes": [
+        "sha256:b15f68b9e0b530f3ba5ad6c586a3a8b4288ce833468d87af9ed2ce07ca8202d1"
+      ],
+      "size": 518142839,
       "sources": [
-        "{\"instructions\": \"HC4's documents are Common Crawl web pages that must be fetched and post-processed with the script at <https://github.com/hltcoe/HC4>. Once obtained, symlink or copy the resulting jsonl file here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"hc4/fas/hc4_docs.jsonl\"], \"order\": 0, \"path\": \"hc4-fa-docs.jsonl\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://huggingface.co/datasets/neuclir/hc4/resolve/main/data/fas-00000-of-00001.jsonl.gz\"}"
       ]
     },
     "irds:hc4-fa-ids-0.jsonl.gz": {
@@ -4820,12 +4825,16 @@
       "format": "ExctractedCCDocs",
       "lang": "ru"
     },
-    "irds:hc4-ru-docs.jsonl": {
-      "name": "irds:hc4-ru-docs.jsonl",
+    "irds:hc4-ru-docs.jsonl.gz": {
+      "name": "irds:hc4-ru-docs.jsonl.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.hc4",
+      "hashes": [
+        "sha256:bfa3d80f404c0bacfa3321628a605c05ee965ebf7f70951e666b26dcd52e1211"
+      ],
+      "size": 4138605072,
       "sources": [
-        "{\"instructions\": \"HC4's documents are Common Crawl web pages that must be fetched and post-processed with the script at <https://github.com/hltcoe/HC4>. Once obtained, symlink or copy the resulting jsonl file here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"hc4/rus/hc4_docs.jsonl\"], \"order\": 0, \"path\": \"hc4-ru-docs.jsonl\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://huggingface.co/datasets/neuclir/hc4/resolve/main/data/rus-00000-of-00001.jsonl.gz\"}"
       ]
     },
     "irds:hc4-ru-ids-0.jsonl.gz": {
@@ -5064,12 +5073,16 @@
       "format": "ExctractedCCDocs",
       "lang": "zh"
     },
-    "irds:hc4-zh-docs.jsonl": {
-      "name": "irds:hc4-zh-docs.jsonl",
+    "irds:hc4-zh-docs.jsonl.gz": {
+      "name": "irds:hc4-zh-docs.jsonl.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.hc4",
+      "hashes": [
+        "sha256:06498130be194e758779b73748e66cbbdbd9e5a13361ea05da617722c9643c15"
+      ],
+      "size": 576134453,
       "sources": [
-        "{\"instructions\": \"HC4's documents are Common Crawl web pages that must be fetched and post-processed with the script at <https://github.com/hltcoe/HC4>. Once obtained, symlink or copy the resulting jsonl file here: {path}\", \"kind\": \"manual\", \"old_locations\": [\"hc4/zho/hc4_docs.jsonl\"], \"order\": 0, \"path\": \"hc4-zh-docs.jsonl\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://huggingface.co/datasets/neuclir/hc4/resolve/main/data/zho-00000-of-00001.jsonl.gz\"}"
       ]
     },
     "irds:hc4-zh-ids-0.jsonl.gz": {
@@ -16010,7 +16023,7 @@
       ],
       "size": 34648862720,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16030,7 +16043,7 @@
       ],
       "size": 1057717952,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/collectionandqueries.tar.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/collectionandqueries.tar.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16134,7 +16147,7 @@
       ],
       "size": 687414398,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.dev.tar.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.dev.tar.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16188,7 +16201,7 @@
       ],
       "size": 673440221,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.eval.tar.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.eval.tar.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16251,7 +16264,7 @@
       ],
       "size": 1841693309,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16264,7 +16277,7 @@
       ],
       "size": 2633557579,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16381,7 +16394,7 @@
       ],
       "size": 11519984492,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.train.tar.gz\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.train.tar.gz\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16633,7 +16646,7 @@
       ],
       "size": 21768192000,
       "sources": [
-        "{\"auth\": true, \"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_passage.tar\"}"
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_passage.tar\"}"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -19415,8 +19428,9 @@
       "hashes": [
         "md5:67a1bcf200c448424bf0fba34cef17b0"
       ],
+      "size": 3248527676,
       "sources": [
-        "{\"instructions\": \"The New York Times Annotated Corpus. It is available from the LDC via: <https://catalog.ldc.upenn.edu/LDC2008T19>.\\nMore details about the procedure can be found here: <https://ir-datasets.com/nyt.html#DataAccess>.\\nThe source file is nyt_corpus_LDC2008T19.tgz.\\nTo proceed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"nyt/nyt.tgz\"], \"order\": 0, \"path\": \"nyt.tgz\"}"
+        "{\"instructions\": [\"The New York Times Annotated Corpus is available from the LDC: <https://catalog.ldc.upenn.edu/LDC2008T19>.\\nMany organizations already have an LDC subscription, in which case you only need to confirm the data usage agreement; check with your library for access details.\", \"Download the source file, nyt_corpus_LDC2008T19.tgz.\"], \"kind\": \"manual\", \"old_locations\": [\"nyt/nyt.tgz\"], \"order\": 0, \"path\": \"nyt.tgz\"}"
       ],
       "dua": "The New York Times Annotated Corpus is distributed by the LDC <https://catalog.ldc.upenn.edu/LDC2008T19> under a data usage agreement filed with LDC. Many organizations already have an LDC subscription; check with your library for access details."
     },
@@ -19664,6 +19678,7 @@
       "hashes": [
         "md5:39a24d38b4d0e352e7818abd09d6815a"
       ],
+      "size": 20204461,
       "sources": [
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://raw.githubusercontent.com/JackMcKechnie/SARA/refs/heads/main/combined_qrels.txt\"}"
       ]
@@ -19682,6 +19697,7 @@
       "hashes": [
         "md5:fc0247928a0b93bb344068fa238a5e3f"
       ],
+      "size": 8186,
       "sources": [
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://raw.githubusercontent.com/JackMcKechnie/SARA-A-Collection-of-Sensitivity-Aware-Relevance-Assessments/main/repeated_queries.tsv\"}"
       ]
@@ -20496,8 +20512,9 @@
       "hashes": [
         "md5:b17f34a51dca8d19fae66c338c9ed73a"
       ],
+      "size": 219822268,
       "sources": [
-        "{\"instructions\": \"The TREC Arabic corpus is based on the LDC's Arabic Newswire collection <https://catalog.ldc.upenn.edu/LDC2001T55> (LDC2001T55.tgz). Many organizations already have an LDC subscription; check with your library for access. Once obtained, place or symlink it at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"trec-arabic/corpus.tgz\"], \"order\": 0, \"path\": \"trec-arabic.tgz\"}"
+        "{\"instructions\": [\"Find the LDC's Arabic Newswire collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2001T55> (LDC2001T55.tgz).\\nMany organizations already have an LDC subscription; check with your library for access.\", \"Download LDC2001T55.tgz.\"], \"kind\": \"manual\", \"old_locations\": [\"trec-arabic/corpus.tgz\"], \"order\": 0, \"path\": \"trec-arabic.tgz\"}"
       ]
     },
     "irds:trec-cast-v0-docs": {
@@ -22821,8 +22838,9 @@
       "hashes": [
         "md5:a847fa029a1356b8f396aa642c449e38"
       ],
+      "size": 80467281,
       "sources": [
-        "{\"instructions\": \"The TREC Mandarin corpus is based on the LDC's Mandarin news collection <https://catalog.ldc.upenn.edu/LDC2000T52> (LDC2000T52.tgz). Many organizations already have an LDC subscription; check with your library for access. Once obtained, place or symlink it at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"trec-mandarin/corpus.tgz\"], \"order\": 0, \"path\": \"trec-mandarin.tgz\"}"
+        "{\"instructions\": [\"Find the LDC's Mandarin news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T52> (LDC2000T52.tgz).\\nMany organizations already have an LDC subscription; check with your library for access.\", \"Download LDC2000T52.tgz.\"], \"kind\": \"manual\", \"old_locations\": [\"trec-mandarin/corpus.tgz\"], \"order\": 0, \"path\": \"trec-mandarin.tgz\"}"
       ]
     },
     "irds:trec-mb-2013": {
@@ -23154,7 +23172,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/million.query/09/prels.20001-60000.gz\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/e67f45d3060e20667596f37e34d696c8\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-mq-2009-queries": {
       "name": "irds:trec-mq-2009-queries",
@@ -23176,7 +23194,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/million.query/09/09.mq.topics.20001-60000.gz\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/6347147d4d6c847f0423709140a7b10d\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-news-2018": {
       "name": "irds:trec-news-2018",
@@ -23909,8 +23927,9 @@
       "hashes": [
         "md5:4b8583c03149cf0c06c090fd230b33c6"
       ],
+      "size": 118891944,
       "sources": [
-        "{\"instructions\": \"The TREC Spanish corpus is based on the LDC's Spanish news collection <https://catalog.ldc.upenn.edu/LDC2000T51> (LDC2000T51.tgz). Many organizations already have an LDC subscription; check with your library for access. Once obtained, place or symlink it at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"trec-spanish/corpus.tgz\"], \"order\": 0, \"path\": \"trec-spanish.tgz\"}"
+        "{\"instructions\": [\"Find the LDC's Spanish news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T51> (LDC2000T51.tgz).\\nMany organizations already have an LDC subscription; check with your library for access.\", \"Download LDC2000T51.tgz.\"], \"kind\": \"manual\", \"old_locations\": [\"trec-spanish/corpus.tgz\"], \"order\": 0, \"path\": \"trec-spanish.tgz\"}"
       ]
     },
     "irds:trec-tb-2004": {
@@ -25067,7 +25086,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/09/prels.1-50.gz\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/3afdef86adf3211629182e3380f9e751\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2009-qrels-all": {
       "name": "irds:trec-web-2009-qrels-all",
@@ -25093,7 +25112,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/09/qrels.diversity.gz\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/0a3fb04bfdaa1551d8960d862e925c9e\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2009-queries": {
       "name": "irds:trec-web-2009-queries",
@@ -25115,7 +25134,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/09/wt09.topics.full.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/52e4a03d32718fa11290286e8e8dff47\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2010": {
       "name": "irds:trec-web-2010",
@@ -25205,7 +25224,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/10/10.adhoc-qrels.final\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/8a22083b0370d6ac799e1e779110de06\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2010-qrels-all": {
       "name": "irds:trec-web-2010-qrels-all",
@@ -25235,7 +25254,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/10/10.diversity-qrels.final\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/0a78c8bf7a809039a1fc9013a4bfe4eb\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2010-queries": {
       "name": "irds:trec-web-2010-queries",
@@ -25257,7 +25276,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/10/wt2010-topics.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/8f084cc90c13e4cd66192d3a9585235e\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2011": {
       "name": "irds:trec-web-2011",
@@ -25347,7 +25366,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/11/qrels.adhoc\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/7844c8a9cc3a4b6f740d45e56013693d\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2011-qrels-all": {
       "name": "irds:trec-web-2011-qrels-all",
@@ -25377,7 +25396,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/11/qrels.diversity\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/b88c1d42afbbbc5a4a776dd3f0b905c2\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2011-queries": {
       "name": "irds:trec-web-2011-queries",
@@ -25399,7 +25418,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/11/full-topics.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/23914875d80a5d24571d4f458a83c7fa\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2012": {
       "name": "irds:trec-web-2012",
@@ -25489,7 +25508,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/12/qrels.adhoc\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/079723ba3e955269f0de6254c4bec180\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2012-qrels-all": {
       "name": "irds:trec-web-2012-qrels-all",
@@ -25519,7 +25538,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/12/qrels.diversity\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/bbfde42fc4bc502b19aec5dcc6922faa\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2012-queries": {
       "name": "irds:trec-web-2012-queries",
@@ -25541,7 +25560,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/12/full-topics.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/a0b8ee33da312a284fda379582b0bc2a\"}"
       ],
-      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
+      "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2013": {
       "name": "irds:trec-web-2013",
@@ -25585,7 +25604,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2013/qrels.adhoc.txt\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/44aa6300f9df4a77f7205c574afb9c2d\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2013-qrels-all": {
       "name": "irds:trec-web-2013-qrels-all",
@@ -25615,7 +25634,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2013/qrels.all.txt\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/741e76258543ad47ae75030363be13a9\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2013-queries": {
       "name": "irds:trec-web-2013-queries",
@@ -25637,7 +25656,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2013/trec2013-topics.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/4c0ecdddc8632d3fa8fecb507f19801d\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2014": {
       "name": "irds:trec-web-2014",
@@ -25681,7 +25700,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2014/qrels.adhoc.txt\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/afa1db71680acf71283adc7846282a44\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2014-qrels-all": {
       "name": "irds:trec-web-2014-qrels-all",
@@ -25711,7 +25730,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2014/qrels.all.txt\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/085256d18544cd3e34b9fa9cc29ae513\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:trec-web-2014-queries": {
       "name": "irds:trec-web-2014-queries",
@@ -25733,14 +25752,7 @@
         "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/web/2014/trec2014-topics.xml\"}",
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/b1bf5c7aa9f6e7026e1558686330744f\"}"
       ],
-      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; see <https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure."
-    },
-    "irds:tripclick": {
-      "name": "irds:tripclick",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.tripclick",
-      "format": "TrecDocs",
-      "lang": "en"
+      "dua": "ClueWeb12 is distributed on hard drives by CMU <https://lemurproject.org/clueweb12/>; your organization may need to file an organizational agreement and pay a fee to CMU."
     },
     "irds:tripclick-benchmark.tar.gz": {
       "name": "irds:tripclick-benchmark.tar.gz",
@@ -25750,7 +25762,7 @@
         "md5:6e5d3deeba138750e9a148b538f30a8f"
       ],
       "sources": [
-        "{\"instructions\": \"To use this dataset, you need to request the source files from the Trip Database here: <https://tripdatabase.github.io/tripclick/#getting-the-data>. More details about the procedure can be found here: <https://ir-datasets.com/tripclick.html#DataAccess>. To proceed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"tripclick/benchmark.tar.gz\"], \"order\": 0, \"path\": \"tripclick-benchmark.tar.gz\"}"
+        "{\"instructions\": [\"Request access to the TripClick data from the Trip Database: <https://tripdatabase.github.io/tripclick/#getting-the-data>.\", \"Once approved, download benchmark.tar.gz.\"], \"kind\": \"manual\", \"old_locations\": [\"tripclick/benchmark.tar.gz\"], \"order\": 0, \"path\": \"tripclick-benchmark.tar.gz\"}"
       ],
       "dua": "TripClick's source files must be requested directly from the Trip Database; see <https://tripdatabase.github.io/tripclick/#getting-the-data> for the data access procedure."
     },
@@ -25762,7 +25774,7 @@
         "md5:2b5e98c683a91e19630636b6f83e3b15"
       ],
       "sources": [
-        "{\"instructions\": \"To use this dataset, you need to request the source files from the Trip Database here: <https://tripdatabase.github.io/tripclick/#getting-the-data>. More details about the procedure can be found here: <https://ir-datasets.com/tripclick.html#DataAccess>. To proceed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"tripclick/dlfiles_runs_test.tar.gz\"], \"order\": 0, \"path\": \"tripclick-dlfiles_runs_test.tar.gz\"}"
+        "{\"instructions\": [\"Request access to the TripClick data from the Trip Database: <https://tripdatabase.github.io/tripclick/#getting-the-data>.\", \"Once approved, download dlfiles_runs_test.tar.gz.\"], \"kind\": \"manual\", \"old_locations\": [\"tripclick/dlfiles_runs_test.tar.gz\"], \"order\": 0, \"path\": \"tripclick-dlfiles_runs_test.tar.gz\"}"
       ],
       "dua": "TripClick's source files must be requested directly from the Trip Database; see <https://tripdatabase.github.io/tripclick/#getting-the-data> for the data access procedure."
     },
@@ -25774,9 +25786,16 @@
         "md5:1f256c19466b414e365324d8ef21f09c"
       ],
       "sources": [
-        "{\"instructions\": \"To use this dataset, you need to request the source files from the Trip Database here: <https://tripdatabase.github.io/tripclick/#getting-the-data>. More details about the procedure can be found here: <https://ir-datasets.com/tripclick.html#DataAccess>. To proceed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"tripclick/dlfiles.tar.gz\"], \"order\": 0, \"path\": \"tripclick-dlfiles.tar.gz\"}"
+        "{\"instructions\": [\"Request access to the TripClick data from the Trip Database: <https://tripdatabase.github.io/tripclick/#getting-the-data>.\", \"Once approved, download dlfiles.tar.gz.\"], \"kind\": \"manual\", \"old_locations\": [\"tripclick/dlfiles.tar.gz\"], \"order\": 0, \"path\": \"tripclick-dlfiles.tar.gz\"}"
       ],
       "dua": "TripClick's source files must be requested directly from the Trip Database; see <https://tripdatabase.github.io/tripclick/#getting-the-data> for the data access procedure."
+    },
+    "irds:tripclick-docs": {
+      "name": "irds:tripclick-docs",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.tripclick",
+      "format": "TrecDocs",
+      "lang": "en"
     },
     "irds:tripclick-hofstaetter-triples.tsv": {
       "name": "irds:tripclick-hofstaetter-triples.tsv",
@@ -25812,7 +25831,7 @@
         "md5:1d3a548685c2fbef9b2076b0b04ba44f"
       ],
       "sources": [
-        "{\"instructions\": \"To use this dataset, you need to request the source files from the Trip Database here: <https://tripdatabase.github.io/tripclick/#getting-the-data>. More details about the procedure can be found here: <https://ir-datasets.com/tripclick.html#DataAccess>. To proceed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"tripclick/logs.tar.gz\"], \"order\": 0, \"path\": \"tripclick-logs.tar.gz\"}"
+        "{\"instructions\": [\"Request access to the TripClick data from the Trip Database: <https://tripdatabase.github.io/tripclick/#getting-the-data>.\", \"Once approved, download logs.tar.gz.\"], \"kind\": \"manual\", \"old_locations\": [\"tripclick/logs.tar.gz\"], \"order\": 0, \"path\": \"tripclick-logs.tar.gz\"}"
       ],
       "dua": "TripClick's source files must be requested directly from the Trip Database; see <https://tripdatabase.github.io/tripclick/#getting-the-data> for the data access procedure."
     },
@@ -26274,8 +26293,22 @@
       "hashes": [
         "md5:ce6e93f6ce9959b72c2de4f8d12089ab"
       ],
+      "size": 1632868829,
       "sources": [
-        "{\"instructions\": \"The Washington Post collection can be requested here: <https://trec.nist.gov/data/wapost/>\\nMore details about the procedure can be found here: <https://ir-datasets.com/wapo.html#DataAccess>.\\nOnce completed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"wapo/WashingtonPost.v2.tar.gz\"], \"order\": 0, \"path\": \"wapo-v2.tar.gz\"}"
+        "{\"instructions\": [\"Request the Washington Post collection from NIST: <https://trec.nist.gov/data/wapost/>.\\nYour organization may already have a copy, in which case you may only need to complete a new \\\"Individual Agreement\\\". Otherwise your organization must file the \\\"Organizational agreement\\\" with NIST; once processed, you will receive a password-protected download link.\", \"Download the source file once your request is approved.\"], \"kind\": \"manual\", \"old_locations\": [\"wapo/WashingtonPost.v2.tar.gz\"], \"order\": 0, \"path\": \"wapo-v2.tar.gz\"}"
+      ],
+      "dua": "The Washington Post collection is distributed by NIST under a data usage agreement; request access at <https://trec.nist.gov/data/wapost/>."
+    },
+    "irds:wapo-v3.tar.gz": {
+      "name": "irds:wapo-v3.tar.gz",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.wapo",
+      "hashes": [
+        "md5:eef2db39c95e0dfa1ca8b53d6ff15143"
+      ],
+      "size": 1942041158,
+      "sources": [
+        "{\"instructions\": [\"Request the Washington Post collection from NIST: <https://trec.nist.gov/data/wapost/>.\\nYour organization may already have a copy, in which case you may only need to complete a new \\\"Individual Agreement\\\". Otherwise your organization must file the \\\"Organizational agreement\\\" with NIST; once processed, you will receive a password-protected download link.\", \"Download the source file once your request is approved.\"], \"kind\": \"manual\", \"old_locations\": [\"wapo/WashingtonPost.v3.tar.gz\"], \"order\": 0, \"path\": \"wapo-v3.tar.gz\"}"
       ],
       "dua": "The Washington Post collection is distributed by NIST under a data usage agreement; request access at <https://trec.nist.gov/data/wapost/>."
     },
@@ -26293,8 +26326,9 @@
       "hashes": [
         "md5:b45b8d34393b4df72737c11aa7fb2b3d"
       ],
+      "size": 2538859710,
       "sources": [
-        "{\"instructions\": \"The Washington Post collection can be requested here: <https://trec.nist.gov/data/wapost/>\\nMore details about the procedure can be found here: <https://ir-datasets.com/wapo.html#DataAccess>.\\nOnce completed, place or symlink the source file at: {path}\", \"kind\": \"manual\", \"old_locations\": [\"wapo/WashingtonPost.v4.tar.gz\"], \"order\": 0, \"path\": \"wapo-v4.tar.gz\"}"
+        "{\"instructions\": [\"Request the Washington Post collection from NIST: <https://trec.nist.gov/data/wapost/>.\\nYour organization may already have a copy, in which case you may only need to complete a new \\\"Individual Agreement\\\". Otherwise your organization must file the \\\"Organizational agreement\\\" with NIST; once processed, you will receive a password-protected download link.\", \"Download the source file once your request is approved.\"], \"kind\": \"manual\", \"old_locations\": [\"wapo/WashingtonPost.v4.tar.gz\"], \"order\": 0, \"path\": \"wapo-v4.tar.gz\"}"
       ],
       "dua": "The Washington Post collection is distributed by NIST under a data usage agreement; request access at <https://trec.nist.gov/data/wapost/>."
     },
@@ -31606,7 +31640,7 @@
     [
       "irds:hc4-fa-docs",
       "irds:derived_from",
-      "irds:hc4-fa-docs.jsonl"
+      "irds:hc4-fa-docs.jsonl.gz"
     ],
     [
       "irds:hc4-fa-test",
@@ -31686,7 +31720,7 @@
     [
       "irds:hc4-ru-docs",
       "irds:derived_from",
-      "irds:hc4-ru-docs.jsonl"
+      "irds:hc4-ru-docs.jsonl.gz"
     ],
     [
       "irds:hc4-ru-test",
@@ -31766,7 +31800,7 @@
     [
       "irds:hc4-zh-docs",
       "irds:derived_from",
-      "irds:hc4-zh-docs.jsonl"
+      "irds:hc4-zh-docs.jsonl.gz"
     ],
     [
       "irds:hc4-zh-test",
@@ -40766,12 +40800,22 @@
     [
       "irds:neuclir-fa-hc4-filtered-docs",
       "irds:derived_from",
+      "irds:hc4-fa-ids-0.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-fa-hc4-filtered-docs",
+      "irds:derived_from",
       "irds:neuclir-fa-docs.jsonl.gz"
     ],
     [
       "irds:neuclir-fa-hc4-filtered-qrels",
       "irds:derived_from",
       "irds:hc4-fa-dev-qrels.txt"
+    ],
+    [
+      "irds:neuclir-fa-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-fa-ids-0.jsonl.gz"
     ],
     [
       "irds:neuclir-fa-hc4-filtered-qrels",
@@ -40901,12 +40945,92 @@
     [
       "irds:neuclir-ru-hc4-filtered-docs",
       "irds:derived_from",
+      "irds:hc4-ru-ids-0.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-1.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-2.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-3.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-4.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-5.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-6.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-7.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-docs",
+      "irds:derived_from",
       "irds:neuclir-ru-docs.jsonl.gz"
     ],
     [
       "irds:neuclir-ru-hc4-filtered-qrels",
       "irds:derived_from",
       "irds:hc4-ru-dev-qrels.txt"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-0.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-1.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-2.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-3.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-4.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-5.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-6.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-ru-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-ru-ids-7.jsonl.gz"
     ],
     [
       "irds:neuclir-ru-hc4-filtered-qrels",
@@ -40996,12 +41120,22 @@
     [
       "irds:neuclir-zh-hc4-filtered-docs",
       "irds:derived_from",
+      "irds:hc4-zh-ids-0.jsonl.gz"
+    ],
+    [
+      "irds:neuclir-zh-hc4-filtered-docs",
+      "irds:derived_from",
       "irds:neuclir-zh-docs.jsonl.gz"
     ],
     [
       "irds:neuclir-zh-hc4-filtered-qrels",
       "irds:derived_from",
       "irds:hc4-zh-dev-qrels.txt"
+    ],
+    [
+      "irds:neuclir-zh-hc4-filtered-qrels",
+      "irds:derived_from",
+      "irds:hc4-zh-ids-0.jsonl.gz"
     ],
     [
       "irds:neuclir-zh-hc4-filtered-qrels",
@@ -45309,7 +45443,7 @@
       "irds:trec-web-2014-queries.xml"
     ],
     [
-      "irds:tripclick",
+      "irds:tripclick-docs",
       "irds:derived_from",
       "irds:tripclick-benchmark.tar.gz"
     ],
@@ -45326,7 +45460,7 @@
     [
       "irds:tripclick-test",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-test",
@@ -45341,7 +45475,7 @@
     [
       "irds:tripclick-test-head",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-test-head",
@@ -45376,7 +45510,7 @@
     [
       "irds:tripclick-test-tail",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-test-tail",
@@ -45401,7 +45535,7 @@
     [
       "irds:tripclick-test-torso",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-test-torso",
@@ -45431,7 +45565,7 @@
     [
       "irds:tripclick-train",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train",
@@ -45456,7 +45590,7 @@
     [
       "irds:tripclick-train-head",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train-head",
@@ -45471,7 +45605,7 @@
     [
       "irds:tripclick-train-head-dctr",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train-head-dctr",
@@ -45506,7 +45640,7 @@
     [
       "irds:tripclick-train-hofstaetter-triples",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train-hofstaetter-triples",
@@ -45536,7 +45670,7 @@
     [
       "irds:tripclick-train-tail",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train-tail",
@@ -45561,7 +45695,7 @@
     [
       "irds:tripclick-train-torso",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-train-torso",
@@ -45586,7 +45720,7 @@
     [
       "irds:tripclick-val",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-val",
@@ -45606,7 +45740,7 @@
     [
       "irds:tripclick-val-head",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-val-head",
@@ -45626,7 +45760,7 @@
     [
       "irds:tripclick-val-head-dctr",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-val-head-dctr",
@@ -45681,7 +45815,7 @@
     [
       "irds:tripclick-val-tail",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-val-tail",
@@ -45716,7 +45850,7 @@
     [
       "irds:tripclick-val-torso",
       "irds:docs",
-      "irds:tripclick"
+      "irds:tripclick-docs"
     ],
     [
       "irds:tripclick-val-torso",

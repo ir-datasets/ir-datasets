@@ -76,16 +76,13 @@ from ir_datasets.v2.formats import Parser
 NAME = 'clueweb12'
 
 DUA = ("ClueWeb12 is distributed on hard drives by CMU "
-       "<https://lemurproject.org/clueweb12/>; see "
-       "<https://ir-datasets.com/ClueWeb12.html#DataAccess> for the procedure.")
+       "<https://lemurproject.org/clueweb12/>; your organization may need to "
+       "file an organizational agreement and pay a fee to CMU.")
 
-DATA_ACCESS = (
-    "ClueWeb12 is available on hard drives from CMU <https://lemurproject.org/clueweb12/>. "
-    "More details about the procedure can be found at "
-    "<https://ir-datasets.com/ClueWeb12.html#DataAccess>. "
-    "Link the ClueWeb12 source files here: {path}\n"
-    "Should contain directories ClueWeb12_00 through ClueWeb12_19"
-)
+DATA_ACCESS = [
+    "ClueWeb12 is available on hard drives from CMU: <https://lemurproject.org/clueweb12/>.\nYour organization may already have a copy, in which case you may only need to complete a new \"Individual Agreement\". Otherwise your organization must file the \"Organizational agreement\" and pay a fee to CMU; the data are shipped on hard drives.",
+    "Gather the ClueWeb12 source directories into one directory; it should contain directories ClueWeb12_00 through ClueWeb12_19.",
+]
 
 DOCS_DEFAULT_PATH = 'clueweb12'
 DOCS_OLD_LOCATION = f'{NAME}/corpus'
