@@ -3,8 +3,9 @@
 
 The corpus is LDC/NIST-gated and distributed on hard drives, not
 automatically downloadable -- same shape as ``disks45.py``/``clueweb09.py``:
-a ``Directory`` Resource pointed at by ``Source.local()``, at the same
-well-known path v1 used, so an existing v1 placement is picked up in place.
+a ``Directory`` Resource pointed at by ``Source.external()``, at
+``<home>/external/clueweb12`` (old v1 location ``<home>/clueweb12/corpus``
+still read as a fallback).
 A separately downloadable "chk" archive (per-WARC-file record-offset
 checkpoints, used for random access / seeking within ``docs.lookup``) is a
 real downloadable ``Resource``, extracted via v1's ``TarExtractAll`` -- same
@@ -86,7 +87,8 @@ DATA_ACCESS = (
     "Should contain directories ClueWeb12_00 through ClueWeb12_19"
 )
 
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / NAME / 'corpus'
+DOCS_DEFAULT_PATH = 'clueweb12'
+DOCS_OLD_LOCATION = f'{NAME}/corpus'
 BASE_PATH = ir_datasets.util.home_path() / NAME
 
 
@@ -116,7 +118,7 @@ class _ClueWeb12b13DocsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Directory('clueweb12.dir',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     dua=DUA,
 )
 docs_chk_file = Resource('clueweb12-chk.tar.gz',
@@ -125,7 +127,7 @@ docs_chk_file = Resource('clueweb12-chk.tar.gz',
     size=3_883_120_643,
 )
 cw12b_info_file = Resource('clueweb12-cw12b-info.tgz',
-    sources=['http://lemurproject.org/clueweb12/ClueWeb12-CreateB13.tgz'],
+    sources=['http://lemurproject.org/clueweb12-CreateB13.tgz'],
     md5='8175ce74a97e46be80c2127d965da200',
     size=1_310_407_043,
 )

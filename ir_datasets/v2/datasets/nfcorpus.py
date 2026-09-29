@@ -112,7 +112,7 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     main_file = Resource('nfcorpus-main.tar.gz',
         sources=['https://www.cl.uni-heidelberg.de/statnlpgroup/nfcorpus/nfcorpus.tar.gz',
-                 Source.irds()],
+                 Source.mirror()],
         md5='49c061fbadc52ba4d35d0e42e2d742fd',
         size=31_039_523,
     )

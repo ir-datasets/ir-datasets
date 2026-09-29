@@ -34,35 +34,18 @@ is instead taken from ``test/integration/c4.py``'s integration-test count for
 available without downloading the manifest ourselves.
 
 The TREC Misinfo 2021 queries (``trec-misinfo-2021/queries`` in v1's
-``downloads.json``) are a manual/DUA-style download: that entry has
-``"instructions"`` instead of a ``"url"`` (a TREC Active-Participants page,
-not fetchable automatically). This is the same "user must obtain the file
-themselves" shape ``gov.py``/``disks45.py``/``trec_arabic.py``/``hc4.py`` use
-for their DUA-gated corpora, just for a single small file rather than a
-directory tree -- so it's declared the same way, ``Resource(...,
-sources=[Source.local(path, instructions=...)])``, at the same well-known
-cache path v1 used (``<home>/c4/misinfo-2021-topics.xml``).
-
-There are no qrels wired up for ``trec-misinfo-2021`` here: v1's own
-``_init()`` builds this subset as queries-only (TREC Misinfo 2021 did
-eventually get qrels published, but v1's c4 module never wires them in), so
-this migration stays faithful to that and does the same -- same shape as
-``clinicaltrials.py``'s queries-only ``trec_ct_2022`` benchmark.
+``downloads.json``) were a manual/DUA-style download in v1 (an Active
+Participants URL that now returns 401); NIST now publishes the topics file
+openly at ``https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml``, so
+it is an ordinary URL Resource here.
 """
 import ir_datasets
 from ir_datasets.datasets.c4 import C4Docs as _V1C4Docs, MisinfoQuery
 from ir_datasets.util import TarExtractAll
 from ir_datasets.v2 import Benchmark, DocTable, QueryTable, Resource, irds
 from ir_datasets.v2.formats import Parser
-from ir_datasets.v2.sources import Source
 
 BASE_PATH = ir_datasets.util.home_path() / 'c4'
-
-MISINFO_INSTRUCTIONS = (
-    "download file from Active Participants section of TREC website here: "
-    "<https://trec.nist.gov/act_part/tracks/misinfo/misinfo-2021-topics.xml>.\n"
-    "Link the file here: {path}"
-)
 
 misinfo_map = {'number': 'query_id', 'query': 'text', 'description': 'description',
                'narrative': 'narrative', 'disclaimer': 'disclaimer', 'stance': 'stance',
@@ -117,10 +100,9 @@ with irds.defaults(lang='en'):
         size=8_983_526_491,
     )
     trec_misinfo_2021_queries_file = Resource('c4-trec-misinfo-2021-queries.xml',
-        sources=[Source.local(BASE_PATH / 'misinfo-2021-topics.xml', instructions=MISINFO_INSTRUCTIONS)],
-        md5='c8fd82d3ffea802a1029720b03de443b',
-        size=50_721,
-        dua='Manual download from the TREC Active Participants area required; see instructions.',
+        sources=['https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml'],
+        md5='988ea3128eefa5814b550f5fe1a15e94',
+        size=50_722,
     )
 
     # Tables

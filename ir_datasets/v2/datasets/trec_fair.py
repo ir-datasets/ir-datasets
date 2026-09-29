@@ -139,7 +139,7 @@ eval_2021_topics_file = Resource('trec-fair-2021-eval-topics.json.gz',
     size=6_055,
 )
 eval_2021_qrels_file = Resource('trec-fair-2021-eval-qrels.json.gz',
-    sources=['https://trec.nist.gov/data/fair/2021-eval-topics-with-qrels.json.gz', Source.irds()],
+    sources=['https://trec.nist.gov/data/fair/2021-eval-topics-with-qrels.json.gz', Source.mirror()],
     md5='50068634036c00adb54e8be9314bf37c',
     size=120_050,
 )

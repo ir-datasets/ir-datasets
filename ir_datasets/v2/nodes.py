@@ -49,6 +49,7 @@ from .verify import Divergence
 
 from .provider import irds
 from .sources import (
+    describe_sources,
     DOCSTORE_FORMAT, Readable, as_source, build_download, default_cache_path,
     legacy_path, local_copy_hint, materialize, migrate_legacy,
 )
@@ -229,8 +230,8 @@ def _cache_base(node):
 class Resource(Node, Readable):
     """Bytes, and every place they can be obtained from.
 
-    ``sources`` accepts bare URLs or ``Source``/``Source.irds()``/
-    ``Source.local()`` for headers, auth, or manual acquisition.
+    ``sources`` accepts bare URLs or ``Source``/``Source.mirror()``/
+    ``Source.external()`` for headers, auth, or manual acquisition.
 
     Integrity is declared as one or more ``algo:hexdigest`` strings --
     ``hashes=['sha256:...']``, or several at once (``hashes=['md5:...',
@@ -268,7 +269,7 @@ class Resource(Node, Readable):
             self.hashes[algo] = digest
         if md5:
             self.hashes.setdefault('md5', md5.lower())
-        # Hashes must be settled first: materializing a Source.irds()
+        # Hashes must be settled first: materializing a Source.mirror()
         # placeholder needs self.md5, which is derived from self.hashes.
         self.sources = [materialize(as_source(s), self.md5) for s in sources]
         self.size = size
@@ -278,7 +279,7 @@ class Resource(Node, Readable):
         super().__init__(name, metadata={
             'hashes': [f'{a}:{self.hashes[a]}' for a in sorted(self.hashes)],
             'size': size,
-            'sources': [repr(s) for s in self.sources],
+            'sources': describe_sources(self.sources),
             'dua': dua,
         }, **meta)
 
@@ -441,6 +442,9 @@ class GitRepo(Directory):
         self.metadata['commit'] = commit
         try:
             self.metadata['url'] = self.url()
+            self.metadata['sources'] = [json.dumps(
+                {'order': 0, 'kind': 'git', 'url': self.metadata['url'], 'commit': commit},
+                sort_keys=True)]
         except NotImplementedError:
             pass  # a host that hasn't implemented url() yet -- repo/commit still identify it
 

@@ -107,7 +107,7 @@ from .formats import (
     Parser, TrecDocs, TrecQrels, TrecQueries, TrecScoredDocs, TsvDocPairs,
     TsvDocs, TsvQueries,
 )
-from .sources import Readable, Source, transform
+from .sources import Readable, Source, external_home, transform
 from .filters import DerivedTable, Filter, ids_from_lines, ids_of
 from .protocols import Node as NodeProtocol
 from .protocols import Resource as ResourceProtocol
@@ -142,6 +142,27 @@ def list_datasets(type=None):
     return graph.list(type=type)
 
 
+def external_status():
+    """Every Resource the user must supply themselves (``Source.external``), as
+    ``(name, path, present, instructions)`` -- where to put it under
+    ``external_home()`` (``<home>/external`` or ``$IR_DATASETS_EXTERNAL``), and
+    whether it's there yet."""
+    from .sources import _ManualSource
+    rows = []
+    for name in list_datasets(type=RESOURCE):
+        try:
+            node = graph[name]
+        except Exception:
+            continue
+        for src in getattr(node, 'sources', ()):
+            if isinstance(src, _ManualSource):
+                # (name, where it is now or belongs, present?, instructions)
+                path = src.local_path
+                rows.append((name, str(path), path.exists(),
+                             (src.instructions or '').format(path=src.default_path)))
+    return rows
+
+
 def citation(name):
     """The node's citation, or None. Plain metadata for now -- see the module
     docstring."""
@@ -164,7 +185,7 @@ __all__ = [
     'RESOURCE', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
     'STRUCTURAL_EDGES', 'DEFAULTABLE', 'source_resources',
     # sources
-    'Source', 'Readable', 'transform',
+    'Source', 'Readable', 'transform', 'external_home',
     # formats (the node type IS the format)
     'TsvDocs', 'TsvQueries', 'TrecDocs', 'TrecQueries', 'TrecQrels', 'TrecScoredDocs', 'TsvDocPairs',
     'Parser',
@@ -172,5 +193,5 @@ __all__ = [
     'Filter', 'DerivedTable', 'ids_of', 'ids_from_lines',
     # providers and the graph
     'irds', 'hf', 'clirmatrix', 'legacy', 'graph',
-    'load', 'list_datasets', 'citation',
+    'load', 'list_datasets', 'citation', 'external_status',
 ]

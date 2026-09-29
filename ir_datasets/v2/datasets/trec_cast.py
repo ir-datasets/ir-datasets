@@ -131,7 +131,7 @@ eval_2019_queries_file = Resource('trec-cast-v1-2019-queries.json',
     size=57_204,
 )
 eval_2019_qrels_file = Resource('trec-cast-v1-2019-qrels.txt',
-    sources=['https://trec.nist.gov/data/cast/2019qrels.txt', Source.irds()],
+    sources=['https://trec.nist.gov/data/cast/2019qrels.txt', Source.mirror()],
     md5='aab238105020c4cd55fae60dedfa9f1e',
     size=1_138_032,
 )
@@ -147,7 +147,7 @@ eval_2020_queries_file = Resource('trec-cast-v1-2020-queries.json',
     size=78_998,
 )
 eval_2020_qrels_file = Resource('trec-cast-v1-2020-qrels.txt',
-    sources=['https://trec.nist.gov/data/cast/2020qrels.txt', Source.irds()],
+    sources=['https://trec.nist.gov/data/cast/2020qrels.txt', Source.mirror()],
     md5='de6a8406217945bdbf1da304214ef60c',
     size=1_563_427,
 )

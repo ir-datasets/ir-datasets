@@ -132,7 +132,7 @@ python -m unittest test.v2_conformance
 | **`Graph`** = the union over installed providers (entry points + on-import subscription): routing, indexed reverse lookups, validation — built entirely from `Provider.load`/`discover_edges`, nothing more | `graph.Graph` |
 | Construction is inert — ad-hoc/test nodes never touch any registry | `base.Node` |
 | **Node/Resource/Table/Benchmark/Suite are `Protocol`s, not base classes** — `ManifestProvider.register()` only ever checks the shape (a `hasattr` check on the three methods it calls), never `isinstance` against a concrete class; a node needs no particular ancestor | `protocols.py`, `TestV2Protocols` |
-| A Resource's `sources` accept bare URLs or `Source`/`Source.irds()`/`Source.local()` for headers, auth, or manual acquisition | `sources.py` |
+| A Resource's `sources` accept bare URLs or `Source`/`Source.mirror()`/`Source.external()` for headers, auth, or manual acquisition | `sources.py` |
 | **Multi-algorithm integrity**: `hashes=['sha256:...', 'md5:...']` (OCI/pip's `algo:hexdigest` convention; `md5=` stays as shorthand for the common single-hash case). Checked in one streamed pass at `verify` time, against the *author's declared* value — not a frozen row, unlike `Table` | `nodes.parse_hash`, `Resource.verify`, `TestV2ResourceHashes` |
 | Declarative stream pipeline (`.member().gunzip().pipe()`) over a `Readable` — distinct from a Resource's `Source`s (where to fetch bytes) | `sources.Readable` |
 | `derived_from` + `Filter` replaces hand-built Filtered\* stacks | `filters.py` |

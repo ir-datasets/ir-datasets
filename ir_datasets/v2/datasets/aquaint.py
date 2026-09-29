@@ -3,8 +3,8 @@
 The corpus (Xinhua, New York Times, and AP Worldstream English newswire) is
 LDC-gated (LDC2002T31) and not automatically downloadable -- same shape as
 ``trec_arabic.py``/``trec_mandarin.py``: a single tgz ``Resource`` pointed at
-by ``Source.local()``, at the same well-known path v1 used, so an existing
-v1 placement is picked up in place. Unlike ``disks45.py``'s corpus, NIST
+by ``Source.external()``, at ``<home>/external/aquaint.tgz`` (the old
+v1 location ``<home>/aquaint/aquaint_comp_LDC2002T31.tgz`` is still read as a fallback). Unlike ``disks45.py``'s corpus, NIST
 distributes this one as a single archive (not a loose directory tree), so a
 plain ``Resource`` is the right node here, not ``Directory``.
 
@@ -25,12 +25,13 @@ DATA_ACCESS = (
 )
 
 DOCS_MD5 = 'ac623257d8dd35326c9d500d5f6834e5'
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'aquaint' / 'aquaint_comp_LDC2002T31.tgz'
+DOCS_DEFAULT_PATH = 'aquaint.tgz'
+DOCS_OLD_LOCATION = 'aquaint/aquaint_comp_LDC2002T31.tgz'
 
 # Files
 # -----------------------------------------
 docs_file = Resource('aquaint.tgz',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     md5=DOCS_MD5,
 )
 

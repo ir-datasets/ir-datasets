@@ -5,8 +5,8 @@ The corpus is the .gov web crawl used by the TREC Terabyte tracks
 (2004-2006), distributed by the University of Glasgow on physical hard
 drives under an individual/organizational data agreement -- not
 downloadable, same shape as ``disks45.py``: a ``Directory`` Resource pointed
-at by ``Source.local()``, at the same well-known path v1 used, so an
-existing v1 placement is picked up in place. Unlike disks45, the on-disk
+at by ``Source.external()``, at ``<home>/external/gov2`` (v1's old
+``<home>/gov2/corpus`` still read as fallback), so an existing v1 placement is picked up in place. Unlike disks45, the on-disk
 layout is v1's own bespoke ``GOV2_data/GX???/*.gz`` tree with a companion
 ``GOV2_extras/url2id.gz`` used to build a per-file document-count index (for
 efficient random slicing) -- not a set of ``TrecDocs``-compatible SGML files
@@ -40,11 +40,12 @@ DATA_ACCESS = (
     "under a data usage agreement (individual or organizational, depending "
     "on whether your organization already has one on file); see "
     "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>. Once "
-    "obtained, copy or symlink the GOV2_data (and GOV2_extras) directories "
-    "here: {path}"
+    "obtained, place or symlink a directory at {path} containing the "
+    "GOV2_data (and GOV2_extras) directories."
 )
 
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'gov2' / 'corpus'
+DOCS_LOCAL_PATH = 'gov2'  # relative to <home>/external
+DOCS_OLD_LOCATIONS = ['gov2/corpus']  # relative to <home> (v1)
 DOCCOUNT_LOCAL_PATH = ir_datasets.util.home_path() / 'gov2' / 'corpus.doccounts'
 
 
@@ -73,7 +74,7 @@ class _Gov2DocsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Directory('gov2.dir',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
     dua=DUA,
 )
 

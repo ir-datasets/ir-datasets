@@ -1,8 +1,9 @@
 """NYT (The New York Times Annotated Corpus) -- a v2 dataset family.
 
 The corpus is LDC-gated and not automatically downloadable -- like
-``disks45.py``, a ``Source.local()``-backed Resource at the same well-known
-path v1 used (so an existing v1 placement is picked up in place). Unlike
+``disks45.py``, a ``Source.external()``-backed Resource at
+``<home>/external/nyt.tgz`` (v1's old ``<home>/nyt/nyt.tgz`` still read as
+fallback, so an existing v1 placement is picked up in place). Unlike
 ``disks45.py`` though, the source is a *single file* (``nyt.tgz``), not a
 directory tree, so this is a plain ``Resource`` (not a ``Directory``), same
 shape as ``c4.py``'s ``trec_misinfo_2021_queries_file``.
@@ -65,7 +66,6 @@ hand; ``Filter`` derives ``irds:nyt-wksup-train-queries``/``-qrels`` (and the
 ``valid`` equivalents) automatically from ``wksup``'s own tables, same
 pattern as ``codec.py``'s/``istella22.py``'s derived benchmarks.
 """
-import ir_datasets
 from ir_datasets.datasets.nyt import (
     NytDocs as _V1NytDocs, NytQrels as _V1NytQrels,
     NytQueries as _V1NytQueries, QREL_DEFS, VALID_IDS,
@@ -76,7 +76,6 @@ from ir_datasets.v2 import (
 from ir_datasets.v2.formats import Parser
 
 NAME = 'nyt'
-BASE_PATH = ir_datasets.util.home_path() / NAME
 
 DUA = ("The New York Times Annotated Corpus is distributed by the LDC "
        "<https://catalog.ldc.upenn.edu/LDC2008T19> under a data usage "
@@ -89,7 +88,7 @@ SOURCE_INSTRUCTIONS = (
     "More details about the procedure can be found here: "
     "<https://ir-datasets.com/nyt.html#DataAccess>.\n"
     "The source file is nyt_corpus_LDC2008T19.tgz.\n"
-    "To proceed, symlink the source file here: {path}"
+    "To proceed, place or symlink the source file at: {path}"
 )
 
 CITATION_WKSUP = 'dblp:conf/sigir/MacAvaneyYHF19'
@@ -129,7 +128,7 @@ class _NytQrelsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Resource('nyt-source.tgz',
-    sources=[Source.local(BASE_PATH / 'nyt.tgz', instructions=SOURCE_INSTRUCTIONS)],
+    sources=[Source.external('nyt.tgz', old_locations=[f'{NAME}/nyt.tgz'], instructions=SOURCE_INSTRUCTIONS)],
     md5='67a1bcf200c448424bf0fba34cef17b0',
     dua=DUA,
 )

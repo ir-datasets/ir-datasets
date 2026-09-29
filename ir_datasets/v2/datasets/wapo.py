@@ -5,8 +5,9 @@ docstrings for why they're no longer bundled here).
 
 The corpus is LDC/NIST-gated and not automatically downloadable -- like
 ``nyt.py``, a single-file ``Resource`` (not a ``Directory`` -- each version
-is one tar.gz) pointed at by ``Source.local(path, instructions=...)``, at the
-same well-known path v1 used.
+is one tar.gz) pointed at by ``Source.external(default, old_locations=..., instructions=...)``, at
+``<home>/external/wapo-v{2,4}.tar.gz`` (v1's old
+``<home>/wapo/...`` still read as fallback).
 
 Reuses v1's ``WapoDocs`` directly as a v2 ``parser=`` wrapper -- it reads one
 named member out of the downloaded tar.gz (``file_name``, which differs
@@ -20,13 +21,11 @@ registered as a bare, queryless doc collection, same as here.
 ``trec_core.py``/``trec_news.py``, and imports ``docs_v2``/``docs_v4`` from
 here by reference.
 """
-import ir_datasets
 from ir_datasets.datasets.wapo import WapoDoc, WapoDocs as _V1WapoDocs
 from ir_datasets.v2 import DocTable, Resource, Source, irds
 from ir_datasets.v2.formats import Parser
 
 NAME = 'wapo'
-BASE_PATH = ir_datasets.util.home_path() / NAME
 
 DUA = ("The Washington Post collection is distributed by NIST under a data "
        "usage agreement; request access at <https://trec.nist.gov/data/wapost/>.")
@@ -36,7 +35,7 @@ V2_INSTRUCTIONS = (
     "<https://trec.nist.gov/data/wapost/>\n"
     "More details about the procedure can be found here: "
     "<https://ir-datasets.com/wapo.html#DataAccess>.\n"
-    "Once completed, place/link the source file: {path}"
+    "Once completed, place or symlink the source file at: {path}"
 )
 V4_INSTRUCTIONS = V2_INSTRUCTIONS
 
@@ -55,11 +54,11 @@ with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
     docs_v2_file = Resource('wapo-v2.tar.gz',
-        sources=[Source.local(BASE_PATH / 'WashingtonPost.v2.tar.gz', instructions=V2_INSTRUCTIONS)],
+        sources=[Source.external('wapo-v2.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v2.tar.gz'], instructions=V2_INSTRUCTIONS)],
         md5='ce6e93f6ce9959b72c2de4f8d12089ab',
     )
     docs_v4_file = Resource('wapo-v4.tar.gz',
-        sources=[Source.local(BASE_PATH / 'WashingtonPost.v4.tar.gz', instructions=V4_INSTRUCTIONS)],
+        sources=[Source.external('wapo-v4.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v4.tar.gz'], instructions=V4_INSTRUCTIONS)],
         md5='b45b8d34393b4df72737c11aa7fb2b3d',
     )
 

@@ -49,12 +49,12 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     trec_misinfo_2019_queries_file = Resource('trec-misinfo-2019-queries.xml',
-        sources=['https://trec.nist.gov/data/misinfo/2019topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/misinfo/2019topics.xml', Source.mirror()],
         md5='e46bb8ff3058bbcc1bd73a0ecbda1621',
         size=30_028,
     )
     trec_misinfo_2019_qrels_file = Resource('trec-misinfo-2019-qrels.txt',
-        sources=['https://trec.nist.gov/data/misinfo/2019qrels_raw.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/misinfo/2019qrels_raw.txt', Source.mirror()],
         md5='faf86b2ac5fcca52b189a3ad408fd019',
         size=878_952,
     )

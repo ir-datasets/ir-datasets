@@ -7,7 +7,7 @@ in full via v1's ``TarExtractAll`` to a fixed directory
 (``<home>/istella22/istella22_extracted``), the same shape ``c4.py``/
 ``clueweb09.py``/``clueweb12.py`` use for their own checkpoint archives. This
 is a real, automatically-downloadable ``Resource`` (not a manual/
-``Source.local()`` one) -- ``dua=`` on it communicates only that the download
+``Source.external()`` one) -- ``dua=`` on it communicates only that the download
 requires having accepted the Istella22 Licence Agreement, same as every other
 DUA-gated *downloadable* ``Resource`` in this package.
 

@@ -3,8 +3,9 @@
 
 The corpus is LDC/NIST-gated and distributed on hard drives, not
 automatically downloadable -- same shape as ``disks45.py``/``trec_arabic.py``:
-a ``Directory`` Resource pointed at by ``Source.local()``, at the same
-well-known path v1 used, so an existing v1 placement is picked up in place.
+a ``Directory`` Resource pointed at by ``Source.external()``, at
+``<home>/external/clueweb09`` (old v1 location ``<home>/clueweb09/corpus``
+still read as a fallback).
 A separately downloadable "chk" archive (per-WARC-file record-offset
 checkpoints, used for random access / seeking within ``docs.lookup``) is a
 real downloadable ``Resource``, extracted via v1's ``TarExtractAll`` the same
@@ -47,7 +48,8 @@ DATA_ACCESS = (
     "Should contain directories like ClueWeb09_English_1"
 )
 
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'clueweb09' / 'corpus'
+DOCS_DEFAULT_PATH = 'clueweb09'
+DOCS_OLD_LOCATION = 'clueweb09/corpus'
 BASE_PATH = ir_datasets.util.home_path() / 'clueweb09'
 
 _ALL_DIRS = ['ClueWeb09_Arabic_1', 'ClueWeb09_Chinese_1', 'ClueWeb09_Chinese_2', 'ClueWeb09_Chinese_3',
@@ -73,7 +75,7 @@ class _ClueWeb09DocsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Directory('clueweb09.dir',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     dua=DUA,
 )
 chk_file = Resource('clueweb09-chk.tar.gz',

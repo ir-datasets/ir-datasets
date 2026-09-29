@@ -12,7 +12,7 @@ is fine for v1's single-``NAME`` registry but would silently corrupt v2's,
 where both are live nodes at once.
 
 The corpus is huge (5GB+ compressed) and not mirrored by ir_datasets, so
-docs sources are the upstream URL only, no ``Source.irds()`` fallback.
+docs sources are the upstream URL only, no ``Source.mirror()`` fallback.
 ``.member(path, compression='xz')`` extracts a member straight out of each
 tar.xz without needing v1's ``ReTar`` repacking step -- multiple members of
 the same big ``train.tar.xz`` (one pair per fold) each re-stream the already

@@ -17,6 +17,7 @@ below), so all of ``ir_datasets.formats`` works unchanged.
 """
 import contextlib
 import io
+import json
 import os
 import shutil
 from pathlib import Path
@@ -34,6 +35,15 @@ _logger = ir_datasets.log.easy()
 
 IRDS_MIRROR = 'https://mirror.ir-datasets.com/'
 
+
+def external_home():
+    """Where files the user must obtain themselves (signed agreements, paid or
+    licensed corpora: ClueWeb, NYT, LDC, ...) live: ``<home>/external``, or
+    ``$IR_DATASETS_EXTERNAL`` if set. Kept apart from the download cache so
+    it is obvious what is user-supplied and safe to back up or symlink."""
+    override = os.environ.get('IR_DATASETS_EXTERNAL')
+    return Path(override) if override else Path(ir_datasets.util.home_path()) / 'external'
+
 #: Bumped when a docstore's on-disk format changes. It is part of the cache
 #: path, so a new format writes a new file instead of colliding with the old
 #: one, and "is my cache stale?" never requires guessing.
@@ -50,9 +60,9 @@ def as_source(location):
 
 
 def materialize(source, md5):
-    """Resolve a ``Source.irds()`` placeholder into a real ``Source(url)``.
+    """Resolve a ``Source.mirror()`` placeholder into a real ``Source(url)``.
 
-    ``Source.irds()`` is written at a Resource's construction site, before
+    ``Source.mirror()`` is written at a Resource's construction site, before
     that Resource's own md5 (also a constructor arg) is known -- so it can't
     build its mirror URL itself; it's a placeholder, not yet a real source.
     A ``Resource`` calls this once its own ``self.md5`` is settled, so what
@@ -61,8 +71,8 @@ def materialize(source, md5):
     ``local_copy_hint``) see the actual mirror URL, not an opaque marker.
     Anything that isn't an unresolved placeholder passes through unchanged.
     """
-    if isinstance(source, _IrdsSource) and md5:
-        return Source(f'{IRDS_MIRROR}{md5}')
+    if isinstance(source, _MirrorSource) and md5:
+        return _ResolvedMirrorSource(f'{IRDS_MIRROR}{md5}')
     return source
 
 
@@ -172,9 +182,9 @@ def migrate_legacy(legacy, cache_path):
 class Source:
     """One place a Resource's bytes can be fetched from.
 
-    ``Source.irds()`` is the ir-datasets community mirror, addressed by the
+    ``Source.mirror()`` is the ir-datasets community mirror, addressed by the
     Resource's md5 -- so it can only be used on a Resource that declares one.
-    ``Source.local()`` is not a URL at all: it's a file the user must obtain
+    ``Source.external()`` is not a URL at all: it's a file the user must obtain
     themselves (a signed agreement, a paid corpus, ...) -- see
     ``PLAN_V2_SITE.md``'s "Files that can't be automatically obtained".
     """
@@ -186,13 +196,18 @@ class Source:
         self.cookies = cookies
 
     @classmethod
-    def irds(cls):
-        return _IrdsSource()
+    def mirror(cls):
+        return _MirrorSource()
 
     @classmethod
-    def local(cls, path, instructions=None):
-        """A file the user must obtain themselves (signed agreement, etc)."""
-        return _ManualSource(path, instructions)
+    def external(cls, default, *, old_locations=(), instructions=None):
+        """A file the user must obtain themselves (signed agreement, paid or
+        licensed corpus, ...). ``default`` is where to put it, relative to
+        ``external_home()`` (``<home>/external``); ``old_locations`` lists
+        where earlier versions looked (relative to the ir_datasets home, or
+        absolute), still honored if the default is absent. ``{path}`` in
+        ``instructions`` is replaced by the default location."""
+        return _ManualSource(default, old_locations, instructions)
 
     def _build(self, file):
         kwargs = {}
@@ -206,46 +221,112 @@ class Source:
             return GoogleDriveDownload(self.url, **kwargs)
         return RequestsDownload(self.url, **kwargs)
 
+    kind = 'url'
+
+    def describe(self, order):
+        """This source as a plain dict -- the shape stored on a Resource's
+        ``sources`` metadata (one JSON literal per source; ``order`` is its
+        position, since a graph's triples are unordered). Credentials are
+        never included, only whether any are needed."""
+        kind = 'gdrive' if (self.url or '').startswith('https://drive.google.com/') else self.kind
+        d = {'order': order, 'kind': kind, 'url': self.url}
+        if self.headers or self.auth or self.cookies:
+            d['auth'] = True
+        return d
+
     def __repr__(self):
         return f'Source({self.url!r})'
 
 
-class _IrdsSource(Source):
-    """An unresolved placeholder: ``Source.irds()`` is written before a
+class _MirrorSource(Source):
+    """An unresolved placeholder: ``Source.mirror()`` is written before a
     Resource's md5 is known (it's a constructor arg the source list is built
     from), so it cannot address the mirror URL itself. ``materialize()``
     replaces it with a real ``Source(url)`` as soon as a Resource has an md5
     to key off -- see that function's docstring. This class only remains
-    reachable when a Resource declares ``Source.irds()`` with no md5 at all
+    reachable when a Resource declares ``Source.mirror()`` with no md5 at all
     (a genuine authoring mistake), in which case ``_build`` still raises,
     now purely as a fallback rather than the normal path.
     """
+    kind = 'mirror'
+
     def __init__(self):
         super().__init__(url=None)
 
     def _build(self, file):
         raise ValueError(
-            f'{file.name}: Source.irds() requires an md5 (the mirror is '
+            f'{file.name}: Source.mirror() requires an md5 (the mirror is '
             f'addressed by content hash)')
 
     def __repr__(self):
-        return 'Source.irds()'
+        return 'Source.mirror()'
+
+
+class _ResolvedMirrorSource(Source):
+    """A ``Source.mirror()`` once its md5 is known: an ordinary URL source
+    that still remembers it came from the community mirror."""
+    kind = 'mirror'
 
 
 class _ManualSource(Source):
-    def __init__(self, path, instructions):
+    """A file the user obtains themselves (see ``Source.external``).
+
+    ``default`` is where it belongs: a *relative* path resolves under
+    ``external_home()``; an absolute path is used as-is. ``old_locations`` are
+    places earlier versions (v1) looked for it -- paths relative to the
+    ir_datasets home, or absolute. If nothing exists at ``default`` but a copy
+    exists at an old location, it is read there in place (never moved; these
+    can be terabytes), so an existing setup keeps working while the default
+    name can be whatever makes sense going forward."""
+    kind = 'manual'
+
+    def __init__(self, default, old_locations, instructions):
         super().__init__(url=None)
-        self.local_path = path
+        self.default = str(default)
+        self.old_locations = [str(p) for p in old_locations]
         self.instructions = instructions
+
+    @property
+    def default_path(self):
+        p = Path(self.default)
+        return p if p.is_absolute() else external_home() / p
+
+    @property
+    def local_path(self):
+        default = self.default_path
+        if default.exists():
+            return default
+        for old in self.old_locations:
+            p = Path(old)
+            p = p if p.is_absolute() else Path(ir_datasets.util.home_path()) / p
+            if p.exists():
+                return p
+        return default
+
+    def present(self):
+        return self.local_path.exists()
 
     def _build(self, file):
         msg = self.instructions
         if msg:
-            msg = msg.format(path=self.local_path)
+            msg = msg.format(path=self.default_path)
         return LocalDownload(self.local_path, msg, mkdir=False)
 
+    def describe(self, order):
+        d = {'order': order, 'kind': 'manual', 'path': self.default}
+        if self.old_locations:
+            d['old_locations'] = self.old_locations
+        if self.instructions:
+            d['instructions'] = self.instructions
+        return d
+
     def __repr__(self):
-        return f'Source.local({self.local_path!r})'
+        return f'Source.external({self.default!r})'
+
+
+def describe_sources(sources):
+    """``sources`` as a list of JSON strings, one per source, in order."""
+    return [json.dumps(s.describe(i), sort_keys=True) for i, s in enumerate(sources)]
 
 
 class Readable:

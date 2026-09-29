@@ -23,22 +23,22 @@ with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
     trec7_queries_file = Resource('trec-adhoc-7-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/topics.351-400.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/topics.351-400.gz', Source.mirror()],
         md5='fdee3f7e37e173fd6fcdc00fbe1fc671',
         size=7_400,
     )
     trec7_qrels_file = Resource('trec-adhoc-7-qrels.tar.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.trec7.adhoc.parts1-5.tar.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.trec7.adhoc.parts1-5.tar.gz', Source.mirror()],
         md5='43def30d4f4b33a830ae67e3dce19023',
         size=307_120,
     )
     trec8_queries_file = Resource('trec-adhoc-8-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/topics.401-450.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/topics.401-450.gz', Source.mirror()],
         md5='daaafb700eed76f61a6e9e4b0dcc40c8',
         size=6_946,
     )
     trec8_qrels_file = Resource('trec-adhoc-8-qrels.tar.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.trec8.adhoc.parts1-5.tar.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.trec8.adhoc.parts1-5.tar.gz', Source.mirror()],
         md5='ce1cfa80b29746d2a5eeddab268d4f6a',
         size=325_935,
     )

@@ -25,32 +25,32 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     news_2018_queries_file = Resource('trec-news-2018-queries.txt',
-        sources=['https://trec.nist.gov/data/news/2018/newsir18-topics.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2018/newsir18-topics.txt', Source.mirror()],
         md5='73740793543b439d1ff1b8ee9359973a',
         size=12_489,
     )
     news_2018_qrels_file = Resource('trec-news-2018-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2018/bqrels.exp-gains.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2018/bqrels.exp-gains.txt', Source.mirror()],
         md5='396963175006cb3201ea7c16e874033a',
         size=364_062,
     )
     news_2019_queries_file = Resource('trec-news-2019-queries.xml',
-        sources=['https://trec.nist.gov/data/news/2019/newsir19-background-linking-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2019/newsir19-background-linking-topics.xml', Source.mirror()],
         md5='388b5c96f8962da17eb1024b856d21c1',
         size=14_847,
     )
     news_2019_qrels_file = Resource('trec-news-2019-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2019/newsir19-qrels-background.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2019/newsir19-qrels-background.txt', Source.mirror()],
         md5='7b839a1a94e349d3facf28012542cc1d',
         size=669_632,
     )
     news_2020_queries_file = Resource('trec-news-2020-queries.txt',
-        sources=['https://trec.nist.gov/data/news/2020/newsir20-topics.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2020/newsir20-topics.txt', Source.mirror()],
         md5='2674538a07fb7ac29200cbc4c4a05404',
         size=13_217,
     )
     news_2020_qrels_file = Resource('trec-news-2020-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2020/qrels.background', Source.irds()],
+        sources=['https://trec.nist.gov/data/news/2020/qrels.background', Source.mirror()],
         md5='7c31f731775bdd4148d349df1a9e43fc',
         size=729_348,
     )

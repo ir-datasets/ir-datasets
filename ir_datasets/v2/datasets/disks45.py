@@ -4,8 +4,8 @@ The corpus (Financial Times, Federal Register, Foreign Broadcast Information
 Service, Los Angeles Times -- the Congressional Record is not yet included,
 hence "nocr") is LDC/NIST-gated and not automatically downloadable, same
 shape as ``trec_arabic.py``/``trec_mandarin.py``: a ``Directory`` Resource
-pointed at by ``Source.local()``, at the same well-known path v1 used, so an
-existing v1 placement is picked up in place.
+pointed at by ``Source.external()``, at ``<home>/external/trec-disks-4-5`` (old v1
+location ``<home>/disks45/corpus`` still read as a fallback).
 
 Unlike those two families, the source is a raw directory tree handed to NIST
 as loose files (not a single archive) -- ``Directory`` (not a bare
@@ -38,12 +38,13 @@ DATA_ACCESS = (
     "LATIMES/ subdirectories) here: {path}"
 )
 
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'disks45' / 'corpus'
+DOCS_DEFAULT_PATH = 'trec-disks-4-5'
+DOCS_OLD_LOCATION = 'disks45/corpus'
 
 # Files
 # -----------------------------------------
 docs_file = Directory('disks45.dir',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     dua=DUA,
 )
 

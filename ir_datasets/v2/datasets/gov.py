@@ -5,8 +5,8 @@ The corpus (a .gov web crawl, not to be confused with the much larger
 ``gov2``) is distributed by the University of Glasgow on physical hard
 drives under a data usage agreement, same shape as ``disks45.py``: a raw
 directory tree (``G00``, ``G01``, ...) handed over as loose files, not a
-single archive -- ``Directory`` + ``Source.local()`` pointed at the same
-well-known path v1 used.
+single archive -- ``Directory`` + ``Source.external()`` pointed at
+``<home>/external/gov`` (old v1 location ``<home>/gov/corpus`` still read as a fallback).
 
 Unlike ``disks45-nocr``, the per-document format here is not TREC SGML read
 through v2's built-in ``TrecDocs``/BS4-or-sax parser: v1 wrote its own
@@ -42,7 +42,8 @@ DATA_ACCESS = (
     "copy or symlink the G00, G01, G02, ... directories here: {path}"
 )
 
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'gov' / 'corpus'
+DOCS_DEFAULT_PATH = 'gov'
+DOCS_OLD_LOCATION = 'gov/corpus'
 
 
 class _GovDocs(_V1GovDocs):
@@ -80,7 +81,7 @@ class _GovDocsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Directory('gov.dir',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+    sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     dua=DUA,
 )
 

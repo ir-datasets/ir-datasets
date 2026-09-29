@@ -889,3 +889,49 @@ class TestV2Attestations(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestSourceRecords(unittest.TestCase):
+    """A Resource's ``sources`` metadata is one JSON literal per source."""
+
+    def _srcs(self, node):
+        import json
+        return [json.loads(s) for s in node.metadata['sources']]
+
+    def test_url_mirror_and_manual_records(self):
+        import tempfile
+        r = v2.Resource('test-src-records', sources=[
+            'https://example.org/x', v2.Source.mirror(),
+            v2.Source.external('ds/file', old_locations=['old/file'], instructions='get it at {path}')], md5='a' * 32)
+        url, mirror, manual = self._srcs(r)
+        self.assertEqual({'order': 0, 'kind': 'url', 'url': 'https://example.org/x'}, url)
+        self.assertEqual(('mirror', 1, 'https://mirror.ir-datasets.com/' + 'a' * 32),
+                         (mirror['kind'], mirror['order'], mirror['url']))
+        self.assertEqual(('manual', 2, 'ds/file', ['old/file']),
+                         (manual['kind'], manual['order'], manual['path'], manual['old_locations']))
+
+    def test_local_resolves_under_external_with_legacy_fallback(self):
+        import os, tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as home:
+            old = {k: os.environ.get(k) for k in ('IR_DATASETS_HOME', 'IR_DATASETS_EXTERNAL')}
+            os.environ['IR_DATASETS_HOME'] = home
+            os.environ.pop('IR_DATASETS_EXTERNAL', None)
+            try:
+                src = v2.Source.external('ds/file', old_locations=['old/file'])
+                self.assertEqual(Path(home) / 'external' / 'ds' / 'file', src.local_path)
+                (Path(home) / 'old').mkdir()
+                (Path(home) / 'old' / 'file').write_text('x')
+                self.assertEqual(Path(home) / 'old' / 'file', src.local_path)  # old location
+                (Path(home) / 'external' / 'ds').mkdir(parents=True)
+                (Path(home) / 'external' / 'ds' / 'file').write_text('y')
+                self.assertEqual(Path(home) / 'external' / 'ds' / 'file', src.local_path)
+            finally:
+                for k, v in old.items():
+                    if v is None: os.environ.pop(k, None)
+                    else: os.environ[k] = v
+
+    def test_external_status_lists_manual_resources(self):
+        rows = v2.external_status()
+        self.assertTrue(rows)
+        self.assertTrue(all(len(r) == 4 for r in rows))

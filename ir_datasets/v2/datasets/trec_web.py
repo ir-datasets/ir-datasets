@@ -152,54 +152,54 @@ with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
     web2002_queries_file = Resource('trec-web-2002-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/webtopics_551-600.txt.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/webtopics_551-600.txt.gz', Source.mirror()],
         md5='133e5d1628684f7a044df86ad08907f0',
         size=6_528,
     )
     web2002_qrels_file = Resource('trec-web-2002-qrels.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.txt.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.txt.gz', Source.mirror()],
         md5='313d1cab9a37aa9b76b6c647cf7151a8',
         size=402_641,
     )
     web2002_np_queries_file = Resource('trec-web-2002-named-page-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/webnamed_page_topics.1-150.txt.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/webnamed_page_topics.1-150.txt.gz', Source.mirror()],
         md5='00422f1c1f5109d7f609708de071e527',
         size=3_168,
     )
     web2002_np_qrels_file = Resource('trec-web-2002-named-page-qrels.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.txt.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.txt.gz', Source.mirror()],
         md5='ed7e69528faddd1baece4cae41c6f613',
         size=1_649,
     )
 
     web2003_queries_file = Resource('trec-web-2003-queries.txt',
-        sources=['https://trec.nist.gov/data/topics_eng/2003.distillation_topics.1-50.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/2003.distillation_topics.1-50.txt', Source.mirror()],
         md5='409e5d16eb8c795945715850c7d26a8e',
         size=8_221,
     )
     web2003_qrels_file = Resource('trec-web-2003-qrels.txt',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.2003.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.2003.txt', Source.mirror()],
         md5='ce11fa22c6f7f5d8048bdc0d104986e5',
         size=1_113_881,
     )
     web2003_np_queries_file = Resource('trec-web-2003-named-page-queries.txt',
-        sources=['https://trec.nist.gov/data/topics_eng/2003.named_page_topics.151-450.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/topics_eng/2003.named_page_topics.151-450.txt', Source.mirror()],
         md5='0b9bbe2bce309c5bf5754536abaaa0b6',
         size=26_337,
     )
     web2003_np_qrels_file = Resource('trec-web-2003-named-page-qrels.txt',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.2003.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.2003.txt', Source.mirror()],
         md5='e7b05e05fab39862d5f8ad6ebc0c36fd',
         size=8_096,
     )
 
     web2004_queries_file = Resource('trec-web-2004-queries.txt',
-        sources=['https://trec.nist.gov/data/web/Web2004.query.stream.trecformat.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/Web2004.query.stream.trecformat.txt', Source.mirror()],
         md5='10821f7a000b8bec058097ede39570be',
         size=15_657,
     )
     web2004_qrels_file = Resource('trec-web-2004-qrels.txt',
-        sources=['https://trec.nist.gov/data/web/04.qrels.web.mixed.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/04.qrels.web.mixed.txt', Source.mirror()],
         md5='93daa0e4b4190c84e30d2cce78a0f674',
         size=1_996_931,
     )
@@ -263,65 +263,65 @@ with irds.defaults(dua=CW09_DUA, lang='en'):
     # Files (ClueWeb09)
     # -----------------------------------------
     web2009_queries_file = Resource('trec-web-2009-queries.xml',
-        sources=['https://trec.nist.gov/data/web/09/wt09.topics.full.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/09/wt09.topics.full.xml', Source.mirror()],
         md5='52e4a03d32718fa11290286e8e8dff47',
         size=35_853,
     )
     web2009_qrels_adhoc_file = Resource('trec-web-2009-qrels-adhoc.gz',
-        sources=['https://trec.nist.gov/data/web/09/prels.1-50.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/09/prels.1-50.gz', Source.mirror()],
         md5='3afdef86adf3211629182e3380f9e751',
         size=171_396,
     )
     web2009_qrels_all_file = Resource('trec-web-2009-qrels-all.gz',
-        sources=['https://trec.nist.gov/data/web/09/qrels.diversity.gz', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/09/qrels.diversity.gz', Source.mirror()],
         md5='0a3fb04bfdaa1551d8960d862e925c9e',
         size=166_538,
     )
 
     web2010_queries_file = Resource('trec-web-2010-queries.xml',
-        sources=['https://trec.nist.gov/data/web/10/wt2010-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/10/wt2010-topics.xml', Source.mirror()],
         md5='8f084cc90c13e4cd66192d3a9585235e',
         size=32_661,
     )
     web2010_qrels_adhoc_file = Resource('trec-web-2010-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/10/10.adhoc-qrels.final', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/10/10.adhoc-qrels.final', Source.mirror()],
         md5='8a22083b0370d6ac799e1e779110de06',
         size=837_288,
     )
     web2010_qrels_all_file = Resource('trec-web-2010-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/10/10.diversity-qrels.final', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/10/10.diversity-qrels.final', Source.mirror()],
         md5='0a78c8bf7a809039a1fc9013a4bfe4eb',
         size=297_198,
     )
 
     web2011_queries_file = Resource('trec-web-2011-queries.xml',
-        sources=['https://trec.nist.gov/data/web/11/full-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/11/full-topics.xml', Source.mirror()],
         md5='23914875d80a5d24571d4f458a83c7fa',
         size=29_693,
     )
     web2011_qrels_adhoc_file = Resource('trec-web-2011-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/11/qrels.adhoc', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/11/qrels.adhoc', Source.mirror()],
         md5='7844c8a9cc3a4b6f740d45e56013693d',
         size=659_973,
     )
     web2011_qrels_all_file = Resource('trec-web-2011-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/11/qrels.diversity', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/11/qrels.diversity', Source.mirror()],
         md5='b88c1d42afbbbc5a4a776dd3f0b905c2',
         size=2_208_947,
     )
 
     web2012_queries_file = Resource('trec-web-2012-queries.xml',
-        sources=['https://trec.nist.gov/data/web/12/full-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/12/full-topics.xml', Source.mirror()],
         md5='a0b8ee33da312a284fda379582b0bc2a',
         size=29_353,
     )
     web2012_qrels_adhoc_file = Resource('trec-web-2012-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/12/qrels.adhoc', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/12/qrels.adhoc', Source.mirror()],
         md5='079723ba3e955269f0de6254c4bec180',
         size=610_948,
     )
     web2012_qrels_all_file = Resource('trec-web-2012-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/12/qrels.diversity', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/12/qrels.diversity', Source.mirror()],
         md5='bbfde42fc4bc502b19aec5dcc6922faa',
         size=2_124_769,
     )
@@ -471,32 +471,32 @@ with irds.defaults(dua=CW12_DUA, lang='en'):
     # Files (ClueWeb12)
     # -----------------------------------------
     web2013_queries_file = Resource('trec-web-2013-queries.xml',
-        sources=['https://trec.nist.gov/data/web/2013/trec2013-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2013/trec2013-topics.xml', Source.mirror()],
         md5='4c0ecdddc8632d3fa8fecb507f19801d',
         size=23_143,
     )
     web2013_qrels_adhoc_file = Resource('trec-web-2013-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/2013/qrels.adhoc.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2013/qrels.adhoc.txt', Source.mirror()],
         md5='44aa6300f9df4a77f7205c574afb9c2d',
         size=492_350,
     )
     web2013_qrels_all_file = Resource('trec-web-2013-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/2013/qrels.all.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2013/qrels.all.txt', Source.mirror()],
         md5='741e76258543ad47ae75030363be13a9',
         size=1_598_265,
     )
     web2014_queries_file = Resource('trec-web-2014-queries.xml',
-        sources=['https://trec.nist.gov/data/web/2014/trec2014-topics.xml', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2014/trec2014-topics.xml', Source.mirror()],
         md5='b1bf5c7aa9f6e7026e1558686330744f',
         size=22_873,
     )
     web2014_qrels_adhoc_file = Resource('trec-web-2014-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/2014/qrels.adhoc.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2014/qrels.adhoc.txt', Source.mirror()],
         md5='afa1db71680acf71283adc7846282a44',
         size=491_247,
     )
     web2014_qrels_all_file = Resource('trec-web-2014-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/2014/qrels.all.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/web/2014/qrels.all.txt', Source.mirror()],
         md5='085256d18544cd3e34b9fa9cc29ae513',
         size=1_492_061,
     )

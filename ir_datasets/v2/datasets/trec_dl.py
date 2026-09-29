@@ -63,7 +63,7 @@ with irds.defaults(dua=DUA, lang='en'):
     )
 
     passage_2019_qrels_file = Resource('trec-dl-2019-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2019qrels-pass.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2019qrels-pass.txt', Source.mirror()],
         md5='2f4be390198da108f6845c822e5ada14',
         size=187_092,
     )
@@ -73,7 +73,7 @@ with irds.defaults(dua=DUA, lang='en'):
         size=26_634_062,
     )
     passage_2020_qrels_file = Resource('trec-dl-2020-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2020qrels-pass.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2020qrels-pass.txt', Source.mirror()],
         md5='0355ccee7509ac0463e8278186cdd8d1',
         size=218_617,
     )
@@ -121,7 +121,7 @@ with irds.defaults(dua=DUA, lang='en'):
     )
 
     passage_2021_qrels_file = Resource('trec-dl-2021-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2021.qrels.pass.final.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2021.qrels.pass.final.txt', Source.mirror()],
         md5='c5b76ec95b589732edc9040302e22a2b',
         size=433_887,
     )
@@ -131,7 +131,7 @@ with irds.defaults(dua=DUA, lang='en'):
         size=604_533,
     )
     passage_2022_qrels_file = Resource('trec-dl-2022-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2022.qrels.pass.withDupes.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2022.qrels.pass.withDupes.txt', Source.mirror()],
         md5='b36484d6cfd039664a570a4bf04f0eeb',
         size=15_800_539,
     )
@@ -141,7 +141,7 @@ with irds.defaults(dua=DUA, lang='en'):
         size=630_095,
     )
     passage_2023_qrels_file = Resource('trec-dl-2023-passage-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2023.qrels.pass.withDupes.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2023.qrels.pass.withDupes.txt', Source.mirror()],
         md5='3a742d51ae65da2ece9c09b304b9e358',
         size=912_450,
     )
@@ -152,7 +152,7 @@ with irds.defaults(dua=DUA, lang='en'):
     )
 
     document_2021_qrels_file = Resource('trec-dl-2021-document-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2021.qrels.docs.final.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2021.qrels.docs.final.txt', Source.mirror()],
         md5='3b266fdaf27f3775e04028765a4839d3',
         size=478_328,
     )
@@ -162,7 +162,7 @@ with irds.defaults(dua=DUA, lang='en'):
         size=618_228,
     )
     document_2022_qrels_file = Resource('trec-dl-2022-document-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2022.qrels.docs.inferred.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2022.qrels.docs.inferred.txt', Source.mirror()],
         md5='cca2e4db9d842e6262500532809bd571',
         size=13_808_681,
     )
@@ -172,7 +172,7 @@ with irds.defaults(dua=DUA, lang='en'):
         size=642_721,
     )
     document_2023_qrels_file = Resource('trec-dl-2023-document-qrels.txt',
-        sources=['https://trec.nist.gov/data/deep/2023.qrels.docs.withDupes.txt', Source.irds()],
+        sources=['https://trec.nist.gov/data/deep/2023.qrels.docs.withDupes.txt', Source.mirror()],
         md5='1e9c540b3cb03bcc975a583586c04090',
         size=675_015,
     )

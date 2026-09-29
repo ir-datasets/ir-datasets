@@ -55,12 +55,12 @@ docs_file = Resource('csl-docs.jsonl.gz',
     size=115_749_077,
 )
 queries_file = Resource('csl-trec-2023-queries.jsonl',
-    sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-technical_topics.0719.jsonl', Source.irds()],
+    sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-technical_topics.0719.jsonl', Source.mirror()],
     md5='0dd5ba173c695362a8705056edca481b',
     size=86_519,
 )
 qrels_file = Resource('csl-trec-2023-qrels.tar.gz',
-    sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-qrels.final.tar.gz', Source.irds()],
+    sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-qrels.final.tar.gz', Source.mirror()],
     md5='cea4ff3d9eba612c7119e6490217d4e1',
     size=6_023_886,
 )

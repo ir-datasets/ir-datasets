@@ -7,9 +7,9 @@ inside a single DUA-gated tar.gz (v1's ``dlc['benchmark']``); the val/test BM25
 run files needed for ``scoreddocs`` live in two further DUA-gated tar.gz files
 (v1's ``dlc['dlfiles']``/``dlc['dlfiles_runs_test']``). None of the three is
 automatically downloadable -- TripClick's data must be requested directly from
-the Trip Database -- so each is a plain ``Resource`` behind ``Source.local()``,
-at the same well-known ``<home>/tripclick/*.tar.gz`` paths v1 used, same shape
-as ``disks45.py``. v1's own ``TarExtractAll``/``RelativePath`` pipeline
+the Trip Database -- so each is a plain ``Resource`` behind ``Source.external()``,
+at ``<home>/external/tripclick-*.tar.gz`` (v1's old
+``<home>/tripclick/*.tar.gz`` still read as fallback), same shape as ``disks45.py``. v1's own ``TarExtractAll``/``RelativePath`` pipeline
 (unmodified) is reused to read individual topics/qrels/run files back out of
 those shared extracted trees -- same "raw ``Resource`` stays the declared
 ``source=``, the extracted tree is read inside the ``Parser``" split
@@ -107,7 +107,7 @@ DATA_ACCESS = (
     "To use this dataset, you need to request the source files from the Trip Database "
     "here: <https://tripdatabase.github.io/tripclick/#getting-the-data>. More details "
     "about the procedure can be found here: <https://ir-datasets.com/tripclick.html#DataAccess>. "
-    "To proceed, symlink the source file here: {path}"
+    "To proceed, place or symlink the source file at: {path}"
 )
 
 CITATION = 'dblp:conf/sigir/RekabsazLSBE21'
@@ -241,17 +241,17 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     benchmark_file = Resource('tripclick-benchmark.tar.gz',
-        sources=[Source.local(BASE_PATH / 'benchmark.tar.gz', instructions=DATA_ACCESS)],
+        sources=[Source.external('tripclick-benchmark.tar.gz', old_locations=[f'{NAME}/benchmark.tar.gz'], instructions=DATA_ACCESS)],
         md5='6e5d3deeba138750e9a148b538f30a8f',
         dua=DUA,
     )
     dlfiles_file = Resource('tripclick-dlfiles.tar.gz',
-        sources=[Source.local(BASE_PATH / 'dlfiles.tar.gz', instructions=DATA_ACCESS)],
+        sources=[Source.external('tripclick-dlfiles.tar.gz', old_locations=[f'{NAME}/dlfiles.tar.gz'], instructions=DATA_ACCESS)],
         md5='1f256c19466b414e365324d8ef21f09c',
         dua=DUA,
     )
     dlfiles_runs_test_file = Resource('tripclick-dlfiles-runs-test.tar.gz',
-        sources=[Source.local(BASE_PATH / 'dlfiles_runs_test.tar.gz', instructions=DATA_ACCESS)],
+        sources=[Source.external('tripclick-dlfiles_runs_test.tar.gz', old_locations=[f'{NAME}/dlfiles_runs_test.tar.gz'], instructions=DATA_ACCESS)],
         md5='2b5e98c683a91e19630636b6f83e3b15',
         dua=DUA,
     )
@@ -265,7 +265,7 @@ with irds.defaults(lang='en'):
     # The raw search-session log tar.gz -- backs the `logs` subset's docs/
     # qlogs tables below, and only those (see module docstring).
     logs_file = Resource('tripclick-logs.tar.gz',
-        sources=[Source.local(BASE_PATH / 'logs.tar.gz', instructions=DATA_ACCESS)],
+        sources=[Source.external('tripclick-logs.tar.gz', old_locations=[f'{NAME}/logs.tar.gz'], instructions=DATA_ACCESS)],
         md5='1d3a548685c2fbef9b2076b0b04ba44f',
         dua=DUA,
     )

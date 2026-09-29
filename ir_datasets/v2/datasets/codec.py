@@ -4,9 +4,8 @@ The corpus is JSONL, read through v1's ``JsonlDocs`` directly (same
 "thin layer over v1 machinery" as every other v2 family -- see
 ``beir.py``/``car.py``), with the node's own ``docstore_path`` passed
 through so its cache lives where v2 wants it rather than v1's default
-``<source path>.pklz4``. Not automatically downloadable (available on
-request from the CODEC authors); a ``Resource`` pointed at by
-``Source.local()``, at the same well-known path v1 used.
+``<source path>.pklz4``. The documents are one gzipped JSONL file hosted on the Hugging Face Hub
+(``macavaney/codec``); the DocTable reads it through ``.gunzip()``.
 
 Queries are a single JSON object (``{qid: {...}}``), not JSONL -- v1's own
 small ``CodecQueries`` handler (not a general-purpose v2 format, so reused
@@ -21,12 +20,6 @@ from ir_datasets.datasets.codec import CodecDoc, CodecQueries as _V1CodecQueries
 from ir_datasets.v2 import Benchmark, DocTable, Filter, QueryTable, Resource, Source, TrecQrels, ids_of, irds
 from ir_datasets.v2.formats import Parser
 
-DATA_ACCESS = (
-    "The CODEC document collection is available on request; see "
-    "<https://github.com/grill-lab/CODEC>. Once obtained, copy or symlink "
-    "the comets_documents.jsonl file here: {path}"
-)
-
 DOMAINS = ['economics', 'history', 'politics']
 
 QREL_DEFS = {
@@ -35,8 +28,6 @@ QREL_DEFS = {
     1: 'Not Valuable. Consists of definitions or background.',
     0: 'Not Relevant. Not useful or on topic.',
 }
-
-DOCS_LOCAL_PATH = ir_datasets.util.home_path() / 'codec' / 'v1' / 'comets_documents.jsonl'
 
 
 class _JsonlDocsParser(Parser):
@@ -61,16 +52,18 @@ class _CodecQueriesParser(Parser):
 
 # Files
 # -----------------------------------------
-docs_file = Resource('codec-docs.jsonl',
-    sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
+docs_file = Resource('codec-docs.jsonl.gz',
+    sources=['https://huggingface.co/datasets/macavaney/codec/resolve/main/documents.jsonl.gz'],
+    hashes=['sha256:c567900f432622637677060b5d24808bc0e4b6b38806b045d8815a0bedadab90'],
+    size=1_150_819_496,
 )
 queries_file = Resource('codec-queries.json',
-    sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/topics/topics.json', Source.irds()],
+    sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/topics/topics.json', Source.mirror()],
     md5='f75e4733693588449f68f7fdceb02ec9',
     size=47_192,
 )
 qrels_file = Resource('codec-qrels.txt',
-    sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/raw_judgments/raw_document_judgments.txt', Source.irds()],
+    sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/raw_judgments/raw_document_judgments.txt', Source.mirror()],
     md5='7200606d6dc573abe2dd93160d5a5ab5',
     size=306_976,
 )
@@ -78,7 +71,7 @@ qrels_file = Resource('codec-qrels.txt',
 # Tables
 # -----------------------------------------
 docs = DocTable('codec-docs',
-    source=docs_file,
+    source=docs_file.gunzip(),
     parser=_JsonlDocsParser(),
     lang='en',
     count_hint=729_824,

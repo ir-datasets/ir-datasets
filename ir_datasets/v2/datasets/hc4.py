@@ -4,7 +4,7 @@ Three CLIR test collections (Chinese, Persian, Russian Common Crawl web
 pages), evaluated against English topics. Documents are DUA-gated -- HC4
 distributes only a script that re-crawls and post-processes Common Crawl
 records, not the documents themselves -- so each language's corpus is a
-``Source.local(...)`` Resource, same pattern as ``trec_arabic.py``'s
+``Source.external(...)`` Resource, same pattern as ``trec_arabic.py``'s
 LDC-gated corpus: symlink the post-processed jsonl in, then it's read like
 any other Resource.
 
@@ -141,9 +141,9 @@ QRELS_FILES = {
 _benchmarks = []
 
 for _lang in ('zh', 'fa', 'ru'):
-    _docs_local_path = ir_datasets.util.home_path() / 'hc4' / LANG3[_lang] / 'hc4_docs.jsonl'
+    _docs_old_location = f'hc4/{LANG3[_lang]}/hc4_docs.jsonl'
     _docs_file = Resource(f'hc4-{_lang}-docs.jsonl',
-        sources=[Source.local(_docs_local_path, instructions=DATA_ACCESS)])
+        sources=[Source.external(f'hc4-{_lang}-docs.jsonl', old_locations=[_docs_old_location], instructions=DATA_ACCESS)])
     _docs = DocTable(f'hc4-{_lang}-docs',
         source=_docs_file, parser=_Hc4DocsParser(_lang), lang=_lang,
         desc=f'The HC4 {_lang} Common Crawl document corpus.')
