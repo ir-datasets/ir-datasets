@@ -88,27 +88,27 @@ class _DprW100QrelsParser(Parser):
 # -----------------------------------------
 docs_file = Resource('dpr-w100-docs.tsv.gz',
     sources=['https://dl.fbaipublicfiles.com/dpr/wikipedia_split/psgs_w100.tsv.gz'],
-    md5='612fe66e0b6b41ee28f806140226c563',
+    hash='md5:612fe66e0b6b41ee28f806140226c563',
     size=4_694_541_059,
 )
 nq_dev_file = Resource('dpr-w100-nq-dev.json.gz',
     sources=['https://dl.fbaipublicfiles.com/dpr/data/retriever/biencoder-nq-dev.json.gz'],
-    md5='2640483dbe0df7ae29c6da419c551a80',
+    hash='md5:2640483dbe0df7ae29c6da419c551a80',
     size=256_239_282,
 )
 nq_train_file = Resource('dpr-w100-nq-train.json.gz',
     sources=['https://dl.fbaipublicfiles.com/dpr/data/retriever/biencoder-nq-train.json.gz'],
-    md5='a1c927b5adae71388eb064329387709f',
+    hash='md5:a1c927b5adae71388eb064329387709f',
     size=2_314_892_908,
 )
 tqa_dev_file = Resource('dpr-w100-tqa-dev.json.gz',
     sources=['https://dl.fbaipublicfiles.com/dpr/data/retriever/biencoder-trivia-dev.json.gz'],
-    md5='d559dffe09acfe5a6370adea55b8abf2',
+    hash='md5:d559dffe09acfe5a6370adea55b8abf2',
     size=207_271_749,
 )
 tqa_train_file = Resource('dpr-w100-tqa-train.json.gz',
     sources=['https://dl.fbaipublicfiles.com/dpr/data/retriever/biencoder-trivia-train.json.gz'],
-    md5='5aa4d3577c91425cd20e239ed89a252b',
+    hash='md5:5aa4d3577c91425cd20e239ed89a252b',
     size=1_848_559_940,
 )
 

@@ -56,27 +56,27 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     ntcir_www_1_queries_file = Resource('ntcir-www-1-queries.zip',
         sources=['http://www.thuir.cn/ntcirwww/files/eng.queries.xml.zip'],
-        md5='ed43ba82791bb20776c049421525a055',
+        hash='md5:ed43ba82791bb20776c049421525a055',
         size=1_611,
     ).zip_member('eng.queries.xml')
     ntcir_www_1_qrels_file = Resource('ntcir-www-1-qrels.txt',
         sources=['https://macavaney.us/misc/ntcir-www-1.qrels'],
-        md5='634464456437bf378725958822910242',
+        hash='md5:634464456437bf378725958822910242',
         size=865_810,
     )
     ntcir_www_2_queries_file = Resource('ntcir-www-2-queries.zip',
         sources=['http://www.thuir.cn/ntcirwww2/qEng.zip'],
-        md5='d4b108b52b2e2c8bedc2e12540414735',
+        hash='md5:d4b108b52b2e2c8bedc2e12540414735',
         size=3_466,
     ).zip_member('qEng.xml')
     ntcir_www_2_qrels_file = Resource('ntcir-www-2-qrels.txt',
         sources=['http://www.thuir.cn/ntcirwww3/www2e.qrels'],
-        md5='155b515dd9fc05e1aeb9c116c9147bb0',
+        hash='md5:155b515dd9fc05e1aeb9c116c9147bb0',
         size=939_318,
     )
     ntcir_www_3_queries_file = Resource('ntcir-www-3-queries.xml',
         sources=['http://www.thuir.cn/ntcirwww3/www2www3topics-E.xml'],
-        md5='1ecd1380b20894014a54eb6cb8064587',
+        hash='md5:1ecd1380b20894014a54eb6cb8064587',
         size=28_823,
     )
 

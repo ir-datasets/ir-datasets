@@ -163,7 +163,7 @@ with irds.defaults(lang='en'):
     for v1_id, splits, doc_type, query_type in BENCHMARKS:
         zip_url, zip_md5, zip_size = ZIP_SOURCES[v1_id]
         zip_resource = Resource(f'beir-{_flat(v1_id)}.zip',
-                                sources=[zip_url], md5=zip_md5, size=zip_size)
+                                sources=[zip_url], hash=f'md5:{zip_md5}', size=zip_size)
         docs = _docs(v1_id, zip_resource, doc_type)
         queries = _queries(v1_id, zip_resource, query_type)
 
@@ -194,7 +194,7 @@ with irds.defaults(lang='en'):
 
     # CQADupStack: 12 sub-forums sharing one zip, each single-split.
     cqa_url, cqa_md5, cqa_size = CQA_ZIP
-    cqa_zip = Resource('beir-cqadupstack.zip', sources=[cqa_url], md5=cqa_md5, size=cqa_size)
+    cqa_zip = Resource('beir-cqadupstack.zip', sources=[cqa_url], hash=f'md5:{cqa_md5}', size=cqa_size)
     for sub in CQA_SUBFORUMS:
         v1_id = f'cqadupstack/{sub}'
         docs = DocTable(f'beir-cqadupstack-{sub}-docs',

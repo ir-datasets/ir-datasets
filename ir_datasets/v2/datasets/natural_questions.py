@@ -126,13 +126,13 @@ _TRAIN_FILES = {
 _dev_files = {
     name: Resource(f'{name}.jsonl.gz',
         sources=[f'https://storage.googleapis.com/natural_questions/v1.0/dev/{name}.jsonl.gz'],
-        md5=md5, size=size)
+        hash=f'md5:{md5}', size=size)
     for name, (md5, size) in _DEV_FILES.items()
 }
 _train_files = {
     name: Resource(f'{name}.jsonl.gz',
         sources=[f'https://storage.googleapis.com/natural_questions/v1.0/train/{name}.jsonl.gz'],
-        md5=md5, size=size)
+        hash=f'md5:{md5}', size=size)
     for name, (md5, size) in _TRAIN_FILES.items()
 }
 _all_files = {**_dev_files, **_train_files}

@@ -35,7 +35,7 @@ with irds.defaults(lang='en'):
     main_file = Resource('neumarco-main.tar.gz',
         sources=['https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/dlawrie1_jh_edu/'
                  'EQcICtPaSqFNoCZHtoeZszoB7FC362BvaPvieUSk2j30tA?download=1'],
-        md5='733181c211959a7c09c695bfcddaea54',
+        hash='md5:733181c211959a7c09c695bfcddaea54',
         size=3_723_728_998,
     )
 

@@ -63,34 +63,34 @@ with irds.defaults(dua=DUA, lang='en'):
         sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-collection.txt'],
         # Multiple hashes on one Resource, demonstrating the general
         # 'algo:hexdigest' mechanism (see nodes.parse_hash) rather than the
-        # md5= shorthand alone -- both computed from the same real file.
-        hashes=['md5:684f7015aff377062a758e478476aac8',
-               'sha256:68b6688f5f2668c93f0e8e43384f66def768c4da46da4e9f7e2629c1c47a0c36'],
+        # single-hash shorthand -- both computed from the same real file.
+        hash=['md5:684f7015aff377062a758e478476aac8',
+              'sha256:68b6688f5f2668c93f0e8e43384f66def768c4da46da4e9f7e2629c1c47a0c36'],
         size=93_608_031
     )
     train_queries_file = Resource('antique-train-queries.txt',
         sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train-queries.txt'],
-        md5='7684bd977d2682177b559d8da714f45a',
+        hash='md5:7684bd977d2682177b559d8da714f45a',
         size=136_512
     )
     train_qrels_file = Resource('antique-train-qrels.qrel',
         sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train.qrel'],
-        md5='bac76531a3313a2d1debf5f1602d88ab',
+        hash='md5:bac76531a3313a2d1debf5f1602d88ab',
         size=625_622
     )
     test_queries_file = Resource('antique-test-queries.txt',
         sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test-queries.txt'],
-        md5='d09c5d9ad14368c23c853f6be81e7f2e',
+        hash='md5:d09c5d9ad14368c23c853f6be81e7f2e',
         size=11_434
     )
     test_qrels_file = Resource('antique-test-qrels.qrel',
         sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test.qrel'],
-        md5='c93ab0f0ce7937c84270c1eef172db4e',
+        hash='md5:c93ab0f0ce7937c84270c1eef172db4e',
         size=149_838
     )
     disallow_list_file = Resource('antique-test-disallow-list.txt',
         sources=['https://ciir.cs.umass.edu/downloads/Antique/test-queries-blacklist.txt'],
-        md5='4ca64485dabf26221b90cf96ae2997f9',
+        hash='md5:4ca64485dabf26221b90cf96ae2997f9',
         size=184
     )
 

@@ -205,128 +205,128 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     task1_2020_queries_file = Resource('touche-2020-task-1-queries.zip',
         sources=['https://zenodo.org/record/6862281/files/topics-task-1.zip'],
-        md5='9605104435165a6b01b737464596eba4',
+        hash='md5:9605104435165a6b01b737464596eba4',
         size=8_768,
     ).zip_member('topics-task-1.xml')
     task1_2020_qrels_file = Resource('touche-2020-task-1-qrels.qrels',
         sources=['https://zenodo.org/record/6862281/files/touche2020-task1-relevance-args-me-corpus-version-2020-04-01-corrected.qrels'],
-        md5='6a645e2ebd4f1d6c44da4d9509624598',
+        hash='md5:6a645e2ebd4f1d6c44da4d9509624598',
         size=62_058,
     )
     task1_2020_qrels_argsme_1_0_uncorrected_file = Resource('touche-2020-task-1-qrels-argsme-1.0-uncorrected.qrels',
         sources=['https://zenodo.org/record/6862281/files/touche2020-task1-relevance-args-me-corpus-version-1.qrels'],
-        md5='10f043e086818f9159ac37a9ebe5ce5d',
+        hash='md5:10f043e086818f9159ac37a9ebe5ce5d',
         size=145_201,
     )
     task1_2020_qrels_argsme_2020_04_01_uncorrected_file = Resource('touche-2020-task-1-qrels-argsme-2020-04-01-uncorrected.qrels',
         sources=['https://zenodo.org/record/6862281/files/touche2020-task1-relevance-args-me-corpus-version-2020-04-01.qrels'],
-        md5='6a27d7123423540664ccfe0391e4e417',
+        hash='md5:6a27d7123423540664ccfe0391e4e417',
         size=66_283,
     )
 
     task2_2020_queries_file = Resource('touche-2020-task-2-queries.zip',
         sources=['https://zenodo.org/record/6797876/files/topics-task-2.zip'],
-        md5='8de387d753ee8289a9f02346b63e12e4',
+        hash='md5:8de387d753ee8289a9f02346b63e12e4',
         size=17_279,
     ).zip_member('topics-task-2.xml')
     task2_2020_qrels_file = Resource('touche-2020-task-2-qrels.qrels',
         sources=['https://zenodo.org/record/6797876/files/touche2020-task2-relevance-withbaseline.qrels'],
-        md5='b230436beb3a9eecbeb19c84ee6c855c',
+        hash='md5:b230436beb3a9eecbeb19c84ee6c855c',
         size=58_522,
     )
 
     task1_2021_queries_file = Resource('touche-2021-task-1-queries.zip',
         sources=['https://zenodo.org/record/6798216/files/topics-task-1-only-titles-2021.zip'],
-        md5='61bad9cf6bc713a81297cd95cf9e156f',
+        hash='md5:61bad9cf6bc713a81297cd95cf9e156f',
         size=1_350,
     ).zip_member('topics-task-1-only-titles.xml')
     task1_2021_qrels_relevance_file = Resource('touche-2021-task-1-qrels-relevance.qrels',
         sources=['https://zenodo.org/record/6798216/files/touche-task1-51-100-relevance.qrels'],
-        md5='76b4e8348bde353167ce52ffa598a6b1',
+        hash='md5:76b4e8348bde353167ce52ffa598a6b1',
         size=99_736,
     )
     task1_2021_qrels_quality_file = Resource('touche-2021-task-1-qrels-quality.qrels',
         sources=['https://zenodo.org/record/6798216/files/touche-task1-51-100-quality.qrels'],
-        md5='c899bcab9b00fdd28f77d08a1d26298a',
+        hash='md5:c899bcab9b00fdd28f77d08a1d26298a',
         size=100_087,
     )
 
     task2_2021_queries_file = Resource('touche-2021-task-2-queries.zip',
         sources=['https://zenodo.org/record/6798217/files/topics-task-2-2021.zip'],
-        md5='0c06079b327ecd2b4c5971bd17bd0aa3',
+        hash='md5:0c06079b327ecd2b4c5971bd17bd0aa3',
         size=15_532,
     ).zip_member('topics-task2-51-100.xml')
     task2_2021_qrels_relevance_file = Resource('touche-2021-task-2-qrels-relevance.qrels',
         sources=['https://zenodo.org/record/6798217/files/touche-task2-51-100-relevance.qrels'],
-        md5='970b48e0c057afaee17a7832100ab67c',
+        hash='md5:970b48e0c057afaee17a7832100ab67c',
         size=68_548,
     )
     task2_2021_qrels_quality_file = Resource('touche-2021-task-2-qrels-quality.qrels',
         sources=['https://zenodo.org/record/6798217/files/touche-task2-51-100-quality.qrels'],
-        md5='062bea3b8307ae481876fe31253092b5',
+        hash='md5:062bea3b8307ae481876fe31253092b5',
         size=68_548,
     )
 
     task1_2022_queries_file = Resource('touche-2022-task-1-queries.xml',
         sources=['https://zenodo.org/record/6873574/files/topics.xml'],
-        md5='83a9cb2290f867199d6de9c73eeacf43',
+        hash='md5:83a9cb2290f867199d6de9c73eeacf43',
         size=31_089,
     )
     task1_2022_qrels_relevance_file = Resource('touche-2022-task-1-qrels-relevance.qrels',
         sources=['https://zenodo.org/record/6873574/files/touche-task1-2022-relevance-dedup.qrels'],
-        md5='658e5c13d8e5a80371d73ee1b04499bc',
+        hash='md5:658e5c13d8e5a80371d73ee1b04499bc',
         size=482_162,
     )
     task1_2022_qrels_quality_file = Resource('touche-2022-task-1-qrels-quality.qrels',
         sources=['https://zenodo.org/record/6873574/files/touche-task1-2022-quality-dedup.qrels'],
-        md5='8d12dac4ca8dfc0693ab34c926e87c1b',
+        hash='md5:8d12dac4ca8dfc0693ab34c926e87c1b',
         size=482_162,
     )
     task1_2022_qrels_coherence_file = Resource('touche-2022-task-1-qrels-coherence.qrels',
         sources=['https://zenodo.org/record/6873574/files/touche-task1-2022-coherence-dedup.qrels'],
-        md5='5389bb1df02d3ba54a458eb969cbc5e9',
+        hash='md5:5389bb1df02d3ba54a458eb969cbc5e9',
         size=482_162,
     )
 
     task2_2022_queries_file = Resource('touche-2022-task-2-queries.zip',
         sources=['https://zenodo.org/record/6873567/files/topics-task2-2022.zip'],
-        md5='fafbb6352be108419535aaed83fc5762',
+        hash='md5:fafbb6352be108419535aaed83fc5762',
         size=17_203,
     ).zip_member('topics-task2.xml')
     task2_2022_qrels_relevance_file = Resource('touche-2022-task-2-qrels-relevance.qrels',
         sources=['https://zenodo.org/record/6873567/files/touche-task2-2022-relevance.qrels'],
-        md5='dcdd1031ce2e0830ae76d7b21fca2579',
+        hash='md5:dcdd1031ce2e0830ae76d7b21fca2579',
         size=78_379,
     )
     task2_2022_qrels_quality_file = Resource('touche-2022-task-2-qrels-quality.qrels',
         sources=['https://zenodo.org/record/6873567/files/touche-task2-2022-quality.qrels'],
-        md5='adf28c877efcd94954263b392714cb60',
+        hash='md5:adf28c877efcd94954263b392714cb60',
         size=78_379,
     )
     task2_2022_qrels_stance_file = Resource('touche-2022-task-2-qrels-stance.qrels',
         sources=['https://zenodo.org/record/6873567/files/touche-task2-2022-stance.qrels'],
-        md5='ac9afec4eb590877df9c94dd8d931a37',
+        hash='md5:ac9afec4eb590877df9c94dd8d931a37',
         size=84_891,
     )
     task2_2022_passages_file = Resource('touche-2022-task-2-passages.jsonl.gz',
         sources=['https://zenodo.org/record/6873567/files/touche-task2-passages-version-002.jsonl.gz'],
-        md5='ed4d6104b78986849c59bbc470464cec',
+        hash='md5:ed4d6104b78986849c59bbc470464cec',
         size=285_743_369,
     ).gunzip()
     task2_2022_passages_expanded_file = Resource('touche-2022-task-2-passages-expanded-doc-t5-query.jsonl.gz',
         sources=['https://zenodo.org/record/6873567/files/touche-task2-passages-version-002-expanded-with-doc-t5-query.jsonl.gz'],
-        md5='062452996389a320b83ce274df82cf4b',
+        hash='md5:062452996389a320b83ce274df82cf4b',
         size=300_736_532,
     ).gunzip()
 
     task3_2022_queries_file = Resource('touche-2022-task-3-queries.xml',
         sources=['https://zenodo.org/record/6873575/files/topics.xml'],
-        md5='83a9cb2290f867199d6de9c73eeacf43',
+        hash='md5:83a9cb2290f867199d6de9c73eeacf43',
         size=31_089,
     )
     task3_2022_qrels_file = Resource('touche-2022-task-3-qrels.qrels',
         sources=['https://zenodo.org/record/6873575/files/touche-task3-001-050-relevance.qrels'],
-        md5='83ec2d715d0205b68b9b63f9c30da784',
+        hash='md5:83ec2d715d0205b68b9b63f9c30da784',
         size=558_028,
     )
 

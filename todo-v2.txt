@@ -22,6 +22,7 @@ TODO
 - Dynamic loading of modules?
 - Make trec_cast nicer (and fix/migrate broken bits?)
 - Consider adding suites, e.g., for wikiclir, mmarco, ...
+- What happend to all the documentation?
 
 Verification notes
 ---------------------

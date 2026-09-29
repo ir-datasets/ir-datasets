@@ -52,27 +52,27 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     cds_2014_queries_file = Resource('trec-cds-2014-queries.xml',
         sources=['http://www.trec-cds.org/topics2014.xml'],
-        md5='4924e2a3bb539feac6cbb967f4875926',
+        hash='md5:4924e2a3bb539feac6cbb967f4875926',
         size=22_514)
     cds_2014_qrels_file = Resource('trec-cds-2014-qrels.txt',
         sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2014.txt'],
-        md5='07c8f85a7b7bcfd4211301ecaa3b4769',
+        hash='md5:07c8f85a7b7bcfd4211301ecaa3b4769',
         size=556_628)
     cds_2015_queries_file = Resource('trec-cds-2015-queries.xml',
         sources=['https://trec.nist.gov/data/clinical/topics-2015-A.xml'],
-        md5='462d9804257e7ad0128f16324c9ec06d',
+        hash='md5:462d9804257e7ad0128f16324c9ec06d',
         size=22_491)
     cds_2015_qrels_file = Resource('trec-cds-2015-qrels.txt',
         sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2015.txt'],
-        md5='7bbe901cfa36df56dd13cce0275c1a2b',
+        hash='md5:7bbe901cfa36df56dd13cce0275c1a2b',
         size=554_312)
     cds_2016_queries_file = Resource('trec-cds-2016-queries.xml',
         sources=['https://trec.nist.gov/data/clinical/topics2016.xml'],
-        md5='22ccb3412931efe1ea084330737e41bc',
+        hash='md5:22ccb3412931efe1ea084330737e41bc',
         size=79_966)
     cds_2016_qrels_file = Resource('trec-cds-2016-qrels.txt',
         sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2016.txt'],
-        md5='1a450d38137082e214c1201a3023a6d1',
+        hash='md5:1a450d38137082e214c1201a3023a6d1',
         size=553_709)
 
     # Tables

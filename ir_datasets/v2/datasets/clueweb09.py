@@ -80,7 +80,7 @@ docs_file = Directory('clueweb09.dir',
 )
 chk_file = Resource('clueweb09-chk.tar.gz',
     sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb09/clueweb09-source-chk.tar.gz'],
-    md5='74328d9c743c52ddef434ce41a4e6dc1',
+    hash='md5:74328d9c743c52ddef434ce41a4e6dc1',
     size=3_582_668_561,
 )
 

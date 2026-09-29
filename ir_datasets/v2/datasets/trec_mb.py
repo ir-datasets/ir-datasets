@@ -24,22 +24,22 @@ CITATION_2014 = 'dblp:conf/trec/LinWES14'
 # -----------------------------------------
 queries_2013_file = Resource('trec-mb-2013-queries.txt',
     sources=['https://trec.nist.gov/data/microblog/2013/topics.MB111-170.txt', Source.mirror()],
-    md5='0b78d99dfa2d655dca7e9f138a93c21a',
+    hash='md5:0b78d99dfa2d655dca7e9f138a93c21a',
     size=11_471,
 )
 qrels_2013_file = Resource('trec-mb-2013-qrels.txt',
     sources=['https://trec.nist.gov/data/microblog/2013/qrels.txt', Source.mirror()],
-    md5='4776a5dfd80b3f675184315ec989c02f',
+    hash='md5:4776a5dfd80b3f675184315ec989c02f',
     size=1_995_812,
 )
 queries_2014_file = Resource('trec-mb-2014-queries.txt',
     sources=['https://trec.nist.gov/data/microblog/2014/topics.desc.MB171-225.txt', Source.mirror()],
-    md5='e9d520f976176e710fd68bb3a065a3e7',
+    hash='md5:e9d520f976176e710fd68bb3a065a3e7',
     size=17_785,
 )
 qrels_2014_file = Resource('trec-mb-2014-qrels.txt',
     sources=['https://trec.nist.gov/data/microblog/2014/qrels2014.txt', Source.mirror()],
-    md5='68d9a1920b244f6ccdc687ee1d473214',
+    hash='md5:68d9a1920b244f6ccdc687ee1d473214',
     size=1_623_580,
 )
 

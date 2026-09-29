@@ -234,14 +234,12 @@ class Resource(Node, Readable):
     ``Source.external()`` for headers, auth, or manual acquisition.
 
     Integrity is declared as one or more ``algo:hexdigest`` strings --
-    ``hashes=['sha256:...']``, or several at once (``hashes=['md5:...',
+    ``hash='sha256:...'``, or several at once (``hash=['md5:...',
     'sha256:...']``) when a source publishes more than one and there's no
-    reason to pick. ``md5=`` remains a plain shorthand for the common single-
-    hash case (``md5='...'`` == ``hashes=['md5:...']``) -- most callers only
-    ever declare one hash, and md5 is what the cache path and the live
-    download check (both inherited from v1) are keyed on regardless of what
-    else is declared, so it stays privileged: ``self.md5`` is always the
-    ``md5`` entry of ``self.hashes``, if any.
+    reason to pick. A bare string is shorthand for a one-element list. md5 is
+    what the cache path and the live download check (both inherited from v1)
+    are keyed on regardless of what else is declared, so it stays privileged:
+    ``self.md5`` is always the ``md5`` entry of ``self.hashes``, if any.
 
     Every declared hash is checked at ``verify`` time (a single streamed pass,
     all algorithms computed together) -- not only md5, and not only at
@@ -261,14 +259,12 @@ class Resource(Node, Readable):
     """
     type = RESOURCE
 
-    def __init__(self, name, *, sources=(), md5=None, hashes=(), size=None,
+    def __init__(self, name, *, sources=(), hash=(), size=None,
                  dua=None, **meta):
         self.hashes = {}
-        for spec in (hashes.items() if isinstance(hashes, dict) else hashes):
-            algo, digest = parse_hash(spec if isinstance(spec, str) else f'{spec[0]}:{spec[1]}')
+        for spec in ((hash,) if isinstance(hash, str) else hash):
+            algo, digest = parse_hash(spec)
             self.hashes[algo] = digest
-        if md5:
-            self.hashes.setdefault('md5', md5.lower())
         # Hashes must be settled first: materializing a Source.mirror()
         # placeholder needs self.md5, which is derived from self.hashes.
         self.sources = [materialize(as_source(s), self.md5) for s in sources]

@@ -54,7 +54,7 @@ class _VaswaniQrelsParser(Parser):
 # -----------------------------------------
 main_file = Resource('vaswani.tar.gz',
     sources=['http://ir.dcs.gla.ac.uk/resources/test_collections/npl/npl.tar.gz', Source.mirror()],
-    md5='23e5607081191b153738e81fbd834680',
+    hash='md5:23e5607081191b153738e81fbd834680',
     size=2_125_168,
 )
 

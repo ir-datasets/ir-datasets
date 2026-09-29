@@ -193,17 +193,17 @@ with irds.defaults(lang='en'):
 
     for subset in SHORT_SUBSETS:
         docs_url, docs_md5, docs_size = DOCS_SOURCES[subset]
-        docs_file = Resource(f'bright-{subset}-docs.parquet', sources=[docs_url], md5=docs_md5, size=docs_size)
+        docs_file = Resource(f'bright-{subset}-docs.parquet', sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size)
         docs = DocTable(f'bright-{subset}-docs', source=docs_file, parser=_BrightDocsParser(subset))
 
         queries_url, queries_md5, queries_size = QUERIES_SOURCES[subset]
-        queries_file = Resource(f'bright-{subset}-queries.parquet', sources=[queries_url], md5=queries_md5, size=queries_size)
+        queries_file = Resource(f'bright-{subset}-queries.parquet', sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size)
 
         reasoning_sources = {}
         for v1_field in REASONING_FIELDS:
             r_url, r_md5, r_size = REASONING_SOURCES[(subset, v1_field)]
             reasoning_sources[v1_field] = Resource(
-                f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], md5=r_md5, size=r_size)
+                f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], hash=f'md5:{r_md5}', size=r_size)
 
         queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
                           parser=_BrightQueriesParser(reasoning_sources))
@@ -219,7 +219,7 @@ with irds.defaults(lang='en'):
 
     for subset in LONG_SUBSETS:
         long_url, long_md5, long_size = LONG_DOCS_SOURCES[subset]
-        long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], md5=long_md5, size=long_size)
+        long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], hash=f'md5:{long_md5}', size=long_size)
         long_docs = DocTable(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset))
 
         queries_file, queries = queries_by_subset[subset]

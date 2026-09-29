@@ -35,15 +35,15 @@ class _SaraDocsParser(Parser):
 # -----------------------------------------
 docs_file = Resource('sara-docs.zip',
     sources=['https://zenodo.org/records/18609870/files/sara_combined_docs.zip?download=1'],
-    md5='e806b1d5ce35c94cec2899e190db7dd7',
+    hash='md5:e806b1d5ce35c94cec2899e190db7dd7',
 )
 queries_file = Resource('sara-queries.tsv',
     sources=['https://raw.githubusercontent.com/JackMcKechnie/SARA-A-Collection-of-Sensitivity-Aware-Relevance-Assessments/main/repeated_queries.tsv'],
-    md5='fc0247928a0b93bb344068fa238a5e3f',
+    hash='md5:fc0247928a0b93bb344068fa238a5e3f',
 )
 qrels_file = Resource('sara-qrels.txt',
     sources=['https://raw.githubusercontent.com/JackMcKechnie/SARA/refs/heads/main/combined_qrels.txt'],
-    md5='39a24d38b4d0e352e7818abd09d6815a',
+    hash='md5:39a24d38b4d0e352e7818abd09d6815a',
 )
 
 # Tables

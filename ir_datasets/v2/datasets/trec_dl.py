@@ -53,132 +53,132 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     queries_2019_file = Resource('trec-dl-2019-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2019-queries.tsv.gz'],
-        md5='eda71eccbe4d251af83150abe065368c',
+        hash='md5:eda71eccbe4d251af83150abe065368c',
         size=4_276,
     )
     queries_2020_file = Resource('trec-dl-2020-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test2020-queries.tsv.gz'],
-        md5='00a406fb0d14ed3752d70d1e4eb98600',
+        hash='md5:00a406fb0d14ed3752d70d1e4eb98600',
         size=4_131,
     )
 
     passage_2019_qrels_file = Resource('trec-dl-2019-passage-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2019qrels-pass.txt', Source.mirror()],
-        md5='2f4be390198da108f6845c822e5ada14',
+        hash='md5:2f4be390198da108f6845c822e5ada14',
         size=187_092,
     )
     passage_2019_scoreddocs_file = Resource('trec-dl-2019-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2019-top1000.tsv.gz'],
-        md5='ec9e012746aa9763c7ff10b3336a3ce1',
+        hash='md5:ec9e012746aa9763c7ff10b3336a3ce1',
         size=26_634_062,
     )
     passage_2020_qrels_file = Resource('trec-dl-2020-passage-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2020qrels-pass.txt', Source.mirror()],
-        md5='0355ccee7509ac0463e8278186cdd8d1',
+        hash='md5:0355ccee7509ac0463e8278186cdd8d1',
         size=218_617,
     )
     passage_2020_scoreddocs_file = Resource('trec-dl-2020-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-passagetest2020-top1000.tsv.gz'],
-        md5='aa6fbc51d66bd1dc745964c0e140a727',
+        hash='md5:aa6fbc51d66bd1dc745964c0e140a727',
         size=26_230_218,
     )
 
     document_2019_qrels_file = Resource('trec-dl-2019-document-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2019qrels-docs.txt'],
-        md5='d7ef53b995ef7e01676ea85d7ec01dda',
+        hash='md5:d7ef53b995ef7e01676ea85d7ec01dda',
         size=339_438,
     )
     document_2019_scoreddocs_file = Resource('trec-dl-2019-document-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctest2019-top100.gz'],
-        md5='91071b89dd52124057a87d53cd22028d',
+        hash='md5:91071b89dd52124057a87d53cd22028d',
         size=220_457,
     )
     document_2020_qrels_file = Resource('trec-dl-2020-document-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2020qrels-docs.txt'],
-        md5='e10f3545583b124a4ed5e7992293e15a',
+        hash='md5:e10f3545583b124a4ed5e7992293e15a',
         size=182_852,
     )
     document_2020_scoreddocs_file = Resource('trec-dl-2020-document-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctest2020-top100.gz'],
-        md5='96f39dae3443736bd6393bd09a5a0a20',
+        hash='md5:96f39dae3443736bd6393bd09a5a0a20',
         size=208_679,
     )
 
     queries_2021_file = Resource('trec-dl-2021-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2021_queries.tsv'],
-        md5='46d863434dda18300f5af33ee29c4b28',
+        hash='md5:46d863434dda18300f5af33ee29c4b28',
         size=24_585,
     )
     queries_2022_file = Resource('trec-dl-2022-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2022_queries.tsv'],
-        md5='f1bfd53d80e81e58207ce557fd2211a0',
+        hash='md5:f1bfd53d80e81e58207ce557fd2211a0',
         size=21_508,
     )
     queries_2023_file = Resource('trec-dl-2023-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2023_queries.tsv'],
-        md5='7df9e17b47cc9aa5d1c9fd5b313e273c',
+        hash='md5:7df9e17b47cc9aa5d1c9fd5b313e273c',
         size=38_128,
     )
 
     passage_2021_qrels_file = Resource('trec-dl-2021-passage-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2021.qrels.pass.final.txt', Source.mirror()],
-        md5='c5b76ec95b589732edc9040302e22a2b',
+        hash='md5:c5b76ec95b589732edc9040302e22a2b',
         size=433_887,
     )
     passage_2021_scoreddocs_file = Resource('trec-dl-2021-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2021_passage_top100.txt.gz'],
-        md5='e2be2d307da26d1a3f76eb95507672a3',
+        hash='md5:e2be2d307da26d1a3f76eb95507672a3',
         size=604_533,
     )
     passage_2022_qrels_file = Resource('trec-dl-2022-passage-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2022.qrels.pass.withDupes.txt', Source.mirror()],
-        md5='b36484d6cfd039664a570a4bf04f0eeb',
+        hash='md5:b36484d6cfd039664a570a4bf04f0eeb',
         size=15_800_539,
     )
     passage_2022_scoreddocs_file = Resource('trec-dl-2022-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2022_passage_top100.txt.gz'],
-        md5='36004dfad64826167aeecddff1d490a6',
+        hash='md5:36004dfad64826167aeecddff1d490a6',
         size=630_095,
     )
     passage_2023_qrels_file = Resource('trec-dl-2023-passage-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2023.qrels.pass.withDupes.txt', Source.mirror()],
-        md5='3a742d51ae65da2ece9c09b304b9e358',
+        hash='md5:3a742d51ae65da2ece9c09b304b9e358',
         size=912_450,
     )
     passage_2023_scoreddocs_file = Resource('trec-dl-2023-passage-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2023_passage_top100.txt.gz'],
-        md5='c339ed75e1556cacb387899f34cadad1',
+        hash='md5:c339ed75e1556cacb387899f34cadad1',
         size=888_898,
     )
 
     document_2021_qrels_file = Resource('trec-dl-2021-document-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2021.qrels.docs.final.txt', Source.mirror()],
-        md5='3b266fdaf27f3775e04028765a4839d3',
+        hash='md5:3b266fdaf27f3775e04028765a4839d3',
         size=478_328,
     )
     document_2021_scoreddocs_file = Resource('trec-dl-2021-document-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2021_document_top100.txt.gz'],
-        md5='0bc85e3f2a6f798b91e18f0cd4a6bc6b',
+        hash='md5:0bc85e3f2a6f798b91e18f0cd4a6bc6b',
         size=618_228,
     )
     document_2022_qrels_file = Resource('trec-dl-2022-document-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2022.qrels.docs.inferred.txt', Source.mirror()],
-        md5='cca2e4db9d842e6262500532809bd571',
+        hash='md5:cca2e4db9d842e6262500532809bd571',
         size=13_808_681,
     )
     document_2022_scoreddocs_file = Resource('trec-dl-2022-document-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2022_document_top100.txt.gz'],
-        md5='93f70329ce1b9ce913a5f87008736ff2',
+        hash='md5:93f70329ce1b9ce913a5f87008736ff2',
         size=642_721,
     )
     document_2023_qrels_file = Resource('trec-dl-2023-document-qrels.txt',
         sources=['https://trec.nist.gov/data/deep/2023.qrels.docs.withDupes.txt', Source.mirror()],
-        md5='1e9c540b3cb03bcc975a583586c04090',
+        hash='md5:1e9c540b3cb03bcc975a583586c04090',
         size=675_015,
     )
     document_2023_scoreddocs_file = Resource('trec-dl-2023-document-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/2023_document_top100.txt.gz'],
-        md5='0f5d548e53afb9e319c837ad67f9046a',
+        hash='md5:0f5d548e53afb9e319c837ad67f9046a',
         size=902_168,
     )
 

@@ -864,7 +864,7 @@ _REPLACED_BY = {
     'trec-spanish': 'irds:trec-spanish-docs',
     'trec-spanish/trec3': 'irds:trec-spanish-3',
     'trec-spanish/trec4': 'irds:trec-spanish-4',
-    'tripclick': 'irds:tripclick',
+    'tripclick': 'irds:tripclick-docs',
     'tripclick/train/head': 'irds:tripclick-train-head',
     'tripclick/train/head/dctr': 'irds:tripclick-train-head-dctr',
     'tripclick/train/tail': 'irds:tripclick-train-tail',

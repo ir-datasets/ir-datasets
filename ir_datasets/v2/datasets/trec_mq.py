@@ -51,22 +51,22 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     mq2007_queries_file = Resource('trec-mq-2007-queries.gz',
         sources=['https://trec.nist.gov/data/million.query/07/07-million-query-topics.1-10000.gz', Source.mirror()],
-        md5='db64470f08450c6b15a9ee2c7eac2f9b',
+        hash='md5:db64470f08450c6b15a9ee2c7eac2f9b',
         size=143_691,
     )
     mq2007_qrels_file = Resource('trec-mq-2007-qrels.txt',
         sources=['https://trec.nist.gov/data/million.query/07/07.prels', Source.mirror()],
-        md5='4f930d85442ac74cc00b56a4252f1f4a',
+        hash='md5:4f930d85442ac74cc00b56a4252f1f4a',
         size=2_749_725,
     )
     mq2008_queries_file = Resource('trec-mq-2008-queries.gz',
         sources=['https://trec.nist.gov/data/million.query/08/08.million-query-topics.10001-20000.gz', Source.mirror()],
-        md5='fc8fc0e92ae9bc1d16756534ac682058',
+        hash='md5:fc8fc0e92ae9bc1d16756534ac682058',
         size=162_791,
     )
     mq2008_qrels_file = Resource('trec-mq-2008-qrels.tar.gz',
         sources=['https://trec.nist.gov/data/million.query/08/2008.RC1.tgz', Source.mirror()],
-        md5='dae403e1834e87cba1babbef71b73714',
+        hash='md5:dae403e1834e87cba1babbef71b73714',
         size=459_172,
     )
 
@@ -108,12 +108,12 @@ with irds.defaults(dua=CW09_DUA, lang='en'):
     # -----------------------------------------
     mq2009_queries_file = Resource('trec-mq-2009-queries.gz',
         sources=['https://trec.nist.gov/data/million.query/09/09.mq.topics.20001-60000.gz', Source.mirror()],
-        md5='6347147d4d6c847f0423709140a7b10d',
+        hash='md5:6347147d4d6c847f0423709140a7b10d',
         size=437_150,
     )
     mq2009_qrels_file = Resource('trec-mq-2009-qrels.gz',
         sources=['https://trec.nist.gov/data/million.query/09/prels.20001-60000.gz', Source.mirror()],
-        md5='e67f45d3060e20667596f37e34d696c8',
+        hash='md5:e67f45d3060e20667596f37e34d696c8',
         size=323_113,
     )
 

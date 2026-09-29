@@ -67,26 +67,26 @@ DOCS_OLD_LOCATIONS = ['trec-mandarin/corpus.tgz']  # relative to <home> (v1)
 # -----------------------------------------
 docs_file = Resource('trec-mandarin-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
-    md5=DOCS_MD5,
+    hash=f'md5:{DOCS_MD5}',
 )
 trec5_queries_file = Resource('trec-mandarin-5-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.CH1-CH28.chinese.english.gz', Source.mirror()],
-    md5='9ce885d36e8642d4114f40e7008e5b8a',
+    hash='md5:9ce885d36e8642d4114f40e7008e5b8a',
     size=9_136,
 )
 trec5_qrels_file = Resource('trec-mandarin-5-qrels.gz',
     sources=['https://trec.nist.gov/data/qrels_noneng/qrels.1-28.chinese.gz', Source.mirror()],
-    md5='73693083d75ef323fca2a218604b41ac',
+    hash='md5:73693083d75ef323fca2a218604b41ac',
     size=76_063,
 )
 trec6_queries_file = Resource('trec-mandarin-6-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.CH29-CH54.chinese.english.gz', Source.mirror()],
-    md5='c3a58ec59e55c162fdc3e3a9c5e9b8a7',
+    hash='md5:c3a58ec59e55c162fdc3e3a9c5e9b8a7',
     size=8_920,
 )
 trec6_qrels_file = Resource('trec-mandarin-6-qrels.gz',
     sources=['https://trec.nist.gov/data/qrels_noneng/qrels.trec6.29-54.chinese.gz', Source.mirror()],
-    md5='675ab2f14fad9017d646d052c0b35c46',
+    hash='md5:675ab2f14fad9017d646d052c0b35c46',
     size=44_468,
 )
 

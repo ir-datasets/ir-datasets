@@ -31,22 +31,22 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     core_2017_queries_file = Resource('trec-core-2017-queries.txt',
         sources=['https://trec.nist.gov/data/core/core_nist.txt', Source.mirror()],
-        md5='821f8eaaf11ae3ce9657d1442749480a',
+        hash='md5:821f8eaaf11ae3ce9657d1442749480a',
         size=24_444,
     )
     core_2017_qrels_file = Resource('trec-core-2017-qrels.txt',
         sources=['https://trec.nist.gov/data/core/qrels.txt', Source.mirror()],
-        md5='8cf8dcafba6557e5ee62a28a44b0314d',
+        hash='md5:8cf8dcafba6557e5ee62a28a44b0314d',
         size=462_387,
     )
     core_2018_queries_file = Resource('trec-core-2018-queries.txt',
         sources=['https://trec.nist.gov/data/core/topics2018.txt', Source.mirror()],
-        md5='1b11276f0e1badd68347884664816654',
+        hash='md5:1b11276f0e1badd68347884664816654',
         size=24_079,
     )
     core_2018_qrels_file = Resource('trec-core-2018-qrels.txt',
         sources=['https://trec.nist.gov/data/core/qrels2018.txt', Source.mirror()],
-        md5='7a982cd110f8bb30da4141f0f639f2e1',
+        hash='md5:7a982cd110f8bb30da4141f0f639f2e1',
         size=1_121_301,
     )
 

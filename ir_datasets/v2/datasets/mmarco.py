@@ -160,7 +160,7 @@ DEV_QRELS_SMALL = ('https://huggingface.co/datasets/unicamp-dl/mmarco/resolve/ma
 
 def _resource(name, spec):
     url, md5, size = spec
-    return Resource(name, sources=[url], md5=md5, size=size)
+    return Resource(name, sources=[url], hash=f'md5:{md5}', size=size)
 
 
 with irds.defaults(dua=None):

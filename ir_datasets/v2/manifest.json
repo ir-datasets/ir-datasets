@@ -2915,33 +2915,6 @@
       "format": "C4Docs",
       "lang": "en"
     },
-    "irds:c4-en-noclean-tr-trec-misinfo-2021": {
-      "name": "irds:c4-en-noclean-tr-trec-misinfo-2021",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.c4",
-      "desc": "TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset)."
-    },
-    "irds:c4-en-noclean-tr-trec-misinfo-2021-queries": {
-      "name": "irds:c4-en-noclean-tr-trec-misinfo-2021-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.c4",
-      "citation": "dblp:conf/trec/ClarkeMS21",
-      "format": "TrecXmlQueries",
-      "lang": "en"
-    },
-    "irds:c4-trec-misinfo-2021-queries.xml": {
-      "name": "irds:c4-trec-misinfo-2021-queries.xml",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.c4",
-      "hashes": [
-        "md5:988ea3128eefa5814b550f5fe1a15e94"
-      ],
-      "size": 50722,
-      "sources": [
-        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml\"}"
-      ],
-      "dua": "Manual download from the TREC Active Participants area required; see instructions."
-    },
     "irds:car-test200": {
       "name": "irds:car-test200",
       "type": "irds:Benchmark",
@@ -23010,6 +22983,33 @@
         "{\"kind\": \"mirror\", \"order\": 1, \"url\": \"https://mirror.ir-datasets.com/e46bb8ff3058bbcc1bd73a0ecbda1621\"}"
       ]
     },
+    "irds:trec-misinfo-2021": {
+      "name": "irds:trec-misinfo-2021",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_misinfo",
+      "desc": "TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset).",
+      "citation": "dblp:conf/trec/ClarkeMS21"
+    },
+    "irds:trec-misinfo-2021-queries": {
+      "name": "irds:trec-misinfo-2021-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_misinfo",
+      "citation": "dblp:conf/trec/ClarkeMS21",
+      "format": "TrecXmlQueries",
+      "lang": "en"
+    },
+    "irds:trec-misinfo-2021-queries.xml": {
+      "name": "irds:trec-misinfo-2021-queries.xml",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_misinfo",
+      "hashes": [
+        "md5:988ea3128eefa5814b550f5fe1a15e94"
+      ],
+      "size": 50722,
+      "sources": [
+        "{\"kind\": \"url\", \"order\": 0, \"url\": \"https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml\"}"
+      ]
+    },
     "irds:trec-mq-2007": {
       "name": "irds:trec-mq-2007",
       "type": "irds:Benchmark",
@@ -30212,21 +30212,6 @@
       "irds:c4-en-noclean-tr",
       "irds:derived_from",
       "irds:c4-en-noclean-sources.json.gz"
-    ],
-    [
-      "irds:c4-en-noclean-tr-trec-misinfo-2021",
-      "irds:docs",
-      "irds:c4-en-noclean-tr"
-    ],
-    [
-      "irds:c4-en-noclean-tr-trec-misinfo-2021",
-      "irds:queries",
-      "irds:c4-en-noclean-tr-trec-misinfo-2021-queries"
-    ],
-    [
-      "irds:c4-en-noclean-tr-trec-misinfo-2021-queries",
-      "irds:derived_from",
-      "irds:c4-trec-misinfo-2021-queries.xml"
     ],
     [
       "irds:car-test200",
@@ -43802,6 +43787,21 @@
       "irds:trec-misinfo-2019-queries",
       "irds:derived_from",
       "irds:trec-misinfo-2019-queries.xml"
+    ],
+    [
+      "irds:trec-misinfo-2021",
+      "irds:docs",
+      "irds:c4-en-noclean-tr"
+    ],
+    [
+      "irds:trec-misinfo-2021",
+      "irds:queries",
+      "irds:trec-misinfo-2021-queries"
+    ],
+    [
+      "irds:trec-misinfo-2021-queries",
+      "irds:derived_from",
+      "irds:trec-misinfo-2021-queries.xml"
     ],
     [
       "irds:trec-mq-2007",

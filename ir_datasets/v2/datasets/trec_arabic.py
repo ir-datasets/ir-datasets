@@ -44,26 +44,26 @@ DOCS_OLD_LOCATIONS = ['trec-arabic/corpus.tgz']  # relative to <home> (v1)
 # -----------------------------------------
 docs_file = Resource('trec-arabic-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
-    md5=DOCS_MD5,
+    hash=f'md5:{DOCS_MD5}',
 )
 ar2001_queries_file = Resource('trec-arabic-2001-queries.txt',
     sources=['https://trec.nist.gov/data/topics_noneng/arabic_topics.txt', Source.mirror()],
-    md5='a3d78c379056a080fe40a59a341496b8',
+    hash='md5:a3d78c379056a080fe40a59a341496b8',
     size=10_320,
 )
 ar2001_qrels_file = Resource('trec-arabic-2001-qrels.txt',
     sources=['https://trec.nist.gov/data/qrels_noneng/xlingual_t10qrels.txt', Source.mirror()],
-    md5='5951e2f0bf72df9f93fc32b93e3a7fde',
+    hash='md5:5951e2f0bf72df9f93fc32b93e3a7fde',
     size=650_331,
 )
 ar2002_queries_file = Resource('trec-arabic-2002-queries.txt',
     sources=['https://trec.nist.gov/data/topics_noneng/CL.topics.arabic.trec11.txt', Source.mirror()],
-    md5='f75a6164d794bab66509f1e818612363',
+    hash='md5:f75a6164d794bab66509f1e818612363',
     size=15_873,
 )
 ar2002_qrels_file = Resource('trec-arabic-2002-qrels.txt',
     sources=['https://trec.nist.gov/data/qrels_noneng/qrels.trec11.xlingual.txt', Source.mirror()],
-    md5='40f25e1e98101e27d081685cbdc390ef',
+    hash='md5:40f25e1e98101e27d081685cbdc390ef',
     size=1_114_528,
 )
 

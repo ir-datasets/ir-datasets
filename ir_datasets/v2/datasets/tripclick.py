@@ -242,31 +242,31 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     benchmark_file = Resource('tripclick-benchmark.tar.gz',
         sources=[Source.external('tripclick-benchmark.tar.gz', old_locations=[f'{NAME}/benchmark.tar.gz'], instructions=DATA_ACCESS)],
-        md5='6e5d3deeba138750e9a148b538f30a8f',
+        hash='md5:6e5d3deeba138750e9a148b538f30a8f',
         dua=DUA,
     )
     dlfiles_file = Resource('tripclick-dlfiles.tar.gz',
         sources=[Source.external('tripclick-dlfiles.tar.gz', old_locations=[f'{NAME}/dlfiles.tar.gz'], instructions=DATA_ACCESS)],
-        md5='1f256c19466b414e365324d8ef21f09c',
+        hash='md5:1f256c19466b414e365324d8ef21f09c',
         dua=DUA,
     )
     dlfiles_runs_test_file = Resource('tripclick-dlfiles-runs-test.tar.gz',
         sources=[Source.external('tripclick-dlfiles_runs_test.tar.gz', old_locations=[f'{NAME}/dlfiles_runs_test.tar.gz'], instructions=DATA_ACCESS)],
-        md5='2b5e98c683a91e19630636b6f83e3b15',
+        hash='md5:2b5e98c683a91e19630636b6f83e3b15',
         dua=DUA,
     )
     # Automatically downloadable (no DUA) -- Hofstaetter et al.'s improved
     # training triples, distributed on the Hub.
     hofstaetter_triples_file = Resource('tripclick-hofstaetter-triples.tsv',
         sources=['https://huggingface.co/datasets/sebastian-hofstaetter/tripclick-training/resolve/main/improved_tripclick_train_triple-ids.tsv'],
-        md5='8d70808ec06570e02bc4014ed033b5d0',
+        hash='md5:8d70808ec06570e02bc4014ed033b5d0',
         size=233_053_452,
     )
     # The raw search-session log tar.gz -- backs the `logs` subset's docs/
     # qlogs tables below, and only those (see module docstring).
     logs_file = Resource('tripclick-logs.tar.gz',
         sources=[Source.external('tripclick-logs.tar.gz', old_locations=[f'{NAME}/logs.tar.gz'], instructions=DATA_ACCESS)],
-        md5='1d3a548685c2fbef9b2076b0b04ba44f',
+        hash='md5:1d3a548685c2fbef9b2076b0b04ba44f',
         dua=DUA,
     )
 
@@ -281,7 +281,7 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs = TrecDocs('tripclick',
+    docs = TrecDocs('tripclick-docs',
         source=benchmark_file,
         path_globs=['**/docs_grp_*.txt'],
         parser='tut',

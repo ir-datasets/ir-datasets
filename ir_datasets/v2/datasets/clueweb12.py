@@ -123,12 +123,12 @@ docs_file = Directory('clueweb12.dir',
 )
 docs_chk_file = Resource('clueweb12-chk.tar.gz',
     sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb12/clueweb12-source-chk.tar.gz'],
-    md5='fb92d1f8ed1436839313d2eb47f628a5',
+    hash='md5:fb92d1f8ed1436839313d2eb47f628a5',
     size=3_883_120_643,
 )
 cw12b_info_file = Resource('clueweb12-cw12b-info.tgz',
     sources=['http://lemurproject.org/clueweb12-CreateB13.tgz'],
-    md5='8175ce74a97e46be80c2127d965da200',
+    hash='md5:8175ce74a97e46be80c2127d965da200',
     size=1_310_407_043,
 )
 # See module docstring: member -> cache -> bunzip2, matching v1's

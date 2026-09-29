@@ -159,7 +159,7 @@ class _WikiClirQueriesParser(Parser):
 # -----------------------------------------
 source_file = Resource('wikiclir-source.tar.gz',
     sources=['https://www.cs.jhu.edu/~kevinduh/a/wikiclir2018/wiki-clir.tar.gz'],
-    md5='705abb611eb8cbab9ced2b8767a3bdb6',
+    hash='md5:705abb611eb8cbab9ced2b8767a3bdb6',
     size=7_036_445_773,
 )
 

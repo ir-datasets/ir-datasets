@@ -68,12 +68,12 @@ BASE_PATH = ir_datasets.util.home_path() / NAME
 # -----------------------------------------
 logs_file = Resource('aol-ia-logs.tar.gz',
     sources=['http://www.cim.mcgill.ca/~dudek/206/Logs/AOL-user-ct-collection/aol-data.tar.gz'],
-    md5='31cd27ce12c3a3f2df62a38050ce4c0a',
+    hash='md5:31cd27ce12c3a3f2df62a38050ce4c0a',
     size=460_331_537,
 )
 id2wb_file = Resource('aol-ia-id2wb.tsv.gz',
     sources=['https://macavaney.us/aol.id2wb.tsv.gz'],
-    md5='afbf9b03e1a0fabc9f3fdd5105e6ae5a',
+    hash='md5:afbf9b03e1a0fabc9f3fdd5105e6ae5a',
     size=40_099_187,
 )
 

@@ -55,12 +55,12 @@ class _KiltDocsParser(Parser):
 # -----------------------------------------
 knowledgesource_file = Resource('kilt-knowledgesource.json',
     sources=['http://dl.fbaipublicfiles.com/KILT/kilt_knowledgesource.json'],
-    md5='d1dca62aa6ba889d2e842182e3114af5',
+    hash='md5:d1dca62aa6ba889d2e842182e3114af5',
     size=37_318_876_722,
 )
 qrels_file = Resource('kilt-codec-qrels.txt',
     sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/raw_judgments/raw_entity_judgments.txt'],
-    md5='51781fd0de5f7ca6b537222e4001e8ba',
+    hash='md5:51781fd0de5f7ca6b537222e4001e8ba',
     size=282_367,
 )
 

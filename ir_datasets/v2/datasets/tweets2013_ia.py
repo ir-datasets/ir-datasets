@@ -40,11 +40,11 @@ class _Tweets2013IaDocsParser(Parser):
 # -----------------------------------------
 docs_feb_file = Resource('tweets2013-ia-docs-feb.tar',
     sources=['https://archive.org/download/archiveteam-twitter-stream-2013-02/archiveteam-twitter-stream-2013-02.tar'],
-    md5='e82916d37116c781afff750e2127156f',
+    hash='md5:e82916d37116c781afff750e2127156f',
 )
 docs_mar_file = Resource('tweets2013-ia-docs-mar.tar',
     sources=['https://archive.org/download/archiveteam-twitter-stream-2013-03/archiveteam-twitter-stream-2013-03.tar'],
-    md5='486817a372e03298162daa0e80dc6399',
+    hash='md5:486817a372e03298162daa0e80dc6399',
 )
 
 # Tables

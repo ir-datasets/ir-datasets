@@ -94,52 +94,52 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     collectionandqueries_file = Resource('msmarco-passage-collectionandqueries.tar.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/collectionandqueries.tar.gz', headers=_MS_HEADERS)],
-        md5='31644046b18952c1386cd4564ba2ae69',
+        hash='md5:31644046b18952c1386cd4564ba2ae69',
         size=1_057_717_952,
     )
     queries_file = Resource('msmarco-passage-queries.tar.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/queries.tar.gz'],
-        md5='c177b2795d5f2dcc524cf00fcd973be1',
+        hash='md5:c177b2795d5f2dcc524cf00fcd973be1',
         size=18_882_551,
     )
     medmarco_ids_file = Resource('msmarco-passage-medmarco-ids.txt',
         sources=['https://raw.githubusercontent.com/Georgetown-IR-Lab/covid-neural-ir/master/med-msmarco-train.txt'],
-        md5='dc5199de7d4a872c361f89f08b1163ef',
+        hash='md5:dc5199de7d4a872c361f89f08b1163ef',
         size=548_428,
     )
     train_qrels_file = Resource('msmarco-passage-train-qrels.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.train.tsv'],
-        md5='733fb9fe12d93e497f7289409316eccf',
+        hash='md5:733fb9fe12d93e497f7289409316eccf',
         size=10_589_532,
     )
     train_docpairs_file = Resource('msmarco-passage-train-docpairs.tsv.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz', headers=_MS_HEADERS)],
-        md5='215a5204288820672f5e9451d9e202c5',
+        hash='md5:215a5204288820672f5e9451d9e202c5',
         size=2_633_557_579,
     )
     train_docpairs_v2_file = Resource('msmarco-passage-train-docpairs-v2.tsv.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz', headers=_MS_HEADERS)],
-        md5='219083e80a0a751c08b968c2f31a4e0b',
+        hash='md5:219083e80a0a751c08b968c2f31a4e0b',
         size=1_841_693_309,
     )
     train_scoreddocs_file = Resource('msmarco-passage-train-scoreddocs.tar.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.train.tar.gz', headers=_MS_HEADERS)],
-        md5='d99fdbd5b2ea84af8aa23194a3263052',
+        hash='md5:d99fdbd5b2ea84af8aa23194a3263052',
         size=11_519_984_492,
     )
     dev_qrels_file = Resource('msmarco-passage-dev-qrels.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.dev.tsv'],
-        md5='9157ccaeaa8227f91722ba5770787b16',
+        hash='md5:9157ccaeaa8227f91722ba5770787b16',
         size=1_201_626,
     )
     dev_small_scoreddocs_file = Resource('msmarco-passage-dev-small-scoreddocs.tar.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.dev.tar.gz', headers=_MS_HEADERS)],
-        md5='8c140662bdf123a98fbfe3bb174c5831',
+        hash='md5:8c140662bdf123a98fbfe3bb174c5831',
         size=687_414_398,
     )
     eval_small_scoreddocs_file = Resource('msmarco-passage-eval-small-scoreddocs.tar.gz',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.eval.tar.gz', headers=_MS_HEADERS)],
-        md5='73778cd99f6e0632d12d0b5731b20a02',
+        hash='md5:73778cd99f6e0632d12d0b5731b20a02',
         size=673_440_221,
     )
     # Tables

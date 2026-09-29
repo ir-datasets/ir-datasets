@@ -27,17 +27,17 @@ class _ToucheImageDocsParser(Parser):
 # -----------------------------------------
 images_main_file = Resource('touche-image-2022-06-13-main.zip',
     sources=['https://zenodo.org/record/6873575/files/touche22-image-search-main.zip'],
-    md5='e59b1c724d976af27596b5c8ad310fd5',
+    hash='md5:e59b1c724d976af27596b5c8ad310fd5',
     size=4_498_749_006,
 )
 images_nodes_file = Resource('touche-image-2022-06-13-nodes.zip',
     sources=['https://zenodo.org/record/6873575/files/touche22-image-search-nodes.zip'],
-    md5='97b7117d02668fa3e93095d277efd56b',
+    hash='md5:97b7117d02668fa3e93095d277efd56b',
     size=5_424_503_960,
 )
 images_png_file = Resource('touche-image-2022-06-13-png.zip',
     sources=['https://zenodo.org/record/6873575/files/touche22-image-search-png-images.zip'],
-    md5='e2965b221248ba23a288135f757efae1',
+    hash='md5:e2965b221248ba23a288135f757efae1',
     size=17_851_724_760,
 )
 

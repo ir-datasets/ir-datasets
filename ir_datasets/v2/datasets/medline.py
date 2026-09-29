@@ -47,7 +47,7 @@ with irds.defaults(lang='en'):
     docs_2004_files = [
         Resource(f'medline-2004-{part}.gz',
             sources=[f'https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_{part.upper()}.gz'],
-            md5=md5, size=size)
+            hash=f'md5:{md5}', size=size)
         for part, (md5, size) in [
             ('a', ('7858e5b908c25b88e30965b770e9780f', 579_470_012)),
             ('b', ('d4f8b510716d71612dc84129b7bc86a8', 623_531_586)),
@@ -58,7 +58,7 @@ with irds.defaults(lang='en'):
     docs_2017_parts_files = [
         Resource(f'medline-2017-part{i}.tar.gz',
             sources=[f'https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part{i}.tar.gz'],
-            md5=md5, size=size)
+            hash=f'md5:{md5}', size=size)
         for i, (md5, size) in enumerate([
             ('04d14a46af586faf9306580291758c29', 5_257_751_264),
             ('19740bcde4e5e3bcfc583b347cd59d17', 5_257_075_322),
@@ -69,7 +69,7 @@ with irds.defaults(lang='en'):
     ]
     docs_2017_aacr_asco_file = Resource('medline-2017-aacr-asco.tar.gz',
         sources=['https://bionlp.nlm.nih.gov/trec2017precisionmedicine/extra_abstracts.tar.gz'],
-        md5='d91bb4ca9b50cbbd5986bb5c43082afb',
+        hash='md5:d91bb4ca9b50cbbd5986bb5c43082afb',
         size=61_150_087,
     )
 

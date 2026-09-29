@@ -45,17 +45,17 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     ct_2021_queries_file = Resource('trec-ct-2021-queries.xml',
         sources=['http://www.trec-cds.org/topics2021.xml'],
-        md5='6d842b40387d760274447c1f8d7396a8',
+        hash='md5:6d842b40387d760274447c1f8d7396a8',
         size=64_618,
     )
     ct_2021_qrels_file = Resource('trec-ct-2021-qrels.txt',
         sources=['https://trec.nist.gov/data/trials/qrels2021.txt'],
-        md5='0335d95c58d5f5fd9bc730bccb60ca90',
+        hash='md5:0335d95c58d5f5fd9bc730bccb60ca90',
         size=676_496,
     )
     ct_2022_queries_file = Resource('trec-ct-2022-queries.xml',
         sources=['https://www.trec-cds.org/topics2022.xml'],
-        md5='73bcb3985a17fd60d786f5d8f5a0bb2e',
+        hash='md5:73bcb3985a17fd60d786f5d8f5a0bb2e',
         size=32_423,
     )
 

@@ -33,24 +33,15 @@ is instead taken from ``test/integration/c4.py``'s integration-test count for
 ``c4/en-noclean-tr`` (1,063,805,381), the only authoritative number
 available without downloading the manifest ourselves.
 
-The TREC Misinfo 2021 queries (``trec-misinfo-2021/queries`` in v1's
-``downloads.json``) were a manual/DUA-style download in v1 (an Active
-Participants URL that now returns 401); NIST now publishes the topics file
-openly at ``https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml``, so
-it is an ordinary URL Resource here.
+The TREC Misinfo 2021 benchmark over this corpus lives in ``trec_misinfo.py``.
 """
 import ir_datasets
-from ir_datasets.datasets.c4 import C4Docs as _V1C4Docs, MisinfoQuery
+from ir_datasets.datasets.c4 import C4Docs as _V1C4Docs
 from ir_datasets.util import TarExtractAll
-from ir_datasets.v2 import Benchmark, DocTable, QueryTable, Resource, irds
+from ir_datasets.v2 import DocTable, Resource, irds
 from ir_datasets.v2.formats import Parser
 
 BASE_PATH = ir_datasets.util.home_path() / 'c4'
-
-misinfo_map = {'number': 'query_id', 'query': 'text', 'description': 'description',
-               'narrative': 'narrative', 'disclaimer': 'disclaimer', 'stance': 'stance',
-               'evidence': 'evidence'}
-
 
 class _C4DocsParser(Parser):
     """Wraps v1's ``C4Docs`` directly -- see the module docstring for why the
@@ -74,37 +65,19 @@ class _C4DocsParser(Parser):
         )
 
 
-class _TrecXmlQueriesParser(Parser):
-    name = 'TrecXmlQueries'
-
-    def __init__(self, qtype, qtype_map=None):
-        self.qtype = qtype
-        self.qtype_map = qtype_map
-
-    def build(self, source, node):
-        from ir_datasets.formats import TrecXmlQueries
-        return TrecXmlQueries(source, qtype=self.qtype, qtype_map=self.qtype_map, lang=node.lang)
-
-
 with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     en_noclean_sources_file = Resource('c4-en-noclean-sources.json.gz',
         sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.sources.json.gz'],
-        md5='3faf0f3aaf3f0e5bca573e118f815991',
+        hash='md5:3faf0f3aaf3f0e5bca573e118f815991',
         size=240_518,
     )
     en_noclean_checkpoints_file = Resource('c4-en-noclean-checkpoints.tar.gz',
         sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.checkpoints.tar.gz'],
-        md5='eab00c3b5202564da998466198a01298',
+        hash='md5:eab00c3b5202564da998466198a01298',
         size=8_983_526_491,
     )
-    trec_misinfo_2021_queries_file = Resource('c4-trec-misinfo-2021-queries.xml',
-        sources=['https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml'],
-        md5='988ea3128eefa5814b550f5fe1a15e94',
-        size=50_722,
-    )
-
     # Tables
     # -----------------------------------------
     # Only the train split (v1 excludes validation shards via filter_name='train').
@@ -115,20 +88,7 @@ with irds.defaults(lang='en'):
         citation='dblp:journals/jmlr/RaffelSRLNMZLL20',
     )
 
-    trec_misinfo_2021_queries = QueryTable('c4-en-noclean-tr-trec-misinfo-2021-queries',
-        source=trec_misinfo_2021_queries_file,
-        parser=_TrecXmlQueriesParser(MisinfoQuery, qtype_map=misinfo_map),
-        count_hint=50,
-        citation='dblp:conf/trec/ClarkeMS21',
-    )
-
-    # Benchmarks
-    # -----------------------------------------
-    trec_misinfo_2021 = Benchmark('c4-en-noclean-tr-trec-misinfo-2021',
-        docs=en_noclean_tr_docs, queries=trec_misinfo_2021_queries,
-        desc='TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset).')
-
 
 # Registration
 # -----------------------------------------
-irds.register(en_noclean_tr_docs, trec_misinfo_2021)
+irds.register(en_noclean_tr_docs)

@@ -128,7 +128,7 @@ class _CodeSearchNetChallengeQrelsParser(Parser):
 lang_files = [
     Resource(f'codesearchnet-{lang}.zip',
         sources=[f'https://huggingface.co/datasets/macavaney/codesearchnet-mirror/resolve/main/v2/{lang}.zip'],
-        md5=md5, size=size)
+        hash=f'md5:{md5}', size=size)
     for lang, (md5, size) in {
         'python': ('07b49dd01fbac894fbdae22da6462e4f', 940_909_997),
         'java': ('fea180077275d8f98f42a3386f492837', 1_060_569_153),
@@ -140,12 +140,12 @@ lang_files = [
 ]
 challenge_queries_file = Resource('codesearchnet-challenge-queries.csv',
     sources=['https://raw.githubusercontent.com/github/CodeSearchNet/master/resources/queries.csv'],
-    md5='6041a0c32dff4286859ca76d420d76f4',
+    hash='md5:6041a0c32dff4286859ca76d420d76f4',
     size=2_493,
 )
 challenge_qrels_file = Resource('codesearchnet-challenge-qrels.csv',
     sources=['https://raw.githubusercontent.com/github/CodeSearchNet/master/resources/annotationStore.csv'],
-    md5='9e0a57ae90b3dd0144d59064d0751abd',
+    hash='md5:9e0a57ae90b3dd0144d59064d0751abd',
     size=677_798,
 )
 

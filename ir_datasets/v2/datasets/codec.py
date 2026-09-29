@@ -54,17 +54,17 @@ class _CodecQueriesParser(Parser):
 # -----------------------------------------
 docs_file = Resource('codec-docs.jsonl.gz',
     sources=['https://huggingface.co/datasets/macavaney/codec/resolve/main/documents.jsonl.gz'],
-    hashes=['sha256:c567900f432622637677060b5d24808bc0e4b6b38806b045d8815a0bedadab90'],
+    hash='sha256:c567900f432622637677060b5d24808bc0e4b6b38806b045d8815a0bedadab90',
     size=1_150_819_496,
 )
 queries_file = Resource('codec-queries.json',
     sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/topics/topics.json', Source.mirror()],
-    md5='f75e4733693588449f68f7fdceb02ec9',
+    hash='md5:f75e4733693588449f68f7fdceb02ec9',
     size=47_192,
 )
 qrels_file = Resource('codec-qrels.txt',
     sources=['https://raw.githubusercontent.com/grill-lab/CODEC/main/raw_judgments/raw_document_judgments.txt', Source.mirror()],
-    md5='7200606d6dc573abe2dd93160d5a5ab5',
+    hash='md5:7200606d6dc573abe2dd93160d5a5ab5',
     size=306_976,
 )
 

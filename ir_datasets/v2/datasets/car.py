@@ -83,32 +83,32 @@ class _CarQueriesParser(Parser):
 # -----------------------------------------
 docs_v15_file = Resource('car-v1.5-docs.tar.xz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/paragraphcorpus-v1.5.tar.xz'],
-    md5='4d006dd67cbc11541ed7f87b875cb990',
+    hash='md5:4d006dd67cbc11541ed7f87b875cb990',
     size=5_114_258_812,
 )
 docs_v20_file = Resource('car-v2.0-docs.tar.xz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v2.0/paragraphCorpus.v2.0.tar.xz'],
-    md5='a404e9256d763ddcacc3da1e34de466a',
+    hash='md5:a404e9256d763ddcacc3da1e34de466a',
     size=5_085_726_092,
 )
 trec_y1_queries_file = Resource('car-trec-y1-queries.tar.xz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/benchmarkY1test.public-v1.5.tar.xz'],
-    md5='6ab490517accd2a2cb4848c0f160bc8d',
+    hash='md5:6ab490517accd2a2cb4848c0f160bc8d',
     size=40_508,
 )
 trec_y1_qrels_file = Resource('car-trec-y1-qrels.tar.gz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/trec-car-2017-qrels.tar.gz'],
-    md5='1ab7cf01c341757af1bb3db2aedd020f',
+    hash='md5:1ab7cf01c341757af1bb3db2aedd020f',
     size=4_334_569,
 )
 test200_file = Resource('car-test200.tar.xz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/test200-v1.5.tar.xz'],
-    md5='a7d8ea41f933b2ef49f06d782e908d13',
+    hash='md5:a7d8ea41f933b2ef49f06d782e908d13',
     size=1_307_336,
 )
 train_file = Resource('car-train.tar.xz',
     sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/train-v1.5.tar.xz'],
-    md5='70eb3cf1d9358614f9d96dcd2565dc2b',
+    hash='md5:70eb3cf1d9358614f9d96dcd2565dc2b',
     size=2_591_721_692,
 )
 

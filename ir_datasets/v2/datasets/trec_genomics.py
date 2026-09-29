@@ -76,42 +76,42 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     genomics_2004_queries_file = Resource('trec-genomics-2004-queries.zip',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2004/rest.zip'],
-        md5='3f252c59774fe8e74337637d73f8afc6',
+        hash='md5:3f252c59774fe8e74337637d73f8afc6',
         size=227_203,
     )
     genomics_2004_qrels_file = Resource('trec-genomics-2004-qrels.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2004/04.qrels.txt'],
-        md5='1cb017045d7909102476bcb17fb19878',
+        hash='md5:1cb017045d7909102476bcb17fb19878',
         size=128_056,
     )
     genomics_2005_queries_file = Resource('trec-genomics-2005-queries.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2005/adhoc2005narrative.txt'],
-        md5='71e8044cb65458731f4496fdc2aad94a',
+        hash='md5:71e8044cb65458731f4496fdc2aad94a',
         size=5_551,
     )
     genomics_2005_qrels_file = Resource('trec-genomics-2005-qrels.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2005/genomics.qrels.large.txt'],
-        md5='fd6ac71dcd337c0c0cddf0ffc0528cc6',
+        hash='md5:fd6ac71dcd337c0c0cddf0ffc0528cc6',
         size=661_626,
     )
     genomics_2006_queries_file = Resource('trec-genomics-2006-queries.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2006/topics/2006topics.txt'],
-        md5='fd458f5398350e59831745e51854b2b0',
+        hash='md5:fd458f5398350e59831745e51854b2b0',
         size=2_056,
     )
     genomics_2006_qrels_file = Resource('trec-genomics-2006-qrels.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2006/trec2006.raw.relevance.tsv.txt'],
-        md5='a133e38bcd03c8b6509f46506cae753b',
+        hash='md5:a133e38bcd03c8b6509f46506cae753b',
         size=1_323_494,
     )
     genomics_2007_queries_file = Resource('trec-genomics-2007-queries.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2007/2007topics.txt'],
-        md5='be5fc2d4e984003da6aa9dfab9eb67a3',
+        hash='md5:be5fc2d4e984003da6aa9dfab9eb67a3',
         size=2_576,
     )
     genomics_2007_qrels_file = Resource('trec-genomics-2007-qrels.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2007/trecgen2007.all.judgments.tsv.txt'],
-        md5='5be6b6eea10d8ec0dac25bbe21af38a0',
+        hash='md5:5be6b6eea10d8ec0dac25bbe21af38a0',
         size=1_288_196,
     )
 

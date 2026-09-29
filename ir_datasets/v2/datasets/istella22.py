@@ -131,7 +131,7 @@ def _fold_query_ids(fold):
 # -----------------------------------------
 source_file = Resource('istella22-source.tar.gz',
     sources=['https://www.istella.ai/dataset/istella22.tar.gz'],
-    md5='c2e49dca9730fbb14164ed890756dc1d',
+    hash='md5:c2e49dca9730fbb14164ed890756dc1d',
     size=26_499_490_813,
     dua=DUA,
 )

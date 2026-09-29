@@ -35,13 +35,13 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     docs_2017_file = Resource('clinicaltrials-2017.tar.gz',
         sources=['https://bionlp.nlm.nih.gov/trec2017precisionmedicine/clinicaltrials_xml.tar.gz'],
-        md5='e5d333ceed0cbbbe513504c96148ab1a',
+        hash='md5:e5d333ceed0cbbbe513504c96148ab1a',
         size=724_731_456,
     )
     docs_2019_files = [
         Resource(f'clinicaltrials-2019-{i}.tar.gz',
             sources=[f'http://www.trec-cds.org/clinical_trials.{i}.tar.gz'],
-            md5=md5, size=size)
+            hash=f'md5:{md5}', size=size)
         for i, (md5, size) in enumerate([
             ('d57fbafa63520c45faceedec3de801b7', 277_495_873),
             ('d32a632fc72c68d63309732af667b1ee', 266_267_182),
@@ -52,7 +52,7 @@ with irds.defaults(lang='en'):
     docs_2021_files = [
         Resource(f'clinicaltrials-2021-part{i}.zip',
             sources=[f'http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part{i}.zip'],
-            md5=md5, size=size)
+            hash=f'md5:{md5}', size=size)
         for i, (md5, size) in enumerate([
             ('e12eb9a0d21452503b0ef8874c69f490', 382_792_518),
             ('f6986125506434887a162f144ca4d9a2', 378_478_271),

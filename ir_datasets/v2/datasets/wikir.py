@@ -76,7 +76,7 @@ class _WikirQueriesParser(Parser):
 _benchmarks = []
 
 for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
-    _zip = Resource(f'wikir-{_code}.zip', sources=[_url], md5=_md5, size=_size)
+    _zip = Resource(f'wikir-{_code}.zip', sources=[_url], hash=f'md5:{_md5}', size=_size)
 
     _docs = DocTable(f'wikir-{_code}-docs',
         source=_zip.zip_member(f'{_zip_dir}/documents.csv'),

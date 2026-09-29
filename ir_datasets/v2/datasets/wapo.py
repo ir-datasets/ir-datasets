@@ -55,11 +55,11 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     docs_v2_file = Resource('wapo-v2.tar.gz',
         sources=[Source.external('wapo-v2.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v2.tar.gz'], instructions=V2_INSTRUCTIONS)],
-        md5='ce6e93f6ce9959b72c2de4f8d12089ab',
+        hash='md5:ce6e93f6ce9959b72c2de4f8d12089ab',
     )
     docs_v4_file = Resource('wapo-v4.tar.gz',
         sources=[Source.external('wapo-v4.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v4.tar.gz'], instructions=V4_INSTRUCTIONS)],
-        md5='b45b8d34393b4df72737c11aa7fb2b3d',
+        hash='md5:b45b8d34393b4df72737c11aa7fb2b3d',
     )
 
     # Tables

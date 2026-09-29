@@ -84,35 +84,35 @@ class _EhealthQrelsParser(Parser):
 # -----------------------------------------
 qrels_2016_file = Resource('clef-ehealth-2016.qrels',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2016Task3/master/qrels/task1.qrels'],
-    md5='5392a6f7cdbb0cab56c34656ab100684',
+    hash='md5:5392a6f7cdbb0cab56c34656ab100684',
     size=5_550_000,
 )
 qrels_2017_file = Resource('clef-ehealth-2017.qrels',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/assessments/2017/clef2017_qrels.txt'],
-    md5='b9909f2fa7f2a0ceca1033fc92729482',
+    hash='md5:b9909f2fa7f2a0ceca1033fc92729482',
     size=4_411_584,
 )
 qtrust_2016_file = Resource('clef-ehealth-2016.qtrust',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2016Task3/master/qrels/task1.qtrust'],
-    md5='14cf266961f686b49d8430b802064ac6',
+    hash='md5:14cf266961f686b49d8430b802064ac6',
     size=5_669_328,
 )
 qtrust_2017_file = Resource('clef-ehealth-2017.qtrust',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/assessments/2017/clef2017_qtrust.txt'],
-    md5='3a43cc9a49a781b13f0b8438bceed2f5',
+    hash='md5:3a43cc9a49a781b13f0b8438bceed2f5',
     size=4_528_752,
 )
 # v1's "qunder" role for 2016 is a file actually named qunder upstream...
 qunder_2016_file = Resource('clef-ehealth-2016.qunder',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2016Task3/master/qrels/task1.qunder'],
-    md5='4314d1a0db76a50204e5e900ffa2d4e3',
+    hash='md5:4314d1a0db76a50204e5e900ffa2d4e3',
     size=5_695_332,
 )
 # ...but for 2017 it's a file actually named qreads upstream -- not a typo,
 # see module docstring; it plays the exact same "qunder" role in EhealthQrels.
 qunder_2017_file = Resource('clef-ehealth-2017.qreads',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/assessments/2017/clef2017_qreads.txt'],
-    md5='75302c012adf0126ab93e330ffb6aaab',
+    hash='md5:75302c012adf0126ab93e330ffb6aaab',
     size=4_531_566,
 )
 
@@ -124,37 +124,37 @@ _QRELS_SOURCE = (
 
 queries_en_file = Resource('clef-ehealth-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2016Task3/master/eng_queries/queries2016_with_url.xml'],
-    md5='ed0289056e21643baa07dfc7bee9574b',
+    hash='md5:ed0289056e21643baa07dfc7bee9574b',
     size=47_427,
 )
 queries_cs_file = Resource('clef-ehealth-cs-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016cs.xml'],
-    md5='f7940a8961fae713742b935c83b6118d',
+    hash='md5:f7940a8961fae713742b935c83b6118d',
     size=33_079,
 )
 queries_de_file = Resource('clef-ehealth-de-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016de.xml'],
-    md5='f59e000328a8cbe357ff94d5d5e82474',
+    hash='md5:f59e000328a8cbe357ff94d5d5e82474',
     size=31_575,
 )
 queries_fr_file = Resource('clef-ehealth-fr-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016fr.xml'],
-    md5='7362ccb451a606af7a47e359894f524c',
+    hash='md5:7362ccb451a606af7a47e359894f524c',
     size=35_744,
 )
 queries_hu_file = Resource('clef-ehealth-hu-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016hu.xml'],
-    md5='17603aecae72eeb70ada73700956ab3f',
+    hash='md5:17603aecae72eeb70ada73700956ab3f',
     size=31_670,
 )
 queries_pl_file = Resource('clef-ehealth-pl-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016pl.xml'],
-    md5='e6d442846786793c235bf927289af4c3',
+    hash='md5:e6d442846786793c235bf927289af4c3',
     size=32_741,
 )
 queries_sv_file = Resource('clef-ehealth-sv-queries.xml',
     sources=['https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016sv.xml'],
-    md5='bc9066f128a391c9f5c282dbcca3e44f',
+    hash='md5:bc9066f128a391c9f5c282dbcca3e44f',
     size=30_669,
 )
 

@@ -50,12 +50,12 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     queries_2004_file = Resource('trec-robust-2004-queries.gz',
         sources=['https://trec.nist.gov/data/robust/04.testset.gz', Source.mirror()],
-        md5='5eac3d774a2f87da61c08a94f945beff',
+        hash='md5:5eac3d774a2f87da61c08a94f945beff',
         size=34_293,
     )
     qrels_2004_file = Resource('trec-robust-2004-qrels.txt',
         sources=['https://trec.nist.gov/data/robust/qrels.robust2004.txt', Source.mirror()],
-        md5='123c2a0ba2ec31178cb1050995dcfdfa',
+        hash='md5:123c2a0ba2ec31178cb1050995dcfdfa',
         size=6_543_541,
     )
 
@@ -88,12 +88,12 @@ with irds.defaults(dua=DUA, lang='en'):
 # -----------------------------------------
 queries_2005_file = Resource('trec-robust-2005-queries.txt',
     sources=['https://trec.nist.gov/data/robust/05/05.50.topics.txt', Source.mirror()],
-    md5='c2e722e6bdfd00f088c6f6517db564ce',
+    hash='md5:c2e722e6bdfd00f088c6f6517db564ce',
     size=25_116,
 )
 qrels_2005_file = Resource('trec-robust-2005-qrels.txt',
     sources=['https://trec.nist.gov/data/robust/05/TREC2005.qrels.txt', Source.mirror()],
-    md5='9186021c74090464c50f577d4826e2e2',
+    hash='md5:9186021c74090464c50f577d4826e2e2',
     size=944_950,
 )
 

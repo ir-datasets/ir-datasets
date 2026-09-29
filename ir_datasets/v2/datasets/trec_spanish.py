@@ -75,26 +75,26 @@ class _TrecSpanishQueriesParser(Parser):
 # -----------------------------------------
 docs_file = Resource('trec-spanish-docs.tgz',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
-    md5=DOCS_MD5,
+    hash=f'md5:{DOCS_MD5}',
 )
 trec3_queries_file = Resource('trec-spanish-3-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.SP1-SP25.spanish.english.gz', Source.mirror()],
-    md5='22eea4a5c131db9cc4a431235f6a0573',
+    hash='md5:22eea4a5c131db9cc4a431235f6a0573',
     size=9_029,
 )
 trec3_qrels_file = Resource('trec-spanish-3-qrels.gz',
     sources=['https://trec.nist.gov/data/qrels_noneng/qrels.1-25.spanish.gz', Source.mirror()],
-    md5='e1703487f43fb7ea30b87a0f14ccb5ce',
+    hash='md5:e1703487f43fb7ea30b87a0f14ccb5ce',
     size=64_178,
 )
 trec4_queries_file = Resource('trec-spanish-4-queries.gz',
     sources=['https://trec.nist.gov/data/topics_noneng/topics.SP26-SP50.spanish.english.gz', Source.mirror()],
-    md5='dfd9685cce559e33ab397c1878a6a1f8',
+    hash='md5:dfd9685cce559e33ab397c1878a6a1f8',
     size=2_091,
 )
 trec4_qrels_file = Resource('trec-spanish-4-qrels.gz',
     sources=['https://trec.nist.gov/data/qrels_noneng/qrels.26-50.spanish.gz', Source.mirror()],
-    md5='f2540f9fb83433ca8ef9503671136498',
+    hash='md5:f2540f9fb83433ca8ef9503671136498',
     size=46_394,
 )
 

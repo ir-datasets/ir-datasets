@@ -128,7 +128,7 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     corpus_2023_file = Resource('trec-tot-2023-corpus.zip',
         sources=['https://surfdrive.surf.nl/files/index.php/s/FaEK4xc6Xp2JcAJ/download'],
-        md5='f84fe82cb80e3ee1072576c8d6c4a417',
+        hash='md5:f84fe82cb80e3ee1072576c8d6c4a417',
     )
 
     # Tables -- 2023
@@ -169,11 +169,11 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     corpus_2024_file = Resource('trec-tot-2024-corpus.zip',
         sources=['https://zenodo.org/records/13370657/files/corpus.jsonl.zip?download=1'],
-        md5='4ea86770817e46a06fea5c94f596409c',
+        hash='md5:4ea86770817e46a06fea5c94f596409c',
     )
     test_2024_queries_file = Resource('trec-tot-2024-test-queries.zip',
         sources=['https://zenodo.org/records/13370657/files/test-2024.zip?download=1'],
-        md5='3d0a4d83957ee6a1398afefbc96162fa',
+        hash='md5:3d0a4d83957ee6a1398afefbc96162fa',
     )
 
     # Tables -- 2024
@@ -200,48 +200,48 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     corpus_2025_file = Resource('trec-tot-2025-corpus.jsonl.gz',
         sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-corpus.jsonl.gz'],
-        md5='a2c82398aa86df6a68c8706b9b462bf2',
+        hash='md5:a2c82398aa86df6a68c8706b9b462bf2',
     )
     offsets_2025_file = Resource('trec-tot-2025-offsets.jsonl.gz',
         sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-offsets.jsonl.gz'],
-        md5='00678e3155d962bb244e034e6401b79b',
+        hash='md5:00678e3155d962bb244e034e6401b79b',
     )
 
     train_2025_queries_file = Resource('trec-tot-2025-train-queries.jsonl',
         sources=['https://zenodo.org/records/15356599/files/train-2025-queries.jsonl'],
-        md5='288b7707b4e897f7447aac2cc2f613be',
+        hash='md5:288b7707b4e897f7447aac2cc2f613be',
     )
     train_2025_qrels_file = Resource('trec-tot-2025-train-qrels.txt',
         sources=['https://zenodo.org/records/15356599/files/train-2025-qrel.txt'],
-        md5='10a3c727fc5806ec4510f7a071b57cd7',
+        hash='md5:10a3c727fc5806ec4510f7a071b57cd7',
     )
     dev1_2025_queries_file = Resource('trec-tot-2025-dev1-queries.jsonl',
         sources=['https://zenodo.org/records/15356599/files/dev1-2025-queries.jsonl'],
-        md5='b87c2f51d058de844e258a69b02e70fc',
+        hash='md5:b87c2f51d058de844e258a69b02e70fc',
     )
     dev1_2025_qrels_file = Resource('trec-tot-2025-dev1-qrels.txt',
         sources=['https://zenodo.org/records/15356599/files/dev1-2025-qrel.txt'],
-        md5='0c913ce8b5b287c73a6dfac662971e82',
+        hash='md5:0c913ce8b5b287c73a6dfac662971e82',
     )
     dev2_2025_queries_file = Resource('trec-tot-2025-dev2-queries.jsonl',
         sources=['https://zenodo.org/records/15356599/files/dev2-2025-queries.jsonl'],
-        md5='b174a128a255e92d0d54b76465d596b5',
+        hash='md5:b174a128a255e92d0d54b76465d596b5',
     )
     dev2_2025_qrels_file = Resource('trec-tot-2025-dev2-qrels.txt',
         sources=['https://zenodo.org/records/15356599/files/dev2-2025-qrel.txt'],
-        md5='4548eb41e639905384aa017c69129bfc',
+        hash='md5:4548eb41e639905384aa017c69129bfc',
     )
     dev3_2025_queries_file = Resource('trec-tot-2025-dev3-queries.jsonl',
         sources=['https://zenodo.org/records/15356599/files/dev3-2025-queries.jsonl'],
-        md5='259c11645694a3c5230b66c7852d4d80',
+        hash='md5:259c11645694a3c5230b66c7852d4d80',
     )
     dev3_2025_qrels_file = Resource('trec-tot-2025-dev3-qrels.txt',
         sources=['https://zenodo.org/records/15356599/files/dev3-2025-qrel.txt'],
-        md5='48ab0d24a5946861546e54064238477f',
+        hash='md5:48ab0d24a5946861546e54064238477f',
     )
     test_2025_queries_file = Resource('trec-tot-2025-test-queries.jsonl',
         sources=['https://zenodo.org/records/15869078/files/test-2025-queries.jsonl'],
-        md5='374cdc9142240f8bc9e4b071c35713f8',
+        hash='md5:374cdc9142240f8bc9e4b071c35713f8',
     )
 
     # Tables -- 2025

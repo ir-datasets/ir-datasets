@@ -42,57 +42,57 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     queries_file = Resource('trec-covid-queries.xml',
         sources=['https://ir.nist.gov/covidSubmit/data/topics-rnd5.xml'],
-        md5='0307a37b6b9f1a5f233340a769d538ea',
+        hash='md5:0307a37b6b9f1a5f233340a769d538ea',
         size=18_707,
     )
     qrels_file = Resource('trec-covid-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-covid_d5_j0.5-5.txt'],
-        md5='8138424a59daea0aba751c8a891e5f54',
+        hash='md5:8138424a59daea0aba751c8a891e5f54',
         size=1_142_244,
     )
     round1_queries_file = Resource('trec-covid-round1-queries.xml',
         sources=['https://ir.nist.gov/covidSubmit/data/topics-rnd1.xml'],
-        md5='cf1b605222f45f7dbc90ca8e4d9b2c31',
+        hash='md5:cf1b605222f45f7dbc90ca8e4d9b2c31',
         size=10_348,
     )
     round1_qrels_file = Resource('trec-covid-round1-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-rnd1.txt'],
-        md5='d58586df5823e7d1d0b3619a73b31518',
+        hash='md5:d58586df5823e7d1d0b3619a73b31518',
         size=150_110,
     )
     round2_queries_file = Resource('trec-covid-round2-queries.xml',
         sources=['https://ir.nist.gov/covidSubmit/data/topics-rnd2.xml'],
-        md5='550129e71c83de3fb4d6d29a172c5842',
+        hash='md5:550129e71c83de3fb4d6d29a172c5842',
         size=12_291,
     )
     round2_qrels_file = Resource('trec-covid-round2-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-rnd2.txt'],
-        md5='157df01d5a084b09be089407f41cf51b',
+        hash='md5:157df01d5a084b09be089407f41cf51b',
         size=212_662,
     )
     round3_queries_file = Resource('trec-covid-round3-queries.xml',
         sources=['https://ir.nist.gov/covidSubmit/data/topics-rnd3.xml'],
-        md5='aa42a15c107e74488c8189a16a311358',
+        hash='md5:aa42a15c107e74488c8189a16a311358',
         size=14_271,
     )
     round3_qrels_file = Resource('trec-covid-round3-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-covid_d3_j2.5-3.txt'],
-        md5='2a534a42b5b6b43dd8ae7d9433249006',
+        hash='md5:2a534a42b5b6b43dd8ae7d9433249006',
         size=223_360,
     )
     round4_queries_file = Resource('trec-covid-round4-queries.xml',
         sources=['https://ir.nist.gov/covidSubmit/data/topics-rnd4.xml'],
-        md5='202ba3155b1e390115ae13f34d80d4fc',
+        hash='md5:202ba3155b1e390115ae13f34d80d4fc',
         size=16_327,
     )
     round4_qrels_file = Resource('trec-covid-round4-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-covid_d4_j3.5-4.txt'],
-        md5='b86dd338d6b0a41e62f18e566e541b96',
+        hash='md5:b86dd338d6b0a41e62f18e566e541b96',
         size=232_379,
     )
     round5_qrels_file = Resource('trec-covid-round5-qrels.txt',
         sources=['https://ir.nist.gov/covidSubmit/data/qrels-covid_d5_j4.5-5.txt'],
-        md5='6111c00ac9adac774f5b51e4f9a2a25b',
+        hash='md5:6111c00ac9adac774f5b51e4f9a2a25b',
         size=402_401,
     )
 

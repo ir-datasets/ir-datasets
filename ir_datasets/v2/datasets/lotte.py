@@ -44,7 +44,7 @@ class _LotteQrelsParser(Parser):
 with irds.defaults(lang='en'):
     source = Resource('lotte.tar.gz',
         sources=['https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/lotte.tar.gz'],
-        md5='3b2e88b1d66933627462950b4c3f5d0f',
+        hash='md5:3b2e88b1d66933627462950b4c3f5d0f',
         size=3_576_167_599,
     )
 

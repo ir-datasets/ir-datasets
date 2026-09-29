@@ -69,62 +69,62 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     tb2004_queries_file = Resource('trec-tb-2004-queries.txt',
         sources=['https://trec.nist.gov/data/terabyte/04/04topics.701-750.txt', Source.mirror()],
-        md5='18b390335e440d099f3d64bef81708be',
+        hash='md5:18b390335e440d099f3d64bef81708be',
         size=21_236,
     )
     tb2004_qrels_file = Resource('trec-tb-2004-qrels.txt',
         sources=['https://trec.nist.gov/data/terabyte/04/04.qrels.12-Nov-04', Source.mirror()],
-        md5='228e4b0c466b1778a01b3337f8774fb6',
+        hash='md5:228e4b0c466b1778a01b3337f8774fb6',
         size=1_475_219,
     )
     tb2005_queries_file = Resource('trec-tb-2005-queries.txt',
         sources=['https://trec.nist.gov/data/terabyte/05/05.topics.751-800.txt', Source.mirror()],
-        md5='f0fb2603c7d89425965e5aaa104ddca6',
+        hash='md5:f0fb2603c7d89425965e5aaa104ddca6',
         size=24_822,
     )
     tb2005_qrels_file = Resource('trec-tb-2005-qrels.txt',
         sources=['https://trec.nist.gov/data/terabyte/05/05.adhoc_qrels', Source.mirror()],
-        md5='87f2af26215f092c948249771c8607f6',
+        hash='md5:87f2af26215f092c948249771c8607f6',
         size=1_150_486,
     )
     tb2005_np_queries_file = Resource('trec-tb-2005-named-page-queries.txt',
         sources=['https://trec.nist.gov/data/terabyte/05/05.np_topics.601-872.final.txt', Source.mirror()],
-        md5='266444c58e3567250f56df5c6a79670d',
+        hash='md5:266444c58e3567250f56df5c6a79670d',
         size=20_987,
     )
     tb2005_np_qrels_file = Resource('trec-tb-2005-named-page-qrels.txt',
         sources=['https://trec.nist.gov/data/terabyte/05/05.np_qrels', Source.mirror()],
-        md5='0b0f73650d1297a7e5572576a4b93d28',
+        hash='md5:0b0f73650d1297a7e5572576a4b93d28',
         size=297_947,
     )
     tb2005_eff_queries_file = Resource('trec-tb-2005-efficiency-queries.gz',
         sources=['https://trec.nist.gov/data/terabyte/05/05.efficiency_topics.gz', Source.mirror()],
-        md5='034a21c9dd956f3b7fb4f162782c9909',
+        hash='md5:034a21c9dd956f3b7fb4f162782c9909',
         size=554_590,
     )
     tb2006_queries_file = Resource('trec-tb-2006-queries.txt',
         sources=['https://trec.nist.gov/data/terabyte/06/06.topics.801-850.txt', Source.mirror()],
-        md5='6e23a748c060ef5be64dbcc65245072f',
+        hash='md5:6e23a748c060ef5be64dbcc65245072f',
         size=27_791,
     )
     tb2006_qrels_file = Resource('trec-tb-2006-qrels.txt',
         sources=['https://trec.nist.gov/data/terabyte/06/qrels.tb06.top50', Source.mirror()],
-        md5='1b1dfd769ff00d9e8ec4530c64221543',
+        hash='md5:1b1dfd769ff00d9e8ec4530c64221543',
         size=812_484,
     )
     tb2006_np_queries_file = Resource('trec-tb-2006-named-page-queries.txt',
         sources=['https://trec.nist.gov/data/terabyte/06/06.np_topics.901-1081.txt', Source.mirror()],
-        md5='811a53107b4445a9955e7376d90a1eec',
+        hash='md5:811a53107b4445a9955e7376d90a1eec',
         size=13_224,
     )
     tb2006_np_qrels_file = Resource('trec-tb-2006-named-page-qrels.txt',
         sources=['https://trec.nist.gov/data/terabyte/06/qrels.tb06.np', Source.mirror()],
-        md5='f9f7d07de3070eafc08989dd98d1fab8',
+        hash='md5:f9f7d07de3070eafc08989dd98d1fab8',
         size=60_528,
     )
     tb2006_eff_queries_file = Resource('trec-tb-2006-efficiency-queries.tar.gz',
         sources=['https://trec.nist.gov/data/terabyte/06/06.efficiency_topics.tar.gz', Source.mirror()],
-        md5='e8599a08af5b3f036c203957f5b82de8',
+        hash='md5:e8599a08af5b3f036c203957f5b82de8',
         size=3_015_007,
     )
 

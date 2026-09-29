@@ -60,52 +60,52 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     docs_file = Resource('msmarco-document-v2.tar',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar', headers=_MS_HEADERS)],
-        md5='eea90100409a254fdb157b8e4e349deb',
+        hash='md5:eea90100409a254fdb157b8e4e349deb',
         size=34_648_862_720,
     )
     train_queries_file = Resource('msmarco-document-v2-train-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_train_queries.tsv'],
-        md5='7821d8bef3971e12780a80a89a3e5cbd',
+        hash='md5:7821d8bef3971e12780a80a89a3e5cbd',
         size=13_511_656,
     )
     train_qrels_file = Resource('msmarco-document-v2-train-qrels.txt',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_train_qrels.tsv'],
-        md5='2f788d031c2ca29c4c482167fa5966de',
+        hash='md5:2f788d031c2ca29c4c482167fa5966de',
         size=12_450_533,
     )
     train_scoreddocs_file = Resource('msmarco-document-v2-train-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_train_top100.txt.gz'],
-        md5='b4d5915172d5f54bd23c31e966c114de',
+        hash='md5:b4d5915172d5f54bd23c31e966c114de',
         size=424_107_669,
     )
     dev1_queries_file = Resource('msmarco-document-v2-dev1-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev_queries.tsv'],
-        md5='b05dc19f1d2b8ad729f189328a685aa1',
+        hash='md5:b05dc19f1d2b8ad729f189328a685aa1',
         size=191_992,
     )
     dev1_qrels_file = Resource('msmarco-document-v2-dev1-qrels.txt',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev_qrels.tsv'],
-        md5='aad92d731892ccb0cf9c4c2e37e0f0f1',
+        hash='md5:aad92d731892ccb0cf9c4c2e37e0f0f1',
         size=177_593,
     )
     dev1_scoreddocs_file = Resource('msmarco-document-v2-dev1-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev_top100.txt.gz'],
-        md5='4dd27d511748bede545cd7ae3fc92bf4',
+        hash='md5:4dd27d511748bede545cd7ae3fc92bf4',
         size=5_830_666,
     )
     dev2_queries_file = Resource('msmarco-document-v2-dev2-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev2_queries.tsv'],
-        md5='f000319f1893a7acdd60fdcae0703b95',
+        hash='md5:f000319f1893a7acdd60fdcae0703b95',
         size=209_911,
     )
     dev2_qrels_file = Resource('msmarco-document-v2-dev2-qrels.txt',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev2_qrels.tsv'],
-        md5='f2eead4b192683ae5fbd66f4d3f08b96',
+        hash='md5:f2eead4b192683ae5fbd66f4d3f08b96',
         size=195_474,
     )
     dev2_scoreddocs_file = Resource('msmarco-document-v2-dev2-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_dev2_top100.txt.gz'],
-        md5='e03b5404e9027569c1aa794b1408d8a5',
+        hash='md5:e03b5404e9027569c1aa794b1408d8a5',
         size=6_412_563,
     )
     # Tables

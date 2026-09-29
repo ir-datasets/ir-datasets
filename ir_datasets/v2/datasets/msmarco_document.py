@@ -76,62 +76,62 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     docs_file = Resource('msmarco-document-docs.trec.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docs.trec.gz'],
-        md5='d4863e4f342982b51b9a8fc668b2d0c0',
+        hash='md5:d4863e4f342982b51b9a8fc668b2d0c0',
         size=8_501_799_926,
     )
     train_queries_file = Resource('msmarco-document-train-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctrain-queries.tsv.gz'],
-        md5='4086d31a9cf2d7b69c4932609058111d',
+        hash='md5:4086d31a9cf2d7b69c4932609058111d',
         size=6_457_962,
     )
     train_qrels_file = Resource('msmarco-document-train-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctrain-qrels.tsv.gz'],
-        md5='9d1609e240113b0504fd2e61cb36d924',
+        hash='md5:9d1609e240113b0504fd2e61cb36d924',
         size=2_385_717,
     )
     train_scoreddocs_file = Resource('msmarco-document-train-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-doctrain-top100.gz'],
-        md5='be32fa12eb71e93014c84775d7465976',
+        hash='md5:be32fa12eb71e93014c84775d7465976',
         size=403_564_127,
     )
     dev_queries_file = Resource('msmarco-document-dev-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docdev-queries.tsv.gz'],
-        md5='ac20593d71b9c32ab2633230f9cdf10d',
+        hash='md5:ac20593d71b9c32ab2633230f9cdf10d',
         size=91_837,
     )
     dev_qrels_file = Resource('msmarco-document-dev-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docdev-qrels.tsv.gz'],
-        md5='5eeafaeb4960979a62e7fed93273254e',
+        hash='md5:5eeafaeb4960979a62e7fed93273254e',
         size=38_553,
     )
     dev_scoreddocs_file = Resource('msmarco-document-dev-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-docdev-top100.gz'],
-        md5='ac10255edf321821b0ccd0f123037780',
+        hash='md5:ac10255edf321821b0ccd0f123037780',
         size=5_701_839,
     )
     eval_queries_file = Resource('msmarco-document-eval-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docleaderboard-queries.tsv.gz'],
-        md5='50fe4285d64444c9ffc933b66a79f775',
+        hash='md5:50fe4285d64444c9ffc933b66a79f775',
         size=102_131,
     )
     eval_scoreddocs_file = Resource('msmarco-document-eval-scoreddocs.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/docleaderboard-top100.tsv.gz'],
-        md5='a039a00356c09606962f3c07c68d02ef',
+        hash='md5:a039a00356c09606962f3c07c68d02ef',
         size=6_362_021,
     )
     orcas_queries_file = Resource('msmarco-document-orcas-queries.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/orcas-doctrain-queries.tsv.gz'],
-        md5='519c5f522294406e3b0574d7d53cf233',
+        hash='md5:519c5f522294406e3b0574d7d53cf233',
         size=104_209_356,
     )
     orcas_qrels_file = Resource('msmarco-document-orcas-qrels.tsv.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/orcas-doctrain-qrels.tsv.gz'],
-        md5='3f94db106374be649782022c3018acd0',
+        hash='md5:3f94db106374be649782022c3018acd0',
         size=109_824_304,
     )
     orcas_scoreddocs_file = Resource('msmarco-document-orcas-scoreddocs.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/orcas-doctrain-top100.gz'],
-        md5='118d0884638fd405e111157a124ef0b2',
+        hash='md5:118d0884638fd405e111157a124ef0b2',
         size=10_724_320_629,
     )
 

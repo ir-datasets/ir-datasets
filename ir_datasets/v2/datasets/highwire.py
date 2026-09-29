@@ -105,12 +105,12 @@ with irds.defaults(lang='en'):
     corpus_files = [
         Resource(f'highwire-{source}.zip',
             sources=[f'https://dmice.ohsu.edu/trec-gen/data/2006/documents/{source}.zip'],
-            md5=md5, size=size)
+            hash=f'md5:{md5}', size=size)
         for source, (md5, size) in _CORPUS_SOURCES.items()
     ]
     legalspans_file = Resource('highwire-legalspans.txt',
         sources=['https://dmice.ohsu.edu/trec-gen/data/2006/documents/legalspans.txt'],
-        md5='24c7bbed8eb3bdd2daf3f3ab2c1963b2',
+        hash='md5:24c7bbed8eb3bdd2daf3f3ab2c1963b2',
         size=236_522_265,
     )
 

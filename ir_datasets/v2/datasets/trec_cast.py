@@ -111,44 +111,44 @@ class _CastQueriesParser(Parser):
 # -----------------------------------------
 train_queries_file = Resource('trec-cast-v0-train-queries.json',
     sources=['https://raw.githubusercontent.com/daltonj/treccastweb/master/2019/data/training/train_topics_v1.0.json'],
-    md5='2017389f5bbea04478574c6e84d65482',
+    hash='md5:2017389f5bbea04478574c6e84d65482',
     size=32_800,
 )
 train_qrels_file = Resource('trec-cast-v0-train-qrels.txt',
     sources=['https://raw.githubusercontent.com/daltonj/treccastweb/master/2019/data/training/train_topics_mod.qrel'],
-    md5='84af27620dfc009f1f76a58e3d9d6c40',
+    hash='md5:84af27620dfc009f1f76a58e3d9d6c40',
     size=80_964,
 )
 train_scoreddocs_file = Resource('trec-cast-v0-train-scoreddocs.teIn',
     sources=['https://huggingface.co/datasets/macavaney/trec-cast-files/resolve/main/train_topics.teIn'],
-    md5='83bdb720e0c469390004598091021901',
+    hash='md5:83bdb720e0c469390004598091021901',
     size=14_766_212,
 )
 
 eval_2019_queries_file = Resource('trec-cast-v1-2019-queries.json',
     sources=['https://raw.githubusercontent.com/daltonj/treccastweb/master/2019/data/evaluation/evaluation_topics_v1.0.json'],
-    md5='362283885194feefcab8441d2bb24f7c',
+    hash='md5:362283885194feefcab8441d2bb24f7c',
     size=57_204,
 )
 eval_2019_qrels_file = Resource('trec-cast-v1-2019-qrels.txt',
     sources=['https://trec.nist.gov/data/cast/2019qrels.txt', Source.mirror()],
-    md5='aab238105020c4cd55fae60dedfa9f1e',
+    hash='md5:aab238105020c4cd55fae60dedfa9f1e',
     size=1_138_032,
 )
 eval_2019_scoreddocs_file = Resource('trec-cast-v1-2019-scoreddocs.teIn',
     sources=['https://huggingface.co/datasets/macavaney/trec-cast-files/resolve/main/test_topics.teIn'],
-    md5='4c3958c09edab1b46474a337590c1ecd',
+    hash='md5:4c3958c09edab1b46474a337590c1ecd',
     size=27_691_171,
 )
 
 eval_2020_queries_file = Resource('trec-cast-v1-2020-queries.json',
     sources=['https://raw.githubusercontent.com/daltonj/treccastweb/master/2020/2020_manual_evaluation_topics_v1.0.json'],
-    md5='98ae2be2c82e294895a83e76b4133e19',
+    hash='md5:98ae2be2c82e294895a83e76b4133e19',
     size=78_998,
 )
 eval_2020_qrels_file = Resource('trec-cast-v1-2020-qrels.txt',
     sources=['https://trec.nist.gov/data/cast/2020qrels.txt', Source.mirror()],
-    md5='de6a8406217945bdbf1da304214ef60c',
+    hash='md5:de6a8406217945bdbf1da304214ef60c',
     size=1_563_427,
 )
 

@@ -78,7 +78,7 @@ class _MrTydiDocsParser(Parser):
 _benchmarks = []
 
 for _lang, (_dir, _url, _md5, _size) in LANGS.items():
-    _tar = Resource(f'mrtydi-{_lang}.tar.gz', sources=[_url], md5=_md5, size=_size)
+    _tar = Resource(f'mrtydi-{_lang}.tar.gz', sources=[_url], hash=f'md5:{_md5}', size=_size)
 
     _docs = DocTable(f'mrtydi-{_lang}-docs',
         source=_tar.member(f'{_dir}/collection/docs.jsonl.gz').gunzip(),

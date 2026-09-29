@@ -135,11 +135,11 @@ with irds.defaults(lang='en'):
         # All three are .parquet on the Hub -- named by extension, not a
         # generic "-file" suffix.
         docs_file = Resource(f'nano-beir-{v1_id}-docs.parquet',
-                             sources=[docs_url], md5=docs_md5, size=docs_size)
+                             sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size)
         queries_file = Resource(f'nano-beir-{v1_id}-queries.parquet',
-                                sources=[queries_url], md5=queries_md5, size=queries_size)
+                                sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size)
         qrels_file = Resource(f'nano-beir-{v1_id}-qrels.parquet',
-                              sources=[qrels_url], md5=qrels_md5, size=qrels_size)
+                              sources=[qrels_url], hash=f'md5:{qrels_md5}', size=qrels_size)
 
         docs = DocTable(f'nano-beir-{v1_id}-docs', source=docs_file,
                    parser=_NanoBeirDocsParser(v1_id))

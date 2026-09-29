@@ -61,52 +61,52 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     passages_file = Resource('msmarco-passage-v2-passages.tar',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_passage.tar', headers=_MS_HEADERS)],
-        md5='05946bac48a8ffee62e160213eab3fda',
+        hash='md5:05946bac48a8ffee62e160213eab3fda',
         size=21_768_192_000,
     )
     train_queries_file = Resource('msmarco-passage-v2-train-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_train_queries.tsv'],
-        md5='1835f44e6792c51aa98eed722a8dcc11',
+        hash='md5:1835f44e6792c51aa98eed722a8dcc11',
         size=11_608_838,
     )
     train_qrels_file = Resource('msmarco-passage-v2-train-qrels.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_train_qrels.tsv'],
-        md5='a2e37e9a9c7ca13d6e38be0512a52017',
+        hash='md5:a2e37e9a9c7ca13d6e38be0512a52017',
         size=11_620_946,
     )
     train_scoreddocs_file = Resource('msmarco-passage-v2-train-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_train_top100.txt.gz'],
-        md5='7cd731ed984fccb2396f11a284cea800',
+        hash='md5:7cd731ed984fccb2396f11a284cea800',
         size=340_634_991,
     )
     dev1_queries_file = Resource('msmarco-passage-v2-dev1-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev_queries.tsv'],
-        md5='0fa4c6d64a653142ade9fc61d7484239',
+        hash='md5:0fa4c6d64a653142ade9fc61d7484239',
         size=164_507,
     )
     dev1_qrels_file = Resource('msmarco-passage-v2-dev1-qrels.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev_qrels.tsv'],
-        md5='10f9263260d206d8fb8f13864aea123a',
+        hash='md5:10f9263260d206d8fb8f13864aea123a',
         size=165_024,
     )
     dev1_scoreddocs_file = Resource('msmarco-passage-v2-dev1-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev_top100.txt.gz'],
-        md5='fee817a3ee273be8623379e5d3108c0b',
+        hash='md5:fee817a3ee273be8623379e5d3108c0b',
         size=4_882_727,
     )
     dev2_queries_file = Resource('msmarco-passage-v2-dev2-queries.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev2_queries.tsv'],
-        md5='565b84dfa7ccd2f4251fa2debea5947a',
+        hash='md5:565b84dfa7ccd2f4251fa2debea5947a',
         size=179_603,
     )
     dev2_qrels_file = Resource('msmarco-passage-v2-dev2-qrels.tsv',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev2_qrels.tsv'],
-        md5='8ed8577fa459d34b59cf69b4daa2baeb',
+        hash='md5:8ed8577fa459d34b59cf69b4daa2baeb',
         size=181_612,
     )
     dev2_scoreddocs_file = Resource('msmarco-passage-v2-dev2-scoreddocs.txt.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/passv2_dev2_top100.txt.gz'],
-        md5='da532bf26169a3a2074fae774471cc9f',
+        hash='md5:da532bf26169a3a2074fae774471cc9f',
         size=5_355_464,
     )
 

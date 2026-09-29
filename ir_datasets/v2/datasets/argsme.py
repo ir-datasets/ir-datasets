@@ -104,44 +104,44 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     docs_1_0_file = Resource('argsme-1.0-docs.zip',
         sources=['https://zenodo.org/record/3274636/files/argsme.zip'],
-        md5='c2512648f46a403f8e5e1dc96779e357',
+        hash='md5:c2512648f46a403f8e5e1dc96779e357',
         size=238_078_064,
     ).zip_member('args-me.json')
     docs_1_0_cleaned_file = Resource('argsme-1.0-cleaned-docs.zip',
         sources=['https://zenodo.org/record/4139439/files/argsme-1.0-cleaned.zip'],
-        md5='fb0837103a4860e1d4536174f55b12c3',
+        hash='md5:fb0837103a4860e1d4536174f55b12c3',
         size=236_787_622,
     ).zip_member('args-me-1.0-cleaned.json')
 
     debateorg_file = Resource('argsme-2020-04-01-debateorg-docs.zip',
         sources=['https://zenodo.org/record/3734893/files/debateorg.zip'],
-        md5='0368ee47ce0ec8bed837c7e22c024493',
+        hash='md5:0368ee47ce0ec8bed837c7e22c024493',
         size=1_150_846_141,
     ).zip_member('debateorg.json')
     debatepedia_file = Resource('argsme-2020-04-01-debatepedia-docs.zip',
         sources=['https://zenodo.org/record/3734893/files/debatepedia.zip'],
-        md5='bde8e3ed832c19ca5ed8ed1506a862e8',
+        hash='md5:bde8e3ed832c19ca5ed8ed1506a862e8',
         size=184_347_726,
     ).zip_member('debatepedia.json')
     debatewise_file = Resource('argsme-2020-04-01-debatewise-docs.zip',
         sources=['https://zenodo.org/record/3734893/files/debatewise.zip'],
-        md5='5e5c498a5f657ed7d02e06016e9ce3b1',
+        hash='md5:5e5c498a5f657ed7d02e06016e9ce3b1',
         size=77_388_912,
     ).zip_member('debatewise.json')
     idebate_file = Resource('argsme-2020-04-01-idebate-docs.zip',
         sources=['https://zenodo.org/record/3734893/files/idebate.zip'],
-        md5='5b888c94cce740f1216c063e5e47c74c',
+        hash='md5:5b888c94cce740f1216c063e5e47c74c',
         size=20_241_730,
     ).zip_member('idebate.json')
     parliamentary_file = Resource('argsme-2020-04-01-parliamentary-docs.zip',
         sources=['https://zenodo.org/record/3734893/files/parliamentary.zip'],
-        md5='c80d932c953b64fb300f13d0d93096bb',
+        hash='md5:c80d932c953b64fb300f13d0d93096bb',
         size=27_319,
     ).zip_member('parliamentary.json')
 
     processed_file = Resource('argsme-2020-04-01-processed-docs.tar.gz',
         sources=['https://zenodo.org/record/6873574/files/args_processed_04_01.tar.gz'],
-        md5='43bfce957df69bf59b3d59744eb73ded',
+        hash='md5:43bfce957df69bf59b3d59744eb73ded',
         size=1_547_009_833,
     ).member('args_processed.csv').cache(BASE / '2020-04-01-processed.csv')
 

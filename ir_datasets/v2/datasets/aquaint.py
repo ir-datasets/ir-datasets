@@ -32,7 +32,7 @@ DOCS_OLD_LOCATION = 'aquaint/aquaint_comp_LDC2002T31.tgz'
 # -----------------------------------------
 docs_file = Resource('aquaint.tgz',
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
-    md5=DOCS_MD5,
+    hash=f'md5:{DOCS_MD5}',
 )
 
 # Tables

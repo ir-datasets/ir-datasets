@@ -57,7 +57,7 @@ class _CranfieldQrelsParser(Parser):
 # -----------------------------------------
 main_file = Resource('cranfield.tar.gz',
     sources=['http://ir.dcs.gla.ac.uk/resources/test_collections/cran/cran.tar.gz', Source.mirror()],
-    md5='1730f7be572d95a5a4b56c59a7b900a5',
+    hash='md5:1730f7be572d95a5a4b56c59a7b900a5',
     size=506_960,
 )
 

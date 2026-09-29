@@ -69,32 +69,32 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     docs_2020_07_16_metadata_file = Resource('cord19-2020-07-16-metadata.csv',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-07-16/metadata.csv'],
-        md5='80d664e496b8b7e50a39c6f6bb92e0ef',
+        hash='md5:80d664e496b8b7e50a39c6f6bb92e0ef',
         size=269_219_095,
     )
     docs_2020_07_16_file = Resource('cord19-2020-07-16.tar.gz',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-07-16.tar.gz'],
-        md5='018c4bc4d76d4ae072a26ac28c8b456b',
+        hash='md5:018c4bc4d76d4ae072a26ac28c8b456b',
         size=3_662_861_028,
     )
     docs_2020_04_10_metadata_file = Resource('cord19-2020-04-10-metadata.csv',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv'],
-        md5='42a21f386be86c24647a41bedde34046',
+        hash='md5:42a21f386be86c24647a41bedde34046',
         size=77_323_567,
     )
     docs_2020_05_01_metadata_file = Resource('cord19-2020-05-01-metadata.csv',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-01/metadata.csv'],
-        md5='b1d2e409026494e0c8034278bacd1248',
+        hash='md5:b1d2e409026494e0c8034278bacd1248',
         size=89_290_114,
     )
     docs_2020_05_19_metadata_file = Resource('cord19-2020-05-19-metadata.csv',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-19/metadata.csv'],
-        md5='e3c5c8af3a078e19cb179e630c345959',
+        hash='md5:e3c5c8af3a078e19cb179e630c345959',
         size=189_687_667,
     )
     docs_2020_06_19_metadata_file = Resource('cord19-2020-06-19-metadata.csv',
         sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-06-19/metadata.csv'],
-        md5='4e8788b6e44f3428ff9ab1d4bfdfb6ab',
+        hash='md5:4e8788b6e44f3428ff9ab1d4bfdfb6ab',
         size=228_730_850,
     )
 

@@ -54,17 +54,17 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     train_file = Resource('msmarco-qna-train.json.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarco/train_v2.1.json.gz'],
-        md5='576230a745a06943c3a49e76acea1d9d',
+        hash='md5:576230a745a06943c3a49e76acea1d9d',
         size=1_112_116_929,
     )
     dev_file = Resource('msmarco-qna-dev.json.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarco/dev_v2.1.json.gz'],
-        md5='5e14839f31c933560fbb3bae4ce67829',
+        hash='md5:5e14839f31c933560fbb3bae4ce67829',
         size=138_303_699,
     )
     eval_file = Resource('msmarco-qna-eval.json.gz',
         sources=['https://msmarco.z22.web.core.windows.net/msmarco/eval_v2.1_public.json.gz'],
-        md5='5fcca9336c7486498c3e1cf81fa89f74',
+        hash='md5:5fcca9336c7486498c3e1cf81fa89f74',
         size=133_851_237,
     )
 

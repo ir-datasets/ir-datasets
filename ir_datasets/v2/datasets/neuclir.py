@@ -63,16 +63,16 @@ DOCS = {
 
 QUERIES_2022 = Resource('neuclir-trec-2022-queries.jsonl',
     sources=['https://trec.nist.gov/data/neuclir/2022/topics.0720.utf8.jsonl'],
-    md5='264bf244f798670f063f32ff57ba6135', size=662_272)
+    hash='md5:264bf244f798670f063f32ff57ba6135', size=662_272)
 QRELS_2022 = Resource('neuclir-trec-2022-qrels.txt',
     sources=['https://trec.nist.gov/data/neuclir/2022/2022-qrels.all'],
-    md5='8dc1aecf13fbe358eea74ade7496b085', size=4_785_668)
+    hash='md5:8dc1aecf13fbe358eea74ade7496b085', size=4_785_668)
 QUERIES_2023 = Resource('neuclir-trec-2023-queries.jsonl',
     sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-topics.0605.jsonl'],
-    md5='3dbb41b02bfbd719d8b55632d9b15b83', size=683_779)
+    hash='md5:3dbb41b02bfbd719d8b55632d9b15b83', size=683_779)
 QRELS_2023_TAR = Resource('neuclir-trec-2023-qrels.tar.gz',
     sources=['https://trec.nist.gov/data/neuclir/2023/neuclir-2023-qrels.final.tar.gz'],
-    md5='cea4ff3d9eba612c7119e6490217d4e1', size=6_023_886)
+    hash='md5:cea4ff3d9eba612c7119e6490217d4e1', size=6_023_886)
 
 
 class _NeuclirDocsParser(Parser):
@@ -166,7 +166,7 @@ def _hc4_ids_dlc(lang):
 #: would be a distinct object under one name, which the registry only
 #: tolerates when it's a plain re-import -- see ``ManifestProvider.register``).
 DOCS_FILES = {
-    _lang: Resource(f'neuclir-{_lang}-docs.jsonl.gz', sources=[_url], md5=_md5, size=_size)
+    _lang: Resource(f'neuclir-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'md5:{_md5}', size=_size)
     for _lang, (_url, _md5, _size) in DOCS.items()
 }
 

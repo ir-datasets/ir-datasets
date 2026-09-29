@@ -129,7 +129,7 @@ class _NytQrelsParser(Parser):
 # -----------------------------------------
 docs_file = Resource('nyt-source.tgz',
     sources=[Source.external('nyt.tgz', old_locations=[f'{NAME}/nyt.tgz'], instructions=SOURCE_INSTRUCTIONS)],
-    md5='67a1bcf200c448424bf0fba34cef17b0',
+    hash='md5:67a1bcf200c448424bf0fba34cef17b0',
     dua=DUA,
 )
 # Tables

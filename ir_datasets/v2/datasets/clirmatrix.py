@@ -144,14 +144,14 @@ QRELS_DEFS = {
 # directly (not through a Generator: there's exactly one of each).
 DOWNLOADS_INDEX = Resource('downloads.json.gz',
     sources=['http://www.cs.jhu.edu/~shuosun/clirmatrix/data/downloads.json.gz'],
-    md5='371cc532aca236759bd3602eb6ce2181',
+    hash='md5:371cc532aca236759bd3602eb6ce2181',
     size=5_143_717,
     desc='The per-file {url, cache_path, expected_md5} index this family '
         'resolves every other download from -- see _fetch_index below.')
 
 METADATA_FILE = Resource('metadata.json.lz4',
     sources=['https://macavaney.us/clirmatrix-metadata.json.lz4'],
-    md5='537510770a139b25dd12684c6711c91a',
+    hash='md5:537510770a139b25dd12684c6711c91a',
     size=6_517_585,
     desc='Per-language/pair metadata mirrored from v1; not read by this v2 '
         'port -- see the module docstring.')
@@ -171,7 +171,8 @@ _index = Lazy(_fetch_index)
 
 def _resource(name, dlc_context, key):
     entry = _index()[dlc_context][key]
-    return Resource(name, sources=[entry['url']], md5=entry.get('expected_md5'))
+    expected_md5 = entry.get('expected_md5')
+    return Resource(name, sources=[entry['url']], hash=f'md5:{expected_md5}' if expected_md5 else ())
 
 
 class _ClirMatrixQueriesParser(Parser):

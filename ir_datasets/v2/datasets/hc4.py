@@ -111,7 +111,7 @@ class _Hc4QueriesParser(Parser):
 
 TOPICS_FILES = {
     split: Resource(f'hc4-{split}-topics.jsonl',
-        sources=[f'{_GH}/{split}.topics.v1-0.jsonl'], md5=md5, size=size)
+        sources=[f'{_GH}/{split}.topics.v1-0.jsonl'], hash=f'md5:{md5}', size=size)
     for split, (md5, size) in TOPICS.items()
 }
 
@@ -124,7 +124,7 @@ def _ids_url(lang, i, n_shards):
 IDS_FILES = {
     lang: [
         Resource(f'hc4-{lang}-ids-{i}.jsonl.gz',
-            sources=[_ids_url(lang, i, len(shards))], md5=md5, size=size)
+            sources=[_ids_url(lang, i, len(shards))], hash=f'md5:{md5}', size=size)
         for i, (md5, size) in enumerate(shards)
     ]
     for lang, shards in IDS.items()
@@ -134,7 +134,7 @@ IDS_FILES = {
 #: (its qrels are HC4's own dev+test qrels, restricted to the shared doc ids).
 QRELS_FILES = {
     (lang, split): Resource(f'hc4-{lang}-{split}-qrels.txt',
-        sources=[f'{_GH}/{LANG3[lang]}/{split}.qrels.v1-0.txt'], md5=md5, size=size)
+        sources=[f'{_GH}/{LANG3[lang]}/{split}.qrels.v1-0.txt'], hash=f'md5:{md5}', size=size)
     for (lang, split), (md5, size) in QRELS.items()
 }
 

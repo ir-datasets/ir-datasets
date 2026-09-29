@@ -120,42 +120,42 @@ class _FairTrecQrelsParser(Parser):
 # -----------------------------------------
 docs_2021_file = Resource('trec-fair-2021-docs.json.gz',
     sources=['https://data.boisestate.edu/library/Ekstrand-2021/TRECFairRanking2021/trec_corpus.json.gz'],
-    md5='4c1e81d120566a493d5fa90b6114bd49',
+    hash='md5:4c1e81d120566a493d5fa90b6114bd49',
     size=15_575_740_862,
 )
 metadata_2021_file = Resource('trec-fair-2021-metadata.json.gz',
     sources=['https://data.boisestate.edu/library/Ekstrand-2021/TRECFairRanking2021/trec_metadata.json.gz'],
-    md5='ae251e9ae0c9fb3a58c3b12e216dcea7',
+    hash='md5:ae251e9ae0c9fb3a58c3b12e216dcea7',
     size=56_827_296,
 )
 train_2021_topics_file = Resource('trec-fair-2021-train-topics.json.gz',
     sources=['https://data.boisestate.edu/library/Ekstrand-2021/TRECFairRanking2021/trec_topics.json.gz'],
-    md5='bdb72f896833d0c87421b6415d895846',
+    hash='md5:bdb72f896833d0c87421b6415d895846',
     size=7_271_598,
 )
 eval_2021_topics_file = Resource('trec-fair-2021-eval-topics.json.gz',
     sources=['https://drive.google.com/uc?export=download&id=1jGyjB7qOt45jakb32ZtroSkxs5sq5gvU'],
-    md5='2e153903c375596914ee9ffdbcefd6a5',
+    hash='md5:2e153903c375596914ee9ffdbcefd6a5',
     size=6_055,
 )
 eval_2021_qrels_file = Resource('trec-fair-2021-eval-qrels.json.gz',
     sources=['https://trec.nist.gov/data/fair/2021-eval-topics-with-qrels.json.gz', Source.mirror()],
-    md5='50068634036c00adb54e8be9314bf37c',
+    hash='md5:50068634036c00adb54e8be9314bf37c',
     size=120_050,
 )
 docs_2022_file = Resource('trec-fair-2022-docs.json.gz',
     sources=['https://data.boisestate.edu/library/Ekstrand/TRECFairRanking/corpus/trec_corpus_20220301_plain.json.gz'],
-    md5='54661197940765ed5129f0bb0d459a99',
+    hash='md5:54661197940765ed5129f0bb0d459a99',
     size=7_677_063_809,
 )
 metadata_2022_file = Resource('trec-fair-2022-metadata.json.gz',
     sources=['https://data.boisestate.edu/library/Ekstrand/TRECFairRanking/2022/trec_2022_articles_discrete.json.gz'],
-    md5='af48525886bae53205f4b64435ae81f2',
+    hash='md5:af48525886bae53205f4b64435ae81f2',
     size=236_812_182,
 )
 train_2022_topics_file = Resource('trec-fair-2022-train-topics.jsonl',
     sources=['https://data.boisestate.edu/library/Ekstrand/TRECFairRanking/2022/trec_2022_train_reldocs.jsonl'],
-    md5='d132b4cc8c6c75525479728321db5176',
+    hash='md5:d132b4cc8c6c75525479728321db5176',
     size=18_018_410,
 )
 
