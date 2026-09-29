@@ -119,7 +119,7 @@ docs_file = Directory('clueweb12.dir',
     sources=[Source.local(DOCS_LOCAL_PATH, instructions=DATA_ACCESS)],
     dua=DUA,
 )
-docs_chk_file = Resource('clueweb12-docs-chk.tar.gz',
+docs_chk_file = Resource('clueweb12-chk.tar.gz',
     sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb12/clueweb12-source-chk.tar.gz'],
     md5='fb92d1f8ed1436839313d2eb47f628a5',
     size=3_883_120_643,
@@ -139,11 +139,11 @@ b13_extract_jar = (cw12b_info_file
 
 # Tables
 # -----------------------------------------
-docs = DocTable('clueweb12-docs',
+docs = DocTable('clueweb12',
     source=[docs_file, docs_chk_file], parser=_ClueWeb12DocsParser(),
     lang='en', count_hint=733_019_372)
 
-docs_b13 = DocTable('clueweb12-b13-docs',
+docs_b13 = DocTable('clueweb12-b13',
     source=[docs_file, b13_extract_jar], parser=_ClueWeb12b13DocsParser(),
     lang='en', count_hint=52_343_021)
 

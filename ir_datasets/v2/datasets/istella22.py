@@ -77,7 +77,7 @@ BASE_PATH = ir_datasets.util.home_path() / NAME
 DUA = ("To use the Istella22 dataset, you must read and accept the Istella22 Licence "
        "Agreement, found here: <https://istella.ai/data/istella22-dataset/>")
 
-CITATION = 'Dato2022Istella'
+CITATION = 'dblp:conf/sigir/DatoMN0T22'
 
 
 class _Istella22DocsParser(Parser):

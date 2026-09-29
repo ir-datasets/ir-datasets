@@ -26,9 +26,9 @@ from ir_datasets.v2.datasets.gov2 import DUA, docs
 from ir_datasets.v2.datasets.trec_tb import _TrecColonQueriesParser
 from ir_datasets.v2.formats import Parser
 
-CITATION_MQ_2007 = 'Allen2007MQ'
-CITATION_MQ_2008 = 'Allen2008MQ'
-CITATION_MQ_2009 = 'Carterette2009MQ'
+CITATION_MQ_2007 = 'dblp:conf/trec/AllanCDAPK07'
+CITATION_MQ_2008 = 'dblp:conf/trec/AllanAPKC08'
+CITATION_MQ_2009 = 'dblp:conf/trec/CarterettePFK09'
 
 # 2009's prels use a 3-level scale (v1's clueweb09.py QREL_DEFS_09), unlike
 # 2007/2008's gov2-scale QREL_DEFS above.

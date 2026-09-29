@@ -48,7 +48,7 @@ NAME = 'cord19'
 
 BASE_PATH = ir_datasets.util.home_path() / NAME
 
-CITATION_CORD19 = 'Wang2020Cord19'
+CITATION_CORD19 = 'dblp:journals/corr/abs-2004-10706'
 
 
 class _Cord19DocsParser(Parser):
@@ -100,37 +100,37 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs_2020_07_16 = DocTable('cord19-2020-07-16-docs',
+    docs_2020_07_16 = DocTable('cord19-2020-07-16',
         source=docs_2020_07_16_metadata_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-07-16', '2020-07-16'),
         count_hint=192_509,
         citation=CITATION_CORD19,
     )
-    docs_2020_07_16_fulltext = DocTable('cord19-2020-07-16-fulltext-docs',
+    docs_2020_07_16_fulltext = DocTable('cord19-2020-07-16-fulltext',
         source=docs_2020_07_16_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-07-16.fulltext', '2020-07-16', include_fulltext=True),
         count_hint=192_509,
         citation=CITATION_CORD19,
     )
-    docs_2020_04_10 = DocTable('cord19-2020-04-10-docs',
+    docs_2020_04_10 = DocTable('cord19-2020-04-10',
         source=docs_2020_04_10_metadata_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-04-10', '2020-04-10'),
         count_hint=51_078,
         citation=CITATION_CORD19,
     )
-    docs_2020_05_01 = DocTable('cord19-2020-05-01-docs',
+    docs_2020_05_01 = DocTable('cord19-2020-05-01',
         source=docs_2020_05_01_metadata_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-05-01', '2020-05-01'),
         count_hint=59_887,
         citation=CITATION_CORD19,
     )
-    docs_2020_05_19 = DocTable('cord19-2020-05-19-docs',
+    docs_2020_05_19 = DocTable('cord19-2020-05-19',
         source=docs_2020_05_19_metadata_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-05-19', '2020-05-19'),
         count_hint=128_492,
         citation=CITATION_CORD19,
     )
-    docs_2020_06_19 = DocTable('cord19-2020-06-19-docs',
+    docs_2020_06_19 = DocTable('cord19-2020-06-19',
         source=docs_2020_06_19_metadata_file,
         parser=_Cord19DocsParser(BASE_PATH / '2020-06-19', '2020-06-19'),
         count_hint=158_274,

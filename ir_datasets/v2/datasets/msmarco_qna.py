@@ -80,7 +80,7 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs = DocTable('msmarco-qna-docs',
+    docs = DocTable('msmarco-qna',
         source=[train_file, dev_file, eval_file],
         parser=_QnADocsParser(manager),
     )

@@ -23,7 +23,7 @@ from ir_datasets.v2 import Benchmark, Resource, TrecQrels, TrecQueries, irds
 from ir_datasets.v2.datasets.cord19 import docs_2020_04_10, docs_2020_05_01, docs_2020_05_19
 from ir_datasets.v2.datasets.cord19 import docs_2020_06_19, docs_2020_07_16, docs_2020_07_16_fulltext
 
-CITATION = 'Voorhees2020TrecCovid'
+CITATION = 'dblp:journals/sigir/VoorheesABDHLRS20'
 
 QRELS_DEFS = {
     2: 'Relevant: the article is fully responsive to the information need as expressed by the topic, i.e. answers the Question in the topic. The article need not contain all information on the topic, but must, on its own, provide an answer to the question.',

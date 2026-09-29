@@ -5,7 +5,7 @@ switching corpora each generation, same "track spans multiple corpora"
 reasoning as trec_web.py/trec_tb.py/trec_mq.py/trec_misinfo.py.
 
 2004/2005 judge ``medline-2004-docs`` (imported by reference from
-``medline.py``); 2006/2007 judge ``highwire-docs`` (imported by reference
+``medline.py``); 2006/2007 judge ``highwire`` (imported by reference
 from ``highwire.py``) -- same cross-file pattern as ``trec_adhoc.py``
 importing ``docs`` from ``disks45.py``.
 

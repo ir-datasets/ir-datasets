@@ -110,7 +110,7 @@ DATA_ACCESS = (
     "To proceed, symlink the source file here: {path}"
 )
 
-CITATION = 'Rekabsaz2021TripClick'
+CITATION = 'dblp:conf/sigir/RekabsazLSBE21'
 
 
 class _TripClickQueriesParser(Parser):

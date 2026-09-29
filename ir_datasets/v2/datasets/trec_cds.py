@@ -113,15 +113,15 @@ with irds.defaults(lang='en'):
     cds_2014 = Benchmark('trec-cds-2014',
         docs=pmc_v1_docs, queries=cds_2014_queries, qrels=cds_2014_qrels,
         desc='TREC Clinical Decision Support track 2014.',
-        citation='Simpson2014TrecCds')
+        citation='dblp:conf/trec/SimpsonVH14')
     cds_2015 = Benchmark('trec-cds-2015',
         docs=pmc_v1_docs, queries=cds_2015_queries, qrels=cds_2015_qrels,
         desc='TREC Clinical Decision Support track 2015.',
-        citation='Roberts2015TrecCds')
+        citation='dblp:conf/trec/RobertsSVH15')
     cds_2016 = Benchmark('trec-cds-2016',
         docs=pmc_v2_docs, queries=cds_2016_queries, qrels=cds_2016_qrels,
         desc='TREC Clinical Decision Support track 2016.',
-        citation='Roberts2016TrecCds')
+        citation='dblp:conf/trec/RobertsDVH16')
 
 
 # Registration

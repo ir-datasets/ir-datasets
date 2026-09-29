@@ -8,9 +8,9 @@ TODO
   gets its own per-track file with an unprefixed id" convention just applied to
   trec_core.py/trec_news.py/trec_covid.py/trec_cds.py/trec_mb.py/trec_ct.py (see Done section).
   Deliberately deferred, on request -- do NOT split yet.
+- *-docs for corpora? I think this should generally be avoided for named corpora (e.g., aquaint), except in special cases. Do a review of what's done where/how.
 - Convert all citations to DBLP (where possible)
 - Citation format consistency
-- *-docs for corpora? I think this should generally be avoided for named corpora (e.g., aquaint), except in special cases. Do a review of what's done where/how.
 - Places where the query set name is distinct from the corpus
 - I think I'd like to move external resources (e.g., clueweb09, nyt, etc) to somewhere special like ~/.ir_datasets/external/... And in general make the handling
   of these external resources nicer.
@@ -150,7 +150,7 @@ Done
 - touche.py (Touché 2020-2022, all four tasks; judges argsme.py/clueweb12.py/
   touche_image.py by reference -- same "track spans multiple corpora" shape
   as trec_web.py. Task 2 2022 judges its own passage-level TouchePassageDocs
-  table, not clueweb12-docs directly)
+  table, not clueweb12 directly)
 - trec_fair.py (TREC Fair Ranking 2021/2022, each with its own corpus --
   self-contained, no cross-dataset dependency)
 - legacy_provider.py: trec-fair-2021/trec-fair-2021/train/trec-fair-2021/eval
@@ -238,3 +238,14 @@ Done
   mapping at all, a pre-existing gap, not introduced by this rename). Freeze +
   test/v2_conformance.py re-run clean after each split (0 nodes unexpectedly removed, 90 tests
   pass).
+
+- Decide later whether to drop the "-docs" suffix from these DocTables (and their Resources)
+  (see memory feedback-v2-docs-suffix; already decided: dropped for medline/pmc/wapo/clinicaltrials/
+  clueweb09/clueweb12/highwire/touche-image/c4/msmarco-qna/nyt/cord19/msmarco-*-v2; kept for antique/
+  cranfield/codec/vaswani/car/trec-fair/aol-ia/codesearchnet/istella22/kilt/natural-questions/sara/
+  tripclick-logs/trec-cast/trec-tot):
+    - csl-docs
+    - argsme-*-docs
+    - touche-2022-task-2-docs, touche-2022-task-2-expanded-doc-t5-query-docs
+    - beir-*, bright-*, hc4-{lang}, miracl-{lang}, mrtydi-{lang}, neuclir-*, nano-beir-*,
+      wikiclir-*, wikir-* (per-language/per-subset generated families)

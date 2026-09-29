@@ -19,8 +19,8 @@ from ir_datasets.v2 import Benchmark, Filter, Resource, Source, TrecQrels, TrecQ
 from ir_datasets.v2.datasets.aquaint import docs as aquaint_docs
 from ir_datasets.v2.datasets.disks45 import DUA, docs as disks45_docs
 
-CITATION_2004 = 'Voorhees1996Disks45; Voorhees2004Robust; Huston2014ACO'
-CITATION_2005 = 'Graff2002Aquaint; Voorhees2005Robust'
+CITATION_2004 = 'Voorhees1996Disks45; dblp:conf/trec/Voorhees04b; dblp:conf/cikm/HustonC14'
+CITATION_2005 = 'Graff2002Aquaint; dblp:conf/trec/Voorhees05a'
 
 QREL_DEFS = {
     2: 'highly relevant',

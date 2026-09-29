@@ -103,7 +103,7 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     corpus_files = [
-        Resource(f'highwire-{source}-docs.zip',
+        Resource(f'highwire-{source}.zip',
             sources=[f'https://dmice.ohsu.edu/trec-gen/data/2006/documents/{source}.zip'],
             md5=md5, size=size)
         for source, (md5, size) in _CORPUS_SOURCES.items()
@@ -116,7 +116,7 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs = DocTable('highwire-docs',
+    docs = DocTable('highwire',
         source=[*corpus_files, legalspans_file],
         parser=_HighwireDocsParser(),
         count_hint=162_259,

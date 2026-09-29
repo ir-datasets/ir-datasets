@@ -33,7 +33,7 @@ from ir_datasets.v2 import (
 )
 from ir_datasets.v2.datasets.msmarco_passage import train as passage_train
 
-CITATION = 'Bonifacio2021MMarco'
+CITATION = 'dblp:journals/corr/abs-2108-13897'
 QRELS_DEFS = {1: 'Labeled by crowd worker as relevant'}
 
 BASE = ir_datasets.util.home_path() / 'mmarco'

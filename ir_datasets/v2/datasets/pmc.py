@@ -105,12 +105,12 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    v1_docs = DocTable('pmc-v1-docs',
+    v1_docs = DocTable('pmc-v1',
         source=[*v1_source_files, *v1_duplicate_files],
         parser=_PmcDocsParser(ir_datasets.util.home_path() / NAME / 'v1' / 'corpus', n_duplicates=2),
         count_hint=733_111,
     )
-    v2_docs = DocTable('pmc-v2-docs',
+    v2_docs = DocTable('pmc-v2',
         source=v2_source_files,
         parser=_PmcDocsParser(ir_datasets.util.home_path() / NAME / 'v2' / 'corpus', n_duplicates=0),
         count_hint=1_255_260,

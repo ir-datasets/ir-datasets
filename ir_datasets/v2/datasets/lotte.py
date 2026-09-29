@@ -26,7 +26,7 @@ from ir_datasets.datasets.lotte import LotteQrels as _V1LotteQrels
 from ir_datasets.v2 import Benchmark, QrelTable, Resource, TsvDocs, TsvQueries, irds
 from ir_datasets.v2.formats import Parser
 
-CITATION = 'Santhanam2021ColBERTv2'
+CITATION = 'dblp:conf/naacl/SanthanamKSPZ22'
 QRELS_DEFS = {1: 'Answer upvoted or accepted on stack exchange'}
 
 BASE = ir_datasets.util.home_path() / 'lotte'

@@ -2895,8 +2895,8 @@
         "Source('https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.sources.json.gz')"
       ]
     },
-    "irds:c4-en-noclean-tr-docs": {
-      "name": "irds:c4-en-noclean-tr-docs",
+    "irds:c4-en-noclean-tr": {
+      "name": "irds:c4-en-noclean-tr",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.c4",
       "format": "C4Docs",
@@ -3525,15 +3525,15 @@
         "Source('https://raw.githubusercontent.com/CLEFeHealth/CLEFeHealth2017IRtask/master/queries/multilingual/queries2016sv.xml')"
       ]
     },
-    "irds:clinicaltrials-2017-docs": {
-      "name": "irds:clinicaltrials-2017-docs",
+    "irds:clinicaltrials-2017": {
+      "name": "irds:clinicaltrials-2017",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "format": "ClinicalTrialsDocs",
       "lang": "en"
     },
-    "irds:clinicaltrials-2017-docs.tar.gz": {
-      "name": "irds:clinicaltrials-2017-docs.tar.gz",
+    "irds:clinicaltrials-2017.tar.gz": {
+      "name": "irds:clinicaltrials-2017.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3544,15 +3544,15 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/clinicaltrials_xml.tar.gz')"
       ]
     },
-    "irds:clinicaltrials-2019-docs": {
-      "name": "irds:clinicaltrials-2019-docs",
+    "irds:clinicaltrials-2019": {
+      "name": "irds:clinicaltrials-2019",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "format": "ClinicalTrialsDocs",
       "lang": "en"
     },
-    "irds:clinicaltrials-2019-docs-0.tar.gz": {
-      "name": "irds:clinicaltrials-2019-docs-0.tar.gz",
+    "irds:clinicaltrials-2019-0.tar.gz": {
+      "name": "irds:clinicaltrials-2019-0.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3563,8 +3563,8 @@
         "Source('http://www.trec-cds.org/clinical_trials.0.tar.gz')"
       ]
     },
-    "irds:clinicaltrials-2019-docs-1.tar.gz": {
-      "name": "irds:clinicaltrials-2019-docs-1.tar.gz",
+    "irds:clinicaltrials-2019-1.tar.gz": {
+      "name": "irds:clinicaltrials-2019-1.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3575,8 +3575,8 @@
         "Source('http://www.trec-cds.org/clinical_trials.1.tar.gz')"
       ]
     },
-    "irds:clinicaltrials-2019-docs-2.tar.gz": {
-      "name": "irds:clinicaltrials-2019-docs-2.tar.gz",
+    "irds:clinicaltrials-2019-2.tar.gz": {
+      "name": "irds:clinicaltrials-2019-2.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3587,8 +3587,8 @@
         "Source('http://www.trec-cds.org/clinical_trials.2.tar.gz')"
       ]
     },
-    "irds:clinicaltrials-2019-docs-3.tar.gz": {
-      "name": "irds:clinicaltrials-2019-docs-3.tar.gz",
+    "irds:clinicaltrials-2019-3.tar.gz": {
+      "name": "irds:clinicaltrials-2019-3.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3599,15 +3599,15 @@
         "Source('http://www.trec-cds.org/clinical_trials.3.tar.gz')"
       ]
     },
-    "irds:clinicaltrials-2021-docs": {
-      "name": "irds:clinicaltrials-2021-docs",
+    "irds:clinicaltrials-2021": {
+      "name": "irds:clinicaltrials-2021",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "format": "ClinicalTrialsDocs",
       "lang": "en"
     },
-    "irds:clinicaltrials-2021-docs-part1.zip": {
-      "name": "irds:clinicaltrials-2021-docs-part1.zip",
+    "irds:clinicaltrials-2021-part1.zip": {
+      "name": "irds:clinicaltrials-2021-part1.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3618,8 +3618,8 @@
         "Source('http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part1.zip')"
       ]
     },
-    "irds:clinicaltrials-2021-docs-part2.zip": {
-      "name": "irds:clinicaltrials-2021-docs-part2.zip",
+    "irds:clinicaltrials-2021-part2.zip": {
+      "name": "irds:clinicaltrials-2021-part2.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3630,8 +3630,8 @@
         "Source('http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part2.zip')"
       ]
     },
-    "irds:clinicaltrials-2021-docs-part3.zip": {
-      "name": "irds:clinicaltrials-2021-docs-part3.zip",
+    "irds:clinicaltrials-2021-part3.zip": {
+      "name": "irds:clinicaltrials-2021-part3.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3642,8 +3642,8 @@
         "Source('http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part3.zip')"
       ]
     },
-    "irds:clinicaltrials-2021-docs-part4.zip": {
-      "name": "irds:clinicaltrials-2021-docs-part4.zip",
+    "irds:clinicaltrials-2021-part4.zip": {
+      "name": "irds:clinicaltrials-2021-part4.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3654,8 +3654,8 @@
         "Source('http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part4.zip')"
       ]
     },
-    "irds:clinicaltrials-2021-docs-part5.zip": {
-      "name": "irds:clinicaltrials-2021-docs-part5.zip",
+    "irds:clinicaltrials-2021-part5.zip": {
+      "name": "irds:clinicaltrials-2021-part5.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.clinicaltrials",
       "hashes": [
@@ -3666,15 +3666,21 @@
         "Source('http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part5.zip')"
       ]
     },
-    "irds:clueweb09-ar-docs": {
-      "name": "irds:clueweb09-ar-docs",
+    "irds:clueweb09": {
+      "name": "irds:clueweb09",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.clueweb09",
+      "format": "ClueWeb09Docs"
+    },
+    "irds:clueweb09-ar": {
+      "name": "irds:clueweb09-ar",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "ar"
     },
-    "irds:clueweb09-catb-docs": {
-      "name": "irds:clueweb09-catb-docs",
+    "irds:clueweb09-catb": {
+      "name": "irds:clueweb09-catb",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
@@ -3692,70 +3698,64 @@
         "Source('https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb09/clueweb09-source-chk.tar.gz')"
       ]
     },
-    "irds:clueweb09-de-docs": {
-      "name": "irds:clueweb09-de-docs",
+    "irds:clueweb09-de": {
+      "name": "irds:clueweb09-de",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "de"
     },
-    "irds:clueweb09-docs": {
-      "name": "irds:clueweb09-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.clueweb09",
-      "format": "ClueWeb09Docs"
-    },
-    "irds:clueweb09-en-docs": {
-      "name": "irds:clueweb09-en-docs",
+    "irds:clueweb09-en": {
+      "name": "irds:clueweb09-en",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "en"
     },
-    "irds:clueweb09-es-docs": {
-      "name": "irds:clueweb09-es-docs",
+    "irds:clueweb09-es": {
+      "name": "irds:clueweb09-es",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "es"
     },
-    "irds:clueweb09-fr-docs": {
-      "name": "irds:clueweb09-fr-docs",
+    "irds:clueweb09-fr": {
+      "name": "irds:clueweb09-fr",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "fr"
     },
-    "irds:clueweb09-it-docs": {
-      "name": "irds:clueweb09-it-docs",
+    "irds:clueweb09-it": {
+      "name": "irds:clueweb09-it",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "it"
     },
-    "irds:clueweb09-ja-docs": {
-      "name": "irds:clueweb09-ja-docs",
+    "irds:clueweb09-ja": {
+      "name": "irds:clueweb09-ja",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "ja"
     },
-    "irds:clueweb09-ko-docs": {
-      "name": "irds:clueweb09-ko-docs",
+    "irds:clueweb09-ko": {
+      "name": "irds:clueweb09-ko",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "ko"
     },
-    "irds:clueweb09-pt-docs": {
-      "name": "irds:clueweb09-pt-docs",
+    "irds:clueweb09-pt": {
+      "name": "irds:clueweb09-pt",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
       "lang": "pt"
     },
-    "irds:clueweb09-zh-docs": {
-      "name": "irds:clueweb09-zh-docs",
+    "irds:clueweb09-zh": {
+      "name": "irds:clueweb09-zh",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb09",
       "format": "ClueWeb09Docs",
@@ -3770,12 +3770,31 @@
       ],
       "dua": "ClueWeb09 is distributed on hard drives by CMU <https://lemurproject.org/clueweb09/>; see <https://ir-datasets.com/ClueWeb09.html#DataAccess> for the procedure."
     },
-    "irds:clueweb12-b13-docs": {
-      "name": "irds:clueweb12-b13-docs",
+    "irds:clueweb12": {
+      "name": "irds:clueweb12",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.clueweb12",
+      "format": "ClueWeb12Docs",
+      "lang": "en"
+    },
+    "irds:clueweb12-b13": {
+      "name": "irds:clueweb12-b13",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.clueweb12",
       "format": "ClueWeb12Docs(b13)",
       "lang": "en"
+    },
+    "irds:clueweb12-chk.tar.gz": {
+      "name": "irds:clueweb12-chk.tar.gz",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.clueweb12",
+      "hashes": [
+        "md5:fb92d1f8ed1436839313d2eb47f628a5"
+      ],
+      "size": 3883120643,
+      "sources": [
+        "Source('https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb12/clueweb12-source-chk.tar.gz')"
+      ]
     },
     "irds:clueweb12-cw12b-info.tgz": {
       "name": "irds:clueweb12-cw12b-info.tgz",
@@ -3787,25 +3806,6 @@
       "size": 1310407043,
       "sources": [
         "Source('http://lemurproject.org/clueweb12/ClueWeb12-CreateB13.tgz')"
-      ]
-    },
-    "irds:clueweb12-docs": {
-      "name": "irds:clueweb12-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.clueweb12",
-      "format": "ClueWeb12Docs",
-      "lang": "en"
-    },
-    "irds:clueweb12-docs-chk.tar.gz": {
-      "name": "irds:clueweb12-docs-chk.tar.gz",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.clueweb12",
-      "hashes": [
-        "md5:fb92d1f8ed1436839313d2eb47f628a5"
-      ],
-      "size": 3883120643,
-      "sources": [
-        "Source('https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/clueweb12/clueweb12-source-chk.tar.gz')"
       ]
     },
     "irds:clueweb12.dir": {
@@ -4155,8 +4155,8 @@
       "format": "CodeSearchNetQueries",
       "lang": "en"
     },
-    "irds:cord19-2020-04-10-docs": {
-      "name": "irds:cord19-2020-04-10-docs",
+    "irds:cord19-2020-04-10": {
+      "name": "irds:cord19-2020-04-10",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
@@ -4175,8 +4175,8 @@
         "Source('https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv')"
       ]
     },
-    "irds:cord19-2020-05-01-docs": {
-      "name": "irds:cord19-2020-05-01-docs",
+    "irds:cord19-2020-05-01": {
+      "name": "irds:cord19-2020-05-01",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
@@ -4195,8 +4195,8 @@
         "Source('https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-01/metadata.csv')"
       ]
     },
-    "irds:cord19-2020-05-19-docs": {
-      "name": "irds:cord19-2020-05-19-docs",
+    "irds:cord19-2020-05-19": {
+      "name": "irds:cord19-2020-05-19",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
@@ -4215,8 +4215,8 @@
         "Source('https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-19/metadata.csv')"
       ]
     },
-    "irds:cord19-2020-06-19-docs": {
-      "name": "irds:cord19-2020-06-19-docs",
+    "irds:cord19-2020-06-19": {
+      "name": "irds:cord19-2020-06-19",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
@@ -4235,16 +4235,16 @@
         "Source('https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-06-19/metadata.csv')"
       ]
     },
-    "irds:cord19-2020-07-16-docs": {
-      "name": "irds:cord19-2020-07-16-docs",
+    "irds:cord19-2020-07-16": {
+      "name": "irds:cord19-2020-07-16",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
       "format": "Cord19Docs",
       "lang": "en"
     },
-    "irds:cord19-2020-07-16-fulltext-docs": {
-      "name": "irds:cord19-2020-07-16-fulltext-docs",
+    "irds:cord19-2020-07-16-fulltext": {
+      "name": "irds:cord19-2020-07-16-fulltext",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "Wang2020Cord19",
@@ -5142,8 +5142,15 @@
       "module": "ir_datasets.v2.datasets.hc4",
       "format": "ExctractedCCQueries"
     },
-    "irds:highwire-ajepidem-docs.zip": {
-      "name": "irds:highwire-ajepidem-docs.zip",
+    "irds:highwire": {
+      "name": "irds:highwire",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.highwire",
+      "format": "HighwireDocs",
+      "lang": "en"
+    },
+    "irds:highwire-ajepidem.zip": {
+      "name": "irds:highwire-ajepidem.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5154,8 +5161,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajepidem.zip')"
       ]
     },
-    "irds:highwire-ajpcell-docs.zip": {
-      "name": "irds:highwire-ajpcell-docs.zip",
+    "irds:highwire-ajpcell.zip": {
+      "name": "irds:highwire-ajpcell.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5166,8 +5173,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajpcell.zip')"
       ]
     },
-    "irds:highwire-ajpendometa-docs.zip": {
-      "name": "irds:highwire-ajpendometa-docs.zip",
+    "irds:highwire-ajpendometa.zip": {
+      "name": "irds:highwire-ajpendometa.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5178,8 +5185,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajpendometa.zip')"
       ]
     },
-    "irds:highwire-ajpgastro-docs.zip": {
-      "name": "irds:highwire-ajpgastro-docs.zip",
+    "irds:highwire-ajpgastro.zip": {
+      "name": "irds:highwire-ajpgastro.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5190,8 +5197,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajpgastro.zip')"
       ]
     },
-    "irds:highwire-ajpheart-docs.zip": {
-      "name": "irds:highwire-ajpheart-docs.zip",
+    "irds:highwire-ajpheart.zip": {
+      "name": "irds:highwire-ajpheart.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5202,8 +5209,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajpheart.zip')"
       ]
     },
-    "irds:highwire-ajplung-docs.zip": {
-      "name": "irds:highwire-ajplung-docs.zip",
+    "irds:highwire-ajplung.zip": {
+      "name": "irds:highwire-ajplung.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5214,8 +5221,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajplung.zip')"
       ]
     },
-    "irds:highwire-ajprenal-docs.zip": {
-      "name": "irds:highwire-ajprenal-docs.zip",
+    "irds:highwire-ajprenal.zip": {
+      "name": "irds:highwire-ajprenal.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5226,8 +5233,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ajprenal.zip')"
       ]
     },
-    "irds:highwire-alcohol-docs.zip": {
-      "name": "irds:highwire-alcohol-docs.zip",
+    "irds:highwire-alcohol.zip": {
+      "name": "irds:highwire-alcohol.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5238,8 +5245,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/alcohol.zip')"
       ]
     },
-    "irds:highwire-andrology-docs.zip": {
-      "name": "irds:highwire-andrology-docs.zip",
+    "irds:highwire-andrology.zip": {
+      "name": "irds:highwire-andrology.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5250,8 +5257,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/andrology.zip')"
       ]
     },
-    "irds:highwire-annonc-docs.zip": {
-      "name": "irds:highwire-annonc-docs.zip",
+    "irds:highwire-annonc.zip": {
+      "name": "irds:highwire-annonc.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5262,8 +5269,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/annonc.zip')"
       ]
     },
-    "irds:highwire-bjanast-docs.zip": {
-      "name": "irds:highwire-bjanast-docs.zip",
+    "irds:highwire-bjanast.zip": {
+      "name": "irds:highwire-bjanast.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5274,8 +5281,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/bjanast.zip')"
       ]
     },
-    "irds:highwire-bjp-docs.zip": {
-      "name": "irds:highwire-bjp-docs.zip",
+    "irds:highwire-bjp.zip": {
+      "name": "irds:highwire-bjp.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5286,8 +5293,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/bjp.zip')"
       ]
     },
-    "irds:highwire-blood-docs.zip": {
-      "name": "irds:highwire-blood-docs.zip",
+    "irds:highwire-blood.zip": {
+      "name": "irds:highwire-blood.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5298,8 +5305,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/blood.zip')"
       ]
     },
-    "irds:highwire-carcinogenesis-docs.zip": {
-      "name": "irds:highwire-carcinogenesis-docs.zip",
+    "irds:highwire-carcinogenesis.zip": {
+      "name": "irds:highwire-carcinogenesis.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5310,8 +5317,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/carcinogenesis.zip')"
       ]
     },
-    "irds:highwire-cercor-docs.zip": {
-      "name": "irds:highwire-cercor-docs.zip",
+    "irds:highwire-cercor.zip": {
+      "name": "irds:highwire-cercor.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5322,8 +5329,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/cercor.zip')"
       ]
     },
-    "irds:highwire-development-docs.zip": {
-      "name": "irds:highwire-development-docs.zip",
+    "irds:highwire-development.zip": {
+      "name": "irds:highwire-development.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5334,8 +5341,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/development.zip')"
       ]
     },
-    "irds:highwire-diabetes-docs.zip": {
-      "name": "irds:highwire-diabetes-docs.zip",
+    "irds:highwire-diabetes.zip": {
+      "name": "irds:highwire-diabetes.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5346,15 +5353,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/diabetes.zip')"
       ]
     },
-    "irds:highwire-docs": {
-      "name": "irds:highwire-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.highwire",
-      "format": "HighwireDocs",
-      "lang": "en"
-    },
-    "irds:highwire-endocrinology-docs.zip": {
-      "name": "irds:highwire-endocrinology-docs.zip",
+    "irds:highwire-endocrinology.zip": {
+      "name": "irds:highwire-endocrinology.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5365,8 +5365,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/endocrinology.zip')"
       ]
     },
-    "irds:highwire-euroheartj-docs.zip": {
-      "name": "irds:highwire-euroheartj-docs.zip",
+    "irds:highwire-euroheartj.zip": {
+      "name": "irds:highwire-euroheartj.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5377,8 +5377,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/euroheartj.zip')"
       ]
     },
-    "irds:highwire-glycobiology-docs.zip": {
-      "name": "irds:highwire-glycobiology-docs.zip",
+    "irds:highwire-glycobiology.zip": {
+      "name": "irds:highwire-glycobiology.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5389,8 +5389,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/glycobiology.zip')"
       ]
     },
-    "irds:highwire-humanrep-docs.zip": {
-      "name": "irds:highwire-humanrep-docs.zip",
+    "irds:highwire-humanrep.zip": {
+      "name": "irds:highwire-humanrep.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5401,8 +5401,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/humanrep.zip')"
       ]
     },
-    "irds:highwire-humolgen-docs.zip": {
-      "name": "irds:highwire-humolgen-docs.zip",
+    "irds:highwire-humolgen.zip": {
+      "name": "irds:highwire-humolgen.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5413,8 +5413,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/humolgen.zip')"
       ]
     },
-    "irds:highwire-ijepidem-docs.zip": {
-      "name": "irds:highwire-ijepidem-docs.zip",
+    "irds:highwire-ijepidem.zip": {
+      "name": "irds:highwire-ijepidem.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5425,8 +5425,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/ijepidem.zip')"
       ]
     },
-    "irds:highwire-intimm-docs.zip": {
-      "name": "irds:highwire-intimm-docs.zip",
+    "irds:highwire-intimm.zip": {
+      "name": "irds:highwire-intimm.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5437,8 +5437,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/intimm.zip')"
       ]
     },
-    "irds:highwire-jantichemo-docs.zip": {
-      "name": "irds:highwire-jantichemo-docs.zip",
+    "irds:highwire-jantichemo.zip": {
+      "name": "irds:highwire-jantichemo.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5449,8 +5449,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jantichemo.zip')"
       ]
     },
-    "irds:highwire-jappliedphysio-docs.zip": {
-      "name": "irds:highwire-jappliedphysio-docs.zip",
+    "irds:highwire-jappliedphysio.zip": {
+      "name": "irds:highwire-jappliedphysio.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5461,8 +5461,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jappliedphysio.zip')"
       ]
     },
-    "irds:highwire-jbc-1995-docs.zip": {
-      "name": "irds:highwire-jbc-1995-docs.zip",
+    "irds:highwire-jbc-1995.zip": {
+      "name": "irds:highwire-jbc-1995.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5473,8 +5473,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-1995.zip')"
       ]
     },
-    "irds:highwire-jbc-1996-docs.zip": {
-      "name": "irds:highwire-jbc-1996-docs.zip",
+    "irds:highwire-jbc-1996.zip": {
+      "name": "irds:highwire-jbc-1996.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5485,8 +5485,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-1996.zip')"
       ]
     },
-    "irds:highwire-jbc-1997-docs.zip": {
-      "name": "irds:highwire-jbc-1997-docs.zip",
+    "irds:highwire-jbc-1997.zip": {
+      "name": "irds:highwire-jbc-1997.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5497,8 +5497,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-1997.zip')"
       ]
     },
-    "irds:highwire-jbc-1998-docs.zip": {
-      "name": "irds:highwire-jbc-1998-docs.zip",
+    "irds:highwire-jbc-1998.zip": {
+      "name": "irds:highwire-jbc-1998.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5509,8 +5509,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-1998.zip')"
       ]
     },
-    "irds:highwire-jbc-1999-docs.zip": {
-      "name": "irds:highwire-jbc-1999-docs.zip",
+    "irds:highwire-jbc-1999.zip": {
+      "name": "irds:highwire-jbc-1999.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5521,8 +5521,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-1999.zip')"
       ]
     },
-    "irds:highwire-jbc-2000-docs.zip": {
-      "name": "irds:highwire-jbc-2000-docs.zip",
+    "irds:highwire-jbc-2000.zip": {
+      "name": "irds:highwire-jbc-2000.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5533,8 +5533,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2000.zip')"
       ]
     },
-    "irds:highwire-jbc-2001-docs.zip": {
-      "name": "irds:highwire-jbc-2001-docs.zip",
+    "irds:highwire-jbc-2001.zip": {
+      "name": "irds:highwire-jbc-2001.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5545,8 +5545,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2001.zip')"
       ]
     },
-    "irds:highwire-jbc-2002-docs.zip": {
-      "name": "irds:highwire-jbc-2002-docs.zip",
+    "irds:highwire-jbc-2002.zip": {
+      "name": "irds:highwire-jbc-2002.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5557,8 +5557,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2002.zip')"
       ]
     },
-    "irds:highwire-jbc-2003-docs.zip": {
-      "name": "irds:highwire-jbc-2003-docs.zip",
+    "irds:highwire-jbc-2003.zip": {
+      "name": "irds:highwire-jbc-2003.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5569,8 +5569,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2003.zip')"
       ]
     },
-    "irds:highwire-jbc-2004-docs.zip": {
-      "name": "irds:highwire-jbc-2004-docs.zip",
+    "irds:highwire-jbc-2004.zip": {
+      "name": "irds:highwire-jbc-2004.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5581,8 +5581,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2004.zip')"
       ]
     },
-    "irds:highwire-jbc-2005-docs.zip": {
-      "name": "irds:highwire-jbc-2005-docs.zip",
+    "irds:highwire-jbc-2005.zip": {
+      "name": "irds:highwire-jbc-2005.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5593,8 +5593,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jbc-2005.zip')"
       ]
     },
-    "irds:highwire-jcb-docs.zip": {
-      "name": "irds:highwire-jcb-docs.zip",
+    "irds:highwire-jcb.zip": {
+      "name": "irds:highwire-jcb.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5605,8 +5605,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jcb.zip')"
       ]
     },
-    "irds:highwire-jclinicalendometa-docs.zip": {
-      "name": "irds:highwire-jclinicalendometa-docs.zip",
+    "irds:highwire-jclinicalendometa.zip": {
+      "name": "irds:highwire-jclinicalendometa.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5617,8 +5617,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jclinicalendometa.zip')"
       ]
     },
-    "irds:highwire-jcs-docs.zip": {
-      "name": "irds:highwire-jcs-docs.zip",
+    "irds:highwire-jcs.zip": {
+      "name": "irds:highwire-jcs.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5629,8 +5629,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jcs.zip')"
       ]
     },
-    "irds:highwire-jexpbio-docs.zip": {
-      "name": "irds:highwire-jexpbio-docs.zip",
+    "irds:highwire-jexpbio.zip": {
+      "name": "irds:highwire-jexpbio.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5641,8 +5641,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jexpbio.zip')"
       ]
     },
-    "irds:highwire-jexpmed-docs.zip": {
-      "name": "irds:highwire-jexpmed-docs.zip",
+    "irds:highwire-jexpmed.zip": {
+      "name": "irds:highwire-jexpmed.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5653,8 +5653,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jexpmed.zip')"
       ]
     },
-    "irds:highwire-jgenphysio-docs.zip": {
-      "name": "irds:highwire-jgenphysio-docs.zip",
+    "irds:highwire-jgenphysio.zip": {
+      "name": "irds:highwire-jgenphysio.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5665,8 +5665,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jgenphysio.zip')"
       ]
     },
-    "irds:highwire-jgenviro-docs.zip": {
-      "name": "irds:highwire-jgenviro-docs.zip",
+    "irds:highwire-jgenviro.zip": {
+      "name": "irds:highwire-jgenviro.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5677,8 +5677,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jgenviro.zip')"
       ]
     },
-    "irds:highwire-jhistocyto-docs.zip": {
-      "name": "irds:highwire-jhistocyto-docs.zip",
+    "irds:highwire-jhistocyto.zip": {
+      "name": "irds:highwire-jhistocyto.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5689,8 +5689,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jhistocyto.zip')"
       ]
     },
-    "irds:highwire-jnci-docs.zip": {
-      "name": "irds:highwire-jnci-docs.zip",
+    "irds:highwire-jnci.zip": {
+      "name": "irds:highwire-jnci.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5701,8 +5701,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/jnci.zip')"
       ]
     },
-    "irds:highwire-jneuro-docs.zip": {
-      "name": "irds:highwire-jneuro-docs.zip",
+    "irds:highwire-jneuro.zip": {
+      "name": "irds:highwire-jneuro.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5725,8 +5725,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/legalspans.txt')"
       ]
     },
-    "irds:highwire-mcp-docs.zip": {
-      "name": "irds:highwire-mcp-docs.zip",
+    "irds:highwire-mcp.zip": {
+      "name": "irds:highwire-mcp.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5737,8 +5737,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/mcp.zip')"
       ]
     },
-    "irds:highwire-microbio-docs.zip": {
-      "name": "irds:highwire-microbio-docs.zip",
+    "irds:highwire-microbio.zip": {
+      "name": "irds:highwire-microbio.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5749,8 +5749,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/microbio.zip')"
       ]
     },
-    "irds:highwire-molbiolevol-docs.zip": {
-      "name": "irds:highwire-molbiolevol-docs.zip",
+    "irds:highwire-molbiolevol.zip": {
+      "name": "irds:highwire-molbiolevol.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5761,8 +5761,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/molbiolevol.zip')"
       ]
     },
-    "irds:highwire-molendo-docs.zip": {
-      "name": "irds:highwire-molendo-docs.zip",
+    "irds:highwire-molendo.zip": {
+      "name": "irds:highwire-molendo.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5773,8 +5773,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/molendo.zip')"
       ]
     },
-    "irds:highwire-molhumanrep-docs.zip": {
-      "name": "irds:highwire-molhumanrep-docs.zip",
+    "irds:highwire-molhumanrep.zip": {
+      "name": "irds:highwire-molhumanrep.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5785,8 +5785,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/molhumanrep.zip')"
       ]
     },
-    "irds:highwire-nar-docs.zip": {
-      "name": "irds:highwire-nar-docs.zip",
+    "irds:highwire-nar.zip": {
+      "name": "irds:highwire-nar.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5797,8 +5797,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/nar.zip')"
       ]
     },
-    "irds:highwire-nephrodiatransp-docs.zip": {
-      "name": "irds:highwire-nephrodiatransp-docs.zip",
+    "irds:highwire-nephrodiatransp.zip": {
+      "name": "irds:highwire-nephrodiatransp.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5809,8 +5809,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/nephrodiatransp.zip')"
       ]
     },
-    "irds:highwire-peds-docs.zip": {
-      "name": "irds:highwire-peds-docs.zip",
+    "irds:highwire-peds.zip": {
+      "name": "irds:highwire-peds.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5821,8 +5821,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/peds.zip')"
       ]
     },
-    "irds:highwire-physiogenomics-docs.zip": {
-      "name": "irds:highwire-physiogenomics-docs.zip",
+    "irds:highwire-physiogenomics.zip": {
+      "name": "irds:highwire-physiogenomics.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5833,8 +5833,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/physiogenomics.zip')"
       ]
     },
-    "irds:highwire-rheumatolgy-docs.zip": {
-      "name": "irds:highwire-rheumatolgy-docs.zip",
+    "irds:highwire-rheumatolgy.zip": {
+      "name": "irds:highwire-rheumatolgy.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5845,8 +5845,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/rheumatolgy.zip')"
       ]
     },
-    "irds:highwire-rna-docs.zip": {
-      "name": "irds:highwire-rna-docs.zip",
+    "irds:highwire-rna.zip": {
+      "name": "irds:highwire-rna.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -5857,8 +5857,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2006/documents/rna.zip')"
       ]
     },
-    "irds:highwire-toxsci-docs.zip": {
-      "name": "irds:highwire-toxsci-docs.zip",
+    "irds:highwire-toxsci.zip": {
+      "name": "irds:highwire-toxsci.zip",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.highwire",
       "hashes": [
@@ -6842,15 +6842,15 @@
         "Source('https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/lotte.tar.gz')"
       ]
     },
-    "irds:medline-2004-docs": {
-      "name": "irds:medline-2004-docs",
+    "irds:medline-2004": {
+      "name": "irds:medline-2004",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.medline",
       "format": "MedlineDocs2004",
       "lang": "en"
     },
-    "irds:medline-2004-docs-a.gz": {
-      "name": "irds:medline-2004-docs-a.gz",
+    "irds:medline-2004-a.gz": {
+      "name": "irds:medline-2004-a.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6861,8 +6861,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_A.gz')"
       ]
     },
-    "irds:medline-2004-docs-b.gz": {
-      "name": "irds:medline-2004-docs-b.gz",
+    "irds:medline-2004-b.gz": {
+      "name": "irds:medline-2004-b.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6873,8 +6873,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_B.gz')"
       ]
     },
-    "irds:medline-2004-docs-c.gz": {
-      "name": "irds:medline-2004-docs-c.gz",
+    "irds:medline-2004-c.gz": {
+      "name": "irds:medline-2004-c.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6885,8 +6885,8 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_C.gz')"
       ]
     },
-    "irds:medline-2004-docs-d.gz": {
-      "name": "irds:medline-2004-docs-d.gz",
+    "irds:medline-2004-d.gz": {
+      "name": "irds:medline-2004-d.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6897,8 +6897,15 @@
         "Source('https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_D.gz')"
       ]
     },
-    "irds:medline-2017-aacr-asco-docs.tar.gz": {
-      "name": "irds:medline-2017-aacr-asco-docs.tar.gz",
+    "irds:medline-2017": {
+      "name": "irds:medline-2017",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.medline",
+      "format": "MedlineDocs2017",
+      "lang": "en"
+    },
+    "irds:medline-2017-aacr-asco.tar.gz": {
+      "name": "irds:medline-2017-aacr-asco.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6909,15 +6916,8 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/extra_abstracts.tar.gz')"
       ]
     },
-    "irds:medline-2017-docs": {
-      "name": "irds:medline-2017-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.medline",
-      "format": "MedlineDocs2017",
-      "lang": "en"
-    },
-    "irds:medline-2017-docs-part1.tar.gz": {
-      "name": "irds:medline-2017-docs-part1.tar.gz",
+    "irds:medline-2017-part1.tar.gz": {
+      "name": "irds:medline-2017-part1.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6928,8 +6928,8 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part1.tar.gz')"
       ]
     },
-    "irds:medline-2017-docs-part2.tar.gz": {
-      "name": "irds:medline-2017-docs-part2.tar.gz",
+    "irds:medline-2017-part2.tar.gz": {
+      "name": "irds:medline-2017-part2.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6940,8 +6940,8 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part2.tar.gz')"
       ]
     },
-    "irds:medline-2017-docs-part3.tar.gz": {
-      "name": "irds:medline-2017-docs-part3.tar.gz",
+    "irds:medline-2017-part3.tar.gz": {
+      "name": "irds:medline-2017-part3.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6952,8 +6952,8 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part3.tar.gz')"
       ]
     },
-    "irds:medline-2017-docs-part4.tar.gz": {
-      "name": "irds:medline-2017-docs-part4.tar.gz",
+    "irds:medline-2017-part4.tar.gz": {
+      "name": "irds:medline-2017-part4.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -6964,8 +6964,8 @@
         "Source('https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part4.tar.gz')"
       ]
     },
-    "irds:medline-2017-docs-part5.tar.gz": {
-      "name": "irds:medline-2017-docs-part5.tar.gz",
+    "irds:medline-2017-part5.tar.gz": {
+      "name": "irds:medline-2017-part5.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.medline",
       "hashes": [
@@ -15760,6 +15760,13 @@
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
+    "irds:msmarco-document-v2": {
+      "name": "irds:msmarco-document-v2",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.msmarco_document_v2",
+      "format": "MsMarcoV2Docs",
+      "lang": "en"
+    },
     "irds:msmarco-document-v2-dev1": {
       "name": "irds:msmarco-document-v2-dev1",
       "type": "irds:Benchmark",
@@ -15906,26 +15913,6 @@
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
-    "irds:msmarco-document-v2-docs": {
-      "name": "irds:msmarco-document-v2-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.msmarco_document_v2",
-      "format": "MsMarcoV2Docs",
-      "lang": "en"
-    },
-    "irds:msmarco-document-v2-docs.tar": {
-      "name": "irds:msmarco-document-v2-docs.tar",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.msmarco_document_v2",
-      "hashes": [
-        "md5:eea90100409a254fdb157b8e4e349deb"
-      ],
-      "size": 34648862720,
-      "sources": [
-        "Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar')"
-      ],
-      "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
-    },
     "irds:msmarco-document-v2-train": {
       "name": "irds:msmarco-document-v2-train",
       "type": "irds:Benchmark",
@@ -15996,6 +15983,19 @@
       "size": 424107669,
       "sources": [
         "Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/docv2_train_top100.txt.gz')"
+      ],
+      "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
+    },
+    "irds:msmarco-document-v2.tar": {
+      "name": "irds:msmarco-document-v2.tar",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.msmarco_document_v2",
+      "hashes": [
+        "md5:eea90100409a254fdb157b8e4e349deb"
+      ],
+      "size": 34648862720,
+      "sources": [
+        "Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar')"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
@@ -16456,6 +16456,13 @@
         "RR@10"
       ]
     },
+    "irds:msmarco-passage-v2": {
+      "name": "irds:msmarco-passage-v2",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.msmarco_passage_v2",
+      "format": "MsMarcoV2Passages",
+      "lang": "en"
+    },
     "irds:msmarco-passage-v2-dev1": {
       "name": "irds:msmarco-passage-v2-dev1",
       "type": "irds:Benchmark",
@@ -16602,13 +16609,6 @@
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
-    "irds:msmarco-passage-v2-docs": {
-      "name": "irds:msmarco-passage-v2-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.msmarco_passage_v2",
-      "format": "MsMarcoV2Passages",
-      "lang": "en"
-    },
     "irds:msmarco-passage-v2-passages.tar": {
       "name": "irds:msmarco-passage-v2-passages.tar",
       "type": "irds:Resource",
@@ -16695,6 +16695,13 @@
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
     },
+    "irds:msmarco-qna": {
+      "name": "irds:msmarco-qna",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.msmarco_qna",
+      "format": "MsMarcoQnADocs",
+      "lang": "en"
+    },
     "irds:msmarco-qna-dev": {
       "name": "irds:msmarco-qna-dev",
       "type": "irds:Benchmark",
@@ -16739,13 +16746,6 @@
         "Source('https://msmarco.z22.web.core.windows.net/msmarco/dev_v2.1.json.gz')"
       ],
       "dua": "Please confirm you agree to the MSMARCO data usage agreement found at <http://www.msmarco.org/dataset.aspx>"
-    },
-    "irds:msmarco-qna-docs": {
-      "name": "irds:msmarco-qna-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.msmarco_qna",
-      "format": "MsMarcoQnADocs",
-      "lang": "en"
     },
     "irds:msmarco-qna-eval": {
       "name": "irds:msmarco-qna-eval",
@@ -19381,8 +19381,8 @@
         "Source('http://www.thuir.cn/ntcirwww3/www2www3topics-E.xml')"
       ]
     },
-    "irds:nyt-docs": {
-      "name": "irds:nyt-docs",
+    "irds:nyt": {
+      "name": "irds:nyt",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.nyt",
       "format": "NytDocs",
@@ -19467,8 +19467,8 @@
       "module": "ir_datasets.v2.datasets.nyt",
       "lang": "en"
     },
-    "irds:pmc-v1-docs": {
-      "name": "irds:pmc-v1-docs",
+    "irds:pmc-v1": {
+      "name": "irds:pmc-v1",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.pmc",
       "format": "PmcDocs",
@@ -19546,8 +19546,8 @@
         "Source('https://ceb.nlm.nih.gov/~simpsonmatt/pmc-text-03.tar.gz')"
       ]
     },
-    "irds:pmc-v2-docs": {
-      "name": "irds:pmc-v2-docs",
+    "irds:pmc-v2": {
+      "name": "irds:pmc-v2",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.pmc",
       "format": "PmcDocs",
@@ -20203,8 +20203,8 @@
         "Source('https://zenodo.org/record/6873575/files/topics.xml')"
       ]
     },
-    "irds:touche-image-2022-06-13-docs": {
-      "name": "irds:touche-image-2022-06-13-docs",
+    "irds:touche-image-2022-06-13": {
+      "name": "irds:touche-image-2022-06-13",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.touche_image",
       "format": "ToucheImageDocs",
@@ -26081,8 +26081,8 @@
         "Source('https://mirror.ir-datasets.com/23e5607081191b153738e81fbd834680')"
       ]
     },
-    "irds:wapo-v2-docs": {
-      "name": "irds:wapo-v2-docs",
+    "irds:wapo-v2": {
+      "name": "irds:wapo-v2",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.wapo",
       "format": "WapoDocs",
@@ -26100,8 +26100,8 @@
       ],
       "dua": "The Washington Post collection is distributed by NIST under a data usage agreement; request access at <https://trec.nist.gov/data/wapost/>."
     },
-    "irds:wapo-v4-docs": {
-      "name": "irds:wapo-v4-docs",
+    "irds:wapo-v4": {
+      "name": "irds:wapo-v4",
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.wapo",
       "format": "WapoDocs",
@@ -30025,19 +30025,19 @@
       "irds:bright-theoremqa-theorems-queries.parquet"
     ],
     [
-      "irds:c4-en-noclean-tr-docs",
+      "irds:c4-en-noclean-tr",
       "irds:derived_from",
       "irds:c4-en-noclean-checkpoints.tar.gz"
     ],
     [
-      "irds:c4-en-noclean-tr-docs",
+      "irds:c4-en-noclean-tr",
       "irds:derived_from",
       "irds:c4-en-noclean-sources.json.gz"
     ],
     [
       "irds:c4-en-noclean-tr-trec-misinfo-2021",
       "irds:docs",
-      "irds:c4-en-noclean-tr-docs"
+      "irds:c4-en-noclean-tr"
     ],
     [
       "irds:c4-en-noclean-tr-trec-misinfo-2021",
@@ -30267,7 +30267,7 @@
     [
       "irds:clef-ehealth",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth",
@@ -30282,7 +30282,7 @@
     [
       "irds:clef-ehealth-cs",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-cs",
@@ -30332,7 +30332,7 @@
     [
       "irds:clef-ehealth-de",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-de",
@@ -30382,7 +30382,7 @@
     [
       "irds:clef-ehealth-fr",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-fr",
@@ -30432,7 +30432,7 @@
     [
       "irds:clef-ehealth-hu",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-hu",
@@ -30482,7 +30482,7 @@
     [
       "irds:clef-ehealth-pl",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-pl",
@@ -30567,7 +30567,7 @@
     [
       "irds:clef-ehealth-sv",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:clef-ehealth-sv",
@@ -30615,192 +30615,192 @@
       "irds:clef-ehealth-sv-queries.xml"
     ],
     [
-      "irds:clinicaltrials-2017-docs",
+      "irds:clinicaltrials-2017",
       "irds:derived_from",
-      "irds:clinicaltrials-2017-docs.tar.gz"
+      "irds:clinicaltrials-2017.tar.gz"
     ],
     [
-      "irds:clinicaltrials-2019-docs",
+      "irds:clinicaltrials-2019",
       "irds:derived_from",
-      "irds:clinicaltrials-2019-docs-0.tar.gz"
+      "irds:clinicaltrials-2019-0.tar.gz"
     ],
     [
-      "irds:clinicaltrials-2019-docs",
+      "irds:clinicaltrials-2019",
       "irds:derived_from",
-      "irds:clinicaltrials-2019-docs-1.tar.gz"
+      "irds:clinicaltrials-2019-1.tar.gz"
     ],
     [
-      "irds:clinicaltrials-2019-docs",
+      "irds:clinicaltrials-2019",
       "irds:derived_from",
-      "irds:clinicaltrials-2019-docs-2.tar.gz"
+      "irds:clinicaltrials-2019-2.tar.gz"
     ],
     [
-      "irds:clinicaltrials-2019-docs",
+      "irds:clinicaltrials-2019",
       "irds:derived_from",
-      "irds:clinicaltrials-2019-docs-3.tar.gz"
+      "irds:clinicaltrials-2019-3.tar.gz"
     ],
     [
-      "irds:clinicaltrials-2021-docs",
+      "irds:clinicaltrials-2021",
       "irds:derived_from",
-      "irds:clinicaltrials-2021-docs-part1.zip"
+      "irds:clinicaltrials-2021-part1.zip"
     ],
     [
-      "irds:clinicaltrials-2021-docs",
+      "irds:clinicaltrials-2021",
       "irds:derived_from",
-      "irds:clinicaltrials-2021-docs-part2.zip"
+      "irds:clinicaltrials-2021-part2.zip"
     ],
     [
-      "irds:clinicaltrials-2021-docs",
+      "irds:clinicaltrials-2021",
       "irds:derived_from",
-      "irds:clinicaltrials-2021-docs-part3.zip"
+      "irds:clinicaltrials-2021-part3.zip"
     ],
     [
-      "irds:clinicaltrials-2021-docs",
+      "irds:clinicaltrials-2021",
       "irds:derived_from",
-      "irds:clinicaltrials-2021-docs-part4.zip"
+      "irds:clinicaltrials-2021-part4.zip"
     ],
     [
-      "irds:clinicaltrials-2021-docs",
+      "irds:clinicaltrials-2021",
       "irds:derived_from",
-      "irds:clinicaltrials-2021-docs-part5.zip"
+      "irds:clinicaltrials-2021-part5.zip"
     ],
     [
-      "irds:clueweb09-ar-docs",
-      "irds:derived_from",
-      "irds:clueweb09-chk.tar.gz"
-    ],
-    [
-      "irds:clueweb09-ar-docs",
-      "irds:derived_from",
-      "irds:clueweb09.dir"
-    ],
-    [
-      "irds:clueweb09-catb-docs",
+      "irds:clueweb09",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-catb-docs",
+      "irds:clueweb09",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-de-docs",
+      "irds:clueweb09-ar",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-de-docs",
+      "irds:clueweb09-ar",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-docs",
+      "irds:clueweb09-catb",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-docs",
+      "irds:clueweb09-catb",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-en-docs",
+      "irds:clueweb09-de",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-en-docs",
+      "irds:clueweb09-de",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-es-docs",
+      "irds:clueweb09-en",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-es-docs",
+      "irds:clueweb09-en",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-fr-docs",
+      "irds:clueweb09-es",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-fr-docs",
+      "irds:clueweb09-es",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-it-docs",
+      "irds:clueweb09-fr",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-it-docs",
+      "irds:clueweb09-fr",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-ja-docs",
+      "irds:clueweb09-it",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-ja-docs",
+      "irds:clueweb09-it",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-ko-docs",
+      "irds:clueweb09-ja",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-ko-docs",
+      "irds:clueweb09-ja",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-pt-docs",
+      "irds:clueweb09-ko",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-pt-docs",
+      "irds:clueweb09-ko",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb09-zh-docs",
+      "irds:clueweb09-pt",
       "irds:derived_from",
       "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb09-zh-docs",
+      "irds:clueweb09-pt",
       "irds:derived_from",
       "irds:clueweb09.dir"
     ],
     [
-      "irds:clueweb12-b13-docs",
+      "irds:clueweb09-zh",
       "irds:derived_from",
-      "irds:clueweb12-cw12b-info.tgz"
+      "irds:clueweb09-chk.tar.gz"
     ],
     [
-      "irds:clueweb12-b13-docs",
+      "irds:clueweb09-zh",
+      "irds:derived_from",
+      "irds:clueweb09.dir"
+    ],
+    [
+      "irds:clueweb12",
+      "irds:derived_from",
+      "irds:clueweb12-chk.tar.gz"
+    ],
+    [
+      "irds:clueweb12",
       "irds:derived_from",
       "irds:clueweb12.dir"
     ],
     [
-      "irds:clueweb12-docs",
+      "irds:clueweb12-b13",
       "irds:derived_from",
-      "irds:clueweb12-docs-chk.tar.gz"
+      "irds:clueweb12-cw12b-info.tgz"
     ],
     [
-      "irds:clueweb12-docs",
+      "irds:clueweb12-b13",
       "irds:derived_from",
       "irds:clueweb12.dir"
     ],
@@ -31205,32 +31205,32 @@
       "irds:codesearchnet-ruby.zip"
     ],
     [
-      "irds:cord19-2020-04-10-docs",
+      "irds:cord19-2020-04-10",
       "irds:derived_from",
       "irds:cord19-2020-04-10-metadata.csv"
     ],
     [
-      "irds:cord19-2020-05-01-docs",
+      "irds:cord19-2020-05-01",
       "irds:derived_from",
       "irds:cord19-2020-05-01-metadata.csv"
     ],
     [
-      "irds:cord19-2020-05-19-docs",
+      "irds:cord19-2020-05-19",
       "irds:derived_from",
       "irds:cord19-2020-05-19-metadata.csv"
     ],
     [
-      "irds:cord19-2020-06-19-docs",
+      "irds:cord19-2020-06-19",
       "irds:derived_from",
       "irds:cord19-2020-06-19-metadata.csv"
     ],
     [
-      "irds:cord19-2020-07-16-docs",
+      "irds:cord19-2020-07-16",
       "irds:derived_from",
       "irds:cord19-2020-07-16-metadata.csv"
     ],
     [
-      "irds:cord19-2020-07-16-fulltext-docs",
+      "irds:cord19-2020-07-16-fulltext",
       "irds:derived_from",
       "irds:cord19-2020-07-16.tar.gz"
     ],
@@ -31655,304 +31655,304 @@
       "irds:hc4-train-topics.jsonl"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajepidem-docs.zip"
+      "irds:highwire-ajepidem.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajpcell-docs.zip"
+      "irds:highwire-ajpcell.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajpendometa-docs.zip"
+      "irds:highwire-ajpendometa.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajpgastro-docs.zip"
+      "irds:highwire-ajpgastro.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajpheart-docs.zip"
+      "irds:highwire-ajpheart.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajplung-docs.zip"
+      "irds:highwire-ajplung.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ajprenal-docs.zip"
+      "irds:highwire-ajprenal.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-alcohol-docs.zip"
+      "irds:highwire-alcohol.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-andrology-docs.zip"
+      "irds:highwire-andrology.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-annonc-docs.zip"
+      "irds:highwire-annonc.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-bjanast-docs.zip"
+      "irds:highwire-bjanast.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-bjp-docs.zip"
+      "irds:highwire-bjp.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-blood-docs.zip"
+      "irds:highwire-blood.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-carcinogenesis-docs.zip"
+      "irds:highwire-carcinogenesis.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-cercor-docs.zip"
+      "irds:highwire-cercor.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-development-docs.zip"
+      "irds:highwire-development.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-diabetes-docs.zip"
+      "irds:highwire-diabetes.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-endocrinology-docs.zip"
+      "irds:highwire-endocrinology.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-euroheartj-docs.zip"
+      "irds:highwire-euroheartj.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-glycobiology-docs.zip"
+      "irds:highwire-glycobiology.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-humanrep-docs.zip"
+      "irds:highwire-humanrep.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-humolgen-docs.zip"
+      "irds:highwire-humolgen.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-ijepidem-docs.zip"
+      "irds:highwire-ijepidem.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-intimm-docs.zip"
+      "irds:highwire-intimm.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jantichemo-docs.zip"
+      "irds:highwire-jantichemo.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jappliedphysio-docs.zip"
+      "irds:highwire-jappliedphysio.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-1995-docs.zip"
+      "irds:highwire-jbc-1995.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-1996-docs.zip"
+      "irds:highwire-jbc-1996.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-1997-docs.zip"
+      "irds:highwire-jbc-1997.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-1998-docs.zip"
+      "irds:highwire-jbc-1998.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-1999-docs.zip"
+      "irds:highwire-jbc-1999.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2000-docs.zip"
+      "irds:highwire-jbc-2000.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2001-docs.zip"
+      "irds:highwire-jbc-2001.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2002-docs.zip"
+      "irds:highwire-jbc-2002.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2003-docs.zip"
+      "irds:highwire-jbc-2003.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2004-docs.zip"
+      "irds:highwire-jbc-2004.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jbc-2005-docs.zip"
+      "irds:highwire-jbc-2005.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jcb-docs.zip"
+      "irds:highwire-jcb.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jclinicalendometa-docs.zip"
+      "irds:highwire-jclinicalendometa.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jcs-docs.zip"
+      "irds:highwire-jcs.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jexpbio-docs.zip"
+      "irds:highwire-jexpbio.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jexpmed-docs.zip"
+      "irds:highwire-jexpmed.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jgenphysio-docs.zip"
+      "irds:highwire-jgenphysio.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jgenviro-docs.zip"
+      "irds:highwire-jgenviro.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jhistocyto-docs.zip"
+      "irds:highwire-jhistocyto.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jnci-docs.zip"
+      "irds:highwire-jnci.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-jneuro-docs.zip"
+      "irds:highwire-jneuro.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
       "irds:highwire-legalspans.txt"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-mcp-docs.zip"
+      "irds:highwire-mcp.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-microbio-docs.zip"
+      "irds:highwire-microbio.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-molbiolevol-docs.zip"
+      "irds:highwire-molbiolevol.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-molendo-docs.zip"
+      "irds:highwire-molendo.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-molhumanrep-docs.zip"
+      "irds:highwire-molhumanrep.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-nar-docs.zip"
+      "irds:highwire-nar.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-nephrodiatransp-docs.zip"
+      "irds:highwire-nephrodiatransp.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-peds-docs.zip"
+      "irds:highwire-peds.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-physiogenomics-docs.zip"
+      "irds:highwire-physiogenomics.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-rheumatolgy-docs.zip"
+      "irds:highwire-rheumatolgy.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-rna-docs.zip"
+      "irds:highwire-rna.zip"
     ],
     [
-      "irds:highwire-docs",
+      "irds:highwire",
       "irds:derived_from",
-      "irds:highwire-toxsci-docs.zip"
+      "irds:highwire-toxsci.zip"
     ],
     [
       "irds:istella22-docs",
@@ -32920,54 +32920,54 @@
       "irds:lotte.tar.gz"
     ],
     [
-      "irds:medline-2004-docs",
+      "irds:medline-2004",
       "irds:derived_from",
-      "irds:medline-2004-docs-a.gz"
+      "irds:medline-2004-a.gz"
     ],
     [
-      "irds:medline-2004-docs",
+      "irds:medline-2004",
       "irds:derived_from",
-      "irds:medline-2004-docs-b.gz"
+      "irds:medline-2004-b.gz"
     ],
     [
-      "irds:medline-2004-docs",
+      "irds:medline-2004",
       "irds:derived_from",
-      "irds:medline-2004-docs-c.gz"
+      "irds:medline-2004-c.gz"
     ],
     [
-      "irds:medline-2004-docs",
+      "irds:medline-2004",
       "irds:derived_from",
-      "irds:medline-2004-docs-d.gz"
+      "irds:medline-2004-d.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-aacr-asco-docs.tar.gz"
+      "irds:medline-2017-aacr-asco.tar.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-docs-part1.tar.gz"
+      "irds:medline-2017-part1.tar.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-docs-part2.tar.gz"
+      "irds:medline-2017-part2.tar.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-docs-part3.tar.gz"
+      "irds:medline-2017-part3.tar.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-docs-part4.tar.gz"
+      "irds:medline-2017-part4.tar.gz"
     ],
     [
-      "irds:medline-2017-docs",
+      "irds:medline-2017",
       "irds:derived_from",
-      "irds:medline-2017-docs-part5.tar.gz"
+      "irds:medline-2017-part5.tar.gz"
     ],
     [
       "irds:miracl-ar-dev",
@@ -38280,9 +38280,14 @@
       "irds:msmarco-document-train-scoreddocs.gz"
     ],
     [
+      "irds:msmarco-document-v2",
+      "irds:derived_from",
+      "irds:msmarco-document-v2.tar"
+    ],
+    [
       "irds:msmarco-document-v2-dev1",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:msmarco-document-v2-dev1",
@@ -38317,7 +38322,7 @@
     [
       "irds:msmarco-document-v2-dev2",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:msmarco-document-v2-dev2",
@@ -38350,14 +38355,9 @@
       "irds:msmarco-document-v2-dev2-scoreddocs.txt.gz"
     ],
     [
-      "irds:msmarco-document-v2-docs",
-      "irds:derived_from",
-      "irds:msmarco-document-v2-docs.tar"
-    ],
-    [
       "irds:msmarco-document-v2-train",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:msmarco-document-v2-train",
@@ -38805,9 +38805,14 @@
       "irds:msmarco-passage-train-scoreddocs"
     ],
     [
+      "irds:msmarco-passage-v2",
+      "irds:derived_from",
+      "irds:msmarco-passage-v2-passages.tar"
+    ],
+    [
       "irds:msmarco-passage-v2-dev1",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:msmarco-passage-v2-dev1",
@@ -38842,7 +38847,7 @@
     [
       "irds:msmarco-passage-v2-dev2",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:msmarco-passage-v2-dev2",
@@ -38875,14 +38880,9 @@
       "irds:msmarco-passage-v2-dev2-scoreddocs.txt.gz"
     ],
     [
-      "irds:msmarco-passage-v2-docs",
-      "irds:derived_from",
-      "irds:msmarco-passage-v2-passages.tar"
-    ],
-    [
       "irds:msmarco-passage-v2-train",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:msmarco-passage-v2-train",
@@ -38915,9 +38915,24 @@
       "irds:msmarco-passage-v2-train-scoreddocs.txt.gz"
     ],
     [
+      "irds:msmarco-qna",
+      "irds:derived_from",
+      "irds:msmarco-qna-dev.json.gz"
+    ],
+    [
+      "irds:msmarco-qna",
+      "irds:derived_from",
+      "irds:msmarco-qna-eval.json.gz"
+    ],
+    [
+      "irds:msmarco-qna",
+      "irds:derived_from",
+      "irds:msmarco-qna-train.json.gz"
+    ],
+    [
       "irds:msmarco-qna-dev",
       "irds:docs",
-      "irds:msmarco-qna-docs"
+      "irds:msmarco-qna"
     ],
     [
       "irds:msmarco-qna-dev",
@@ -38935,24 +38950,9 @@
       "irds:msmarco-qna-dev-scoreddocs"
     ],
     [
-      "irds:msmarco-qna-docs",
-      "irds:derived_from",
-      "irds:msmarco-qna-dev.json.gz"
-    ],
-    [
-      "irds:msmarco-qna-docs",
-      "irds:derived_from",
-      "irds:msmarco-qna-eval.json.gz"
-    ],
-    [
-      "irds:msmarco-qna-docs",
-      "irds:derived_from",
-      "irds:msmarco-qna-train.json.gz"
-    ],
-    [
       "irds:msmarco-qna-eval",
       "irds:docs",
-      "irds:msmarco-qna-docs"
+      "irds:msmarco-qna"
     ],
     [
       "irds:msmarco-qna-eval",
@@ -38967,7 +38967,7 @@
     [
       "irds:msmarco-qna-train",
       "irds:docs",
-      "irds:msmarco-qna-docs"
+      "irds:msmarco-qna"
     ],
     [
       "irds:msmarco-qna-train",
@@ -41437,7 +41437,7 @@
     [
       "irds:ntcir-www-1",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:ntcir-www-1",
@@ -41462,7 +41462,7 @@
     [
       "irds:ntcir-www-2",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:ntcir-www-2",
@@ -41487,7 +41487,7 @@
     [
       "irds:ntcir-www-3",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:ntcir-www-3",
@@ -41500,14 +41500,14 @@
       "irds:ntcir-www-3-queries.xml"
     ],
     [
-      "irds:nyt-docs",
+      "irds:nyt",
       "irds:derived_from",
       "irds:nyt-source.tgz"
     ],
     [
       "irds:nyt-wksup",
       "irds:docs",
-      "irds:nyt-docs"
+      "irds:nyt"
     ],
     [
       "irds:nyt-wksup",
@@ -41532,7 +41532,7 @@
     [
       "irds:nyt-wksup-train",
       "irds:docs",
-      "irds:nyt-docs"
+      "irds:nyt"
     ],
     [
       "irds:nyt-wksup-train",
@@ -41557,7 +41557,7 @@
     [
       "irds:nyt-wksup-valid",
       "irds:docs",
-      "irds:nyt-docs"
+      "irds:nyt"
     ],
     [
       "irds:nyt-wksup-valid",
@@ -41580,52 +41580,52 @@
       "irds:nyt-wksup-queries"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-duplicates-1.txt"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-duplicates-2.txt"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-text-00.tar.gz"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-text-01.tar.gz"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-text-02.tar.gz"
     ],
     [
-      "irds:pmc-v1-docs",
+      "irds:pmc-v1",
       "irds:derived_from",
       "irds:pmc-v1-text-03.tar.gz"
     ],
     [
-      "irds:pmc-v2-docs",
+      "irds:pmc-v2",
       "irds:derived_from",
       "irds:pmc-v2-text-00.tar.gz"
     ],
     [
-      "irds:pmc-v2-docs",
+      "irds:pmc-v2",
       "irds:derived_from",
       "irds:pmc-v2-text-01.tar.gz"
     ],
     [
-      "irds:pmc-v2-docs",
+      "irds:pmc-v2",
       "irds:derived_from",
       "irds:pmc-v2-text-02.tar.gz"
     ],
     [
-      "irds:pmc-v2-docs",
+      "irds:pmc-v2",
       "irds:derived_from",
       "irds:pmc-v2-text-03.tar.gz"
     ],
@@ -41727,7 +41727,7 @@
     [
       "irds:touche-2020-task-2",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:touche-2020-task-2",
@@ -41782,7 +41782,7 @@
     [
       "irds:touche-2021-task-2",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:touche-2021-task-2",
@@ -41907,7 +41907,7 @@
     [
       "irds:touche-2022-task-3",
       "irds:docs",
-      "irds:touche-image-2022-06-13-docs"
+      "irds:touche-image-2022-06-13"
     ],
     [
       "irds:touche-2022-task-3",
@@ -41930,17 +41930,17 @@
       "irds:touche-2022-task-3-queries.xml"
     ],
     [
-      "irds:touche-image-2022-06-13-docs",
+      "irds:touche-image-2022-06-13",
       "irds:derived_from",
       "irds:touche-image-2022-06-13-main.zip"
     ],
     [
-      "irds:touche-image-2022-06-13-docs",
+      "irds:touche-image-2022-06-13",
       "irds:derived_from",
       "irds:touche-image-2022-06-13-nodes.zip"
     ],
     [
-      "irds:touche-image-2022-06-13-docs",
+      "irds:touche-image-2022-06-13",
       "irds:derived_from",
       "irds:touche-image-2022-06-13-png.zip"
     ],
@@ -42252,7 +42252,7 @@
     [
       "irds:trec-cds-2014",
       "irds:docs",
-      "irds:pmc-v1-docs"
+      "irds:pmc-v1"
     ],
     [
       "irds:trec-cds-2014",
@@ -42277,7 +42277,7 @@
     [
       "irds:trec-cds-2015",
       "irds:docs",
-      "irds:pmc-v1-docs"
+      "irds:pmc-v1"
     ],
     [
       "irds:trec-cds-2015",
@@ -42302,7 +42302,7 @@
     [
       "irds:trec-cds-2016",
       "irds:docs",
-      "irds:pmc-v2-docs"
+      "irds:pmc-v2"
     ],
     [
       "irds:trec-cds-2016",
@@ -42327,7 +42327,7 @@
     [
       "irds:trec-core-2017",
       "irds:docs",
-      "irds:nyt-docs"
+      "irds:nyt"
     ],
     [
       "irds:trec-core-2017",
@@ -42352,7 +42352,7 @@
     [
       "irds:trec-core-2018",
       "irds:docs",
-      "irds:wapo-v2-docs"
+      "irds:wapo-v2"
     ],
     [
       "irds:trec-core-2018",
@@ -42377,7 +42377,7 @@
     [
       "irds:trec-covid",
       "irds:docs",
-      "irds:cord19-2020-07-16-docs"
+      "irds:cord19-2020-07-16"
     ],
     [
       "irds:trec-covid",
@@ -42392,7 +42392,7 @@
     [
       "irds:trec-covid-fulltext",
       "irds:docs",
-      "irds:cord19-2020-07-16-fulltext-docs"
+      "irds:cord19-2020-07-16-fulltext"
     ],
     [
       "irds:trec-covid-fulltext",
@@ -42417,7 +42417,7 @@
     [
       "irds:trec-covid-round1",
       "irds:docs",
-      "irds:cord19-2020-04-10-docs"
+      "irds:cord19-2020-04-10"
     ],
     [
       "irds:trec-covid-round1",
@@ -42442,7 +42442,7 @@
     [
       "irds:trec-covid-round2",
       "irds:docs",
-      "irds:cord19-2020-05-01-docs"
+      "irds:cord19-2020-05-01"
     ],
     [
       "irds:trec-covid-round2",
@@ -42467,7 +42467,7 @@
     [
       "irds:trec-covid-round3",
       "irds:docs",
-      "irds:cord19-2020-05-19-docs"
+      "irds:cord19-2020-05-19"
     ],
     [
       "irds:trec-covid-round3",
@@ -42492,7 +42492,7 @@
     [
       "irds:trec-covid-round4",
       "irds:docs",
-      "irds:cord19-2020-06-19-docs"
+      "irds:cord19-2020-06-19"
     ],
     [
       "irds:trec-covid-round4",
@@ -42517,7 +42517,7 @@
     [
       "irds:trec-covid-round5",
       "irds:docs",
-      "irds:cord19-2020-07-16-docs"
+      "irds:cord19-2020-07-16"
     ],
     [
       "irds:trec-covid-round5",
@@ -42537,7 +42537,7 @@
     [
       "irds:trec-ct-2021",
       "irds:docs",
-      "irds:clinicaltrials-2021-docs"
+      "irds:clinicaltrials-2021"
     ],
     [
       "irds:trec-ct-2021",
@@ -42562,7 +42562,7 @@
     [
       "irds:trec-ct-2022",
       "irds:docs",
-      "irds:clinicaltrials-2021-docs"
+      "irds:clinicaltrials-2021"
     ],
     [
       "irds:trec-ct-2022",
@@ -42867,7 +42867,7 @@
     [
       "irds:trec-dl-2021-document",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2021-document",
@@ -42887,7 +42887,7 @@
     [
       "irds:trec-dl-2021-document-judged",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2021-document-judged",
@@ -42937,7 +42937,7 @@
     [
       "irds:trec-dl-2021-passage",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2021-passage",
@@ -42957,7 +42957,7 @@
     [
       "irds:trec-dl-2021-passage-judged",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2021-passage-judged",
@@ -43012,7 +43012,7 @@
     [
       "irds:trec-dl-2022-document",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2022-document",
@@ -43032,7 +43032,7 @@
     [
       "irds:trec-dl-2022-document-judged",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2022-document-judged",
@@ -43082,7 +43082,7 @@
     [
       "irds:trec-dl-2022-passage",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2022-passage",
@@ -43102,7 +43102,7 @@
     [
       "irds:trec-dl-2022-passage-judged",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2022-passage-judged",
@@ -43157,7 +43157,7 @@
     [
       "irds:trec-dl-2023-document",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2023-document",
@@ -43177,7 +43177,7 @@
     [
       "irds:trec-dl-2023-document-judged",
       "irds:docs",
-      "irds:msmarco-document-v2-docs"
+      "irds:msmarco-document-v2"
     ],
     [
       "irds:trec-dl-2023-document-judged",
@@ -43227,7 +43227,7 @@
     [
       "irds:trec-dl-2023-passage",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2023-passage",
@@ -43247,7 +43247,7 @@
     [
       "irds:trec-dl-2023-passage-judged",
       "irds:docs",
-      "irds:msmarco-passage-v2-docs"
+      "irds:msmarco-passage-v2"
     ],
     [
       "irds:trec-dl-2023-passage-judged",
@@ -43397,7 +43397,7 @@
     [
       "irds:trec-genomics-2004",
       "irds:docs",
-      "irds:medline-2004-docs"
+      "irds:medline-2004"
     ],
     [
       "irds:trec-genomics-2004",
@@ -43422,7 +43422,7 @@
     [
       "irds:trec-genomics-2005",
       "irds:docs",
-      "irds:medline-2004-docs"
+      "irds:medline-2004"
     ],
     [
       "irds:trec-genomics-2005",
@@ -43447,7 +43447,7 @@
     [
       "irds:trec-genomics-2006",
       "irds:docs",
-      "irds:highwire-docs"
+      "irds:highwire"
     ],
     [
       "irds:trec-genomics-2006",
@@ -43472,7 +43472,7 @@
     [
       "irds:trec-genomics-2007",
       "irds:docs",
-      "irds:highwire-docs"
+      "irds:highwire"
     ],
     [
       "irds:trec-genomics-2007",
@@ -43602,7 +43602,7 @@
     [
       "irds:trec-misinfo-2019",
       "irds:docs",
-      "irds:clueweb12-b13-docs"
+      "irds:clueweb12-b13"
     ],
     [
       "irds:trec-misinfo-2019",
@@ -43677,7 +43677,7 @@
     [
       "irds:trec-mq-2009",
       "irds:docs",
-      "irds:clueweb09-docs"
+      "irds:clueweb09"
     ],
     [
       "irds:trec-mq-2009",
@@ -43702,7 +43702,7 @@
     [
       "irds:trec-news-2018",
       "irds:docs",
-      "irds:wapo-v2-docs"
+      "irds:wapo-v2"
     ],
     [
       "irds:trec-news-2018",
@@ -43727,7 +43727,7 @@
     [
       "irds:trec-news-2019",
       "irds:docs",
-      "irds:wapo-v2-docs"
+      "irds:wapo-v2"
     ],
     [
       "irds:trec-news-2019",
@@ -43772,7 +43772,7 @@
     [
       "irds:trec-pm-2017-abstracts",
       "irds:docs",
-      "irds:medline-2017-docs"
+      "irds:medline-2017"
     ],
     [
       "irds:trec-pm-2017-abstracts",
@@ -43797,7 +43797,7 @@
     [
       "irds:trec-pm-2017-trials",
       "irds:docs",
-      "irds:clinicaltrials-2017-docs"
+      "irds:clinicaltrials-2017"
     ],
     [
       "irds:trec-pm-2017-trials",
@@ -43817,7 +43817,7 @@
     [
       "irds:trec-pm-2018-abstracts",
       "irds:docs",
-      "irds:medline-2017-docs"
+      "irds:medline-2017"
     ],
     [
       "irds:trec-pm-2018-abstracts",
@@ -43842,7 +43842,7 @@
     [
       "irds:trec-pm-2018-trials",
       "irds:docs",
-      "irds:clinicaltrials-2017-docs"
+      "irds:clinicaltrials-2017"
     ],
     [
       "irds:trec-pm-2018-trials",
@@ -43867,7 +43867,7 @@
     [
       "irds:trec-pm-2019-trials",
       "irds:docs",
-      "irds:clinicaltrials-2019-docs"
+      "irds:clinicaltrials-2019"
     ],
     [
       "irds:trec-pm-2019-trials",
@@ -44702,7 +44702,7 @@
     [
       "irds:trec-web-2009",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2009",
@@ -44717,7 +44717,7 @@
     [
       "irds:trec-web-2009-catb",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2009-catb",
@@ -44732,7 +44732,7 @@
     [
       "irds:trec-web-2009-catb-diversity",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2009-catb-diversity",
@@ -44757,7 +44757,7 @@
     [
       "irds:trec-web-2009-diversity",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2009-diversity",
@@ -44787,7 +44787,7 @@
     [
       "irds:trec-web-2010",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2010",
@@ -44802,7 +44802,7 @@
     [
       "irds:trec-web-2010-catb",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2010-catb",
@@ -44817,7 +44817,7 @@
     [
       "irds:trec-web-2010-catb-diversity",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2010-catb-diversity",
@@ -44842,7 +44842,7 @@
     [
       "irds:trec-web-2010-diversity",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2010-diversity",
@@ -44872,7 +44872,7 @@
     [
       "irds:trec-web-2011",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2011",
@@ -44887,7 +44887,7 @@
     [
       "irds:trec-web-2011-catb",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2011-catb",
@@ -44902,7 +44902,7 @@
     [
       "irds:trec-web-2011-catb-diversity",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2011-catb-diversity",
@@ -44927,7 +44927,7 @@
     [
       "irds:trec-web-2011-diversity",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2011-diversity",
@@ -44957,7 +44957,7 @@
     [
       "irds:trec-web-2012",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2012",
@@ -44972,7 +44972,7 @@
     [
       "irds:trec-web-2012-catb",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2012-catb",
@@ -44987,7 +44987,7 @@
     [
       "irds:trec-web-2012-catb-diversity",
       "irds:docs",
-      "irds:clueweb09-catb-docs"
+      "irds:clueweb09-catb"
     ],
     [
       "irds:trec-web-2012-catb-diversity",
@@ -45012,7 +45012,7 @@
     [
       "irds:trec-web-2012-diversity",
       "irds:docs",
-      "irds:clueweb09-en-docs"
+      "irds:clueweb09-en"
     ],
     [
       "irds:trec-web-2012-diversity",
@@ -45042,7 +45042,7 @@
     [
       "irds:trec-web-2013",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:trec-web-2013",
@@ -45057,7 +45057,7 @@
     [
       "irds:trec-web-2013-diversity",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:trec-web-2013-diversity",
@@ -45087,7 +45087,7 @@
     [
       "irds:trec-web-2014",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:trec-web-2014",
@@ -45102,7 +45102,7 @@
     [
       "irds:trec-web-2014-diversity",
       "irds:docs",
-      "irds:clueweb12-docs"
+      "irds:clueweb12"
     ],
     [
       "irds:trec-web-2014-diversity",
@@ -45610,12 +45610,12 @@
       "irds:vaswani.tar.gz"
     ],
     [
-      "irds:wapo-v2-docs",
+      "irds:wapo-v2",
       "irds:derived_from",
       "irds:wapo-v2.tar.gz"
     ],
     [
-      "irds:wapo-v4-docs",
+      "irds:wapo-v4",
       "irds:derived_from",
       "irds:wapo-v4.tar.gz"
     ],

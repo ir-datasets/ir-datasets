@@ -59,9 +59,9 @@ from ir_datasets.v2.formats import Parser
 NAME = 'dpr-w100'
 BASE_PATH = ir_datasets.util.home_path() / NAME
 
-CITATION_DPR = 'Karpukhin2020Dpr'
-CITATION_NQ = 'Kwiatkowski2019Nq; Karpukhin2020Dpr'
-CITATION_TQA = 'Joshi2017TriviaQA; Karpukhin2020Dpr'
+CITATION_DPR = 'dblp:conf/emnlp/KarpukhinOMLWEC20'
+CITATION_NQ = 'dblp:journals/tacl/KwiatkowskiPRCP19; dblp:conf/emnlp/KarpukhinOMLWEC20'
+CITATION_TQA = 'dblp:conf/acl/JoshiCWZ17; dblp:conf/emnlp/KarpukhinOMLWEC20'
 
 
 class _DprW100QueriesParser(Parser):

@@ -112,7 +112,7 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs = DocTable('msmarco-passage-v2-docs',
+    docs = DocTable('msmarco-passage-v2',
         source=passages_file,
         parser=_MsMarcoV2PassagesParser(),
     )

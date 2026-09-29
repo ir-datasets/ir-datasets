@@ -43,7 +43,7 @@ images_png_file = Resource('touche-image-2022-06-13-png.zip',
 
 # Tables
 # -----------------------------------------
-docs = DocTable('touche-image-2022-06-13-docs',
+docs = DocTable('touche-image-2022-06-13',
     source=[images_main_file, images_nodes_file, images_png_file],
     parser=_ToucheImageDocsParser(),
     lang='en',

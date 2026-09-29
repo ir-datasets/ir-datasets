@@ -237,25 +237,25 @@ with irds.defaults(dua=DUA, lang='en'):
     # -----------------------------------------
     web2002 = Benchmark('trec-web-2002',
         docs=docs, queries=web2002_queries, qrels=web2002_qrels,
-        citation='Craswell2002TrecWeb',
+        citation='dblp:conf/trec/CraswellH02',
         desc='TREC Web Track 2002 ad hoc (topic distillation) ranking benchmark.')
     web2002_named_page = Benchmark('trec-web-2002-named-page',
         docs=docs, queries=web2002_np_queries, qrels=web2002_np_qrels,
-        citation='Craswell2002TrecWeb',
+        citation='dblp:conf/trec/CraswellH02',
         desc='TREC Web Track 2002 named page finding benchmark.')
 
     web2003 = Benchmark('trec-web-2003',
         docs=docs, queries=web2003_queries, qrels=web2003_qrels,
-        citation='Craswell2003TrecWeb',
+        citation='dblp:conf/trec/CraswellHWW03',
         desc='TREC Web Track 2003 ad hoc (topic distillation) ranking benchmark.')
     web2003_named_page = Benchmark('trec-web-2003-named-page',
         docs=docs, queries=web2003_np_queries, qrels=web2003_np_qrels,
-        citation='Craswell2003TrecWeb',
+        citation='dblp:conf/trec/CraswellHWW03',
         desc='TREC Web Track 2003 named page finding benchmark.')
 
     web2004 = Benchmark('trec-web-2004',
         docs=docs, queries=web2004_queries, qrels=web2004_qrels,
-        citation='Craswell2004TrecWeb',
+        citation='dblp:conf/trec/CraswellH04',
         desc='TREC Web Track 2004 ad hoc ranking benchmark: a mix of topic '
              'distillation, homepage finding, and named page finding queries.')
 
@@ -400,71 +400,71 @@ with irds.defaults(dua=CW09_DUA, lang='en'):
     # -----------------------------------------
     web2009 = Benchmark('trec-web-2009',
         docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_adhoc,
-        citation='Clarke2009TrecWeb',
+        citation='dblp:conf/trec/ClarkeCS09',
         desc='TREC Web Track 2009 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
     web2009_diversity = Benchmark('trec-web-2009-diversity',
         docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_all,
-        citation='Clarke2009TrecWeb',
+        citation='dblp:conf/trec/ClarkeCS09',
         desc='TREC Web Track 2009 diversity (subtopic-level) ranking benchmark '
              '(over the full ClueWeb09 English subset).')
     web2009_catb = Benchmark('trec-web-2009-catb',
         docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_adhoc,
-        citation='Clarke2009TrecWeb',
+        citation='dblp:conf/trec/ClarkeCS09',
         desc='TREC Web Track 2009 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
     web2009_catb_diversity = Benchmark('trec-web-2009-catb-diversity',
         docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_all,
-        citation='Clarke2009TrecWeb',
+        citation='dblp:conf/trec/ClarkeCS09',
         desc='TREC Web Track 2009 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
     web2010 = Benchmark('trec-web-2010',
         docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_adhoc,
-        citation='Clarke2010TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSC10',
         desc='TREC Web Track 2010 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
     web2010_diversity = Benchmark('trec-web-2010-diversity',
         docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_all,
-        citation='Clarke2010TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSC10',
         desc='TREC Web Track 2010 diversity ranking benchmark (over the full ClueWeb09 English subset).')
     web2010_catb = Benchmark('trec-web-2010-catb',
         docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_adhoc,
-        citation='Clarke2010TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSC10',
         desc='TREC Web Track 2010 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
     web2010_catb_diversity = Benchmark('trec-web-2010-catb-diversity',
         docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_all,
-        citation='Clarke2010TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSC10',
         desc='TREC Web Track 2010 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
     web2011 = Benchmark('trec-web-2011',
         docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_adhoc,
-        citation='Clarke2011TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSV11',
         desc='TREC Web Track 2011 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
     web2011_diversity = Benchmark('trec-web-2011-diversity',
         docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_all,
-        citation='Clarke2011TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSV11',
         desc='TREC Web Track 2011 diversity ranking benchmark (over the full ClueWeb09 English subset).')
     web2011_catb = Benchmark('trec-web-2011-catb',
         docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_adhoc,
-        citation='Clarke2011TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSV11',
         desc='TREC Web Track 2011 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
     web2011_catb_diversity = Benchmark('trec-web-2011-catb-diversity',
         docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_all,
-        citation='Clarke2011TrecWeb',
+        citation='dblp:conf/trec/ClarkeCSV11',
         desc='TREC Web Track 2011 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
     web2012 = Benchmark('trec-web-2012',
         docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_adhoc,
-        citation='Clarke2012TrecWeb',
+        citation='dblp:conf/trec/ClarkeCV12',
         desc='TREC Web Track 2012 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
     web2012_diversity = Benchmark('trec-web-2012-diversity',
         docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_all,
-        citation='Clarke2012TrecWeb',
+        citation='dblp:conf/trec/ClarkeCV12',
         desc='TREC Web Track 2012 diversity ranking benchmark (over the full ClueWeb09 English subset).')
     web2012_catb = Benchmark('trec-web-2012-catb',
         docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_adhoc,
-        citation='Clarke2012TrecWeb',
+        citation='dblp:conf/trec/ClarkeCV12',
         desc='TREC Web Track 2012 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
     web2012_catb_diversity = Benchmark('trec-web-2012-catb-diversity',
         docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_all,
-        citation='Clarke2012TrecWeb',
+        citation='dblp:conf/trec/ClarkeCV12',
         desc='TREC Web Track 2012 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
 with irds.defaults(dua=CW12_DUA, lang='en'):
@@ -525,20 +525,20 @@ with irds.defaults(dua=CW12_DUA, lang='en'):
     # -----------------------------------------
     web2013 = Benchmark('trec-web-2013',
         docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_adhoc,
-        citation='CollinsThompson2013TrecWeb',
+        citation='dblp:conf/trec/Collins-Thompson13',
         desc='TREC Web Track 2013 ad hoc ranking benchmark.')
     web2013_diversity = Benchmark('trec-web-2013-diversity',
         docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_all,
-        citation='CollinsThompson2013TrecWeb',
+        citation='dblp:conf/trec/Collins-Thompson13',
         desc='TREC Web Track 2013 diversity ranking benchmark.')
 
     web2014 = Benchmark('trec-web-2014',
         docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_adhoc,
-        citation='CollinsThompson2014TrecWeb',
+        citation='dblp:conf/trec/Collins-Thompson14',
         desc='TREC Web Track 2014 ad hoc ranking benchmark.')
     web2014_diversity = Benchmark('trec-web-2014-diversity',
         docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_all,
-        citation='CollinsThompson2014TrecWeb',
+        citation='dblp:conf/trec/Collins-Thompson14',
         desc='TREC Web Track 2014 diversity ranking benchmark.')
 
 

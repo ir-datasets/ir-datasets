@@ -52,7 +52,7 @@ from ir_datasets.v2 import Benchmark, QrelTable, QueryTable, Resource, irds
 from ir_datasets.v2.datasets.clueweb12 import docs_b13
 from ir_datasets.v2.formats import Parser
 
-CITATION = 'Zuccon2016ClefEhealth; Palotti2017ClefEhealth'
+CITATION = 'dblp:conf/clef/ZucconPGKLPMBD16; dblp:conf/clef/PalottiZJPLGKH17'
 
 
 class _EhealthQueriesParser(Parser):

@@ -33,13 +33,13 @@ class _ClinicalTrialsDocsParser(Parser):
 with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
-    docs_2017_file = Resource('clinicaltrials-2017-docs.tar.gz',
+    docs_2017_file = Resource('clinicaltrials-2017.tar.gz',
         sources=['https://bionlp.nlm.nih.gov/trec2017precisionmedicine/clinicaltrials_xml.tar.gz'],
         md5='e5d333ceed0cbbbe513504c96148ab1a',
         size=724_731_456,
     )
     docs_2019_files = [
-        Resource(f'clinicaltrials-2019-docs-{i}.tar.gz',
+        Resource(f'clinicaltrials-2019-{i}.tar.gz',
             sources=[f'http://www.trec-cds.org/clinical_trials.{i}.tar.gz'],
             md5=md5, size=size)
         for i, (md5, size) in enumerate([
@@ -50,7 +50,7 @@ with irds.defaults(lang='en'):
         ])
     ]
     docs_2021_files = [
-        Resource(f'clinicaltrials-2021-docs-part{i}.zip',
+        Resource(f'clinicaltrials-2021-part{i}.zip',
             sources=[f'http://www.trec-cds.org/2021_data/ClinicalTrials.2021-04-27.part{i}.zip'],
             md5=md5, size=size)
         for i, (md5, size) in enumerate([
@@ -64,17 +64,17 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs_2017 = DocTable('clinicaltrials-2017-docs',
+    docs_2017 = DocTable('clinicaltrials-2017',
         source=docs_2017_file,
         parser=_ClinicalTrialsDocsParser('2017'),
         count_hint=241_006,
     )
-    docs_2019 = DocTable('clinicaltrials-2019-docs',
+    docs_2019 = DocTable('clinicaltrials-2019',
         source=docs_2019_files,
         parser=_ClinicalTrialsDocsParser('2019'),
         count_hint=306_238,
     )
-    docs_2021 = DocTable('clinicaltrials-2021-docs',
+    docs_2021 = DocTable('clinicaltrials-2021',
         source=docs_2021_files,
         parser=_ClinicalTrialsDocsParser('2021', compress_format='zip'),
         count_hint=375_580,

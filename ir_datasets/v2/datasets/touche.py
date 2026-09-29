@@ -119,11 +119,11 @@ QRELS_DEFS_2022_TASK_3 = {
     1: "relevant",
 }
 
-CITATION_TASK_1_2020 = 'Bondarenko2020Touche; Wachsmuth2017Quality'
-CITATION_TASK_2_2020 = 'Bondarenko2020Touche; Braunstain2016Support; Rafalak2014Credibility'
-CITATION_2021 = 'Bondarenko2021Touche'
-CITATION_2022 = 'Bondarenko2022Touche'
-CITATION_TASK_3_2022 = 'Bondarenko2022Touche; Kiesel2021Image; Dimitrov2021SemEval; Yanai2007Image'
+CITATION_TASK_1_2020 = 'dblp:conf/clef/BondarenkoFBGAP20; dblp:conf/eacl/WachsmuthSHPBHN17'
+CITATION_TASK_2_2020 = 'dblp:conf/clef/BondarenkoFBGAP20; dblp:conf/ecir/BraunstainKCSS16; dblp:conf/www/RafalakAW14'
+CITATION_2021 = 'dblp:conf/clef/BondarenkoGFBAP21a'
+CITATION_2022 = 'dblp:conf/clef/BondarenkoFKSGB22a'
+CITATION_TASK_3_2022 = 'dblp:conf/clef/BondarenkoFKSGB22a; dblp:conf/argmining/KieselRSP21; dblp:conf/semeval/DimitrovASASFNM21; dblp:conf/www/Yanai07'
 
 
 class _ToucheQueriesParser(Parser):

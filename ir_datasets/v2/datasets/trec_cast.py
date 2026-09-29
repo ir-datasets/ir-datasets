@@ -76,8 +76,8 @@ from ir_datasets.v2.formats import Parser
 
 NAME = 'trec-cast'
 
-CITATION_2019 = 'Dalton2019Cast'
-CITATION_2020 = 'Dalton2020Cast'
+CITATION_2019 = 'dblp:journals/corr/abs-2003-13624'
+CITATION_2020 = 'dblp:conf/trec/0001XC20'
 
 
 class _TrecCastDocsParser(Parser):

@@ -84,48 +84,48 @@ chk_file = Resource('clueweb09-chk.tar.gz',
 
 # Tables
 # -----------------------------------------
-docs = DocTable('clueweb09-docs',
+docs = DocTable('clueweb09',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(),
     count_hint=1_040_859_705)
-docs_ar = DocTable('clueweb09-ar-docs',
+docs_ar = DocTable('clueweb09-ar',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Arabic_1']),
     lang='ar', count_hint=29_192_662)
-docs_zh = DocTable('clueweb09-zh-docs',
+docs_zh = DocTable('clueweb09-zh',
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Chinese_1', 'ClueWeb09_Chinese_2',
                                        'ClueWeb09_Chinese_3', 'ClueWeb09_Chinese_4']),
     lang='zh', count_hint=177_489_357)
-docs_en = DocTable('clueweb09-en-docs',
+docs_en = DocTable('clueweb09-en',
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_English_1', 'ClueWeb09_English_2', 'ClueWeb09_English_3',
                                        'ClueWeb09_English_4', 'ClueWeb09_English_5', 'ClueWeb09_English_6',
                                        'ClueWeb09_English_7', 'ClueWeb09_English_8', 'ClueWeb09_English_9',
                                        'ClueWeb09_English_10']),
     lang='en', count_hint=503_903_810)
-docs_fr = DocTable('clueweb09-fr-docs',
+docs_fr = DocTable('clueweb09-fr',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_French_1']),
     lang='fr', count_hint=50_883_172)
-docs_de = DocTable('clueweb09-de-docs',
+docs_de = DocTable('clueweb09-de',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_German_1']),
     lang='de', count_hint=49_814_309)
-docs_it = DocTable('clueweb09-it-docs',
+docs_it = DocTable('clueweb09-it',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Italian_1']),
     lang='it', count_hint=27_250_729)
-docs_ja = DocTable('clueweb09-ja-docs',
+docs_ja = DocTable('clueweb09-ja',
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Japanese_1', 'ClueWeb09_Japanese_2']),
     lang='ja', count_hint=67_337_717)
-docs_ko = DocTable('clueweb09-ko-docs',
+docs_ko = DocTable('clueweb09-ko',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Korean_1']),
     lang='ko', count_hint=18_075_141)
-docs_pt = DocTable('clueweb09-pt-docs',
+docs_pt = DocTable('clueweb09-pt',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Portuguese_1']),
     lang='pt', count_hint=37_578_858)
-docs_es = DocTable('clueweb09-es-docs',
+docs_es = DocTable('clueweb09-es',
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Spanish_1', 'ClueWeb09_Spanish_2']),
     lang='es', count_hint=79_333_950)
-docs_catb = DocTable('clueweb09-catb-docs',
+docs_catb = DocTable('clueweb09-catb',
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_English_1']),
     lang='en', count_hint=50_220_423)
 

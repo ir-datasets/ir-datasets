@@ -40,7 +40,7 @@ CODEC_QREL_DEFS = {
     0: 'Not Relevant. This entity is not useful or on topic.',
 }
 
-CITATION = 'petroni-etal-2021-kilt; mackie2022codec'
+CITATION = 'dblp:conf/naacl/PetroniPFLYCTJK21; dblp:conf/sigir/MackieOGFM022'
 
 
 class _KiltDocsParser(Parser):

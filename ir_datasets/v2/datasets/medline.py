@@ -45,7 +45,7 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     docs_2004_files = [
-        Resource(f'medline-2004-docs-{part}.gz',
+        Resource(f'medline-2004-{part}.gz',
             sources=[f'https://dmice.ohsu.edu/trec-gen/data/2004/XML/2004_TREC_XML_MEDLINE_{part.upper()}.gz'],
             md5=md5, size=size)
         for part, (md5, size) in [
@@ -56,7 +56,7 @@ with irds.defaults(lang='en'):
         ]
     ]
     docs_2017_parts_files = [
-        Resource(f'medline-2017-docs-part{i}.tar.gz',
+        Resource(f'medline-2017-part{i}.tar.gz',
             sources=[f'https://bionlp.nlm.nih.gov/trec2017precisionmedicine/medline_xml.part{i}.tar.gz'],
             md5=md5, size=size)
         for i, (md5, size) in enumerate([
@@ -67,7 +67,7 @@ with irds.defaults(lang='en'):
             ('d71b9bb9e11d017f3f77ffe47dbf8aa9', 1_187_092_702),
         ], start=1)
     ]
-    docs_2017_aacr_asco_file = Resource('medline-2017-aacr-asco-docs.tar.gz',
+    docs_2017_aacr_asco_file = Resource('medline-2017-aacr-asco.tar.gz',
         sources=['https://bionlp.nlm.nih.gov/trec2017precisionmedicine/extra_abstracts.tar.gz'],
         md5='d91bb4ca9b50cbbd5986bb5c43082afb',
         size=61_150_087,
@@ -75,12 +75,12 @@ with irds.defaults(lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs_2004 = DocTable('medline-2004-docs',
+    docs_2004 = DocTable('medline-2004',
         source=[f.gunzip() for f in docs_2004_files],
         parser=_Medline2004DocsParser(),
         count_hint=3_672_808,
     )
-    docs_2017 = DocTable('medline-2017-docs',
+    docs_2017 = DocTable('medline-2017',
         source=[*docs_2017_parts_files, docs_2017_aacr_asco_file],
         parser=_Medline2017DocsParser(),
         count_hint=26_740_025,

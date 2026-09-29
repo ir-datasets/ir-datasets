@@ -58,7 +58,7 @@ class _MsMarcoV2DocsParser(Parser):
 with irds.defaults(dua=DUA, lang='en'):
     # Files
     # -----------------------------------------
-    docs_file = Resource('msmarco-document-v2-docs.tar',
+    docs_file = Resource('msmarco-document-v2.tar',
         sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco_v2_doc.tar', headers=_MS_HEADERS)],
         md5='eea90100409a254fdb157b8e4e349deb',
         size=34_648_862_720,
@@ -110,7 +110,7 @@ with irds.defaults(dua=DUA, lang='en'):
     )
     # Tables
     # -----------------------------------------
-    docs = DocTable('msmarco-document-v2-docs',
+    docs = DocTable('msmarco-document-v2',
         source=docs_file,
         parser=_MsMarcoV2DocsParser(),
     )

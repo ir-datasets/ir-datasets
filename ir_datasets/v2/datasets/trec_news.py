@@ -18,7 +18,7 @@ from ir_datasets.datasets.wapo import BL_MAP, BL_QREL_DEFS, RM_TAGS, TrecBackgro
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, irds
 from ir_datasets.v2.datasets.wapo import docs_v2 as wapo_v2_docs
 
-CITATION_2018 = 'Soboroff2018News'
+CITATION_2018 = 'dblp:conf/trec/SoboroffHH18'
 CITATION_2019 = 'Soboroff2019News'
 
 with irds.defaults(lang='en'):

@@ -65,12 +65,12 @@ with irds.defaults(dua=DUA, lang='en'):
 
     # Tables
     # -----------------------------------------
-    docs_v2 = DocTable('wapo-v2-docs',
+    docs_v2 = DocTable('wapo-v2',
         source=docs_v2_file,
         parser=_WapoDocsParser('WashingtonPost.v2/data/TREC_Washington_Post_collection.v2.jl'),
         count_hint=595_037,
     )
-    docs_v4 = DocTable('wapo-v4-docs',
+    docs_v4 = DocTable('wapo-v4',
         source=docs_v4_file,
         parser=_WapoDocsParser('WashingtonPost.v4/data/TREC_Washington_Post_collection.v4.jl'),
         count_hint=728_626,

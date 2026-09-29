@@ -92,7 +92,7 @@ SOURCE_INSTRUCTIONS = (
     "To proceed, symlink the source file here: {path}"
 )
 
-CITATION_WKSUP = 'MacAvaney2019Wksup; Sandhaus2008Nyt'
+CITATION_WKSUP = 'dblp:conf/sigir/MacAvaneyYHF19; Sandhaus2008Nyt'
 
 
 class _NytDocsParser(Parser):
@@ -135,7 +135,7 @@ docs_file = Resource('nyt-source.tgz',
 )
 # Tables
 # -----------------------------------------
-docs = DocTable('nyt-docs',
+docs = DocTable('nyt',
     source=docs_file,
     parser=_NytDocsParser(),
     lang='en',

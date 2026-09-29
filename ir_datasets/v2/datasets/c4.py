@@ -126,7 +126,7 @@ with irds.defaults(lang='en'):
     # Tables
     # -----------------------------------------
     # Only the train split (v1 excludes validation shards via filter_name='train').
-    en_noclean_tr_docs = DocTable('c4-en-noclean-tr-docs',
+    en_noclean_tr_docs = DocTable('c4-en-noclean-tr',
         source=[en_noclean_sources_file, en_noclean_checkpoints_file],
         parser=_C4DocsParser(source_name_filter=r'en\.noclean\.c4-train', filter_name='train'),
         count_hint=1_063_805_381,

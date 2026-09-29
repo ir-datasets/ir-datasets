@@ -24,7 +24,7 @@ from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, 
 from ir_datasets.v2.datasets.nyt import docs as nyt_docs
 from ir_datasets.v2.datasets.wapo import docs_v2 as wapo_v2_docs
 
-CITATION_2017 = 'Allan2017TrecCore; Sandhaus2008Nyt'
+CITATION_2017 = 'dblp:conf/trec/AllanHKLGV17; Sandhaus2008Nyt'
 
 with irds.defaults(lang='en'):
     # Files

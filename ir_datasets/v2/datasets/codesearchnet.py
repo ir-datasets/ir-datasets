@@ -68,7 +68,7 @@ NAME = 'codesearchnet'
 BASE_PATH = ir_datasets.util.home_path() / NAME
 LANGS = ['python', 'java', 'go', 'php', 'ruby', 'javascript']
 
-CITATION = 'Husain2019CodeSearchNet'
+CITATION = 'dblp:journals/corr/abs-1909-09436'
 
 
 def _extracted_dlcs(source):

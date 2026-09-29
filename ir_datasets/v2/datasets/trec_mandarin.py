@@ -26,8 +26,8 @@ DATA_ACCESS = (
     "for access. Once obtained, symlink or copy it here: {path}"
 )
 
-CITATION_TREC5 = 'Harman1997Chinese; corpus: Rogers2000Mandarin'
-CITATION_TREC6 = 'Wilkinson1998Chinese; corpus: Rogers2000Mandarin'
+CITATION_TREC5 = 'dblp:conf/trec/Smeaton96; corpus: Rogers2000Mandarin'
+CITATION_TREC6 = 'dblp:conf/trec/Wilkinson97; corpus: Rogers2000Mandarin'
 
 
 class TrecMandarinQuery(NamedTuple):

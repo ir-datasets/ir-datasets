@@ -34,9 +34,9 @@ from ir_datasets.v2 import (
 from ir_datasets.v2.datasets.gov2 import DUA, docs
 from ir_datasets.v2.formats import Parser
 
-CITATION_TB_2004 = 'Clarke2004TrecTerabyte'
-CITATION_TB_2005 = 'Clarke2005TrecTerabyte'
-CITATION_TB_2006 = 'Buttcher2006TrecTerabyte'
+CITATION_TB_2004 = 'dblp:conf/trec/ClarkeCS04'
+CITATION_TB_2005 = 'dblp:conf/trec/ClarkeSS05'
+CITATION_TB_2006 = 'dblp:conf/trec/ButtcherCS06'
 
 
 class _TrecColonQueriesParser(Parser):

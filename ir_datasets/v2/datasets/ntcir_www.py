@@ -114,11 +114,11 @@ with irds.defaults(lang='en'):
     # -----------------------------------------
     ntcir_www_1 = Benchmark('ntcir-www-1',
         docs=docs_b13, queries=ntcir_www_1_queries, qrels=ntcir_www_1_qrels,
-        citation='Luo2017Www1',
+        citation='dblp:conf/ntcir/0001S0DXX17',
         desc='NTCIR-13 WWW-1.')
     ntcir_www_2 = Benchmark('ntcir-www-2',
         docs=docs_b13, queries=ntcir_www_2_queries, qrels=ntcir_www_2_qrels,
-        citation='Mao2018OWww2',
+        citation='dblp:conf/ntcir/MaoS0X0D19',
         desc='NTCIR-14 WWW-2.')
     ntcir_www_3 = Benchmark('ntcir-www-3',
         docs=docs_b13, queries=ntcir_www_3_queries,

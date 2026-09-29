@@ -245,7 +245,7 @@ with irds.defaults(lang='en'):
 
 # Benchmarks
 # -----------------------------------------
-CITATION = 'Kwiatkowski2019Nq'
+CITATION = 'dblp:journals/tacl/KwiatkowskiPRCP19'
 
 dev = Benchmark('natural-questions-dev',
     docs=docs,
