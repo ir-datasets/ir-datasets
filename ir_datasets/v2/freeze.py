@@ -31,7 +31,7 @@ from .graph import default_graph
 MANIFEST_VERSION = 2
 
 #: Fields an earlier manifest wrote that nothing writes any more.
-RETIRED_FIELDS = {'hashes', 'size', 'validation', 'sources', 'dua'}
+RETIRED_FIELDS = {'hashes', 'size', 'validation', 'sources', 'dua', 'lang'}
 
 #: The provider a bare (no positional arg) ``freeze`` call targets.
 DEFAULT_PROVIDER = 'ir_datasets.v2.provider:irds'

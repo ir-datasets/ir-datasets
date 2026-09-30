@@ -685,7 +685,6 @@ class Table(Node):
             name,
             metadata={
                 'format': repr(parser) if parser is not None else None,
-                'lang': lang,
                 'defs': ({str(k): v for k, v in defs.items()} if defs else None),
                 **meta.pop('metadata', {}),
             },
@@ -693,6 +692,19 @@ class Table(Node):
 
     def structural_edges(self):
         return list(self._structural)
+
+    def discovery_literals(self):
+        """Language and column names, reported at discovery (never frozen):
+        both come from the table's own declaration. ``columns_json`` is one
+        ordered JSON literal, since triples themselves are unordered."""
+        literals = {'lang': self.lang}
+        try:
+            fields = list(getattr(self.record_type, '_fields', ()))
+        except Exception:
+            fields = []  # e.g. a handler that can't say without touching its data
+        if fields:
+            literals['columns_json'] = json.dumps(fields)
+        return {k: v for k, v in literals.items() if v}
 
     @property
     def count_hint(self):
