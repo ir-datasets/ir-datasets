@@ -356,12 +356,20 @@ class ManifestProvider:
         entirely instead of relying on a manifest at all.
         """
         from .freeze import row_for
-        self._bootstrap()
+        # Always import the package's modules, not only when nothing is frozen:
+        # facts derived from a node's own declaration (size, validation,
+        # sources -- see ``Node.discovery_literals``) are reported from the
+        # live node, never written to the manifest.
+        self.import_all()
         seen = set()
         for name, node in self.nodes.items():
             if name in self.generated:
                 continue
-            yield from row_triples(name, row_for(node))
+            # A node needs no particular base class (see protocols.Node), so
+            # discovery_literals is optional.
+            literals = getattr(node, 'discovery_literals', lambda: {})()
+            row = {**row_for(node), **{k: v for k, v in literals.items() if v}}
+            yield from row_triples(name, row)
             seen.add(name)
         for name, row in self.manifest()['nodes'].items():
             if name not in seen:

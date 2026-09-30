@@ -16,6 +16,7 @@ parsers already expect (``path(force=True)`` / ``stream()``, see ``Readable``
 below), so all of ``ir_datasets.formats`` works unchanged.
 """
 import contextlib
+import datetime
 import io
 import json
 import os
@@ -334,6 +335,82 @@ class _ManualSource(Source):
 
     def __repr__(self):
         return f'Source.external({self.default!r})'
+
+
+VALIDATION_LOG_NAME = 'external-validation.json'
+
+
+def validation_log_path():
+    """``<home>/external-validation.json`` -- kept beside (not inside) the
+    external files so it survives ``IR_DATASETS_EXTERNAL`` pointing elsewhere."""
+    return Path(ir_datasets.util.home_path()) / VALIDATION_LOG_NAME
+
+
+class ExternalValidationLog:
+    """Which user-supplied (``Source.external``) files have been hash-checked.
+
+    A manual file is read in place, never copied, so there is no download step
+    to hang the check on. Instead the first access hashes the file where it
+    is and records that here; later accesses find the record and skip the
+    read. A record is keyed by the file's absolute path and only trusted while
+    the file's size and mtime and the Resource's declared hashes are all
+    unchanged -- replace the file, or change the declared hashes, and it is
+    validated again.
+    """
+    def __init__(self, path=None):
+        self.path = Path(path) if path else validation_log_path()
+
+    def _load(self):
+        try:
+            with open(self.path) as f:
+                data = json.load(f)
+            return data if isinstance(data, dict) else {}
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    @staticmethod
+    def _signature(file_path, hashes):
+        st = os.stat(file_path)
+        return {'size': st.st_size, 'mtime_ns': st.st_mtime_ns,
+                'hashes': [f'{a}:{hashes[a]}' for a in sorted(hashes)]}
+
+    def is_validated(self, file_path, hashes):
+        record = self._load().get(str(file_path))
+        if not record:
+            return False
+        sig = self._signature(file_path, hashes)
+        return all(record.get(k) == v for k, v in sig.items())
+
+    def is_recorded(self, key, signature):
+        """Whether ``key`` has a record whose fields include ``signature``
+        (for checks that aren't a single file's hash -- see ``Directory``)."""
+        record = self._load().get(str(key))
+        return bool(record) and all(record.get(k) == v for k, v in signature.items())
+
+    def record_entry(self, key, signature, **extra):
+        data = self._load()
+        data[str(key)] = {
+            **signature, **extra,
+            'validated_at': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
+        }
+        self._write(data)
+
+    def record(self, file_path, hashes, resource=None):
+        data = self._load()
+        data[str(file_path)] = {
+            **self._signature(file_path, hashes),
+            'resource': resource,
+            'validated_at': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds'),
+        }
+        self._write(data)
+
+    def _write(self, data):
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = self.path.with_name(self.path.name + f'.{os.getpid()}.tmp')
+        with open(tmp, 'w') as f:
+            json.dump(data, f, indent=2, sort_keys=True)
+            f.write('\n')
+        os.replace(tmp, self.path)
 
 
 def describe_sources(sources):

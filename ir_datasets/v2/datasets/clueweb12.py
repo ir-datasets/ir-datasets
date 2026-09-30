@@ -114,8 +114,19 @@ class _ClueWeb12b13DocsParser(Parser):
 
 # Files
 # -----------------------------------------
+# Every corpus file under ClueWeb12_00..19, built from the distributor's md5 checksum files.
+# (path, size, md5) -- checked on first access by path and size, see
+# directory_manifest.py. On the mirror only.
+docs_manifest = Resource('clueweb12-manifest.jsonl.gz',
+    sources=[Source.mirror()],
+    hash='md5:22c8732003b891ac208d99e680b1810c',
+    size=1_005_822,
+)
+
 docs_file = Directory('clueweb12.dir',
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
+    manifest=docs_manifest,
+    size=4_989_416_280_062,  # total of the manifest's files
     dua=DUA,
 )
 docs_chk_file = Resource('clueweb12-chk.tar.gz',

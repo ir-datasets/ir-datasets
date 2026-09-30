@@ -28,7 +28,7 @@ from ir_datasets.datasets.gov2 import Gov2DocCountFile
 from ir_datasets.datasets.gov2 import Gov2Docs as _V1Gov2Docs
 from ir_datasets.datasets.gov2 import Gov2Docstore as _V1Gov2Docstore
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, CacheDocstore
-from ir_datasets.v2 import DocTable, Directory, Source, irds
+from ir_datasets.v2 import DocTable, Directory, Resource, Source, irds
 from ir_datasets.v2.formats import Parser
 
 DUA = ("Please confirm you have (or your organization has) filed a data usage "
@@ -69,8 +69,19 @@ class _Gov2DocsParser(Parser):
 
 # Files
 # -----------------------------------------
+# Every GOV2_data file (GOV2_extras is optional and not listed).
+# (path, size, sha256) -- checked on first access by path and size, see
+# directory_manifest.py. On the mirror only.
+docs_manifest = Resource('gov2-manifest.jsonl.gz',
+    sources=[Source.mirror()],
+    hash='md5:9fb82f30e49fba2db0fa49bcfc1b46a5',
+    size=1_295_149,
+)
+
 docs_file = Directory('gov2.dir',
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
+    manifest=docs_manifest,
+    size=86_594_814_080,  # total of the manifest's files
     dua=DUA,
 )
 

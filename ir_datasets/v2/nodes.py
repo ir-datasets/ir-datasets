@@ -51,7 +51,7 @@ from .provider import irds
 from .sources import (
     describe_sources,
     DOCSTORE_FORMAT, Readable, as_source, build_download, default_cache_path,
-    legacy_path, local_copy_hint, materialize, migrate_legacy,
+    ExternalValidationLog, legacy_path, local_copy_hint, materialize, migrate_legacy,
 )
 
 _logger = ir_datasets.log.easy()
@@ -151,6 +151,11 @@ DERIVED_FROM = irds.edge_kind('derived_from', structural=True,
 #: duplicate it.
 SUITE_MEMBER = irds.edge_kind('member', structural=True,
                               desc='suite -> a benchmark or nested suite it contains')
+#: Informational: a Directory -> the manifest its contents are checked against
+#: on first access. Not structural -- the directory is not built from it.
+VALIDATED_BY = irds.edge_kind('validated_by', structural=False,
+                              desc='what a node\'s contents are validated against '
+                                   '(e.g. a directory -> its file manifest)')
 STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
 #: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
@@ -273,11 +278,22 @@ class Resource(Node, Readable):
         self._download = None
         self._hinted = False
         super().__init__(name, metadata={
-            'hashes': [f'{a}:{self.hashes[a]}' for a in sorted(self.hashes)],
-            'size': size,
-            'sources': describe_sources(self.sources),
-            'dua': dua,
         }, **meta)
+
+    def _validation(self):
+        """How a consumer can check these bytes: one JSON blob
+        (``irds:validation``), absent when nothing is declared, so "no
+        validation" is the absence of the field."""
+        if not self.hashes:
+            return None
+        return {'type': 'file_hash',
+                'hashes': [f'{a}:{self.hashes[a]}' for a in sorted(self.hashes)]}
+
+    def discovery_literals(self):
+        return {k: v for k, v in
+                {'size': self.size, 'validation': self._validation(),
+                 'sources': describe_sources(self.sources),
+                 'dua': self.dua}.items() if v}
 
     @property
     def md5(self):
@@ -354,29 +370,77 @@ class Resource(Node, Readable):
 
     def _hint_local_copy(self):
         """Tell the user where to symlink an existing copy, once, before a
-        large download starts."""
+        large download starts. Not for a file the user must supply
+        themselves: its instructions already say where it goes."""
         if self._hinted:
             return
         self._hinted = True
+        if self.manual_sources:
+            return
         hint = local_copy_hint(self)
         if hint:
             _logger.info(hint)
 
-    def path(self, force=True):
+    @property
+    def manual_sources(self):
+        return [s for s in self.sources if getattr(s, 'kind', None) == 'manual']
+
+    def _external_path(self):
+        """The user-supplied copy of this file, in place, or None. Never
+        copied into the cache: it is read where the user put it."""
+        for source in self.manual_sources:
+            if source.present():
+                return source.local_path
+        return None
+
+    def _validate_external(self, path):
+        """Hash a user-supplied file the first time it is used, and record
+        that in ``external-validation.json`` (see ``ExternalValidationLog``);
+        a recorded, unchanged file is trusted without another read."""
+        if not self.hashes:
+            return
+        log = ExternalValidationLog()
+        if log.is_validated(path, self.hashes):
+            return
+        _logger.info(f'validating {path} (first access; recorded in {log.path})')
+        with open(path, 'rb') as f:
+            hashers = {a: hashlib.new(a) for a in self.hashes}
+            for chunk in iter(lambda: f.read(1 << 20), b''):
+                for hasher in hashers.values():
+                    hasher.update(chunk)
+        for algo, expected in sorted(self.hashes.items()):
+            actual = hashers[algo].hexdigest()
+            if actual != expected.lower():
+                raise ir_datasets.util.HashVerificationError(
+                    f'{path}: expected {algo} hash to be {expected} but got {actual}')
+        log.record(path, self.hashes, resource=self.qualified_name or self.name)
+
+    def _local_path(self, validate=True):
+        """Where this file already is, if anywhere: the cache (the v2 path or
+        a migrated v1 copy), else the user's own copy in place."""
         existing = self.existing_path()
         if existing is not None:
-            return str(existing)
+            return existing
+        external = self._external_path()
+        if external is not None and validate:
+            self._validate_external(external)
+        return external
+
+    def path(self, force=True):
+        local = self._local_path(validate=force)
+        if local is not None:
+            return str(local)
         if force:
             self._hint_local_copy()
         return self.download.path(force)
 
     @contextlib.contextmanager
     def stream(self):
-        existing = self.existing_path()
-        if existing is None:
+        local = self._local_path()
+        if local is None:
             self._hint_local_copy()
-        if existing is not None:
-            with open(existing, 'rb') as fin:
+        if local is not None:
+            with open(local, 'rb') as fin:
                 yield fin
         else:
             with self.download.stream() as stream:
@@ -395,6 +459,10 @@ class File(Resource):
     """
 
 
+class ValidationError(IOError):
+    """A user-supplied file or directory does not match what is declared."""
+
+
 class Directory(Resource):
     """A Resource that is a tree of files, not one blob -- addressed
     member-by-member via ``.relative(path)`` (inherited from ``Readable``,
@@ -403,11 +471,51 @@ class Directory(Resource):
     returns the root of the tree, for a caller that wants to walk it itself;
     a parser reading one known member goes through ``.relative(path)``
     instead.
+
+    ``manifest=`` is a Resource holding the tree's file manifest (see
+    ``directory_manifest``). When given, the first access checks that every
+    listed file is present at its listed size (``stat`` only, no reads), and
+    records that in ``external-validation.json``. The manifest also carries
+    hashes, for a fuller check later.
     """
+    def __init__(self, name, *, manifest=None, **kwargs):
+        super().__init__(name, **kwargs)
+        self.manifest = manifest
+
+    def _validation(self):
+        if self.manifest is None:
+            return None
+        return {'type': 'directory_manifest', 'checks': ['files', 'sizes']}
+
+    def structural_edges(self):
+        edges = list(super().structural_edges())
+        if self.manifest is not None:
+            edges.append(Edge(VALIDATED_BY, self.manifest))
+        return edges
+
     def stream(self):
         raise TypeError(
             f'{self.name} is a directory, not a single file -- use '
             f'.relative(path) to address one file within it')
+
+    def _validate_external(self, path):
+        if self.manifest is None:
+            return
+        from .directory_manifest import check_files_and_sizes
+        log = ExternalValidationLog()
+        manifest_hashes = sorted(f'{a}:{d}' for a, d in self.manifest.hashes.items())
+        signature = {'kind': 'directory_manifest',
+                     'manifest': manifest_hashes or self.manifest.name}
+        if log.is_recorded(path, signature):
+            return
+        _logger.info(f'checking files and sizes under {path} '
+                     f'(first access; recorded in {log.path})')
+        n, total, problems = check_files_and_sizes(path, self.manifest.path())
+        if problems:
+            raise ValidationError(
+                f'{path} does not match {self.manifest.name}:\n  ' + '\n  '.join(problems))
+        log.record_entry(path, signature, resource=self.qualified_name or self.name,
+                         files=n, bytes=total)
 
 
 class GitRepo(Directory):
@@ -436,13 +544,20 @@ class GitRepo(Directory):
         super().__init__(name, **meta)
         self.metadata['repo'] = repo
         self.metadata['commit'] = commit
+        self._git_source = None
         try:
             self.metadata['url'] = self.url()
-            self.metadata['sources'] = [json.dumps(
+            self._git_source = json.dumps(
                 {'order': 0, 'kind': 'git', 'url': self.metadata['url'], 'commit': commit},
-                sort_keys=True)]
+                sort_keys=True)
         except NotImplementedError:
             pass  # a host that hasn't implemented url() yet -- repo/commit still identify it
+
+    def discovery_literals(self):
+        literals = super().discovery_literals()
+        if self._git_source is not None:
+            literals['sources'] = [self._git_source]
+        return literals
 
     def url(self):
         """A human-visitable URL for this exact repo -- what you'd paste into

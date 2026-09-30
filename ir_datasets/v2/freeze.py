@@ -30,6 +30,9 @@ from .graph import default_graph
 
 MANIFEST_VERSION = 2
 
+#: Fields an earlier manifest wrote that nothing writes any more.
+RETIRED_FIELDS = {'hashes', 'size', 'validation', 'sources', 'dua'}
+
 #: The provider a bare (no positional arg) ``freeze`` call targets.
 DEFAULT_PROVIDER = 'ir_datasets.v2.provider:irds'
 
@@ -48,7 +51,11 @@ def _attested_row(node, graph, verify, options):
         # Keep what an earlier freeze recorded (a table not re-verified this
         # run) rather than dropping it.
         previous = graph.frozen(node.qualified_name)
-        attestation = {k: v for k, v in previous.items() if k not in row}
+        # Retired manifest fields (``hashes``; ``size``, ``validation``, ``sources`` and ``dua`` are
+        # now reported at discovery, see ``Node.discovery_literals``) are not
+        # attestations: never carry a stale copy forward.
+        attestation = {k: v for k, v in previous.items()
+                       if k not in row and k not in RETIRED_FIELDS}
     row.update(attestation)
     return row, bool(attestation)
 

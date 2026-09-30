@@ -463,8 +463,9 @@ class TestV2ResourceHashes(unittest.TestCase):
         r = v2.Resource('test-hash-multi', sources=['https://x/y'],
                         hashes=['md5:' + 'a' * 32, 'sha256:' + 'b' * 64])
         self.assertEqual({'md5': 'a' * 32, 'sha256': 'b' * 64}, r.hashes)
-        self.assertEqual(['md5:' + 'a' * 32, 'sha256:' + 'b' * 64],
-                         r.metadata['hashes'])
+        self.assertEqual({'type': 'file_hash',
+                          'hashes': ['md5:' + 'a' * 32, 'sha256:' + 'b' * 64]},
+                         r.discovery_literals()['validation'])
 
     def test_dict_form(self):
         r = v2.Resource('test-hash-dict', sources=['https://x/y'],
@@ -474,7 +475,8 @@ class TestV2ResourceHashes(unittest.TestCase):
     def test_md5_kwarg_is_shorthand(self):
         r = v2.Resource('test-hash-md5kw', sources=['https://x/y'], md5='f' * 32)
         self.assertEqual({'md5': 'f' * 32}, r.hashes)
-        self.assertEqual(['md5:' + 'f' * 32], r.metadata['hashes'])
+        self.assertEqual({'type': 'file_hash', 'hashes': ['md5:' + 'f' * 32]},
+                         r.discovery_literals()['validation'])
 
     def test_explicit_hashes_win_over_md5_kwarg(self):
         r = v2.Resource('test-hash-precedence', sources=['https://x/y'],
@@ -896,7 +898,7 @@ class TestSourceRecords(unittest.TestCase):
 
     def _srcs(self, node):
         import json
-        return [json.loads(s) for s in node.metadata['sources']]
+        return [json.loads(s) for s in node.discovery_literals()['sources']]
 
     def test_url_mirror_and_manual_records(self):
         import tempfile

@@ -216,7 +216,8 @@ def _docs_resource_row(lang):
     the TsvDocs wrapper, ...). Still cheap: ``_docs_resource`` only ever
     touches ``_index()`` (fetched once, cached by ``Lazy``) plus a dict
     lookup, same as if this name were actually resolved."""
-    return _docs_resource(lang).metadata
+    resource = _docs_resource(lang)
+    return {**resource.metadata, **resource.discovery_literals()}
 
 
 #: lang -> the one DocTable for that language's Wikipedia corpus, shared by
@@ -255,7 +256,8 @@ def _qrel_resource(variant, doc_lang, query_lang, split):
 def _qrel_resource_row(variant, doc_lang, query_lang, split):
     """``row_metadata=`` for the shared queries+qrels Resource generator --
     see ``_docs_resource_row``."""
-    return _qrel_resource(variant, doc_lang, query_lang, split).metadata
+    resource = _qrel_resource(variant, doc_lang, query_lang, split)
+    return {**resource.metadata, **resource.discovery_literals()}
 
 
 #: (doc_lang, variant, query_lang, split) -> the one Benchmark for it.

@@ -118,6 +118,14 @@ class Node:
         """This node's dependencies, as Edges (object or name targets)."""
         return []
 
+    def discovery_literals(self):
+        """Literal properties (``{field: value}``) reported when the graph is
+        discovered, but *not* written to the frozen manifest: facts derivable
+        from the node's own declaration (a Resource's size and how it is
+        validated), which a manifest row would only duplicate. Empty values are
+        dropped."""
+        return {}
+
     def attest(self, *, verify=False, **options):
         """Data ``freeze`` should record for this node, or None.
 

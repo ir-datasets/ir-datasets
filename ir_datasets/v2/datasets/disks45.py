@@ -24,7 +24,7 @@ reference rather than duplicating it -- same cross-file pattern as
 ``msmarco_passage.py``.
 """
 import ir_datasets
-from ir_datasets.v2 import Directory, Source, TrecDocs, irds
+from ir_datasets.v2 import Directory, Resource, Source, TrecDocs, irds
 
 DUA = ("Please confirm you agree to the TREC data usage agreement found at "
        "<https://trec.nist.gov/data/cd45/index.html>")
@@ -39,8 +39,19 @@ DOCS_OLD_LOCATION = 'disks45/corpus'
 
 # Files
 # -----------------------------------------
+# Every document file (path, size, sha256) of the FBIS/FR94/FT/LATIMES tree, checked on
+# first access by path and size -- see directory_manifest.py. On the mirror
+# only (generated from a copy of the corpus, not published upstream).
+docs_manifest = Resource('disks45-manifest.jsonl.gz',
+    sources=[Source.mirror()],
+    hash='md5:952c2a0db862c6982995c5bfbb9a28fb',
+    size=110_381,
+)
+
 docs_file = Directory('disks45.dir',
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
+    manifest=docs_manifest,
+    size=1_997_002_586,  # total of the manifest's files
     dua=DUA,
 )
 
