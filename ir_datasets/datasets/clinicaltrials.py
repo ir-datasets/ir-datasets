@@ -77,17 +77,17 @@ class ClinicalTrialsDocs(BaseDocs):
         xml = ET.fromstring(xml)
         doc_id = ''.join(xml.find('.//nct_id').itertext())
         title = xml.find('.//official_title')
-        if not title:
+        if title is None:
             title = xml.find('.//brief_title')
         title = ''.join(title.itertext())
         condition = xml.find('.//condition')
-        condition = ''.join(condition.itertext()) if condition else ''
+        condition = ''.join(condition.itertext()) if condition is not None else ''
         summary = xml.find('.//brief_summary')
-        summary = ''.join(summary.itertext()) if summary else ''
+        summary = ''.join(summary.itertext()) if summary is not None else ''
         detailed_description = xml.find('.//detailed_description')
-        detailed_description = ''.join(detailed_description.itertext()) if detailed_description else ''
+        detailed_description = ''.join(detailed_description.itertext()) if detailed_description is not None else ''
         eligibility = xml.find('.//eligibility/criteria')
-        eligibility = ''.join(eligibility.itertext()) if eligibility else ''
+        eligibility = ''.join(eligibility.itertext()) if eligibility is not None else ''
         return ClinicalTrialsDoc(doc_id, title, condition, summary, detailed_description, eligibility)
 
     def docs_path(self, force=True):
