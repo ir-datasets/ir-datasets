@@ -187,8 +187,10 @@ class _BrightQrelsParser(Parser):
         return _V1BrightQrels(source, gold_field=self.gold_field)
 
 
-with irds.defaults(lang='en'):
-    benchmarks = {}          # flat name -> Benchmark, for suite assembly + aliasing
+# license verified 2026-09-30: https://huggingface.co/datasets/xlangai/BRIGHT (card metadata: CC-BY-4.0)
+with irds.defaults(lang='en', license='CC-BY-4.0'):
+    benchmarks = {}          # short-document benchmarks: flat name -> Benchmark
+    long_benchmarks = {}     # long-document variants (their own suite, bright-long)
     queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table)
 
     for subset in SHORT_SUBSETS:
@@ -206,6 +208,7 @@ with irds.defaults(lang='en'):
                 f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], hash=f'md5:{r_md5}', size=r_size)
 
         queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
+                          derived_from=list(reasoning_sources.values()),
                           parser=_BrightQueriesParser(reasoning_sources))
         qrels = QrelTable(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
                       parser=_BrightQrelsParser(gold_field='gold_ids'))
@@ -229,16 +232,20 @@ with irds.defaults(lang='en'):
                            parser=_BrightQrelsParser(gold_field='gold_ids_long'))
 
         name = f'bright-{subset}-long'
-        benchmarks[name] = Benchmark(name, docs=long_docs, queries=queries, qrels=long_qrels,
+        long_benchmarks[name] = Benchmark(name, docs=long_docs, queries=queries, qrels=long_qrels,
                                      citation=CITATION, metrics=METRICS,
                                      desc=f'BRIGHT: {subset}, long-form documents.')
 
 
 # Registration
 # -----------------------------------------
-irds.register(*benchmarks.values())
+irds.register(*benchmarks.values(), *long_benchmarks.values())
 
 irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CITATION,
                     desc='The BRIGHT evaluation suite: reasoning-intensive retrieval '
                          'across 12 domains (StackExchange topics, coding, theorem-proving, '
-                         'competition math), plus long-document variants for 8 of them.'))
+                         'competition math).'))
+
+irds.register(Suite('bright-long', benchmarks=list(long_benchmarks.values()), citation=CITATION,
+                    desc='BRIGHT with long-form documents: the same queries as bright, '
+                         'against long documents, for 8 of its 12 domains.'))

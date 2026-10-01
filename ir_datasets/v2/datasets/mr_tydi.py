@@ -75,26 +75,28 @@ class _MrTydiDocsParser(Parser):
                             docstore_path=str(node.docstore_path))
 
 
-_benchmarks = []
+# license verified 2026-09-30: https://github.com/castorini/mr.tydi README ("Mr. TyDi is licensed under the Apache License 2.0")
+with irds.defaults(license='Apache-2.0'):
+    _benchmarks = []
 
-for _lang, (_dir, _url, _md5, _size) in LANGS.items():
-    _tar = Resource(f'mrtydi-{_lang}.tar.gz', sources=[_url], hash=f'md5:{_md5}', size=_size)
+    for _lang, (_dir, _url, _md5, _size) in LANGS.items():
+        _tar = Resource(f'mrtydi-{_lang}.tar.gz', sources=[_url], hash=f'md5:{_md5}', size=_size)
 
-    _docs = DocTable(f'mrtydi-{_lang}-docs',
-        source=_tar.member(f'{_dir}/collection/docs.jsonl.gz').gunzip(),
-        parser=_MrTydiDocsParser(), lang=_lang,
-        desc=f'The Mr. TyDi {_lang} Wikipedia passage corpus.')
+        _docs = DocTable(f'mrtydi-{_lang}-docs',
+            source=_tar.member(f'{_dir}/collection/docs.jsonl.gz').gunzip(),
+            parser=_MrTydiDocsParser(), lang=_lang,
+            desc=f'The Mr. TyDi {_lang} Wikipedia passage corpus.')
 
-    for _split in SPLITS:
-        _name = f'mrtydi-{_lang}-{_split}'
-        _benchmarks.append(Benchmark(_name,
-            docs=_docs,
-            queries=TsvQueries(f'{_name}-queries',
-                source=_tar.member(f'{_dir}/topic.{_split}.tsv'), lang=_lang),
-            qrels=TrecQrels(f'{_name}-qrels',
-                source=_tar.member(f'{_dir}/qrels.{_split}.txt'), defs=QREL_DEFS),
-            citation=CITATION,
-            desc=f'Mr. TyDi {_lang}, {_split} split.'))
+        for _split in SPLITS:
+            _name = f'mrtydi-{_lang}-{_split}'
+            _benchmarks.append(Benchmark(_name,
+                docs=_docs,
+                queries=TsvQueries(f'{_name}-queries',
+                    source=_tar.member(f'{_dir}/topic.{_split}.tsv'), lang=_lang),
+                qrels=TrecQrels(f'{_name}-qrels',
+                    source=_tar.member(f'{_dir}/qrels.{_split}.txt'), defs=QREL_DEFS),
+                citation=CITATION,
+                desc=f'Mr. TyDi {_lang}, {_split} split.'))
 
 
 # Registration

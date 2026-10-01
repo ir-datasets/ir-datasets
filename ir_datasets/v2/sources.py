@@ -536,6 +536,7 @@ def build_download(file):
     return Download(
         downloads,
         expected_md5=file.md5,
+        expected_hashes=file.hashes,
         cache_path=str(file.cache_path) if file.cache_path else None,
         dua=file.dua,
         size_hint=file.size,

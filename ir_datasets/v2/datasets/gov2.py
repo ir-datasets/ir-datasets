@@ -31,6 +31,10 @@ from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, CacheDocstore
 from ir_datasets.v2 import DocTable, Directory, Resource, Source, irds
 from ir_datasets.v2.formats import Parser
 
+# license verified 2026-09-30: http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html
+# says to use the .GOV organisational agreement "For .GOV or .GOV2" (text read and confirmed).
+LICENSE = 'http://ir.dcs.gla.ac.uk/test_collections/organisational_agreement.GOV.pdf'
+
 DUA = ("Please confirm you have (or your organization has) filed a data usage "
        "agreement with the University of Glasgow for GOV2, as described at "
        "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>")
@@ -79,6 +83,7 @@ docs_manifest = Resource('gov2-manifest.jsonl.gz',
 )
 
 docs_file = Directory('gov2.dir',
+    license=LICENSE,
     sources=[Source.external(DOCS_LOCAL_PATH, old_locations=DOCS_OLD_LOCATIONS, instructions=DATA_ACCESS)],
     manifest=docs_manifest,
     size=86_594_814_080,  # total of the manifest's files
@@ -88,6 +93,7 @@ docs_file = Directory('gov2.dir',
 # Tables
 # -----------------------------------------
 docs = DocTable('gov2',
+    license=LICENSE,
     source=docs_file,
     parser=_Gov2DocsParser(),
     lang='en',

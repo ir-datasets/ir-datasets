@@ -201,7 +201,9 @@ class _NqScoredDocsParser(Parser):
 
 # Tables
 # -----------------------------------------
-with irds.defaults(lang='en'):
+# license verified 2026-09-30: https://huggingface.co/datasets/google-research-datasets/natural_questions
+# (card: Creative Commons Attribution-ShareAlike 3.0 Unported, CC-BY-SA-3.0)
+with irds.defaults(lang='en', license='CC-BY-SA-3.0'):
     docs = DocTable('natural-questions-docs',
         source=list(_all_files.values()),
         parser=_NqDocsParser(),

@@ -98,13 +98,19 @@ class Node:
     type = None
 
     def __init__(self, name, *, desc=None, pretty_name=None, citation=None,
-                 deprecated=None, metadata=None):
+                 deprecated=None, license=None, metadata=None):
         if ':' in name:
             raise ValueError(
                 f'{name!r}: node names may not contain ":"; the prefix is '
                 f'applied by the provider at registration')
         self.name = name
         deprecated = default('deprecated', deprecated)
+        #: The license the node's data is distributed under: an SPDX
+        #: identifier (``'CC-BY-4.0'``) where one exists, else the URL of the
+        #: governing terms; a list if several apply. Declared in code and
+        #: reported at discovery (``discovery_literals``), never frozen into
+        #: the manifest -- the declaration *is* the source of truth.
+        self.license = default('license', license)
         self.metadata = {k: v for k, v in {
             'desc': desc, 'pretty_name': pretty_name, 'citation': citation,
             'deprecated': deprecated, **(metadata or {}),
@@ -124,7 +130,7 @@ class Node:
         from the node's own declaration (a Resource's size and how it is
         validated), which a manifest row would only duplicate. Empty values are
         dropped."""
-        return {}
+        return {'license': self.license} if self.license else {}
 
     def attest(self, *, verify=False, **options):
         """Data ``freeze`` should record for this node, or None.

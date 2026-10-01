@@ -355,7 +355,7 @@ class ManifestProvider:
         genuinely live catalog (``hf_provider.HfProvider``) overrides this
         entirely instead of relying on a manifest at all.
         """
-        from .freeze import row_for
+        from .freeze import RETIRED_FIELDS, row_for
         # Always import the package's modules, not only when nothing is frozen:
         # facts derived from a node's own declaration (size, validation,
         # sources -- see ``Node.discovery_literals``) are reported from the
@@ -369,6 +369,14 @@ class ManifestProvider:
             # discovery_literals is optional.
             literals = getattr(node, 'discovery_literals', lambda: {})()
             row = {**row_for(node), **{k: v for k, v in literals.items() if v}}
+            # The live declaration wins, but what ``freeze --verify`` attested
+            # (count, content hash, samples, score counts, ...) only exists in
+            # the manifest: carry it over, minus fields that are now derived
+            # from the declaration instead (RETIRED_FIELDS).
+            row = {**{k: v for k, v in self.manifest()['nodes'].get(name, {}).items()
+                      if k not in RETIRED_FIELDS and k not in row}, **row}
+            if getattr(node, 'samples_permitted', True) is False:
+                row.pop('samples', None)  # see freeze._attested_row
             yield from row_triples(name, row)
             seen.add(name)
         for name, row in self.manifest()['nodes'].items():

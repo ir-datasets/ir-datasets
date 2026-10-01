@@ -99,7 +99,9 @@ class _ArgsMeCombinedDocsParser(Parser):
 
 CITATION = 'dblp:conf/argmining/WachsmuthPKAPQD17; dblp:conf/ki/AjjourWKPHS19'
 
-with irds.defaults(lang='en'):
+# license verified 2026-09-30: Zenodo records 3274636, 4139439, 3734893, 6873574 (args.me corpus) all list CC-BY-4.0
+# (https://zenodo.org/api/records/3274636)
+with irds.defaults(lang='en', license='CC-BY-4.0'):
     # Files
     # -----------------------------------------
     docs_1_0_file = Resource('argsme-1.0-docs.zip',

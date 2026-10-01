@@ -32,6 +32,10 @@ from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 from ir_datasets.v2 import DocTable, Directory, Source, irds
 from ir_datasets.v2.formats import Parser
 
+# license verified 2026-09-30: http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html
+# lists this University of Glasgow .GOV organisational agreement as the governing terms (text read and confirmed).
+LICENSE = 'http://ir.dcs.gla.ac.uk/test_collections/organisational_agreement.GOV.pdf'
+
 DUA = ("Please confirm you agree to the data usage terms found at "
        "<http://ir.dcs.gla.ac.uk/test_collections/access_to_data.html>")
 
@@ -79,6 +83,7 @@ class _GovDocsParser(Parser):
 # Files
 # -----------------------------------------
 docs_file = Directory('gov.dir',
+    license=LICENSE,
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     dua=DUA,
 )
@@ -86,6 +91,7 @@ docs_file = Directory('gov.dir',
 # Tables
 # -----------------------------------------
 docs = DocTable('gov',
+    license=LICENSE,
     source=docs_file,
     parser=_GovDocsParser(),
     lang='en',

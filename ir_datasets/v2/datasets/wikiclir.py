@@ -157,44 +157,46 @@ class _WikiClirQueriesParser(Parser):
 
 # Files
 # -----------------------------------------
-source_file = Resource('wikiclir-source.tar.gz',
-    sources=['https://www.cs.jhu.edu/~kevinduh/a/wikiclir2018/wiki-clir.tar.gz'],
-    hash='md5:705abb611eb8cbab9ced2b8767a3bdb6',
-    size=7_036_445_773,
-)
-
-# Shared, extracted-once pipeline -- see module docstring.
-_base_dlc = TarExtractAll(source_file, BASE_PATH / 'wikiclir_extracted')
-
-# Tables + Benchmarks
-# -----------------------------------------
-benchmarks = {}
-for _source_dir, _lang, _dsid in LANGS:
-    _file_suffix = _lang if _dsid != 'en-simple' else 'simple'
-    _docs_count, _queries_count, _qrels_count = _COUNTS[_dsid]
-    _qrels_relpath = f'wiki-clir/{_source_dir}/en2{_file_suffix}.rel'
-
-    _docs = DocTable(f'wikiclir-{_dsid}-docs',
-        source=source_file,
-        parser=_WikiClirDocsParser(f'wiki-clir/{_source_dir}/wiki_{_file_suffix}.documents'),
-        lang=_lang, count_hint=_docs_count,
-    )
-    _qrels = QrelTable(f'wikiclir-{_dsid}-qrels',
-        source=source_file,
-        parser=_WikiClirQrelsParser(_qrels_relpath),
-        defs=QRELS_DEFS, count_hint=_qrels_count,
-    )
-    _queries = QueryTable(f'wikiclir-{_dsid}-queries',
-        source=source_file,
-        parser=_WikiClirQueriesParser(_qrels_relpath),
-        lang='en', count_hint=_queries_count,
+# license verified 2026-09-30: https://www.cs.jhu.edu/~kevinduh/a/wikiclir2018/ Terms of Use (CC BY-SA 4.0)
+with irds.defaults(license='CC-BY-SA-4.0'):
+    source_file = Resource('wikiclir-source.tar.gz',
+        sources=['https://www.cs.jhu.edu/~kevinduh/a/wikiclir2018/wiki-clir.tar.gz'],
+        hash='md5:705abb611eb8cbab9ced2b8767a3bdb6',
+        size=7_036_445_773,
     )
 
-    benchmarks[_dsid] = Benchmark(f'wikiclir-{_dsid}',
-        docs=_docs, queries=_queries, qrels=_qrels,
-        citation=CITATION,
-        desc=f'WikiCLIR: English queries against the {_source_dir.replace("_", " ")} '
-             f'Wikipedia edition, judged by inter-language links.')
+    # Shared, extracted-once pipeline -- see module docstring.
+    _base_dlc = TarExtractAll(source_file, BASE_PATH / 'wikiclir_extracted')
+
+    # Tables + Benchmarks
+    # -----------------------------------------
+    benchmarks = {}
+    for _source_dir, _lang, _dsid in LANGS:
+        _file_suffix = _lang if _dsid != 'en-simple' else 'simple'
+        _docs_count, _queries_count, _qrels_count = _COUNTS[_dsid]
+        _qrels_relpath = f'wiki-clir/{_source_dir}/en2{_file_suffix}.rel'
+
+        _docs = DocTable(f'wikiclir-{_dsid}-docs',
+            source=source_file,
+            parser=_WikiClirDocsParser(f'wiki-clir/{_source_dir}/wiki_{_file_suffix}.documents'),
+            lang=_lang, count_hint=_docs_count,
+        )
+        _qrels = QrelTable(f'wikiclir-{_dsid}-qrels',
+            source=source_file,
+            parser=_WikiClirQrelsParser(_qrels_relpath),
+            defs=QRELS_DEFS, count_hint=_qrels_count,
+        )
+        _queries = QueryTable(f'wikiclir-{_dsid}-queries',
+            source=source_file,
+            parser=_WikiClirQueriesParser(_qrels_relpath),
+            lang='en', count_hint=_queries_count,
+        )
+
+        benchmarks[_dsid] = Benchmark(f'wikiclir-{_dsid}',
+            docs=_docs, queries=_queries, qrels=_qrels,
+            citation=CITATION,
+            desc=f'WikiCLIR: English queries against the {_source_dir.replace("_", " ")} '
+                 f'Wikipedia edition, judged by inter-language links.')
 
 
 # Registration

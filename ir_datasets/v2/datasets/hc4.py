@@ -143,9 +143,11 @@ QRELS_FILES = {
 _benchmarks = []
 
 for _lang, (_url, _sha, _size) in DOCS.items():
-    _docs_file = Resource(f'hc4-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'sha256:{_sha}', size=_size)
+    # license verified 2026-09-30: https://huggingface.co/datasets/neuclir/hc4 (card metadata: license odc-by); applies to the document corpus only
+    _docs_file = Resource(f'hc4-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'sha256:{_sha}', size=_size,
+        license='ODC-By-1.0')
     _docs = DocTable(f'hc4-{_lang}-docs',
-        source=_docs_file.gunzip(), parser=_Hc4DocsParser(_lang), lang=_lang,
+        source=_docs_file.gunzip(), parser=_Hc4DocsParser(_lang), lang=_lang, license='ODC-By-1.0',
         desc=f'The HC4 {_lang} Common Crawl document corpus.')
 
     for _split in ('train', 'dev', 'test'):

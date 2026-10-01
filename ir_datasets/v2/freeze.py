@@ -57,6 +57,10 @@ def _attested_row(node, graph, verify, options):
         attestation = {k: v for k, v in previous.items()
                        if k not in row and k not in RETIRED_FIELDS}
     row.update(attestation)
+    if getattr(node, 'samples_permitted', True) is False:
+        # Never keep sample records (even ones an earlier freeze recorded) for
+        # a table whose license doesn't clearly allow showing them.
+        row.pop('samples', None)
     return row, bool(attestation)
 
 

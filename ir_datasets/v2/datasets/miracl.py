@@ -25,7 +25,7 @@ from typing import NamedTuple
 from ir_datasets.formats import JsonlDocs as _V1JsonlDocs, TsvQueries as _V1TsvQueries
 
 from ir_datasets.v2 import (
-    Benchmark, DocTable, Parser, QueryTable, Resource, TrecQrels, irds,
+    Benchmark, DocTable, Parser, QueryTable, Resource, Suite, TrecQrels, irds,
 )
 
 CITATION = 'dblp:journals/tacl/0018TOKAL0RL23'
@@ -218,48 +218,69 @@ class _MiraclQueriesParser(Parser):
         return _V1TsvQueries(source, lang=node.lang)
 
 
-_benchmarks = []
+# license verified 2026-09-30: HF dataset cards miracl/miracl-corpus, miracl/miracl and macavaney/miracl-noauth (metadata license: apache-2.0)
+with irds.defaults(license='Apache-2.0'):
+    _benchmarks = []
 
-for _lang, _topic_sets in SPLITS.items():
-    _corpus_resources = [
-        Resource(f'miracl-{_lang}-corpus-{_i}.jsonl.gz',
-            sources=[CORPUS_URL.format(lang=_lang, i=_i)], hash=f'md5:{_md5}', size=_size)
-        for _i, (_md5, _size) in enumerate(CORPUS[_lang])
-    ]
-    _docs = DocTable(f'miracl-{_lang}-docs',
-        source=[r.gunzip() for r in _corpus_resources],
-        parser=_MiraclDocsParser(), lang=_lang,
-        desc=f'The MIRACL {_lang} Wikipedia passage corpus.')
+    for _lang, _topic_sets in SPLITS.items():
+        _corpus_resources = [
+            Resource(f'miracl-{_lang}-corpus-{_i}.jsonl.gz',
+                sources=[CORPUS_URL.format(lang=_lang, i=_i)], hash=f'md5:{_md5}', size=_size)
+            for _i, (_md5, _size) in enumerate(CORPUS[_lang])
+        ]
+        _docs = DocTable(f'miracl-{_lang}-docs',
+            source=[r.gunzip() for r in _corpus_resources],
+            parser=_MiraclDocsParser(), lang=_lang,
+            desc=f'The MIRACL {_lang} Wikipedia passage corpus.')
 
-    for _split in _topic_sets:
-        _topics_md5, _topics_size = TOPICS[(_lang, _split)]
-        _topics_file = Resource(f'miracl-{_lang}-{_split}-topics.tsv',
-            sources=[TOPICS_URL.format(lang=_lang, split=_split)],
-            hash=f'md5:{_topics_md5}', size=_topics_size)
-        _queries = QueryTable(f'miracl-{_lang}-{_split}-queries',
-            source=_topics_file, parser=_MiraclQueriesParser(), lang=_lang)
+        for _split in _topic_sets:
+            _topics_md5, _topics_size = TOPICS[(_lang, _split)]
+            _topics_file = Resource(f'miracl-{_lang}-{_split}-topics.tsv',
+                sources=[TOPICS_URL.format(lang=_lang, split=_split)],
+                hash=f'md5:{_topics_md5}', size=_topics_size)
+            _queries = QueryTable(f'miracl-{_lang}-{_split}-queries',
+                source=_topics_file, parser=_MiraclQueriesParser(), lang=_lang)
 
-        _name = f'miracl-{_lang}-{_split}'
-        if (_lang, _split) in QRELS:
-            _qrels_md5, _qrels_size = QRELS[(_lang, _split)]
-            _qrels_file = Resource(f'miracl-{_lang}-{_split}-qrels.tsv',
-                sources=[QRELS_URL.format(lang=_lang, split=_split)],
-                hash=f'md5:{_qrels_md5}', size=_qrels_size)
-            _qrels = TrecQrels(f'{_name}-qrels', source=_qrels_file, defs=QREL_DEFS)
-            _benchmarks.append(Benchmark(_name,
-                docs=_docs, queries=_queries, qrels=_qrels,
-                citation=CITATION,
-                desc=f'MIRACL {_lang}, {_split} split.'))
-        else:
-            # test-a/test-b: held-out leaderboard queries, no public qrels.
-            _benchmarks.append(Benchmark(_name,
-                docs=_docs, queries=_queries,
-                citation=CITATION,
-                desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
-                     'no public qrels).'))
+            _name = f'miracl-{_lang}-{_split}'
+            if (_lang, _split) in QRELS:
+                _qrels_md5, _qrels_size = QRELS[(_lang, _split)]
+                _qrels_file = Resource(f'miracl-{_lang}-{_split}-qrels.tsv',
+                    sources=[QRELS_URL.format(lang=_lang, split=_split)],
+                    hash=f'md5:{_qrels_md5}', size=_qrels_size)
+                _qrels = TrecQrels(f'{_name}-qrels', source=_qrels_file, defs=QREL_DEFS)
+                _benchmarks.append(Benchmark(_name,
+                    docs=_docs, queries=_queries, qrels=_qrels,
+                    citation=CITATION,
+                    desc=f'MIRACL {_lang}, {_split} split.'))
+            else:
+                # test-a/test-b: held-out leaderboard queries, no public qrels.
+                _benchmarks.append(Benchmark(_name,
+                    docs=_docs, queries=_queries,
+                    citation=CITATION,
+                    desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
+                         'no public qrels).'))
 
 
 # Registration
 # -----------------------------------------
 irds.register(*_benchmarks)
+
+_by_name = {b.name: b for b in _benchmarks}
+
+# One suite per split, spanning every language that has it (the languages
+# differ in which splits they offer; see SPLITS).
+_SPLIT_DESCS = {
+    'train': 'the train splits',
+    'dev': 'the dev splits',
+    'test-a': 'the held-out test-a query sets (no public qrels)',
+    'test-b': 'the held-out test-b query sets (no public qrels)',
+}
+for _split, _what in _SPLIT_DESCS.items():
+    _langs = [l for l, splits in SPLITS.items() if _split in splits]
+    irds.register(Suite(f'miracl-{_split}',
+        benchmarks=[_by_name[f'miracl-{l}-{_split}'] for l in _langs],
+        citation=CITATION,
+        # license verified 2026-09-30: same HF cards as above (apache-2.0); all members share it
+        license='Apache-2.0',
+        desc=f'MIRACL {_what}, across the {len(_langs)} languages that have one.'))
 

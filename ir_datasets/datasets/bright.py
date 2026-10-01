@@ -104,7 +104,11 @@ class BrightQueries(BaseQueries):
             records = {}
             if source in self._reasoning_dlcs:
                 for q in parquet_iter(self._reasoning_dlcs[source].path()):
-                    records[str(q['id'])] = q.get('reasoning', '')
+                    # The model's generated reasoning is the file's ``query``
+                    # column; its ``reasoning`` column is just the annotated
+                    # reasoning copied from the examples file, identical for
+                    # every model.
+                    records[str(q['id'])] = q.get('query', '')
             reasoning_by_field[field] = records
         for q in parquet_iter(self._dlc.path()):
             query_id = str(q['id'])

@@ -183,7 +183,10 @@ with irds.defaults(lang='en'):
         parser=_JsonlDocsParser(TipOfTheTongueDoc2024, BASE_PATH / '2024/corpus.jsonl'),
         count_hint=3_185_450)
 
+    # license verified 2026-09-30 (2024/2025 queries and qrels; corpora left unlicensed, Wikipedia-derived text):
+    # Zenodo records 13370657, 15356599, 15869078 list CC-BY-4.0 (https://zenodo.org/api/records/15356599)
     test_2024_queries = QueryTable('trec-tot-2024-test-queries',
+        license='CC-BY-4.0',
         source=test_2024_queries_file.zip_member('test-2024/queries.jsonl'),
         parser=_JsonlQueriesParser(TipOfTheTongueQuery2024),
         count_hint=600)
@@ -253,34 +256,43 @@ with irds.defaults(lang='en'):
         count_hint=6_407_814)
 
     train_2025_queries = QueryTable('trec-tot-2025-train-queries',
+        license='CC-BY-4.0',
         source=train_2025_queries_file,
         parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
         count_hint=143)
     train_2025_qrels = TrecQrels('trec-tot-2025-train-qrels',
+        license='CC-BY-4.0',
         source=train_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
 
     dev1_2025_queries = QueryTable('trec-tot-2025-dev1-queries',
+        license='CC-BY-4.0',
         source=dev1_2025_queries_file,
         parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
         count_hint=142)
     dev1_2025_qrels = TrecQrels('trec-tot-2025-dev1-qrels',
+        license='CC-BY-4.0',
         source=dev1_2025_qrels_file, defs=QREL_DEFS, count_hint=142)
 
     dev2_2025_queries = QueryTable('trec-tot-2025-dev2-queries',
+        license='CC-BY-4.0',
         source=dev2_2025_queries_file,
         parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
         count_hint=143)
     dev2_2025_qrels = TrecQrels('trec-tot-2025-dev2-qrels',
+        license='CC-BY-4.0',
         source=dev2_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
 
     dev3_2025_queries = QueryTable('trec-tot-2025-dev3-queries',
+        license='CC-BY-4.0',
         source=dev3_2025_queries_file,
         parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
         count_hint=536)
     dev3_2025_qrels = TrecQrels('trec-tot-2025-dev3-qrels',
+        license='CC-BY-4.0',
         source=dev3_2025_qrels_file, defs=QREL_DEFS, count_hint=536)
 
     test_2025_queries = QueryTable('trec-tot-2025-test-queries',
+        license='CC-BY-4.0',
         source=test_2025_queries_file,
         parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
         count_hint=622)

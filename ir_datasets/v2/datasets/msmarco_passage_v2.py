@@ -56,7 +56,8 @@ class _MsMarcoV2PassagesParser(Parser):
         return _MsMarcoV2Passages(source, node.docstore_path)
 
 
-with irds.defaults(dua=DUA, lang='en'):
+# license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
+with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
     # Files
     # -----------------------------------------
     passages_file = Resource('msmarco-passage-v2-passages.tar',

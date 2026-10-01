@@ -169,17 +169,19 @@ docs_v1 = DocTable('trec-cast-v1-docs',
          'via v1\'s PrefixedDocs -- see the module docstring on why this has '
          'no derived_from edges to msmarco_passage.py/car.py.')
 
+# license verified 2026-09-30 (GitHub-sourced topics/qrels only; NIST qrels, scoreddocs, docs and benchmarks left unlicensed):
+# https://github.com/daltonj/treccastweb/blob/master/LICENSE (MIT)
 train_queries = QueryTable('trec-cast-v0-train-queries',
     source=train_queries_file, parser=_CastQueriesParser(Cast2019Query),
-    lang='en', count_hint=269)
+    lang='en', count_hint=269, license='MIT')
 train_qrels = TrecQrels('trec-cast-v0-train-qrels',
-    source=train_qrels_file, defs=QRELS_DEFS_TRAIN, count_hint=2_399)
+    source=train_qrels_file, defs=QRELS_DEFS_TRAIN, count_hint=2_399, license='MIT')
 train_scoreddocs = TrecScoredDocs('trec-cast-v0-train-scoreddocs',
     source=train_scoreddocs_file, count_hint=269_000)
 
 eval_2019_queries = QueryTable('trec-cast-v1-2019-queries',
     source=eval_2019_queries_file, parser=_CastQueriesParser(Cast2019Query),
-    lang='en', count_hint=479)
+    lang='en', count_hint=479, license='MIT')
 eval_2019_qrels = TrecQrels('trec-cast-v1-2019-qrels',
     source=eval_2019_qrels_file, defs=QRELS_DEFS, count_hint=29_350)
 eval_2019_scoreddocs = TrecScoredDocs('trec-cast-v1-2019-scoreddocs',
@@ -187,7 +189,7 @@ eval_2019_scoreddocs = TrecScoredDocs('trec-cast-v1-2019-scoreddocs',
 
 eval_2020_queries = QueryTable('trec-cast-v1-2020-queries',
     source=eval_2020_queries_file, parser=_CastQueriesParser(Cast2020Query),
-    lang='en', count_hint=216)
+    lang='en', count_hint=216, license='MIT')
 eval_2020_qrels = TrecQrels('trec-cast-v1-2020-qrels',
     source=eval_2020_qrels_file, defs=QRELS_DEFS, count_hint=40_451)
 

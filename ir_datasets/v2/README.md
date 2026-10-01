@@ -78,8 +78,8 @@ qrels file), so `QueryTable` and `QrelTable` both declare that file as their
 of cross-benchmark shared reference within one file: each of the 8 "long"
 document variants reuses the short variant's *same* `QueryTable` object,
 differing only in docs (long-form) and qrels (re-derived from the queries
-file's `gold_ids_long` field). All 20 benchmarks (12 short + 8 long) fold
-into one `irds:bright` suite, consistent with the BEIR precedent.
+file's `gold_ids_long` field). The 12 short benchmarks form the `irds:bright` suite and the 8 long
+variants their own `irds:bright-long` suite.
 
 ## Try it
 

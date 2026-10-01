@@ -36,6 +36,11 @@ from ir_datasets.util import TarExtractAll
 from ir_datasets.v2 import Directory, DocTable, Resource, Source, irds
 from ir_datasets.v2.formats import Parser
 
+# license verified 2026-09-30: CMU's ClueWeb09 data license agreement
+# (https://lemurproject.org/clueweb09/ links this organization agreement as the
+# governing terms; text read and confirmed).
+LICENSE = 'https://lemurproject.org/clueweb09/organization_agreement.clueweb09.worder.Jul06-23.pdf'
+
 DUA = ("ClueWeb09 is distributed on hard drives by CMU "
        "<https://lemurproject.org/clueweb09/>; your organization may need to "
        "file an organizational agreement and pay a fee to CMU.")
@@ -81,6 +86,7 @@ docs_manifest = Resource('clueweb09-manifest.jsonl.gz',
 )
 
 docs_file = Directory('clueweb09.dir',
+    license=LICENSE,
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     manifest=docs_manifest,
     size=4_342_390_755_136,  # total of the manifest's files
@@ -95,17 +101,21 @@ chk_file = Resource('clueweb09-chk.tar.gz',
 # Tables
 # -----------------------------------------
 docs = DocTable('clueweb09',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(),
     count_hint=1_040_859_705)
 docs_ar = DocTable('clueweb09-ar',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Arabic_1']),
     lang='ar', count_hint=29_192_662)
 docs_zh = DocTable('clueweb09-zh',
+    license=LICENSE,
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Chinese_1', 'ClueWeb09_Chinese_2',
                                        'ClueWeb09_Chinese_3', 'ClueWeb09_Chinese_4']),
     lang='zh', count_hint=177_489_357)
 docs_en = DocTable('clueweb09-en',
+    license=LICENSE,
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_English_1', 'ClueWeb09_English_2', 'ClueWeb09_English_3',
                                        'ClueWeb09_English_4', 'ClueWeb09_English_5', 'ClueWeb09_English_6',
@@ -113,29 +123,37 @@ docs_en = DocTable('clueweb09-en',
                                        'ClueWeb09_English_10']),
     lang='en', count_hint=503_903_810)
 docs_fr = DocTable('clueweb09-fr',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_French_1']),
     lang='fr', count_hint=50_883_172)
 docs_de = DocTable('clueweb09-de',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_German_1']),
     lang='de', count_hint=49_814_309)
 docs_it = DocTable('clueweb09-it',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Italian_1']),
     lang='it', count_hint=27_250_729)
 docs_ja = DocTable('clueweb09-ja',
+    license=LICENSE,
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Japanese_1', 'ClueWeb09_Japanese_2']),
     lang='ja', count_hint=67_337_717)
 docs_ko = DocTable('clueweb09-ko',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Korean_1']),
     lang='ko', count_hint=18_075_141)
 docs_pt = DocTable('clueweb09-pt',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Portuguese_1']),
     lang='pt', count_hint=37_578_858)
 docs_es = DocTable('clueweb09-es',
+    license=LICENSE,
     source=[docs_file, chk_file],
     parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_Spanish_1', 'ClueWeb09_Spanish_2']),
     lang='es', count_hint=79_333_950)
 docs_catb = DocTable('clueweb09-catb',
+    license=LICENSE,
     source=[docs_file, chk_file], parser=_ClueWeb09DocsParser(dirs=['ClueWeb09_English_1']),
     lang='en', count_hint=50_220_423)
 

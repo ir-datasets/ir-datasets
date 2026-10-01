@@ -44,6 +44,44 @@ from ir_datasets.v2.formats import Parser
 
 CITATION = 'dblp:conf/nips/Thakur0RSG21'
 
+#: Per-dataset source papers (v1's ``bibtex_ids`` minus the BEIR paper): the
+#: corpus paper on DocTables, and the dataset paper on queries/qrels/benchmarks
+#: unless QUERY_CITATIONS or the msmarco test split (TREC DL) says the
+#: evaluation side has its own. Every node also keeps the BEIR paper (see
+#: ``_cites``).
+DOC_CITATIONS = {
+    'msmarco': 'dblp:conf/nips/NguyenRSGTMD16',
+    'trec-covid': 'dblp:journals/corr/abs-2004-10706',
+    'nfcorpus': 'dblp:conf/ecir/BotevaGSR16',
+    'nq': 'dblp:journals/tacl/KwiatkowskiPRCP19',
+    'hotpotqa': 'dblp:conf/emnlp/Yang0ZBCSM18',
+    'fiqa': 'dblp:conf/www/MaiaHFDMZB18',
+    'arguana': 'dblp:conf/acl/WachsmuthSS18',
+    'webis-touche2020': 'dblp:conf/clef/BondarenkoFBGAP20',
+    'webis-touche2020/v2': 'dblp:conf/clef/BondarenkoFBGAP20',
+    'dbpedia-entity': 'dblp:conf/sigir/HasibiNXBBKC17',
+    'scidocs': 'dblp:conf/acl/CohanFBDW20',
+    'fever': 'dblp:conf/naacl/ThorneVCM18',
+    'climate-fever': 'dblp:journals/corr/abs-2012-00614',
+    'scifact': 'dblp:conf/emnlp/WaddenLLWZCH20',
+}
+QUERY_CITATIONS = {'trec-covid': 'dblp:journals/sigir/VoorheesABDHLRS20'}
+CQA_CITATION = 'dblp:conf/adcs/HoogeveenVB15'
+TREC_DL_CITATION = 'dblp:journals/corr/abs-2003-07820'
+
+
+def _cites(*papers):
+    """``citation`` list for a node: its dataset paper(s), then the BEIR paper."""
+    out = [p for p in papers if p and p != CITATION]
+    return out + [CITATION] if out else CITATION
+
+
+def _eval_citation(v1_id, split=None):
+    """Citation for a dataset's queries/qrels/benchmarks."""
+    if v1_id == 'msmarco' and split == 'test':
+        return _cites(TREC_DL_CITATION, DOC_CITATIONS[v1_id])
+    return _cites(QUERY_CITATIONS.get(v1_id, DOC_CITATIONS.get(v1_id)))
+
 #: (v1 id, qrel splits, doc record type, query record type) -- transcribed
 #: verbatim from ir_datasets.datasets.beir's own ``benchmarks`` dict.
 BENCHMARKS = [
@@ -139,14 +177,16 @@ def _docs(v1_id, zip_resource, doc_type):
     zip_folder = v1_id.split('/')[0]  # the /v2 zip still unpacks to the v1 folder name
     return DocTable(f'beir-{_flat(v1_id)}-docs',
                source=zip_resource.zip_member(f'{zip_folder}/corpus.jsonl'),
-               parser=_BeirDocsParser(v1_id, doc_type))
+               parser=_BeirDocsParser(v1_id, doc_type),
+               citation=_cites(DOC_CITATIONS.get(v1_id)))
 
 
 def _queries(v1_id, zip_resource, query_type):
     zip_folder = v1_id.split('/')[0]
     return QueryTable(f'beir-{_flat(v1_id)}-queries',
                    source=zip_resource.zip_member(f'{zip_folder}/queries.jsonl'),
-                   parser=_BeirQueriesParser(v1_id, query_type))
+                   parser=_BeirQueriesParser(v1_id, query_type),
+                   citation=_eval_citation(v1_id))
 
 
 def _qrels(v1_id, zip_resource, split=None):
@@ -154,7 +194,8 @@ def _qrels(v1_id, zip_resource, split=None):
     suffix = f'-{split}' if split else ''
     return QrelTable(f'beir-{_flat(v1_id)}{suffix}-qrels',
                 source=zip_resource.zip_member(f'{zip_folder}/qrels/{split or "test"}.tsv'),
-                parser=_BeirQrelsParser())
+                parser=_BeirQrelsParser(),
+                citation=_eval_citation(v1_id, split))
 
 
 with irds.defaults(lang='en'):
@@ -171,7 +212,7 @@ with irds.defaults(lang='en'):
             qrels = _qrels(v1_id, zip_resource, splits[0] if splits[0] != 'test' else None)
             name = f'beir-{_flat(v1_id)}'
             benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                         citation=CITATION,
+                                         citation=_eval_citation(v1_id),
                                          desc=f'BEIR: {v1_id}.')
         else:
             # Not registered: a private parent for the per-split Benchmarks
@@ -180,7 +221,7 @@ with irds.defaults(lang='en'):
             # query set, so this itself would not be a usable benchmark --
             # see the per-split ones instead.
             bare = Benchmark(f'beir-{_flat(v1_id)}', docs=docs, queries=queries,
-                             citation=CITATION)
+                             citation=_eval_citation(v1_id))
             for split in splits:
                 split_name = f'beir-{_flat(v1_id)}-{split}'
                 split_qrels = _qrels(v1_id, zip_resource, split)
@@ -189,7 +230,7 @@ with irds.defaults(lang='en'):
                     # ids_of() resolves through the top-level graph, so it
                     # needs a qualified name -- not just split_qrels.name.
                     filter=Filter(query_ids=ids_of(f'irds:{split_qrels.name}'), mode='include'),
-                    citation=CITATION,
+                    citation=_eval_citation(v1_id, split),
                     desc=f'BEIR: {v1_id}, {split} split.')
 
     # CQADupStack: 12 sub-forums sharing one zip, each single-split.
@@ -199,16 +240,16 @@ with irds.defaults(lang='en'):
         v1_id = f'cqadupstack/{sub}'
         docs = DocTable(f'beir-cqadupstack-{sub}-docs',
                    source=cqa_zip.zip_member(f'cqadupstack/{sub}/corpus.jsonl'),
-                   parser=_BeirDocsParser(v1_id, BeirCqaDoc))
+                   parser=_BeirDocsParser(v1_id, BeirCqaDoc), citation=_cites(CQA_CITATION))
         queries = QueryTable(f'beir-cqadupstack-{sub}-queries',
                           source=cqa_zip.zip_member(f'cqadupstack/{sub}/queries.jsonl'),
-                          parser=_BeirQueriesParser(v1_id, BeirCqaQuery))
+                          parser=_BeirQueriesParser(v1_id, BeirCqaQuery), citation=_cites(CQA_CITATION))
         qrels = QrelTable(f'beir-cqadupstack-{sub}-qrels',
                       source=cqa_zip.zip_member(f'cqadupstack/{sub}/qrels/test.tsv'),
-                      parser=_BeirQrelsParser())
+                      parser=_BeirQrelsParser(), citation=_cites(CQA_CITATION))
         name = f'beir-cqadupstack-{sub}'
         benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                     citation=CITATION, desc=f'BEIR: cqadupstack/{sub}.')
+                                     citation=_cites(CQA_CITATION), desc=f'BEIR: cqadupstack/{sub}.')
 
 
 # Registration
@@ -217,7 +258,7 @@ irds.register(*benchmarks.values())
 
 cqa_suite = Suite('beir-cqadupstack',
                   benchmarks=[benchmarks[f'beir-cqadupstack-{sub}'] for sub in CQA_SUBFORUMS],
-                  citation=CITATION,
+                  citation=_cites(CQA_CITATION),
                   desc="CQADupStack: BEIR's 12 StackExchange sub-forums, "
                        'aggregated from a single shared download -- its own '
                        'suite since it is itself commonly reported as one '

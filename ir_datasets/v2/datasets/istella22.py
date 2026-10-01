@@ -127,6 +127,10 @@ def _fold_query_ids(fold):
     return _ids
 
 
+# license verified 2026-09-30: https://www.istella.ai/dataset/Istella22-LicenseAgreement.txt
+# (Istella Research License Agreement, non-commercial; names the <<Istella22 Dataset>>)
+_LICENSE = 'https://www.istella.ai/dataset/Istella22-LicenseAgreement.txt'
+
 # Files
 # -----------------------------------------
 source_file = Resource('istella22-source.tar.gz',
@@ -134,6 +138,7 @@ source_file = Resource('istella22-source.tar.gz',
     hash='md5:c2e49dca9730fbb14164ed890756dc1d',
     size=26_499_490_813,
     dua=DUA,
+    license=_LICENSE,
 )
 
 # Shared, extracted-once pipeline -- see module docstring.
@@ -146,18 +151,21 @@ docs = DocTable('istella22-docs',
     parser=_Istella22DocsParser(),
     lang=None,
     count_hint=8_421_456,
+    license=_LICENSE,
 )
 test_queries = QueryTable('istella22-test-queries',
     source=source_file,
     parser=_Istella22QueriesParser(),
     lang='it',
     count_hint=2_198,
+    license=_LICENSE,
 )
 test_qrels = QrelTable('istella22-test-qrels',
     source=source_file,
     parser=_Istella22QrelsParser(),
     defs=QREL_DEFS,
     count_hint=10_693,
+    license=_LICENSE,
 )
 
 # Benchmarks
@@ -165,6 +173,7 @@ test_qrels = QrelTable('istella22-test-qrels',
 test = Benchmark('istella22-test',
     docs=docs, queries=test_queries, qrels=test_qrels,
     citation=CITATION,
+    license=_LICENSE,
     desc='Istella22: official test query set.')
 
 _FOLD_COUNTS = {
@@ -181,6 +190,7 @@ for _fold in ['fold1', 'fold2', 'fold3', 'fold4', 'fold5']:
         derived_from=test,
         filter=Filter(query_ids=_fold_query_ids(_fold), mode='include'),
         citation=CITATION,
+        license=_LICENSE,
         desc=f'Istella22: fold {_fold[-1]} of the official test query set.')
 
 

@@ -47,6 +47,8 @@ docs = DocTable('touche-image-2022-06-13',
     source=[images_main_file, images_nodes_file, images_png_file],
     parser=_ToucheImageDocsParser(),
     lang='en',
+    # license verified 2026-09-30: Zenodo record 6873575 lists CC-BY-4.0 (https://zenodo.org/api/records/6873575)
+    license='CC-BY-4.0',
     count_hint=23_841,
 )
 

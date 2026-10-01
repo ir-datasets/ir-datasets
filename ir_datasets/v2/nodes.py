@@ -160,7 +160,7 @@ STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
 #: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
 #: data (``name``, ``source``, ``md5``, ``defs``, ...).
-DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated')
+DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated', 'license')
 
 
 # ── Attestation of tables ────────────────────────────────────────────────────
@@ -171,7 +171,18 @@ DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated')
 #: to be incomparable rather than mysteriously mismatched.
 HASH_SCHEME = 'v1'
 
-DEFAULT_SAMPLES = (0, 9, -1)
+#: Sample records frozen per table: the first N and the last N.
+DEFAULT_SAMPLES = 5
+
+#: Licenses under which showing a few records publicly (the manifest feeds the
+#: website's sample cards) is unambiguously allowed. A table's samples are only
+#: frozen when it declares a license and every entry is in this set: no license,
+#: a custom/URL license, a non-commercial one, or a mix containing any of those
+#: all mean "don't freeze records".
+SAMPLE_LICENSES = frozenset({
+    'Apache-2.0', 'MIT', 'BSD-2-Clause', 'BSD-3-Clause', 'CC0-1.0',
+    'CC-BY-3.0', 'CC-BY-4.0', 'CC-BY-SA-3.0', 'CC-BY-SA-4.0', 'ODC-By-1.0',
+})
 
 
 def _canonical(record):
@@ -180,6 +191,12 @@ def _canonical(record):
     data = dict(record._asdict()) if hasattr(record, '_asdict') else {'value': record}
     return json.dumps(data, sort_keys=True, ensure_ascii=False,
                       separators=(',', ':'), default=str).encode()
+
+
+def _score_counts(counter):
+    """``{score: count}`` with string keys, ordered by score (numerically when
+    the scores are numbers), so the frozen row is stable."""
+    return {str(k): counter[k] for k in sorted(counter)}
 
 
 def _schema(node):
@@ -291,7 +308,8 @@ class Resource(Node, Readable):
 
     def discovery_literals(self):
         return {k: v for k, v in
-                {'size': self.size, 'validation': self._validation(),
+                {**super().discovery_literals(),
+                 'size': self.size, 'validation': self._validation(),
                  'sources': describe_sources(self.sources),
                  'dua': self.dua}.items() if v}
 
@@ -658,6 +676,9 @@ class Table(Node):
             return self
         raise AttributeError(attr)
 
+    #: Record field ``freeze --verify`` tallies into ``score_counts`` (None: don't).
+    score_field = None
+
     def __init__(self, name, *, source=None, parser=None, handler=None,
                  lang=None, defs=None, count_hint=None,
                  docstore_size_hint=None, derived_from=(), **meta):
@@ -697,7 +718,7 @@ class Table(Node):
         """Language and column names, reported at discovery (never frozen):
         both come from the table's own declaration. ``columns_json`` is one
         ordered JSON literal, since triples themselves are unordered."""
-        literals = {'lang': self.lang}
+        literals = {**super().discovery_literals(), 'lang': self.lang}
         try:
             fields = list(getattr(self.record_type, '_fields', ()))
         except Exception:
@@ -804,30 +825,43 @@ class Table(Node):
     # -- attestation --------------------------------------------------------
 
     def attest(self, *, verify=False, samples=DEFAULT_SAMPLES, **options):
-        """Count, content hash and sample records. Expensive (iterates the
-        table), so only with ``verify=True``."""
+        """Count, content hash and sample records (the first and last
+        ``samples`` of them). Expensive (iterates the
+        table), so only with ``verify=True``. Sample records are included only
+        if ``samples_permitted`` (see ``SAMPLE_LICENSES``)."""
         if not verify:
             return None
         hasher = hashlib.sha256()
-        wanted = {i for i in samples if i >= 0}
-        collected, last, count = {}, None, 0
+        collected, tail, count = {}, collections.deque(maxlen=samples), 0
+        scores = collections.Counter() if self.score_field else None
         for i, record in enumerate(self._iter()):
             hasher.update(_canonical(record))
             hasher.update(b'\n')
-            if i in wanted:
+            if i < samples:
                 collected[i] = record
-            last = record
+            if samples:
+                tail.append(record)
+            if scores is not None:
+                scores[getattr(record, self.score_field)] += 1
             count += 1
         out = {
             'count': count,
             'content_sha256': hasher.hexdigest(),
             'hash_scheme': HASH_SCHEME,
             'record_schema': _schema(self),
-            'samples': {str(i): _canonical(r).decode() for i, r in sorted(collected.items())},
         }
-        if -1 in samples and last is not None and count:
-            out['samples'][str(count - 1)] = _canonical(last).decode()
+        if scores:
+            out['score_counts'] = _score_counts(scores)
+        if self.samples_permitted:
+            collected.update((count - len(tail) + j, r) for j, r in enumerate(tail))
+            out['samples'] = {str(i): _canonical(r).decode() for i, r in sorted(collected.items())}
         return out
+
+    @property
+    def samples_permitted(self):
+        """Whether this table's license allows freezing sample records."""
+        licenses = [self.license] if isinstance(self.license, str) else (self.license or [])
+        return bool(licenses) and all(l in SAMPLE_LICENSES for l in licenses)
 
     def verify(self, frozen, *, check_samples=True, **options):
         if 'content_sha256' not in frozen:
@@ -845,6 +879,7 @@ class Table(Node):
             out.append(Divergence(name, 'record_schema', frozen['record_schema'], schema))
         hasher = hashlib.sha256()
         wanted = {int(i): v for i, v in frozen.get('samples', {}).items()}
+        scores = collections.Counter() if self.score_field else None
         count = 0
         for i, record in enumerate(self._iter()):
             line = _canonical(record)
@@ -852,7 +887,11 @@ class Table(Node):
             hasher.update(b'\n')
             if check_samples and i in wanted and line.decode() != wanted[i]:
                 out.append(Divergence(name, f'sample[{i}]', wanted[i], line.decode()))
+            if scores is not None:
+                scores[getattr(record, self.score_field)] += 1
             count += 1
+        if scores is not None and 'score_counts' in frozen and _score_counts(scores) != frozen['score_counts']:
+            out.append(Divergence(name, 'score_counts', frozen['score_counts'], _score_counts(scores)))
         if count != frozen['count']:
             out.append(Divergence(name, 'count', frozen['count'], count))
         digest = hasher.hexdigest()
@@ -989,6 +1028,8 @@ class QueryTable(Table):
 class QrelTable(Table):
     type = TABLE_TYPES['qrels']
     entity = 'qrels'
+    #: Record field whose value ``freeze --verify`` tallies into ``score_counts``.
+    score_field = 'relevance'
 
     # -- legacy API (deprecated) ---------------------------------------------
 

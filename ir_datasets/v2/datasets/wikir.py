@@ -73,31 +73,33 @@ class _WikirQueriesParser(Parser):
         return _V1CsvQueries(source, lang=node.lang)
 
 
-_benchmarks = []
+# license verified 2026-09-30: Zenodo records (API metadata license=cc-by-4.0) for 3565761, 3557342, 3707606, 3707238, 3569718, 3569724, 3569732
+with irds.defaults(license='CC-BY-4.0'):
+    _benchmarks = []
 
-for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
-    _zip = Resource(f'wikir-{_code}.zip', sources=[_url], hash=f'md5:{_md5}', size=_size)
+    for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
+        _zip = Resource(f'wikir-{_code}.zip', sources=[_url], hash=f'md5:{_md5}', size=_size)
 
-    _docs = DocTable(f'wikir-{_code}-docs',
-        source=_zip.zip_member(f'{_zip_dir}/documents.csv'),
-        parser=_WikirDocsParser(), lang=_lang,
-        desc=f'The WikIR {_code} document corpus.')
+        _docs = DocTable(f'wikir-{_code}-docs',
+            source=_zip.zip_member(f'{_zip_dir}/documents.csv'),
+            parser=_WikirDocsParser(), lang=_lang,
+            desc=f'The WikIR {_code} document corpus.')
 
-    for _split, _suffix in SPLITS:
-        _name = f'wikir-{_code}-{_suffix}'
-        _queries = QueryTable(f'{_name}-queries',
-            source=_zip.zip_member(f'{_zip_dir}/{_split}/queries.csv'),
-            parser=_WikirQueriesParser(), lang=_lang)
-        _qrels = TrecQrels(f'{_name}-qrels',
-            source=_zip.zip_member(f'{_zip_dir}/{_split}/qrels'),
-            defs=QRELS_DEFS)
-        _scoreddocs = TrecScoredDocs(f'{_name}-scoreddocs',
-            source=_zip.zip_member(f'{_zip_dir}/{_split}/BM25.res'))
-        _benchmarks.append(Benchmark(_name,
-            docs=_docs, queries=_queries, qrels=_qrels, scoreddocs=_scoreddocs,
-            citation=CITATION,
-            desc=f'WikIR {_code}, {_split} split. Scoreddocs are the '
-                 'provided BM25 run.'))
+        for _split, _suffix in SPLITS:
+            _name = f'wikir-{_code}-{_suffix}'
+            _queries = QueryTable(f'{_name}-queries',
+                source=_zip.zip_member(f'{_zip_dir}/{_split}/queries.csv'),
+                parser=_WikirQueriesParser(), lang=_lang)
+            _qrels = TrecQrels(f'{_name}-qrels',
+                source=_zip.zip_member(f'{_zip_dir}/{_split}/qrels'),
+                defs=QRELS_DEFS)
+            _scoreddocs = TrecScoredDocs(f'{_name}-scoreddocs',
+                source=_zip.zip_member(f'{_zip_dir}/{_split}/BM25.res'))
+            _benchmarks.append(Benchmark(_name,
+                docs=_docs, queries=_queries, qrels=_qrels, scoreddocs=_scoreddocs,
+                citation=CITATION,
+                desc=f'WikIR {_code}, {_split} split. Scoreddocs are the '
+                     'provided BM25 run.'))
 
 
 # Registration

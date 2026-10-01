@@ -75,6 +75,11 @@ from ir_datasets.v2.formats import Parser
 
 NAME = 'clueweb12'
 
+# license verified 2026-09-30: CMU's ClueWeb12 data license agreement
+# (https://lemurproject.org/clueweb12/ links this organization agreement as the
+# governing terms; text read and confirmed).
+LICENSE = 'https://lemurproject.org/clueweb12/organization_agreement.clueweb12.worder.Jul06-23.pdf'
+
 DUA = ("ClueWeb12 is distributed on hard drives by CMU "
        "<https://lemurproject.org/clueweb12/>; your organization may need to "
        "file an organizational agreement and pay a fee to CMU.")
@@ -124,6 +129,7 @@ docs_manifest = Resource('clueweb12-manifest.jsonl.gz',
 )
 
 docs_file = Directory('clueweb12.dir',
+    license=LICENSE,
     sources=[Source.external(DOCS_DEFAULT_PATH, old_locations=[DOCS_OLD_LOCATION], instructions=DATA_ACCESS)],
     manifest=docs_manifest,
     size=4_989_416_280_062,  # total of the manifest's files
@@ -150,10 +156,12 @@ b13_extract_jar = (cw12b_info_file
 # Tables
 # -----------------------------------------
 docs = DocTable('clueweb12',
+    license=LICENSE,
     source=[docs_file, docs_chk_file], parser=_ClueWeb12DocsParser(),
     lang='en', count_hint=733_019_372)
 
 docs_b13 = DocTable('clueweb12-b13',
+    license=LICENSE,
     source=[docs_file, b13_extract_jar], parser=_ClueWeb12b13DocsParser(),
     lang='en', count_hint=52_343_021)
 

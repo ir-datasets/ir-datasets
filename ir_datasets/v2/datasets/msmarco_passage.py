@@ -89,7 +89,8 @@ def extract_qid_pid(stream):
         yield qid + b'\t' + did + b'\n'
 
 
-with irds.defaults(dua=DUA, lang='en'):
+# license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
+with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
     # Files
     # -----------------------------------------
     collectionandqueries_file = Resource('msmarco-passage-collectionandqueries.tar.gz',

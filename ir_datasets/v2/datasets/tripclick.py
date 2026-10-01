@@ -103,6 +103,11 @@ DUA = ("TripClick's source files must be requested directly from the Trip "
        "Database; see <https://tripdatabase.github.io/tripclick/#getting-the-data> "
        "for the data access procedure.")
 
+# license verified 2026-09-30: https://tripdatabase.github.io/tripclick/ (custom
+# non-commercial research terms listed there, governing the TripClick datasets).
+# The Hofstaetter triples (HF card says apache-2.0) are deliberately left unlicensed.
+LICENSE = 'https://tripdatabase.github.io/tripclick/'
+
 def DATA_ACCESS(filename):
     return [
         "Request access to the TripClick data from the Trip Database: <https://tripdatabase.github.io/tripclick/#getting-the-data>.",
@@ -240,16 +245,19 @@ with irds.defaults(lang='en'):
     # Files
     # -----------------------------------------
     benchmark_file = Resource('tripclick-benchmark.tar.gz',
+        license=LICENSE,
         sources=[Source.external('tripclick-benchmark.tar.gz', old_locations=[f'{NAME}/benchmark.tar.gz'], instructions=DATA_ACCESS('benchmark.tar.gz'))],
         hash='md5:6e5d3deeba138750e9a148b538f30a8f',
         dua=DUA,
     )
     dlfiles_file = Resource('tripclick-dlfiles.tar.gz',
+        license=LICENSE,
         sources=[Source.external('tripclick-dlfiles.tar.gz', old_locations=[f'{NAME}/dlfiles.tar.gz'], instructions=DATA_ACCESS('dlfiles.tar.gz'))],
         hash='md5:1f256c19466b414e365324d8ef21f09c',
         dua=DUA,
     )
     dlfiles_runs_test_file = Resource('tripclick-dlfiles-runs-test.tar.gz',
+        license=LICENSE,
         sources=[Source.external('tripclick-dlfiles_runs_test.tar.gz', old_locations=[f'{NAME}/dlfiles_runs_test.tar.gz'], instructions=DATA_ACCESS('dlfiles_runs_test.tar.gz'))],
         hash='md5:2b5e98c683a91e19630636b6f83e3b15',
         dua=DUA,
@@ -264,6 +272,7 @@ with irds.defaults(lang='en'):
     # The raw search-session log tar.gz -- backs the `logs` subset's docs/
     # qlogs tables below, and only those (see module docstring).
     logs_file = Resource('tripclick-logs.tar.gz',
+        license=LICENSE,
         sources=[Source.external('tripclick-logs.tar.gz', old_locations=[f'{NAME}/logs.tar.gz'], instructions=DATA_ACCESS('logs.tar.gz'))],
         hash='md5:1d3a548685c2fbef9b2076b0b04ba44f',
         dua=DUA,
@@ -281,6 +290,7 @@ with irds.defaults(lang='en'):
     # Tables
     # -----------------------------------------
     docs = TrecDocs('tripclick-docs',
+        license=LICENSE,
         source=benchmark_file,
         path_globs=['**/docs_grp_*.txt'],
         parser='tut',
@@ -290,44 +300,52 @@ with irds.defaults(lang='en'):
     ### Train
 
     train_head_queries = QueryTable('tripclick-train-head-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.head.train.txt'),
         count_hint=3_529,
     )
     train_head_qrels = QrelTable('tripclick-train-head-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.head.train.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=116_821,
     )
     train_head_dctr_qrels = QrelTable('tripclick-train-head-dctr-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.dctr.head.train.txt', QREL_DCTR_DEFS),
         defs=QREL_DCTR_DEFS, count_hint=128_420,
     )
 
     train_torso_queries = QueryTable('tripclick-train-torso-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.torso.train.txt'),
         count_hint=105_964,
     )
     train_torso_qrels = QrelTable('tripclick-train-torso-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.torso.train.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=966_898,
     )
 
     train_tail_queries = QueryTable('tripclick-train-tail-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.tail.train.txt'),
         count_hint=576_156,
     )
     train_tail_qrels = QrelTable('tripclick-train-tail-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.tail.train.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=1_621_493,
     )
 
     train_queries = QueryTable('tripclick-train-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickConcatQueriesParser([
             'benchmark/topics/topics.head.train.txt',
@@ -337,6 +355,7 @@ with irds.defaults(lang='en'):
         count_hint=685_649,
     )
     train_qrels = QrelTable('tripclick-train-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickConcatQrelsParser([
             'benchmark/qrels/qrels.raw.head.train.txt',
@@ -346,6 +365,7 @@ with irds.defaults(lang='en'):
         defs=QREL_DEFS, count_hint=2_705_212,
     )
     train_docpairs = DocPairTable('tripclick-train-docpairs',
+        license=LICENSE,
         source=[dlfiles_file, benchmark_file],
         parser=_TripClickTrainDocPairsParser(),
         lang='en',
@@ -360,59 +380,70 @@ with irds.defaults(lang='en'):
     ### Val
 
     val_head_queries = QueryTable('tripclick-val-head-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.head.val.txt'),
         count_hint=1_175,
     )
     val_head_qrels = QrelTable('tripclick-val-head-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.head.val.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=64_364,
     )
     val_head_dctr_qrels = QrelTable('tripclick-val-head-dctr-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.dctr.head.val.txt', QREL_DCTR_DEFS),
         defs=QREL_DCTR_DEFS, count_hint=66_812,
     )
     val_head_scoreddocs = RunTable('tripclick-val-head-scoreddocs',
+        license=LICENSE,
         source=dlfiles_file,
         parser=_TripClickScoredDocsParser(_val_runs, 'dlfiles/run.trip.BM25.head.val.txt'),
         count_hint=1_166_804,
     )
 
     val_torso_queries = QueryTable('tripclick-val-torso-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.torso.val.txt'),
         count_hint=1_175,
     )
     val_torso_qrels = QrelTable('tripclick-val-torso-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.torso.val.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=14_133,
     )
     val_torso_scoreddocs = RunTable('tripclick-val-torso-scoreddocs',
+        license=LICENSE,
         source=dlfiles_file,
         parser=_TripClickScoredDocsParser(_val_runs, 'dlfiles/run.trip.BM25.torso.val.txt'),
         count_hint=1_170_314,
     )
 
     val_tail_queries = QueryTable('tripclick-val-tail-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.tail.val.txt'),
         count_hint=1_175,
     )
     val_tail_qrels = QrelTable('tripclick-val-tail-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQrelsParser('benchmark/qrels/qrels.raw.tail.val.txt', QREL_DEFS),
         defs=QREL_DEFS, count_hint=3_912,
     )
     val_tail_scoreddocs = RunTable('tripclick-val-tail-scoreddocs',
+        license=LICENSE,
         source=dlfiles_file,
         parser=_TripClickScoredDocsParser(_val_runs, 'dlfiles/run.trip.BM25.tail.val.txt'),
         count_hint=1_166_192,
     )
 
     val_queries = QueryTable('tripclick-val-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickConcatQueriesParser([
             'benchmark/topics/topics.head.val.txt',
@@ -422,6 +453,7 @@ with irds.defaults(lang='en'):
         count_hint=3_525,
     )
     val_qrels = QrelTable('tripclick-val-qrels',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickConcatQrelsParser([
             'benchmark/qrels/qrels.raw.head.val.txt',
@@ -431,6 +463,7 @@ with irds.defaults(lang='en'):
         defs=QREL_DEFS, count_hint=82_409,
     )
     val_scoreddocs = RunTable('tripclick-val-scoreddocs',
+        license=LICENSE,
         source=dlfiles_file,
         parser=_TripClickConcatScoredDocsParser(_val_runs, [
             'dlfiles/run.trip.BM25.head.val.txt',
@@ -443,39 +476,46 @@ with irds.defaults(lang='en'):
     ### Test (no qrels -- unjudged, preserved as-is from v1)
 
     test_head_queries = QueryTable('tripclick-test-head-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.head.test.txt'),
         count_hint=1_175,
     )
     test_head_scoreddocs = RunTable('tripclick-test-head-scoreddocs',
+        license=LICENSE,
         source=dlfiles_runs_test_file,
         parser=_TripClickScoredDocsParser(_test_runs, 'runs_test/run.trip.BM25.head.test.txt'),
         count_hint=1_159_303,
     )
 
     test_torso_queries = QueryTable('tripclick-test-torso-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.torso.test.txt'),
         count_hint=1_175,
     )
     test_torso_scoreddocs = RunTable('tripclick-test-torso-scoreddocs',
+        license=LICENSE,
         source=dlfiles_runs_test_file,
         parser=_TripClickScoredDocsParser(_test_runs, 'runs_test/run.trip.BM25.torso.test.txt'),
         count_hint=1_161_972,
     )
 
     test_tail_queries = QueryTable('tripclick-test-tail-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickQueriesParser('benchmark/topics/topics.tail.test.txt'),
         count_hint=1_175,
     )
     test_tail_scoreddocs = RunTable('tripclick-test-tail-scoreddocs',
+        license=LICENSE,
         source=dlfiles_runs_test_file,
         parser=_TripClickScoredDocsParser(_test_runs, 'runs_test/run.trip.BM25.tail.test.txt'),
         count_hint=1_165_127,
     )
 
     test_queries = QueryTable('tripclick-test-queries',
+        license=LICENSE,
         source=benchmark_file,
         parser=_TripClickConcatQueriesParser([
             'benchmark/topics/topics.head.test.txt',
@@ -485,6 +525,7 @@ with irds.defaults(lang='en'):
         count_hint=3_525,
     )
     test_scoreddocs = RunTable('tripclick-test-scoreddocs',
+        license=LICENSE,
         source=dlfiles_runs_test_file,
         parser=_TripClickConcatScoredDocsParser(_test_runs, [
             'runs_test/run.trip.BM25.head.test.txt',
@@ -498,10 +539,12 @@ with irds.defaults(lang='en'):
     ### docstring; standalone artifacts, not a Benchmark, same as v1)
 
     logs_docs = DocTable('tripclick-logs-docs',
+        license=LICENSE,
         source=logs_file,
         parser=_TripClickLogsDocsParser(),
     )
     logs_qlogs = QlogTable('tripclick-logs-qlogs',
+        license=LICENSE,
         source=logs_file,
         parser=_TripClickLogsQlogsParser(),
         count_hint=5_317_350,
@@ -510,20 +553,25 @@ with irds.defaults(lang='en'):
     # Benchmarks
     # -----------------------------------------
     train_head = Benchmark('tripclick-train-head',
+        license=LICENSE,
         docs=docs, queries=train_head_queries, qrels=train_head_qrels,
         citation=CITATION, desc='TripClick training queries, head (high-frequency) slice.')
     train_head_dctr = Benchmark('tripclick-train-head-dctr',
+        license=LICENSE,
         docs=docs, queries=train_head_queries, qrels=train_head_dctr_qrels,
         citation=CITATION,
         desc='TripClick training queries, head slice, with click-through-rate-binned '
              '("dctr") relevance instead of raw clicked/not-clicked.')
     train_torso = Benchmark('tripclick-train-torso',
+        license=LICENSE,
         docs=docs, queries=train_torso_queries, qrels=train_torso_qrels,
         citation=CITATION, desc='TripClick training queries, torso (mid-frequency) slice.')
     train_tail = Benchmark('tripclick-train-tail',
+        license=LICENSE,
         docs=docs, queries=train_tail_queries, qrels=train_tail_qrels,
         citation=CITATION, desc='TripClick training queries, tail (low-frequency) slice.')
     train = Benchmark('tripclick-train',
+        license=LICENSE,
         docs=docs, queries=train_queries, qrels=train_qrels, docpairs=train_docpairs,
         citation=CITATION, desc='TripClick training queries, head+torso+tail combined.')
     train_hofstaetter_triples = Benchmark('tripclick-train-hofstaetter-triples',
@@ -533,36 +581,45 @@ with irds.defaults(lang='en'):
              "al.'s improved training triples in place of v1's own docpair extraction.")
 
     val_head = Benchmark('tripclick-val-head',
+        license=LICENSE,
         docs=docs, queries=val_head_queries, qrels=val_head_qrels, scoreddocs=val_head_scoreddocs,
         citation=CITATION, desc='TripClick validation queries, head (high-frequency) slice.')
     val_head_dctr = Benchmark('tripclick-val-head-dctr',
+        license=LICENSE,
         docs=docs, queries=val_head_queries, qrels=val_head_dctr_qrels, scoreddocs=val_head_scoreddocs,
         citation=CITATION,
         desc='TripClick validation queries, head slice, with click-through-rate-binned '
              '("dctr") relevance instead of raw clicked/not-clicked.')
     val_torso = Benchmark('tripclick-val-torso',
+        license=LICENSE,
         docs=docs, queries=val_torso_queries, qrels=val_torso_qrels, scoreddocs=val_torso_scoreddocs,
         citation=CITATION, desc='TripClick validation queries, torso (mid-frequency) slice.')
     val_tail = Benchmark('tripclick-val-tail',
+        license=LICENSE,
         docs=docs, queries=val_tail_queries, qrels=val_tail_qrels, scoreddocs=val_tail_scoreddocs,
         citation=CITATION, desc='TripClick validation queries, tail (low-frequency) slice.')
     val = Benchmark('tripclick-val',
+        license=LICENSE,
         docs=docs, queries=val_queries, qrels=val_qrels, scoreddocs=val_scoreddocs,
         citation=CITATION, desc='TripClick validation queries, head+torso+tail combined.')
 
     test_head = Benchmark('tripclick-test-head',
+        license=LICENSE,
         docs=docs, queries=test_head_queries, scoreddocs=test_head_scoreddocs,
         citation=CITATION,
         desc='TripClick test queries, head (high-frequency) slice. Unjudged (no qrels).')
     test_torso = Benchmark('tripclick-test-torso',
+        license=LICENSE,
         docs=docs, queries=test_torso_queries, scoreddocs=test_torso_scoreddocs,
         citation=CITATION,
         desc='TripClick test queries, torso (mid-frequency) slice. Unjudged (no qrels).')
     test_tail = Benchmark('tripclick-test-tail',
+        license=LICENSE,
         docs=docs, queries=test_tail_queries, scoreddocs=test_tail_scoreddocs,
         citation=CITATION,
         desc='TripClick test queries, tail (low-frequency) slice. Unjudged (no qrels).')
     test = Benchmark('tripclick-test',
+        license=LICENSE,
         docs=docs, queries=test_queries, scoreddocs=test_scoreddocs,
         citation=CITATION,
         desc='TripClick test queries, head+torso+tail combined. Unjudged (no qrels).')

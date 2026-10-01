@@ -56,12 +56,14 @@ docs = DocTable('sara-docs',
     lang='en',
     count_hint=1_702,
 )
+# license verified 2026-09-30 (queries, qrels): GitHub README states CC BY-NC 4.0
+# (https://github.com/JackMcKechnie/SARA/blob/main/README.md); docs left unlicensed (Zenodo record says CC-BY-4.0, conflicts)
 queries = TsvQueries('sara-queries',
     source=queries_file,
-    lang='en',
+    lang='en', license='CC-BY-NC-4.0',
     count_hint=150,
 )
-qrels = TrecQrels('sara-qrels', source=qrels_file, defs=QREL_DEFS, count_hint=34_413)
+qrels = TrecQrels('sara-qrels', source=qrels_file, defs=QREL_DEFS, count_hint=34_413, license='CC-BY-NC-4.0')
 
 # Benchmarks
 # -----------------------------------------

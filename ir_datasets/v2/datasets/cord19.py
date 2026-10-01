@@ -64,7 +64,8 @@ class _Cord19DocsParser(Parser):
             include_fulltext=self.include_fulltext, count_hint=node.count_hint)
 
 
-with irds.defaults(lang='en'):
+# license verified 2026-09-30: https://github.com/allenai/cord19/blob/master/LICENSE (COVID Dataset License Agreement; custom, text-and-data-mining only)
+with irds.defaults(lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE'):
     # Files
     # -----------------------------------------
     docs_2020_07_16_metadata_file = Resource('cord19-2020-07-16-metadata.csv',

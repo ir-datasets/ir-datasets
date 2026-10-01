@@ -79,121 +79,123 @@ class _CarQueriesParser(Parser):
         return _V1CarQueries(source)
 
 
-# Files
-# -----------------------------------------
-docs_v15_file = Resource('car-v1.5-docs.tar.xz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/paragraphcorpus-v1.5.tar.xz'],
-    hash='md5:4d006dd67cbc11541ed7f87b875cb990',
-    size=5_114_258_812,
-)
-docs_v20_file = Resource('car-v2.0-docs.tar.xz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v2.0/paragraphCorpus.v2.0.tar.xz'],
-    hash='md5:a404e9256d763ddcacc3da1e34de466a',
-    size=5_085_726_092,
-)
-trec_y1_queries_file = Resource('car-trec-y1-queries.tar.xz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/benchmarkY1test.public-v1.5.tar.xz'],
-    hash='md5:6ab490517accd2a2cb4848c0f160bc8d',
-    size=40_508,
-)
-trec_y1_qrels_file = Resource('car-trec-y1-qrels.tar.gz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/trec-car-2017-qrels.tar.gz'],
-    hash='md5:1ab7cf01c341757af1bb3db2aedd020f',
-    size=4_334_569,
-)
-test200_file = Resource('car-test200.tar.xz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/test200-v1.5.tar.xz'],
-    hash='md5:a7d8ea41f933b2ef49f06d782e908d13',
-    size=1_307_336,
-)
-train_file = Resource('car-train.tar.xz',
-    sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/train-v1.5.tar.xz'],
-    hash='md5:70eb3cf1d9358614f9d96dcd2565dc2b',
-    size=2_591_721_692,
-)
+# license verified 2026-09-30: https://trec-car.cs.unh.edu/ footer (TREC-CAR Dataset, CC BY-SA 3.0; based on Wikipedia)
+with irds.defaults(license='CC-BY-SA-3.0'):
+    # Files
+    # -----------------------------------------
+    docs_v15_file = Resource('car-v1.5-docs.tar.xz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/paragraphcorpus-v1.5.tar.xz'],
+        hash='md5:4d006dd67cbc11541ed7f87b875cb990',
+        size=5_114_258_812,
+    )
+    docs_v20_file = Resource('car-v2.0-docs.tar.xz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v2.0/paragraphCorpus.v2.0.tar.xz'],
+        hash='md5:a404e9256d763ddcacc3da1e34de466a',
+        size=5_085_726_092,
+    )
+    trec_y1_queries_file = Resource('car-trec-y1-queries.tar.xz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/benchmarkY1test.public-v1.5.tar.xz'],
+        hash='md5:6ab490517accd2a2cb4848c0f160bc8d',
+        size=40_508,
+    )
+    trec_y1_qrels_file = Resource('car-trec-y1-qrels.tar.gz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/trec-car-2017-qrels.tar.gz'],
+        hash='md5:1ab7cf01c341757af1bb3db2aedd020f',
+        size=4_334_569,
+    )
+    test200_file = Resource('car-test200.tar.xz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/test200-v1.5.tar.xz'],
+        hash='md5:a7d8ea41f933b2ef49f06d782e908d13',
+        size=1_307_336,
+    )
+    train_file = Resource('car-train.tar.xz',
+        sources=['http://trec-car.cs.unh.edu/datareleases/v1.5/train-v1.5.tar.xz'],
+        hash='md5:70eb3cf1d9358614f9d96dcd2565dc2b',
+        size=2_591_721_692,
+    )
 
-# Tables
-# -----------------------------------------
-docs_v15 = DocTable('car-v1.5-docs',
-    source=docs_v15_file.member('paragraphcorpus/paragraphcorpus.cbor', compression='xz'),
-    parser=_CarDocsParser(),
-    lang='en',
-    count_hint=29_678_367,
-    citation=CITATION_CORPUS,
-)
-docs_v20 = DocTable('car-v2.0-docs',
-    source=docs_v20_file.member('paragraphCorpus/dedup.articles-paragraphs.cbor', compression='xz'),
-    parser=_CarDocsParser(),
-    lang='en',
-    count_hint=29_794_697,
-    citation=CITATION_CORPUS,
-)
+    # Tables
+    # -----------------------------------------
+    docs_v15 = DocTable('car-v1.5-docs',
+        source=docs_v15_file.member('paragraphcorpus/paragraphcorpus.cbor', compression='xz'),
+        parser=_CarDocsParser(),
+        lang='en',
+        count_hint=29_678_367,
+        citation=CITATION_CORPUS,
+    )
+    docs_v20 = DocTable('car-v2.0-docs',
+        source=docs_v20_file.member('paragraphCorpus/dedup.articles-paragraphs.cbor', compression='xz'),
+        parser=_CarDocsParser(),
+        lang='en',
+        count_hint=29_794_697,
+        citation=CITATION_CORPUS,
+    )
 
-trec_y1_queries = QueryTable('car-trec-y1-queries',
-    source=trec_y1_queries_file.member('benchmarkY1test.public/test.benchmarkY1test.cbor.outlines', compression='xz'),
-    parser=_CarQueriesParser(),
-    lang='en',
-    count_hint=2_287,
-    citation=CITATION_Y1,
-)
-trec_y1_manual_qrels = TrecQrels('car-trec-y1-manual-qrels',
-    source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/manual.benchmarkY1test.cbor.hierarchical.qrels'),
-    defs=MANUAL_QRELS, count_hint=29_571, citation=CITATION_Y1)
-trec_y1_auto_qrels = TrecQrels('car-trec-y1-auto-qrels',
-    source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/automatic.benchmarkY1test.cbor.hierarchical.qrels'),
-    defs=AUTO_QRELS, count_hint=5_820, citation=CITATION_Y1)
-
-test200_queries = QueryTable('car-test200-queries',
-    source=test200_file.member('test200/train.test200.cbor.outlines', compression='xz'),
-    parser=_CarQueriesParser(),
-    lang='en',
-    count_hint=1_987)
-test200_qrels = TrecQrels('car-test200-qrels',
-    source=test200_file.member('test200/train.test200.cbor.hierarchical.qrels', compression='xz'),
-    defs=AUTO_QRELS, count_hint=4_706)
-
-train_folds = {}
-_FOLD_COUNTS = {
-    'fold0': (467_946, 1_054_369),
-    'fold1': (466_596, 1_052_398),
-    'fold2': (469_323, 1_061_162),
-    'fold3': (463_314, 1_046_784),
-    'fold4': (468_789, 1_061_911),
-}
-for _fold, (_qcount, _rcount) in _FOLD_COUNTS.items():
-    _queries = QueryTable(f'car-train-{_fold}-queries',
-        source=train_file.member(f'train/train.{_fold}.cbor.outlines', compression='xz'),
+    trec_y1_queries = QueryTable('car-trec-y1-queries',
+        source=trec_y1_queries_file.member('benchmarkY1test.public/test.benchmarkY1test.cbor.outlines', compression='xz'),
         parser=_CarQueriesParser(),
         lang='en',
-        count_hint=_qcount)
-    _qrels = TrecQrels(f'car-train-{_fold}-qrels',
-        source=train_file.member(f'train/train.{_fold}.cbor.hierarchical.qrels', compression='xz'),
-        defs=AUTO_QRELS, count_hint=_rcount)
-    train_folds[_fold] = (_queries, _qrels)
+        count_hint=2_287,
+        citation=CITATION_Y1,
+    )
+    trec_y1_manual_qrels = TrecQrels('car-trec-y1-manual-qrels',
+        source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/manual.benchmarkY1test.cbor.hierarchical.qrels'),
+        defs=MANUAL_QRELS, count_hint=29_571, citation=CITATION_Y1)
+    trec_y1_auto_qrels = TrecQrels('car-trec-y1-auto-qrels',
+        source=trec_y1_qrels_file.member('TREC_CAR_2017_qrels/automatic.benchmarkY1test.cbor.hierarchical.qrels'),
+        defs=AUTO_QRELS, count_hint=5_820, citation=CITATION_Y1)
 
-# Benchmarks
-# -----------------------------------------
-trec_y1 = Benchmark('car-trec-y1',
-    docs=docs_v15, queries=trec_y1_queries,
-    desc='TREC CAR 2017 (Y1) benchmark test queries, over the v1.5 paragraph corpus.')
-trec_y1_manual = Benchmark('car-trec-y1-manual',
-    docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_manual_qrels,
-    desc='TREC CAR 2017 (Y1) benchmark, with manual (NIST assessor) relevance judgments.')
-trec_y1_auto = Benchmark('car-trec-y1-auto',
-    docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_auto_qrels,
-    desc='TREC CAR 2017 (Y1) benchmark, with automatic (Wikipedia heading-derived) relevance judgments.')
+    test200_queries = QueryTable('car-test200-queries',
+        source=test200_file.member('test200/train.test200.cbor.outlines', compression='xz'),
+        parser=_CarQueriesParser(),
+        lang='en',
+        count_hint=1_987)
+    test200_qrels = TrecQrels('car-test200-qrels',
+        source=test200_file.member('test200/train.test200.cbor.hierarchical.qrels', compression='xz'),
+        defs=AUTO_QRELS, count_hint=4_706)
 
-test200 = Benchmark('car-test200',
-    docs=docs_v15, queries=test200_queries, qrels=test200_qrels,
-    citation=CITATION_TEST200,
-    desc='TREC CAR v1.5, a small 200-query sample of the train set, useful for quick tests.')
+    train_folds = {}
+    _FOLD_COUNTS = {
+        'fold0': (467_946, 1_054_369),
+        'fold1': (466_596, 1_052_398),
+        'fold2': (469_323, 1_061_162),
+        'fold3': (463_314, 1_046_784),
+        'fold4': (468_789, 1_061_911),
+    }
+    for _fold, (_qcount, _rcount) in _FOLD_COUNTS.items():
+        _queries = QueryTable(f'car-train-{_fold}-queries',
+            source=train_file.member(f'train/train.{_fold}.cbor.outlines', compression='xz'),
+            parser=_CarQueriesParser(),
+            lang='en',
+            count_hint=_qcount)
+        _qrels = TrecQrels(f'car-train-{_fold}-qrels',
+            source=train_file.member(f'train/train.{_fold}.cbor.hierarchical.qrels', compression='xz'),
+            defs=AUTO_QRELS, count_hint=_rcount)
+        train_folds[_fold] = (_queries, _qrels)
 
-train_benchmarks = {}
-for _fold, (_queries, _qrels) in train_folds.items():
-    train_benchmarks[_fold] = Benchmark(f'car-train-{_fold}',
-        docs=docs_v15, queries=_queries, qrels=_qrels,
-        desc=f'TREC CAR v1.5 training data, {_fold} of 5 (for training rankers/embeddings, '
-             'not for evaluation).')
+    # Benchmarks
+    # -----------------------------------------
+    trec_y1 = Benchmark('car-trec-y1',
+        docs=docs_v15, queries=trec_y1_queries,
+        desc='TREC CAR 2017 (Y1) benchmark test queries, over the v1.5 paragraph corpus.')
+    trec_y1_manual = Benchmark('car-trec-y1-manual',
+        docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_manual_qrels,
+        desc='TREC CAR 2017 (Y1) benchmark, with manual (NIST assessor) relevance judgments.')
+    trec_y1_auto = Benchmark('car-trec-y1-auto',
+        docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_auto_qrels,
+        desc='TREC CAR 2017 (Y1) benchmark, with automatic (Wikipedia heading-derived) relevance judgments.')
+
+    test200 = Benchmark('car-test200',
+        docs=docs_v15, queries=test200_queries, qrels=test200_qrels,
+        citation=CITATION_TEST200,
+        desc='TREC CAR v1.5, a small 200-query sample of the train set, useful for quick tests.')
+
+    train_benchmarks = {}
+    for _fold, (_queries, _qrels) in train_folds.items():
+        train_benchmarks[_fold] = Benchmark(f'car-train-{_fold}',
+            docs=docs_v15, queries=_queries, qrels=_qrels,
+            desc=f'TREC CAR v1.5 training data, {_fold} of 5 (for training rankers/embeddings, '
+                 'not for evaluation).')
 
 
 # Registration

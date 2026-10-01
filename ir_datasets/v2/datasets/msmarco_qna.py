@@ -49,7 +49,8 @@ class _QnADocsParser(Parser):
                                   namespace=node.name, lang=node.lang)
 
 
-with irds.defaults(dua=DUA, lang='en'):
+# license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
+with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
     # Files
     # -----------------------------------------
     train_file = Resource('msmarco-qna-train.json.gz',

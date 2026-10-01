@@ -165,8 +165,10 @@ def _hc4_ids_dlc(lang):
 #: is registered exactly once (a second ``Resource(...)`` with the same name
 #: would be a distinct object under one name, which the registry only
 #: tolerates when it's a plain re-import -- see ``ManifestProvider.register``).
+# license verified 2026-09-30: https://huggingface.co/datasets/neuclir/neuclir1 (card metadata: license odc-by); applies to the document corpus only
 DOCS_FILES = {
-    _lang: Resource(f'neuclir-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'md5:{_md5}', size=_size)
+    _lang: Resource(f'neuclir-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'md5:{_md5}', size=_size,
+        license='ODC-By-1.0')
     for _lang, (_url, _md5, _size) in DOCS.items()
 }
 
@@ -176,7 +178,7 @@ for _lang in DOCS:
     _lang3 = LANG3[_lang]
     _docs_file = DOCS_FILES[_lang]
 
-    _docs = DocTable(f'neuclir-{_lang}-docs',
+    _docs = DocTable(f'neuclir-{_lang}-docs', license='ODC-By-1.0',
         source=_docs_file.gunzip(), parser=_NeuclirDocsParser(_lang, DOC_COUNTS[_lang]),
         lang=_lang, desc=f'NeuCLIR collection 1, {_lang} Common Crawl documents.')
 
@@ -216,6 +218,7 @@ for _lang in DOCS:
     _hc4f_docs = DocTable(f'{_name_hc4f}-docs',
         source=_docs_file.gunzip(),
         parser=_NeuclirHc4FilteredDocsParser(_lang, _include_doc_id_dlc), lang=_lang,
+        license='ODC-By-1.0',
         derived_from=HC4_IDS_FILES[_lang],
         desc=f'NeuCLIR collection 1 {_lang} documents, filtered to the ids '
             'HC4 also covers.')
@@ -233,7 +236,7 @@ for _lang in DOCS:
             '-- HC4\'s combined dev+test queries and qrels.'))
 
 # -- Combined tri-lingual corpus, TREC 2023's cross-language "multi" task --
-_multi_docs = DocTable('neuclir-multi-docs',
+_multi_docs = DocTable('neuclir-multi-docs', license='ODC-By-1.0',
     source=[DOCS_FILES[_lang].gunzip() for _lang in ('zh', 'fa', 'ru')],
     parser=_NeuclirDocsParser(None, sum(DOC_COUNTS.values())),
     desc='NeuCLIR collection 1, the three languages (zh/fa/ru) combined.')

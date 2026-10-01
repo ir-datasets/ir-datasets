@@ -55,7 +55,8 @@ class _MsMarcoV2DocsParser(Parser):
         return MsMarcoV2Docs(source)
 
 
-with irds.defaults(dua=DUA, lang='en'):
+# license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
+with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
     # Files
     # -----------------------------------------
     docs_file = Resource('msmarco-document-v2.tar',

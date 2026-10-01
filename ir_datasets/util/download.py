@@ -240,14 +240,28 @@ def _cleanup_tmp(file):
 class Download:
     _dua_ctxt = deque([None])
 
-    def __init__(self, mirrors, cache_path=None, expected_md5=None, dua=None, stream=False, size_hint=None):
+    def __init__(self, mirrors, cache_path=None, expected_md5=None, dua=None, stream=False, size_hint=None,
+                 expected_hashes=None):
         self.mirrors = list(mirrors)
         self.expected_md5 = expected_md5
+        #: {algo: digest} -- every hash a source declares (md5 included); all
+        #: are verified while the bytes stream through.
+        self.expected_hashes = dict(expected_hashes or {})
         self.dua = dua or self._dua_ctxt[-1]
         self._cache_path = cache_path
         self._stream = stream
         self._path = None
         self._size_hint = size_hint
+
+    def _verified(self, stream):
+        """Wrap ``stream`` so every expected hash is checked as it is read. With
+        none declared, an md5 verifier that warns that a hash should be added."""
+        hashes = dict(self.expected_hashes)
+        if self.expected_md5 is not None:
+            hashes.setdefault('md5', self.expected_md5)
+        for algo, digest in (hashes.items() or [('md5', None)]):
+            stream = util.HashStream(stream, digest, algo=algo)
+        return stream
 
     def path(self, force=True):
         if self._path is not None:
@@ -281,7 +295,7 @@ class Download:
             try:
                 with util.finialized_file(download_path, 'wb') as f:
                     with mirror.stream() as stream:
-                        stream = util.HashStream(stream, self.expected_md5, algo='md5')
+                        stream = self._verified(stream)
                         shutil.copyfileobj(stream, f)
                         break
             except Exception as e:
@@ -302,7 +316,7 @@ class Download:
         if self._stream:
             assert len(self.mirrors) == 1, "cannot stream with multiple mirrors"
             with self.mirrors[0].stream() as stream:
-                stream = util.HashStream(stream, self.expected_md5, algo='md5')
+                stream = self._verified(stream)
                 yield stream
         else:
             with open(self.path(), 'rb') as f:

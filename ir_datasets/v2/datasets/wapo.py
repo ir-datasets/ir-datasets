@@ -48,7 +48,8 @@ class _WapoDocsParser(Parser):
         return _V1WapoDocs(source, self.file_name)
 
 
-with irds.defaults(dua=DUA, lang='en'):
+# license verified 2026-09-30: terms of the NIST TREC Washington Post Organization Application (research-only, no commercial use): https://trec.nist.gov/data/wapost/Organization%20Application.pdf
+with irds.defaults(dua=DUA, lang='en', license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf'):
     # Files
     # -----------------------------------------
     docs_v2_file = Resource('wapo-v2.tar.gz',

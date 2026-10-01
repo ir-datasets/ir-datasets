@@ -200,7 +200,9 @@ class _TouchePassageDocsParser(Parser):
         return _v1_touche.TouchePassageDocs(source, language=node.lang, count_hint=node.count_hint)
 
 
-with irds.defaults(lang='en'):
+# license verified 2026-09-30: Zenodo records 6862281, 6797876, 6798216, 6798217, 6873574, 6873567, 6873575 (Touche
+# topics/qrels/passages) all list CC-BY-4.0 (e.g. https://zenodo.org/api/records/6862281)
+with irds.defaults(lang='en', license='CC-BY-4.0'):
     # Files
     # -----------------------------------------
     task1_2020_queries_file = Resource('touche-2020-task-1-queries.zip',

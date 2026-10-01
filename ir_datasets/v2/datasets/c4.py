@@ -65,7 +65,8 @@ class _C4DocsParser(Parser):
         )
 
 
-with irds.defaults(lang='en'):
+# license verified 2026-09-30: https://huggingface.co/datasets/allenai/c4 (licensing section: ODC-BY; also bound by Common Crawl terms of use)
+with irds.defaults(lang='en', license=['ODC-By-1.0', 'https://commoncrawl.org/terms-of-use/']):
     # Files
     # -----------------------------------------
     en_noclean_sources_file = Resource('c4-en-noclean-sources.json.gz',

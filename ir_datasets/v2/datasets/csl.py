@@ -67,10 +67,12 @@ qrels_file = Resource('csl-trec-2023-qrels.tar.gz',
 
 # Tables
 # -----------------------------------------
+# license verified 2026-09-30: https://huggingface.co/datasets/neuclir/csl (card metadata: apache-2.0)
 docs = DocTable('csl-docs',
     source=docs_file.gunzip(),
     parser=_JsonlDocsParser(),
     lang='zh',
+    license='Apache-2.0',
     count_hint=395_927,
 )
 queries = QueryTable('csl-trec-2023-queries',
