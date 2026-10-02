@@ -134,6 +134,15 @@ class Graph:
             f'legacy:{name}; every node lives in a provider (<prefix>:{name})')
 
     def __getitem__(self, name):
+        if name.endswith(']') and '[' in name:
+            # A facet-swapped benchmark spec, as ``Benchmark.replace`` names
+            # its result: ``irds:trec-covid[docs=irds:other-docs,...]``.
+            base, _, spec = name[:-1].partition('[')
+            facets = dict(pair.split('=', 1) for pair in spec.split(',') if pair)
+            node = self[base]
+            if not hasattr(node, 'replace'):
+                raise KeyError(f'{base!r} does not support facet swaps: {name!r}')
+            return node.replace(**facets)
         if ':' not in name:
             node, name = self._load_bare(name)
         else:

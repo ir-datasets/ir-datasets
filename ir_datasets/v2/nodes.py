@@ -156,6 +156,16 @@ SUITE_MEMBER = irds.edge_kind('member', structural=True,
 VALIDATED_BY = irds.edge_kind('validated_by', structural=False,
                               desc='what a node\'s contents are validated against '
                                    '(e.g. a directory -> its file manifest)')
+#: Informational: this table is a drop-in for the target -- same id space
+#: (doc_ids/query_ids), so anything keyed on one's ids (qrels, queries, a
+#: Benchmark) is valid for the other; only the representation differs (e.g.
+#: full-text vs metadata-only docs, other fields or parsing). Points from the
+#: alternative to the canonical table. NOT for other snapshots/versions, other
+#: judgment depths, or translations with their own ids. The alternative may
+#: carry a short ``alternative_note`` (metadata) saying how it differs.
+ALTERNATIVE_OF = irds.edge_kind('alternative_of', structural=False,
+                                desc='table -> the canonical table it is a drop-in '
+                                     '(same id space) alternative for')
 STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
 #: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
@@ -1128,6 +1138,28 @@ def source_resources(source):
 
 # ── Benchmark ────────────────────────────────────────────────────────────────
 
+def alternatives(table):
+    """Names of every table linked to ``table`` by ``irds:alternative_of``,
+    in either direction, transitively (its canonical table and that table's
+    other alternatives), excluding itself."""
+    from .graph import default_graph
+    graph = default_graph()
+    start = table if isinstance(table, str) else table.qualified_name
+    seen, stack = {start}, [start]
+    while stack:
+        name = stack.pop()
+        linked = set(graph.edges_of(name).get(ALTERNATIVE_OF, ()))
+        linked |= {s for s, k in graph.incoming_edges(name) if k == ALTERNATIVE_OF}
+        for other in linked - seen:
+            seen.add(other)
+            stack.append(other)
+    return sorted(seen - {start})
+
+
+def are_alternatives(a, b):
+    return (b if isinstance(b, str) else b.qualified_name) in alternatives(a)
+
+
 class Benchmark(Node):
     """Docs + queries + qrels (etc.), bundled into one evaluable task.
 
@@ -1223,6 +1255,40 @@ class Benchmark(Node):
 
     def has(self, entity):
         return self.edge(entity) is not None
+
+    def replace(self, **facets):
+        """A new, unregistered Benchmark with some facets swapped
+        (``bm.replace(docs='irds:cord19-2020-07-16-fulltext')``); each value is
+        a table node or name. Swapping in a table that is not linked to the
+        one it replaces by ``irds:alternative_of`` is allowed, but warns: the
+        id spaces may not match. The result is named
+        ``<name>[docs=<table>,...]``."""
+        unknown = set(facets) - set(ENTITIES)
+        if unknown:
+            raise TypeError(f'unknown facet(s) {sorted(unknown)}; expected {ENTITIES}')
+        new, tags = {e: self.edge(e) for e in ENTITIES}, []
+        for entity, table in sorted(facets.items()):
+            if isinstance(table, str):
+                table = self._lookup(table)
+            old = new[entity]
+            if old is not None and table is not old and not are_alternatives(old, table):
+                warnings.warn(
+                    f'{table.qualified_name or table.name} is not declared an '
+                    f'irds:alternative_of {old.qualified_name or old.name}; its '
+                    f'ids may not match the other facets of {self.qualified_name or self.name}',
+                    stacklevel=2)
+            new[entity] = table
+            tags.append((entity, table))
+        spec = ','.join(f'{e}={t.qualified_name or t.name}' for e, t in tags)
+        out = Benchmark(f'{self.name}[{spec.replace(":", "/")}]',
+                        **{e: t for e, t in new.items() if t is not None},
+                        metrics=self.metrics,
+                        citation=self.metadata.get('citation'),
+                        desc=self.metadata.get('desc'))
+        # Not registered anywhere, but carries its canonical spec as its name
+        # (a registered name can't contain ':', hence set after construction).
+        out.qualified_name = f'{self.qualified_name or self.name}[{spec}]'
+        return out
 
     @property
     def docs(self):

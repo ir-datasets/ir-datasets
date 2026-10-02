@@ -25,15 +25,15 @@ snapshot/mode, so there's no collision to avoid here).
 * full-text (``include_fulltext=True``): the (much bigger) corpus tar.gz is
   first extracted to a fixed local directory (``extr_path``) if not already
   present, then ``metadata.csv`` plus per-article JSON bodies are read from
-  that extracted tree. Only the 2020-07-16 snapshot is offered in this mode
-  here (matching v1's ``fulltext``/``fulltext/trec-covid`` subsets) --
+  that extracted tree. Every snapshot has a ``-fulltext`` table (an
+  ``irds:alternative_of`` its metadata-only one; v1 only offered 2020-07-16) --
   ``extr_path`` is a plain local directory under
   ``ir_datasets.util.home_path()``, same convention as ``clueweb09.py``'s
   ``corpus.chk`` / ``c4.py``'s checkpoints extraction.
 
 Five distinct metadata-only corpus snapshots are registered, by date
-(2020-04-10, 2020-05-01, 2020-05-19, 2020-06-19, 2020-07-16), plus one
-full-text variant of the 2020-07-16 snapshot -- named after their date
+(2020-04-10, 2020-05-01, 2020-05-19, 2020-06-19, 2020-07-16), each with a
+full-text variant -- named after their date
 rather than the TREC-COVID round number that (soley) used to judge them
 (v1's own ``round1``-``round5`` subset names), since the corpus itself has
 no notion of "rounds" -- that's purely a TREC-COVID judging concept, now
@@ -98,6 +98,27 @@ with irds.defaults(lang='en', license='https://github.com/allenai/cord19/blob/ma
         hash='md5:4e8788b6e44f3428ff9ab1d4bfdfb6ab',
         size=228_730_850,
     )
+    # (the 2020-04-10 and 2020-05-01 releases are bzip2, despite their .tar.gz URLs)
+    docs_2020_04_10_file = Resource('cord19-2020-04-10.tar.bz2',
+        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-04-10.tar.gz'],
+        hash='md5:f4c3e742af7a6d6907ac86b1ca9f5312',
+        size=1_516_963_708,
+    )
+    docs_2020_05_01_file = Resource('cord19-2020-05-01.tar.bz2',
+        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-01.tar.gz'],
+        hash='md5:e8c56920c612b89e20b54f9f5b02c992',
+        size=1_742_677_535,
+    )
+    docs_2020_05_19_file = Resource('cord19-2020-05-19.tar.gz',
+        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-19.tar.gz'],
+        hash='md5:6424de9c3bdf74b889df74f9b71d5cbc',
+        size=2_793_628_709,
+    )
+    docs_2020_06_19_file = Resource('cord19-2020-06-19.tar.gz',
+        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-06-19.tar.gz'],
+        hash='md5:47b61215768b6fa72d7a152757d38d96',
+        size=3_336_210_521,
+    )
 
     # Tables
     # -----------------------------------------
@@ -112,6 +133,7 @@ with irds.defaults(lang='en', license='https://github.com/allenai/cord19/blob/ma
         parser=_Cord19DocsParser(BASE_PATH / '2020-07-16.fulltext', '2020-07-16', include_fulltext=True),
         count_hint=192_509,
         citation=CITATION_CORD19,
+        metadata={'alternative_note': 'adds article full text'},
     )
     docs_2020_04_10 = DocTable('cord19-2020-04-10',
         source=docs_2020_04_10_metadata_file,
@@ -138,8 +160,45 @@ with irds.defaults(lang='en', license='https://github.com/allenai/cord19/blob/ma
         citation=CITATION_CORD19,
     )
 
+    docs_2020_04_10_fulltext = DocTable('cord19-2020-04-10-fulltext',
+        source=docs_2020_04_10_file,
+        parser=_Cord19DocsParser(BASE_PATH / '2020-04-10.fulltext', '2020-04-10', include_fulltext=True),
+        count_hint=51_078,
+        citation=CITATION_CORD19,
+        metadata={'alternative_note': 'adds article full text'},
+    )
+    docs_2020_05_01_fulltext = DocTable('cord19-2020-05-01-fulltext',
+        source=docs_2020_05_01_file,
+        parser=_Cord19DocsParser(BASE_PATH / '2020-05-01.fulltext', '2020-05-01', include_fulltext=True),
+        count_hint=59_887,
+        citation=CITATION_CORD19,
+        metadata={'alternative_note': 'adds article full text'},
+    )
+    docs_2020_05_19_fulltext = DocTable('cord19-2020-05-19-fulltext',
+        source=docs_2020_05_19_file,
+        parser=_Cord19DocsParser(BASE_PATH / '2020-05-19.fulltext', '2020-05-19', include_fulltext=True),
+        count_hint=128_492,
+        citation=CITATION_CORD19,
+        metadata={'alternative_note': 'adds article full text'},
+    )
+    docs_2020_06_19_fulltext = DocTable('cord19-2020-06-19-fulltext',
+        source=docs_2020_06_19_file,
+        parser=_Cord19DocsParser(BASE_PATH / '2020-06-19.fulltext', '2020-06-19', include_fulltext=True),
+        count_hint=158_274,
+        citation=CITATION_CORD19,
+        metadata={'alternative_note': 'adds article full text'},
+    )
 
 # Registration
 # -----------------------------------------
 irds.register(docs_2020_07_16, docs_2020_07_16_fulltext,
-              docs_2020_04_10, docs_2020_05_01, docs_2020_05_19, docs_2020_06_19)
+              docs_2020_04_10, docs_2020_05_01, docs_2020_05_19, docs_2020_06_19,
+              docs_2020_04_10_fulltext, docs_2020_05_01_fulltext,
+              docs_2020_05_19_fulltext, docs_2020_06_19_fulltext)
+
+# The full-text docs share doc_ids (cord_uid) with the metadata-only ones, so
+# benchmarks over the latter (trec-covid, its rounds) can swap them in -- see
+# ``Benchmark.replace`` / ``irds:alternative_of``.
+for _date in ('2020-04-10', '2020-05-01', '2020-05-19', '2020-06-19', '2020-07-16'):
+    _v = _date.replace('-', '_')
+    irds.add_edge(globals()[f'docs_{_v}_fulltext'], 'alternative_of', globals()[f'docs_{_v}'])

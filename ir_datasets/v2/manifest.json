@@ -4814,8 +4814,21 @@
       "citation": "dblp:journals/corr/abs-2004-10706",
       "format": "Cord19Docs"
     },
+    "irds:cord19-2020-04-10-fulltext": {
+      "name": "irds:cord19-2020-04-10-fulltext",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.cord19",
+      "citation": "dblp:journals/corr/abs-2004-10706",
+      "format": "Cord19Docs",
+      "alternative_note": "adds article full text"
+    },
     "irds:cord19-2020-04-10-metadata.csv": {
       "name": "irds:cord19-2020-04-10-metadata.csv",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.cord19"
+    },
+    "irds:cord19-2020-04-10.tar.gz": {
+      "name": "irds:cord19-2020-04-10.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.cord19"
     },
@@ -4826,8 +4839,21 @@
       "citation": "dblp:journals/corr/abs-2004-10706",
       "format": "Cord19Docs"
     },
+    "irds:cord19-2020-05-01-fulltext": {
+      "name": "irds:cord19-2020-05-01-fulltext",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.cord19",
+      "citation": "dblp:journals/corr/abs-2004-10706",
+      "format": "Cord19Docs",
+      "alternative_note": "adds article full text"
+    },
     "irds:cord19-2020-05-01-metadata.csv": {
       "name": "irds:cord19-2020-05-01-metadata.csv",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.cord19"
+    },
+    "irds:cord19-2020-05-01.tar.gz": {
+      "name": "irds:cord19-2020-05-01.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.cord19"
     },
@@ -4838,8 +4864,21 @@
       "citation": "dblp:journals/corr/abs-2004-10706",
       "format": "Cord19Docs"
     },
+    "irds:cord19-2020-05-19-fulltext": {
+      "name": "irds:cord19-2020-05-19-fulltext",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.cord19",
+      "citation": "dblp:journals/corr/abs-2004-10706",
+      "format": "Cord19Docs",
+      "alternative_note": "adds article full text"
+    },
     "irds:cord19-2020-05-19-metadata.csv": {
       "name": "irds:cord19-2020-05-19-metadata.csv",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.cord19"
+    },
+    "irds:cord19-2020-05-19.tar.gz": {
+      "name": "irds:cord19-2020-05-19.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.cord19"
     },
@@ -4850,8 +4889,21 @@
       "citation": "dblp:journals/corr/abs-2004-10706",
       "format": "Cord19Docs"
     },
+    "irds:cord19-2020-06-19-fulltext": {
+      "name": "irds:cord19-2020-06-19-fulltext",
+      "type": "irds:DocTable",
+      "module": "ir_datasets.v2.datasets.cord19",
+      "citation": "dblp:journals/corr/abs-2004-10706",
+      "format": "Cord19Docs",
+      "alternative_note": "adds article full text"
+    },
     "irds:cord19-2020-06-19-metadata.csv": {
       "name": "irds:cord19-2020-06-19-metadata.csv",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.cord19"
+    },
+    "irds:cord19-2020-06-19.tar.gz": {
+      "name": "irds:cord19-2020-06-19.tar.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.cord19"
     },
@@ -4867,7 +4919,8 @@
       "type": "irds:DocTable",
       "module": "ir_datasets.v2.datasets.cord19",
       "citation": "dblp:journals/corr/abs-2004-10706",
-      "format": "Cord19Docs"
+      "format": "Cord19Docs",
+      "alternative_note": "adds article full text"
     },
     "irds:cord19-2020-07-16-metadata.csv": {
       "name": "irds:cord19-2020-07-16-metadata.csv",
@@ -15731,329 +15784,48 @@
       "module": "ir_datasets.v2.datasets.natural_questions",
       "format": "NqScoredDocs"
     },
-    "irds:neuclir-fa-docs": {
-      "name": "irds:neuclir-fa-docs",
+    "irds:neuclir1-fa": {
+      "name": "irds:neuclir1-fa",
       "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
+      "module": "ir_datasets.v2.datasets.neuclir1",
       "desc": "NeuCLIR collection 1, fa Common Crawl documents.",
       "format": "ExctractedCCDocs"
     },
-    "irds:neuclir-fa-docs.jsonl.gz": {
-      "name": "irds:neuclir-fa-docs.jsonl.gz",
+    "irds:neuclir1-fa.jsonl.gz": {
+      "name": "irds:neuclir1-fa.jsonl.gz",
       "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
+      "module": "ir_datasets.v2.datasets.neuclir1"
     },
-    "irds:neuclir-fa-hc4-filtered": {
-      "name": "irds:neuclir-fa-hc4-filtered",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, fa, filtered to intersect with HC4 -- HC4's combined dev+test queries and qrels.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-fa-hc4-filtered-docs": {
-      "name": "irds:neuclir-fa-hc4-filtered-docs",
+    "irds:neuclir1-multi": {
+      "name": "irds:neuclir1-multi",
       "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1 fa documents, filtered to the ids HC4 also covers.",
-      "format": "FilteredExctractedCCDocs"
-    },
-    "irds:neuclir-fa-hc4-filtered-qrels": {
-      "name": "irds:neuclir-fa-hc4-filtered-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-fa-hc4-filtered-queries": {
-      "name": "irds:neuclir-fa-hc4-filtered-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "ExctractedCCQueries"
-    },
-    "irds:neuclir-fa-trec-2022": {
-      "name": "irds:neuclir-fa-trec-2022",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, fa: TREC 2022 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-fa-trec-2022-qrels": {
-      "name": "irds:neuclir-fa-trec-2022-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "LangFilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-fa-trec-2022-queries": {
-      "name": "irds:neuclir-fa-trec-2022-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
-    },
-    "irds:neuclir-fa-trec-2023": {
-      "name": "irds:neuclir-fa-trec-2023",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, fa: TREC 2023 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-fa-trec-2023-qrels": {
-      "name": "irds:neuclir-fa-trec-2023-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "TrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-fa-trec-2023-queries": {
-      "name": "irds:neuclir-fa-trec-2023-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
-    },
-    "irds:neuclir-multi-docs": {
-      "name": "irds:neuclir-multi-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
+      "module": "ir_datasets.v2.datasets.neuclir1",
       "desc": "NeuCLIR collection 1, the three languages (zh/fa/ru) combined.",
       "format": "ExctractedCCDocs"
     },
-    "irds:neuclir-multi-trec-2023": {
-      "name": "irds:neuclir-multi-trec-2023",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1: TREC 2023's cross-language \"multi\" task (one combined tri-lingual ranking per query).",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-multi-trec-2023-qrels": {
-      "name": "irds:neuclir-multi-trec-2023-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "TrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-multi-trec-2023-queries": {
-      "name": "irds:neuclir-multi-trec-2023-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "ExctractedCCQueries"
-    },
-    "irds:neuclir-ru-docs": {
-      "name": "irds:neuclir-ru-docs",
+    "irds:neuclir1-ru": {
+      "name": "irds:neuclir1-ru",
       "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
+      "module": "ir_datasets.v2.datasets.neuclir1",
       "desc": "NeuCLIR collection 1, ru Common Crawl documents.",
       "format": "ExctractedCCDocs"
     },
-    "irds:neuclir-ru-docs.jsonl.gz": {
-      "name": "irds:neuclir-ru-docs.jsonl.gz",
+    "irds:neuclir1-ru.jsonl.gz": {
+      "name": "irds:neuclir1-ru.jsonl.gz",
       "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
+      "module": "ir_datasets.v2.datasets.neuclir1"
     },
-    "irds:neuclir-ru-hc4-filtered": {
-      "name": "irds:neuclir-ru-hc4-filtered",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, ru, filtered to intersect with HC4 -- HC4's combined dev+test queries and qrels.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-ru-hc4-filtered-docs": {
-      "name": "irds:neuclir-ru-hc4-filtered-docs",
+    "irds:neuclir1-zh": {
+      "name": "irds:neuclir1-zh",
       "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1 ru documents, filtered to the ids HC4 also covers.",
-      "format": "FilteredExctractedCCDocs"
-    },
-    "irds:neuclir-ru-hc4-filtered-qrels": {
-      "name": "irds:neuclir-ru-hc4-filtered-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-ru-hc4-filtered-queries": {
-      "name": "irds:neuclir-ru-hc4-filtered-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "ExctractedCCQueries"
-    },
-    "irds:neuclir-ru-trec-2022": {
-      "name": "irds:neuclir-ru-trec-2022",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, ru: TREC 2022 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-ru-trec-2022-qrels": {
-      "name": "irds:neuclir-ru-trec-2022-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "LangFilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-ru-trec-2022-queries": {
-      "name": "irds:neuclir-ru-trec-2022-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
-    },
-    "irds:neuclir-ru-trec-2023": {
-      "name": "irds:neuclir-ru-trec-2023",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, ru: TREC 2023 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-ru-trec-2023-qrels": {
-      "name": "irds:neuclir-ru-trec-2023-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "TrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-ru-trec-2023-queries": {
-      "name": "irds:neuclir-ru-trec-2023-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
-    },
-    "irds:neuclir-trec-2022-qrels.txt": {
-      "name": "irds:neuclir-trec-2022-qrels.txt",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
-    },
-    "irds:neuclir-trec-2022-queries.jsonl": {
-      "name": "irds:neuclir-trec-2022-queries.jsonl",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
-    },
-    "irds:neuclir-trec-2023-qrels.tar.gz": {
-      "name": "irds:neuclir-trec-2023-qrels.tar.gz",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
-    },
-    "irds:neuclir-trec-2023-queries.jsonl": {
-      "name": "irds:neuclir-trec-2023-queries.jsonl",
-      "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
-    },
-    "irds:neuclir-zh-docs": {
-      "name": "irds:neuclir-zh-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
+      "module": "ir_datasets.v2.datasets.neuclir1",
       "desc": "NeuCLIR collection 1, zh Common Crawl documents.",
       "format": "ExctractedCCDocs"
     },
-    "irds:neuclir-zh-docs.jsonl.gz": {
-      "name": "irds:neuclir-zh-docs.jsonl.gz",
+    "irds:neuclir1-zh.jsonl.gz": {
+      "name": "irds:neuclir1-zh.jsonl.gz",
       "type": "irds:Resource",
-      "module": "ir_datasets.v2.datasets.neuclir"
-    },
-    "irds:neuclir-zh-hc4-filtered": {
-      "name": "irds:neuclir-zh-hc4-filtered",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, zh, filtered to intersect with HC4 -- HC4's combined dev+test queries and qrels.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-zh-hc4-filtered-docs": {
-      "name": "irds:neuclir-zh-hc4-filtered-docs",
-      "type": "irds:DocTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1 zh documents, filtered to the ids HC4 also covers.",
-      "format": "FilteredExctractedCCDocs"
-    },
-    "irds:neuclir-zh-hc4-filtered-qrels": {
-      "name": "irds:neuclir-zh-hc4-filtered-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-zh-hc4-filtered-queries": {
-      "name": "irds:neuclir-zh-hc4-filtered-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "ExctractedCCQueries"
-    },
-    "irds:neuclir-zh-trec-2022": {
-      "name": "irds:neuclir-zh-trec-2022",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, zh: TREC 2022 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-zh-trec-2022-qrels": {
-      "name": "irds:neuclir-zh-trec-2022-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "LangFilteredTrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-zh-trec-2022-queries": {
-      "name": "irds:neuclir-zh-trec-2022-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
-    },
-    "irds:neuclir-zh-trec-2023": {
-      "name": "irds:neuclir-zh-trec-2023",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "desc": "NeuCLIR collection 1, zh: TREC 2023 NeuCLIR track benchmark.",
-      "citation": "dblp:conf/trec/LawrieMMMOSY22"
-    },
-    "irds:neuclir-zh-trec-2023-qrels": {
-      "name": "irds:neuclir-zh-trec-2023-qrels",
-      "type": "irds:QrelTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "TrecQrels",
-      "defs": {
-        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
-        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
-        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
-      }
-    },
-    "irds:neuclir-zh-trec-2023-queries": {
-      "name": "irds:neuclir-zh-trec-2023-queries",
-      "type": "irds:QueryTable",
-      "module": "ir_datasets.v2.datasets.neuclir",
-      "format": "FilteredQueries"
+      "module": "ir_datasets.v2.datasets.neuclir1"
     },
     "irds:neumarco-fa": {
       "name": "irds:neumarco-fa",
@@ -17906,13 +17678,6 @@
       "desc": "The complete TREC-COVID collection: the 2020-07-16 (metadata-only) CORD-19 snapshot with deep, cumulative relevance judgments.",
       "citation": "dblp:journals/sigir/VoorheesABDHLRS20"
     },
-    "irds:trec-covid-fulltext": {
-      "name": "irds:trec-covid-fulltext",
-      "type": "irds:Benchmark",
-      "module": "ir_datasets.v2.datasets.trec_covid",
-      "desc": "Same queries/qrels as trec-covid, but over the full-text (rather than metadata-only) 2020-07-16 CORD-19 snapshot.",
-      "citation": "dblp:journals/sigir/VoorheesABDHLRS20"
-    },
     "irds:trec-covid-qrels": {
       "name": "irds:trec-covid-qrels",
       "type": "irds:QrelTable",
@@ -19411,6 +19176,223 @@
       "name": "irds:trec-mq-2009-queries.gz",
       "type": "irds:Resource",
       "module": "ir_datasets.v2.datasets.trec_mq"
+    },
+    "irds:trec-neuclir-2022-fa": {
+      "name": "irds:trec-neuclir-2022-fa",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2022 NeuCLIR track, fa (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2022-fa-qrels": {
+      "name": "irds:trec-neuclir-2022-fa-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "LangFilteredTrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2022-fa-queries": {
+      "name": "irds:trec-neuclir-2022-fa-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
+    },
+    "irds:trec-neuclir-2022-qrels.txt": {
+      "name": "irds:trec-neuclir-2022-qrels.txt",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_neuclir"
+    },
+    "irds:trec-neuclir-2022-queries.jsonl": {
+      "name": "irds:trec-neuclir-2022-queries.jsonl",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_neuclir"
+    },
+    "irds:trec-neuclir-2022-ru": {
+      "name": "irds:trec-neuclir-2022-ru",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2022 NeuCLIR track, ru (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2022-ru-qrels": {
+      "name": "irds:trec-neuclir-2022-ru-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "LangFilteredTrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2022-ru-queries": {
+      "name": "irds:trec-neuclir-2022-ru-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
+    },
+    "irds:trec-neuclir-2022-zh": {
+      "name": "irds:trec-neuclir-2022-zh",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2022 NeuCLIR track, zh (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2022-zh-qrels": {
+      "name": "irds:trec-neuclir-2022-zh-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "LangFilteredTrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2022-zh-queries": {
+      "name": "irds:trec-neuclir-2022-zh-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
+    },
+    "irds:trec-neuclir-2023-fa": {
+      "name": "irds:trec-neuclir-2023-fa",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2023 NeuCLIR track, fa (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2023-fa-qrels": {
+      "name": "irds:trec-neuclir-2023-fa-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "TrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2023-fa-queries": {
+      "name": "irds:trec-neuclir-2023-fa-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
+    },
+    "irds:trec-neuclir-2023-multi": {
+      "name": "irds:trec-neuclir-2023-multi",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2023 NeuCLIR track, the cross-language \"multi\" task over NeuCLIR collection 1 (one combined tri-lingual ranking per query).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2023-multi-qrels": {
+      "name": "irds:trec-neuclir-2023-multi-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "TrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2023-multi-queries": {
+      "name": "irds:trec-neuclir-2023-multi-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "ExctractedCCQueries"
+    },
+    "irds:trec-neuclir-2023-qrels.tar.gz": {
+      "name": "irds:trec-neuclir-2023-qrels.tar.gz",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_neuclir"
+    },
+    "irds:trec-neuclir-2023-queries.jsonl": {
+      "name": "irds:trec-neuclir-2023-queries.jsonl",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_neuclir"
+    },
+    "irds:trec-neuclir-2023-ru": {
+      "name": "irds:trec-neuclir-2023-ru",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2023 NeuCLIR track, ru (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2023-ru-qrels": {
+      "name": "irds:trec-neuclir-2023-ru-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "TrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2023-ru-queries": {
+      "name": "irds:trec-neuclir-2023-ru-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
+    },
+    "irds:trec-neuclir-2023-tech": {
+      "name": "irds:trec-neuclir-2023-tech",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2023 NeuCLIR track, the technical-document task (Chinese Scientific Literature).",
+      "citation": "dblp:conf/coling/LiZ0S0MZ22"
+    },
+    "irds:trec-neuclir-2023-tech-qrels": {
+      "name": "irds:trec-neuclir-2023-tech-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "TrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2023-tech-queries": {
+      "name": "irds:trec-neuclir-2023-tech-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "ExctractedCCQueries"
+    },
+    "irds:trec-neuclir-2023-tech-queries.jsonl": {
+      "name": "irds:trec-neuclir-2023-tech-queries.jsonl",
+      "type": "irds:Resource",
+      "module": "ir_datasets.v2.datasets.trec_neuclir"
+    },
+    "irds:trec-neuclir-2023-zh": {
+      "name": "irds:trec-neuclir-2023-zh",
+      "type": "irds:Benchmark",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "desc": "TREC 2023 NeuCLIR track, zh (NeuCLIR collection 1).",
+      "citation": "dblp:conf/trec/LawrieMMMOSY22"
+    },
+    "irds:trec-neuclir-2023-zh-qrels": {
+      "name": "irds:trec-neuclir-2023-zh-qrels",
+      "type": "irds:QrelTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "TrecQrels",
+      "defs": {
+        "3": "Very-valuable. Information in the document would be found in the lead paragraph of a report that is later written on the topic.",
+        "1": "Somewhat-valuable. The most valuable information in the document would be found in the remainder of such a report.",
+        "0": "Not-valuable. Information in the document might be included in a report footnote, or omitted entirely."
+      }
+    },
+    "irds:trec-neuclir-2023-zh-queries": {
+      "name": "irds:trec-neuclir-2023-zh-queries",
+      "type": "irds:QueryTable",
+      "module": "ir_datasets.v2.datasets.trec_neuclir",
+      "format": "FilteredQueries"
     },
     "irds:trec-news-2018": {
       "name": "irds:trec-news-2018",
@@ -26960,9 +26942,29 @@
       "irds:cord19-2020-04-10-metadata.csv"
     ],
     [
+      "irds:cord19-2020-04-10-fulltext",
+      "irds:alternative_of",
+      "irds:cord19-2020-04-10"
+    ],
+    [
+      "irds:cord19-2020-04-10-fulltext",
+      "irds:derived_from",
+      "irds:cord19-2020-04-10.tar.gz"
+    ],
+    [
       "irds:cord19-2020-05-01",
       "irds:derived_from",
       "irds:cord19-2020-05-01-metadata.csv"
+    ],
+    [
+      "irds:cord19-2020-05-01-fulltext",
+      "irds:alternative_of",
+      "irds:cord19-2020-05-01"
+    ],
+    [
+      "irds:cord19-2020-05-01-fulltext",
+      "irds:derived_from",
+      "irds:cord19-2020-05-01.tar.gz"
     ],
     [
       "irds:cord19-2020-05-19",
@@ -26970,14 +26972,39 @@
       "irds:cord19-2020-05-19-metadata.csv"
     ],
     [
+      "irds:cord19-2020-05-19-fulltext",
+      "irds:alternative_of",
+      "irds:cord19-2020-05-19"
+    ],
+    [
+      "irds:cord19-2020-05-19-fulltext",
+      "irds:derived_from",
+      "irds:cord19-2020-05-19.tar.gz"
+    ],
+    [
       "irds:cord19-2020-06-19",
       "irds:derived_from",
       "irds:cord19-2020-06-19-metadata.csv"
     ],
     [
+      "irds:cord19-2020-06-19-fulltext",
+      "irds:alternative_of",
+      "irds:cord19-2020-06-19"
+    ],
+    [
+      "irds:cord19-2020-06-19-fulltext",
+      "irds:derived_from",
+      "irds:cord19-2020-06-19.tar.gz"
+    ],
+    [
       "irds:cord19-2020-07-16",
       "irds:derived_from",
       "irds:cord19-2020-07-16-metadata.csv"
+    ],
+    [
+      "irds:cord19-2020-07-16-fulltext",
+      "irds:alternative_of",
+      "irds:cord19-2020-07-16"
     ],
     [
       "irds:cord19-2020-07-16-fulltext",
@@ -36670,429 +36697,34 @@
       "irds:nq-train-49.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-docs",
+      "irds:neuclir1-fa",
       "irds:derived_from",
-      "irds:neuclir-fa-docs.jsonl.gz"
+      "irds:neuclir1-fa.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-hc4-filtered",
-      "irds:docs",
-      "irds:neuclir-fa-hc4-filtered-docs"
-    ],
-    [
-      "irds:neuclir-fa-hc4-filtered",
-      "irds:qrels",
-      "irds:neuclir-fa-hc4-filtered-qrels"
-    ],
-    [
-      "irds:neuclir-fa-hc4-filtered",
-      "irds:queries",
-      "irds:neuclir-fa-hc4-filtered-queries"
-    ],
-    [
-      "irds:neuclir-fa-hc4-filtered-docs",
+      "irds:neuclir1-multi",
       "irds:derived_from",
-      "irds:hc4-fa-ids-0.jsonl.gz"
+      "irds:neuclir1-fa.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-hc4-filtered-docs",
+      "irds:neuclir1-multi",
       "irds:derived_from",
-      "irds:neuclir-fa-docs.jsonl.gz"
+      "irds:neuclir1-ru.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-hc4-filtered-qrels",
+      "irds:neuclir1-multi",
       "irds:derived_from",
-      "irds:hc4-fa-dev-qrels.txt"
+      "irds:neuclir1-zh.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-hc4-filtered-qrels",
+      "irds:neuclir1-ru",
       "irds:derived_from",
-      "irds:hc4-fa-ids-0.jsonl.gz"
+      "irds:neuclir1-ru.jsonl.gz"
     ],
     [
-      "irds:neuclir-fa-hc4-filtered-qrels",
+      "irds:neuclir1-zh",
       "irds:derived_from",
-      "irds:hc4-fa-test-qrels.txt"
-    ],
-    [
-      "irds:neuclir-fa-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-dev-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-fa-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-test-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-fa-trec-2022",
-      "irds:docs",
-      "irds:neuclir-fa-docs"
-    ],
-    [
-      "irds:neuclir-fa-trec-2022",
-      "irds:qrels",
-      "irds:neuclir-fa-trec-2022-qrels"
-    ],
-    [
-      "irds:neuclir-fa-trec-2022",
-      "irds:queries",
-      "irds:neuclir-fa-trec-2022-queries"
-    ],
-    [
-      "irds:neuclir-fa-trec-2022-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-qrels.txt"
-    ],
-    [
-      "irds:neuclir-fa-trec-2022-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-fa-trec-2023",
-      "irds:docs",
-      "irds:neuclir-fa-docs"
-    ],
-    [
-      "irds:neuclir-fa-trec-2023",
-      "irds:qrels",
-      "irds:neuclir-fa-trec-2023-qrels"
-    ],
-    [
-      "irds:neuclir-fa-trec-2023",
-      "irds:queries",
-      "irds:neuclir-fa-trec-2023-queries"
-    ],
-    [
-      "irds:neuclir-fa-trec-2023-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-qrels.tar.gz"
-    ],
-    [
-      "irds:neuclir-fa-trec-2023-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-multi-docs",
-      "irds:derived_from",
-      "irds:neuclir-fa-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-multi-docs",
-      "irds:derived_from",
-      "irds:neuclir-ru-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-multi-docs",
-      "irds:derived_from",
-      "irds:neuclir-zh-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-multi-trec-2023",
-      "irds:docs",
-      "irds:neuclir-multi-docs"
-    ],
-    [
-      "irds:neuclir-multi-trec-2023",
-      "irds:qrels",
-      "irds:neuclir-multi-trec-2023-qrels"
-    ],
-    [
-      "irds:neuclir-multi-trec-2023",
-      "irds:queries",
-      "irds:neuclir-multi-trec-2023-queries"
-    ],
-    [
-      "irds:neuclir-multi-trec-2023-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-qrels.tar.gz"
-    ],
-    [
-      "irds:neuclir-multi-trec-2023-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-ru-docs",
-      "irds:derived_from",
-      "irds:neuclir-ru-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered",
-      "irds:docs",
-      "irds:neuclir-ru-hc4-filtered-docs"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered",
-      "irds:qrels",
-      "irds:neuclir-ru-hc4-filtered-qrels"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered",
-      "irds:queries",
-      "irds:neuclir-ru-hc4-filtered-queries"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-0.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-1.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-2.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-3.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-4.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-5.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-6.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-7.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:neuclir-ru-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-dev-qrels.txt"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-0.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-1.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-2.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-3.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-4.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-5.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-6.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-ids-7.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-ru-test-qrels.txt"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-dev-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-ru-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-test-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-ru-trec-2022",
-      "irds:docs",
-      "irds:neuclir-ru-docs"
-    ],
-    [
-      "irds:neuclir-ru-trec-2022",
-      "irds:qrels",
-      "irds:neuclir-ru-trec-2022-qrels"
-    ],
-    [
-      "irds:neuclir-ru-trec-2022",
-      "irds:queries",
-      "irds:neuclir-ru-trec-2022-queries"
-    ],
-    [
-      "irds:neuclir-ru-trec-2022-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-qrels.txt"
-    ],
-    [
-      "irds:neuclir-ru-trec-2022-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-ru-trec-2023",
-      "irds:docs",
-      "irds:neuclir-ru-docs"
-    ],
-    [
-      "irds:neuclir-ru-trec-2023",
-      "irds:qrels",
-      "irds:neuclir-ru-trec-2023-qrels"
-    ],
-    [
-      "irds:neuclir-ru-trec-2023",
-      "irds:queries",
-      "irds:neuclir-ru-trec-2023-queries"
-    ],
-    [
-      "irds:neuclir-ru-trec-2023-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-qrels.tar.gz"
-    ],
-    [
-      "irds:neuclir-ru-trec-2023-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-zh-docs",
-      "irds:derived_from",
-      "irds:neuclir-zh-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered",
-      "irds:docs",
-      "irds:neuclir-zh-hc4-filtered-docs"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered",
-      "irds:qrels",
-      "irds:neuclir-zh-hc4-filtered-qrels"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered",
-      "irds:queries",
-      "irds:neuclir-zh-hc4-filtered-queries"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:hc4-zh-ids-0.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-docs",
-      "irds:derived_from",
-      "irds:neuclir-zh-docs.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-zh-dev-qrels.txt"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-zh-ids-0.jsonl.gz"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-qrels",
-      "irds:derived_from",
-      "irds:hc4-zh-test-qrels.txt"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-dev-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-zh-hc4-filtered-queries",
-      "irds:derived_from",
-      "irds:hc4-test-topics.jsonl"
-    ],
-    [
-      "irds:neuclir-zh-trec-2022",
-      "irds:docs",
-      "irds:neuclir-zh-docs"
-    ],
-    [
-      "irds:neuclir-zh-trec-2022",
-      "irds:qrels",
-      "irds:neuclir-zh-trec-2022-qrels"
-    ],
-    [
-      "irds:neuclir-zh-trec-2022",
-      "irds:queries",
-      "irds:neuclir-zh-trec-2022-queries"
-    ],
-    [
-      "irds:neuclir-zh-trec-2022-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-qrels.txt"
-    ],
-    [
-      "irds:neuclir-zh-trec-2022-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2022-queries.jsonl"
-    ],
-    [
-      "irds:neuclir-zh-trec-2023",
-      "irds:docs",
-      "irds:neuclir-zh-docs"
-    ],
-    [
-      "irds:neuclir-zh-trec-2023",
-      "irds:qrels",
-      "irds:neuclir-zh-trec-2023-qrels"
-    ],
-    [
-      "irds:neuclir-zh-trec-2023",
-      "irds:queries",
-      "irds:neuclir-zh-trec-2023-queries"
-    ],
-    [
-      "irds:neuclir-zh-trec-2023-qrels",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-qrels.tar.gz"
-    ],
-    [
-      "irds:neuclir-zh-trec-2023-queries",
-      "irds:derived_from",
-      "irds:neuclir-trec-2023-queries.jsonl"
+      "irds:neuclir1-zh.jsonl.gz"
     ],
     [
       "irds:neumarco-fa",
@@ -38580,21 +38212,6 @@
       "irds:trec-covid-queries"
     ],
     [
-      "irds:trec-covid-fulltext",
-      "irds:docs",
-      "irds:cord19-2020-07-16-fulltext"
-    ],
-    [
-      "irds:trec-covid-fulltext",
-      "irds:qrels",
-      "irds:trec-covid-qrels"
-    ],
-    [
-      "irds:trec-covid-fulltext",
-      "irds:queries",
-      "irds:trec-covid-queries"
-    ],
-    [
       "irds:trec-covid-qrels",
       "irds:derived_from",
       "irds:trec-covid-qrels.txt"
@@ -39903,6 +39520,206 @@
       "irds:trec-mq-2009-queries",
       "irds:derived_from",
       "irds:trec-mq-2009-queries.gz"
+    ],
+    [
+      "irds:trec-neuclir-2022-fa",
+      "irds:docs",
+      "irds:neuclir1-fa"
+    ],
+    [
+      "irds:trec-neuclir-2022-fa",
+      "irds:qrels",
+      "irds:trec-neuclir-2022-fa-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2022-fa",
+      "irds:queries",
+      "irds:trec-neuclir-2022-fa-queries"
+    ],
+    [
+      "irds:trec-neuclir-2022-fa-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-qrels.txt"
+    ],
+    [
+      "irds:trec-neuclir-2022-fa-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2022-ru",
+      "irds:docs",
+      "irds:neuclir1-ru"
+    ],
+    [
+      "irds:trec-neuclir-2022-ru",
+      "irds:qrels",
+      "irds:trec-neuclir-2022-ru-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2022-ru",
+      "irds:queries",
+      "irds:trec-neuclir-2022-ru-queries"
+    ],
+    [
+      "irds:trec-neuclir-2022-ru-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-qrels.txt"
+    ],
+    [
+      "irds:trec-neuclir-2022-ru-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2022-zh",
+      "irds:docs",
+      "irds:neuclir1-zh"
+    ],
+    [
+      "irds:trec-neuclir-2022-zh",
+      "irds:qrels",
+      "irds:trec-neuclir-2022-zh-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2022-zh",
+      "irds:queries",
+      "irds:trec-neuclir-2022-zh-queries"
+    ],
+    [
+      "irds:trec-neuclir-2022-zh-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-qrels.txt"
+    ],
+    [
+      "irds:trec-neuclir-2022-zh-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2022-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2023-fa",
+      "irds:docs",
+      "irds:neuclir1-fa"
+    ],
+    [
+      "irds:trec-neuclir-2023-fa",
+      "irds:qrels",
+      "irds:trec-neuclir-2023-fa-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2023-fa",
+      "irds:queries",
+      "irds:trec-neuclir-2023-fa-queries"
+    ],
+    [
+      "irds:trec-neuclir-2023-fa-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-qrels.tar.gz"
+    ],
+    [
+      "irds:trec-neuclir-2023-fa-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2023-multi",
+      "irds:docs",
+      "irds:neuclir1-multi"
+    ],
+    [
+      "irds:trec-neuclir-2023-multi",
+      "irds:qrels",
+      "irds:trec-neuclir-2023-multi-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2023-multi",
+      "irds:queries",
+      "irds:trec-neuclir-2023-multi-queries"
+    ],
+    [
+      "irds:trec-neuclir-2023-multi-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-qrels.tar.gz"
+    ],
+    [
+      "irds:trec-neuclir-2023-multi-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2023-ru",
+      "irds:docs",
+      "irds:neuclir1-ru"
+    ],
+    [
+      "irds:trec-neuclir-2023-ru",
+      "irds:qrels",
+      "irds:trec-neuclir-2023-ru-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2023-ru",
+      "irds:queries",
+      "irds:trec-neuclir-2023-ru-queries"
+    ],
+    [
+      "irds:trec-neuclir-2023-ru-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-qrels.tar.gz"
+    ],
+    [
+      "irds:trec-neuclir-2023-ru-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2023-tech",
+      "irds:docs",
+      "irds:csl-docs"
+    ],
+    [
+      "irds:trec-neuclir-2023-tech",
+      "irds:qrels",
+      "irds:trec-neuclir-2023-tech-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2023-tech",
+      "irds:queries",
+      "irds:trec-neuclir-2023-tech-queries"
+    ],
+    [
+      "irds:trec-neuclir-2023-tech-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-qrels.tar.gz"
+    ],
+    [
+      "irds:trec-neuclir-2023-tech-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-tech-queries.jsonl"
+    ],
+    [
+      "irds:trec-neuclir-2023-zh",
+      "irds:docs",
+      "irds:neuclir1-zh"
+    ],
+    [
+      "irds:trec-neuclir-2023-zh",
+      "irds:qrels",
+      "irds:trec-neuclir-2023-zh-qrels"
+    ],
+    [
+      "irds:trec-neuclir-2023-zh",
+      "irds:queries",
+      "irds:trec-neuclir-2023-zh-queries"
+    ],
+    [
+      "irds:trec-neuclir-2023-zh-qrels",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-qrels.tar.gz"
+    ],
+    [
+      "irds:trec-neuclir-2023-zh-queries",
+      "irds:derived_from",
+      "irds:trec-neuclir-2023-queries.jsonl"
     ],
     [
       "irds:trec-news-2018",
@@ -43389,6 +43206,10 @@
     }
   },
   "edge_kinds": {
+    "irds:alternative_of": {
+      "structural": false,
+      "desc": "table -> the canonical table it is a drop-in (same id space) alternative for"
+    },
     "irds:derived_from": {
       "structural": true,
       "desc": "what a node is built from: bytes it is parsed from, another table it is filtered from, or a node its filter took ids from"

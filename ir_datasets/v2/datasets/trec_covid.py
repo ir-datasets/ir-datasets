@@ -2,6 +2,10 @@
 (imported by reference from ``cord19.py``, by date -- same cross-file
 pattern as ``trec_adhoc.py`` importing ``docs`` from ``disks45.py``).
 
+There is no ``trec-covid-fulltext`` benchmark: the full-text corpus is an
+``irds:alternative_of`` the metadata-only one (see ``cord19.py``), so
+``load('irds:trec-covid', docs='irds:cord19-2020-07-16-fulltext')`` gives it.
+
 Previously bundled in ``cord19.py`` as ``cord19-trec-covid``/
 ``cord19-fulltext-trec-covid``/``cord19-trec-covid-round1..5`` (CORD-19 had
 no other consumer at the time) -- moved here and renamed to drop the corpus
@@ -21,7 +25,7 @@ was in ``cord19.py`` (see that module's git history for the v1 provenance).
 """
 from ir_datasets.v2 import Benchmark, Resource, TrecQrels, TrecQueries, irds
 from ir_datasets.v2.datasets.cord19 import docs_2020_04_10, docs_2020_05_01, docs_2020_05_19
-from ir_datasets.v2.datasets.cord19 import docs_2020_06_19, docs_2020_07_16, docs_2020_07_16_fulltext
+from ir_datasets.v2.datasets.cord19 import docs_2020_06_19, docs_2020_07_16
 
 CITATION = 'dblp:journals/sigir/VoorheesABDHLRS20'
 
@@ -148,11 +152,6 @@ with irds.defaults(lang='en'):
         citation=CITATION,
         desc='The complete TREC-COVID collection: the 2020-07-16 (metadata-only) '
              'CORD-19 snapshot with deep, cumulative relevance judgments.')
-    fulltext_trec_covid = Benchmark('trec-covid-fulltext',
-        docs=docs_2020_07_16_fulltext, queries=queries, qrels=qrels,
-        citation=CITATION,
-        desc='Same queries/qrels as trec-covid, but over the full-text '
-             '(rather than metadata-only) 2020-07-16 CORD-19 snapshot.')
     trec_covid_round1 = Benchmark('trec-covid-round1',
         docs=docs_2020_04_10, queries=round1_queries, qrels=round1_qrels,
         citation=CITATION,
@@ -178,6 +177,6 @@ with irds.defaults(lang='en'):
 
 # Registration
 # -----------------------------------------
-irds.register(trec_covid, fulltext_trec_covid,
+irds.register(trec_covid,
               trec_covid_round1, trec_covid_round2, trec_covid_round3, trec_covid_round4,
               trec_covid_round5)

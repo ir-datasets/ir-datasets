@@ -98,7 +98,7 @@ from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 # legacy_provider.py's own docstring.
 from .legacy_provider import legacy
 from .nodes import (
-    BENCHMARK, Benchmark, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
+    ALTERNATIVE_OF, BENCHMARK, Benchmark, alternatives, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
     File, GitRepo, QlogTable, RESOURCE, Resource,
     QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
@@ -128,10 +128,13 @@ graph.add(clirmatrix)
 graph.add(legacy)
 
 
-def load(name):
+def load(name, **facets):
     """Resolve a node by qualified name (``irds:antique-test``), or by legacy
-    v1 id (``antique/test``)."""
-    return graph[name]
+    v1 id (``antique/test``). For a Benchmark, ``facets`` swap in other tables
+    (``load('irds:trec-covid', docs='irds:cord19-2020-07-16-fulltext')``); see
+    ``Benchmark.replace`` (warns if not an ``irds:alternative_of``)."""
+    node = graph[name]
+    return node.replace(**facets) if facets else node
 
 
 def list_datasets(type=None):
