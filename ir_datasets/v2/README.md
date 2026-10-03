@@ -111,6 +111,7 @@ python -m unittest test.v2_conformance
 | `provider.py` | The `irds` `ManifestProvider` instance itself |
 | `nodes.py` | `Resource`, `Table` (+ `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`), `Benchmark`, `Suite` — the dataset vocabulary, declared on `irds` |
 | `formats.py`, `sources.py`, `filters.py` | Format subclasses, download/cache machinery, derivation (`Filter`) |
+| `log_utils.py` | `log_download` — the generic, provider-agnostic download-event log every `Resource` fetch appends to (`Resource.path`/`.stream`) |
 | `datasets/*.py` | One authored file per dataset family |
 
 ## What it demonstrates
@@ -146,6 +147,7 @@ python -m unittest test.v2_conformance
 | Import-free discovery: manifest rows, one module imported per `load()`; derived facets register with their benchmark (no special case) | `ManifestProvider.__getitem__`, `Benchmark.structural_edges` |
 | Legacy v1 ids as permanent aliases, discovered as an `irds:alias` edge like any other — no separate alias API on `Graph` | `ManifestProvider.alias`, `registry.ALIAS_KIND` |
 | Existing caches read **in place** — nothing moved, nothing re-downloaded | `cache_path` in `datasets/antique.py` |
+| Every actual fetch (never a cache hit) appends one entry — timestamp, node name, the *actual* md5 of the bytes that landed, and where on disk — to one shared, append-only, gzip'd JSON-lines audit log under the ir_datasets home directory, regardless of provider | `log_utils.log_download`, called from `Resource.path`/`.stream` |
 
 ## One authored file replaces four
 
