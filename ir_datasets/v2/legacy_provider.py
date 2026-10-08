@@ -3,12 +3,12 @@ each its own ``legacy:V1Dataset`` node -- so a pre-v2 id is addressable and
 browsable in the graph on its own terms, not merely smuggled in as a
 special-cased triple hanging off whichever v2 node it maps to (an earlier,
 narrower version of this lived directly in ``ManifestProvider`` -- see
-``registry.py``'s and ``graph.py``'s history). A ``legacy:replaced_by`` edge
+``registry.py``'s and ``graph.py``'s history). A ``irds:alias_of`` edge
 points at that v2 node wherever one is actually known -- and, since a legacy
 id is a real graph node here rather than a special-cased triple, resolving
 one the old way (``ir_datasets.v2.load('antique/test')``) is just ``Graph``
 following that same edge: it loads the bare name as ``legacy:antique/test``,
-sees a ``legacy:V1Dataset``, and follows its ``replaced_by`` edge to the v2
+sees a ``legacy:V1Dataset``, and follows its ``irds:alias_of`` edge to the v2
 node (see ``graph.py``'s own docstring and ``Graph.__getitem__``) -- or
 raises, if the id has none.
 
@@ -41,24 +41,21 @@ per v1 URL shape (``clirmatrix/{lang}``, .../multi8/..., .../bi139-base/...,
 ``_patterns`` at runtime -- the same "report on demand, never eagerly build
 150,000 Python objects" posture ``clirmatrix:`` itself uses for its *v2*
 names (see ``clirmatrix_provider.py``'s own module docstring). None of these
-carries a ``legacy:replaced_by`` edge: v2's CLIRMatrix deliberately never
+carries a ``irds:alias_of`` edge: v2's CLIRMatrix deliberately never
 aliased any v1 id -- a changed naming shape, ~150,000 of them -- see
 ``v2.datasets.clirmatrix``'s module docstring.
 """
 from .base import Generator, Node, Param
+from .nodes import ALIAS, ALIAS_OF
 from .registry import ManifestProvider
 
 legacy = ManifestProvider('legacy')
 
 V1_DATASET = legacy.node_type(
     'V1Dataset',
+    parent=ALIAS,
     desc='A dataset id from v1 ir_datasets, kept addressable in the graph '
          'even where it has no v2 counterpart.')
-REPLACED_BY = legacy.edge_kind(
-    'replaced_by', structural=False,
-    desc='v1 dataset id -> the v2 node that replaced it (informational: a '
-         'legacy id is bookkeeping, never part of anything\'s build DAG)')
-
 
 class V1Dataset(Node):
     type = V1_DATASET
@@ -96,7 +93,7 @@ def _register_clirmatrix_generators():
     id itself is eagerly registered in v1, so it's covered by
     ``_register_eager_ids`` instead) -- see the module docstring.
 
-    Each carries a ``replaced_by`` edge to its v2 ``clirmatrix:`` name too,
+    Each carries a ``irds:alias_of`` edge to its v2 ``clirmatrix:`` name too,
     by the same template-substitution mechanism ``clirmatrix:`` itself uses
     for its own structural edges (``Generator``'s ``edges=``, see
     ``v2.datasets.clirmatrix``) -- v1's shape maps onto v2's mechanically
@@ -112,7 +109,7 @@ def _register_clirmatrix_generators():
     # ``clirmatrix/ar/multi8/ar/train`` too, but resolving it ``KeyError``s
     # (verified against v1 directly); it was never a real id, just an
     # unchecked corner of the regex. Applied here so this generator doesn't
-    # claim a ``replaced_by`` edge to a v2 name that ``_bilingual_constraint``
+    # claim a ``irds:alias_of`` edge to a v2 name that ``_bilingual_constraint``
     # (``v2.datasets.clirmatrix``) correctly never produces either.
     bilingual = lambda **p: p['doc_lang'] != p['query_lang']
     shapes = [
@@ -132,7 +129,7 @@ def _register_clirmatrix_generators():
         legacy.register_generator(Generator(
             template, params=params, type=V1_DATASET, constraints=constraints,
             resolver=_clirmatrix_resolver(template),
-            edges=[('replaced_by', replaced_by_template)],
+            edges=[(ALIAS_OF, replaced_by_template)],
         ), module=__name__)
 
 
@@ -1166,7 +1163,7 @@ def _register_eager_ids():
             # So ir_datasets.v2.load(v1_id) still resolves the old way --
             # Graph.__getitem__ follows this edge for any legacy:V1Dataset
             # it loads (see graph.py's module docstring).
-            legacy.add_edge(node, 'replaced_by', target)
+            legacy.add_edge(node, ALIAS_OF, target)
 
 
 def _register_all():

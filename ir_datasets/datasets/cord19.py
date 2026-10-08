@@ -136,10 +136,10 @@ class Cord19Docs(BaseDocs):
                     # Sometiems the document parses are in a single big file, sometimes in separate.
                     # The metadata format is also different in these cases.
                     if isinstance(fulltexts, dict):
-                        if record['has_pmc_xml_parse']:
+                        if record['has_pmc_xml_parse'] == 'True':
                             path = os.path.join(record['full_text_file'], 'pmc_json', record['pmcid'] + '.xml.json')
                             body = json.load(fulltexts[record['full_text_file']].extractfile(path))
-                        elif record['has_pdf_parse']:
+                        elif record['has_pdf_parse'] == 'True':
                             path = os.path.join(record['full_text_file'], 'pdf_json', record['sha'].split(';')[0].strip() + '.json')
                             body = json.load(fulltexts[record['full_text_file']].extractfile(path))
                     elif fulltexts is not None:

@@ -27,6 +27,7 @@ import importlib
 import json
 
 from .graph import default_graph
+from .vocabulary import types_of
 
 MANIFEST_VERSION = 2
 
@@ -39,7 +40,8 @@ DEFAULT_PROVIDER = 'ir_datasets.v2.provider:irds'
 
 def row_for(node):
     """A node's manifest row. Empty values are dropped so rows stay readable."""
-    row = {'name': node.qualified_name, 'type': node.type,
+    types = types_of(node)
+    row = {'name': node.qualified_name, 'type': types[0] if len(types) == 1 else list(types),
            'module': node.defined_in, **node.metadata}
     return {k: v for k, v in row.items() if v or k == 'name'}
 

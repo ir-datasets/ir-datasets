@@ -11,18 +11,29 @@ built on it. The two used to be split across two packages (`ir_graph` +
 `ir_datasets.v2`); they were merged back into one once it was clear this paper
 only needs one domain — see [Deferred to a later
 paper](#deferred-to-a-later-paper) below. The generic machinery still declares
-no vocabulary of its own — it's `nodes.py` that declares nine node
-types, all owned by the `irds` provider:
+no vocabulary of its own — it's `nodes.py` that declares these node
+types, all owned by the `irds` provider. Three abstract parents, each with
+leaf types under it:
 
-- **`Resource`** — bytes, and where to get them
+- **`Data`** — bytes, and where to get them: **`File`** (one blob; what a
+  bare `Resource(...)` node is) or **`Directory`** (a tree of files; `GitRepo` is one)
 - **`Table`** — a structured set of records, parsed from a source — and its
-  five per-entity subtypes, `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`,
+  per-entity subtypes, `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`/`AnswerTable`/`QlogTable`,
   each its own declared graph type (a subtype of `Table`, not just the same
   `Table` type distinguished by an `.entity` attribute) — so a type-filtered
   listing can ask for either the specific kind or the whole family
-- **`Benchmark`** — docs + queries + qrels (etc.) bundled into an evaluable task,
-  plus flat metadata (`citation`, `metrics`)
-- **`Suite`** — a named, structural set of related Benchmarks (e.g. BEIR)
+- **`Bundle`** — a node composed of Tables and/or other Bundles (named to
+  avoid "collection", which in IR means a corpus):
+  - **`Benchmark`** — docs + queries + qrels (etc.) bundled into an evaluable
+    task, plus flat metadata (`citation`, `metrics`). Its task-specific
+    subtypes work like the `Table` ones, adding semantics about which tables
+    it has, and a benchmark can have several: **`AdhocBenchmark`** (docs +
+    queries + qrels) and **`QaBenchmark`** (queries + answers; docs optional).
+    One with a benchmark's tables but neither combination (e.g. a test set
+    with no qrels) stays a plain `Benchmark`. A node's types are `node.types`
+    (`node.type` is the first); the manifest stores a list when there are
+    several, and `list_datasets(type=...)` matches any of them.
+  - **`Suite`** — a named, structural set of related Benchmarks (e.g. BEIR)
 
 Citations-as-papers and metrics-as-measures (each with their own node type and
 edges) are explicitly out of scope for this iteration — see
@@ -99,7 +110,7 @@ python -m unittest test.v2_conformance
 
 | Module | What it holds |
 |---|---|
-| `protocols.py` | `Node`, `Resource`, `Table`, `Benchmark`, `Suite` as `typing.Protocol`s — the actual contract; no inheritance required to satisfy them |
+| `protocols.py` | `Node`, `Data`, `Table`, `Benchmark`, `Suite` as `typing.Protocol`s — the actual contract; no inheritance required to satisfy them |
 | `base.py` | `Node` (a convenient, optional base class implementing the protocol above), `Edge`, `Generator`, `Param` — generic, no vocabulary of their own |
 | `vocabulary.py` | The process-wide index of declared node types / edge kinds, and which providers own them |
 | `context.py` | The `defaults()` stack (`ManifestProvider.defaults()` pushes onto it) |

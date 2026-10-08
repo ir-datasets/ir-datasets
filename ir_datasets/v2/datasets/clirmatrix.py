@@ -22,7 +22,7 @@ Its own provider (``clirmatrix_provider.py``), not ``irds`` -- unlike every
 other bundled family, which shares ``irds``'s registry because there's a
 finite, hand-authored list of them. This one is generator-only, ~150,000
 names deep, and doesn't need anything from ``irds``'s registry besides the
-node types and edge kinds it borrows (``irds:Benchmark``, ``irds:DocTable``,
+node types and edge kinds it borrows (``irds:Benchmark``, ``irds:Docs``,
 ``irds:derived_from``, ...) -- which any provider may build nodes of/declare
 edges with, regardless of who owns them (see ``registry.py``'s own docstring
 on that). Being its own provider is also why names no longer repeat the
@@ -91,7 +91,7 @@ from ir_datasets.util import Lazy
 from ir_datasets.v2.base import Generator, Param
 from ir_datasets.v2.formats import Parser, TsvDocs
 from ir_datasets.v2.nodes import (
-    BENCHMARK, Benchmark, DERIVED_FROM, FACET, QrelTable, QueryTable, RESOURCE,
+    BENCHMARK, Benchmark, DERIVED_FROM, FACET, QrelTable, QueryTable, FILE,
     Resource, TABLE_TYPES,
 )
 from ir_datasets.v2.clirmatrix_provider import clirmatrix
@@ -196,7 +196,7 @@ class _ClirMatrixQrelsParser(Parser):
 #: memoized separately from the DocTable that wraps it (below), so the
 #: Resource has one stable identity whether it's reached via the docs table's
 #: own resolution or resolved directly by its own generator (see the
-#: `RESOURCE`-typed generator registered below): same object either way.
+#: `FILE`-typed generator registered below): same object either way.
 _docs_resource_cache = {}
 
 
@@ -316,7 +316,7 @@ def _qrels(variant, doc_lang, query_lang, split):
 
 clirmatrix.register_generator(Generator(
     '{lang}-docs.txt.gz', params={'lang': Param(values=LANGS)},
-    type=RESOURCE, resolver=_docs_resource, enumerable=True,
+    type=FILE, resolver=_docs_resource, enumerable=True,
     row_metadata=_docs_resource_row,
     desc='The downloaded Wikipedia-derived corpus file backing one '
         'language\'s docs table.'))
@@ -337,7 +337,7 @@ _BILINGUAL_PARAMS = {
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}.jsonl.gz',
     params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
-    type=RESOURCE, resolver=_qrel_resource, enumerable=True,
+    type=FILE, resolver=_qrel_resource, enumerable=True,
     row_metadata=_qrel_resource_row,
     desc='The downloaded file backing one pair+split\'s queries and qrels '
         '(one query per line, its judged docs inline) -- shared by both '

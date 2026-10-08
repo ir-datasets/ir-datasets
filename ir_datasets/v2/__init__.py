@@ -16,22 +16,28 @@ is free to keep a list of registered datasets internally however it likes.
 ``ManifestProvider`` (``registry.py``) is the batteries-included
 implementation of it -- registration, vocabulary declaration, generators, a
 frozen manifest -- and what ``irds`` (this package's own provider) is built
-from. ``ir_datasets.v2`` contributes ten node types, all owned by its own
+from. ``ir_datasets.v2`` contributes these node types, all owned by its own
 ``irds`` provider:
 
-* ``Resource`` — bytes, and where to get them
-* ``Table`` — a structured set of records, parsed from a source -- and its six
+* ``Data`` — bytes, and where to get them: ``File`` (one blob) or
+  ``Directory`` (a tree of files)
+* ``Table`` — a structured set of records, parsed from a source -- and its
   per-entity subtypes, ``DocTable``, ``QueryTable``, ``QrelTable``,
-  ``RunTable``, ``DocPairTable``, ``QlogTable`` (and their format subclasses).
-  Each is its own declared graph type (``is_subtype('irds:QrelTable',
+  ``RunTable``, ``DocPairTable``, ``AnswerTable``, ``QlogTable`` (and their
+  format subclasses).
+  Each is its own declared graph type (``is_subtype('irds:Qrels',
   'irds:Table')`` is true), so ``list_datasets(type='irds:Table')`` finds all
-  six kinds while ``list_datasets(type='irds:QrelTable')`` finds only qrels
+  six kinds while ``list_datasets(type='irds:Qrels')`` finds only qrels
   tables. ``QlogTable`` (raw query logs, e.g. AOL's/TripClick's session data)
   is the one entity that is never a Benchmark facet -- see ``nodes.py``'s
   ``ENTITIES``/``TABLE_TYPES`` docstrings for why.
-* ``Benchmark`` — docs + queries + qrels (etc.) bundled into an evaluable task,
-  plus flat metadata (``citation``, ``metrics``)
-* ``Suite`` — a named, structural set of related Benchmarks (e.g. BEIR)
+* ``Bundle`` — composed of Tables and/or other Bundles; the parent of:
+
+  * ``Benchmark`` — docs + queries + qrels (etc.) bundled into an evaluable
+    task, plus flat metadata (``citation``, ``metrics``). Subtypes
+    ``AdhocBenchmark`` (docs + queries + qrels) and ``QaBenchmark`` (queries +
+    answers) say which tables it has; a benchmark may be both (``node.types``).
+  * ``Suite`` — a named, structural set of related Benchmarks (e.g. BEIR)
 
 Citations-as-papers and metrics-as-measures (each with their own edges) are
 future work for a broader knowledge graph; for now both are plain metadata.
@@ -48,7 +54,7 @@ so a new entity kind this package never enumerated still shows up under
 Nothing about being a node requires inheriting from this package's classes,
 either. ``Resource``/``Table``/``Benchmark``/``Suite`` (and their common shape,
 ``Node``) are structural contracts (see ``protocols.py``), not base classes --
-``ResourceProtocol``/``TableProtocol``/``BenchmarkProtocol``/``SuiteProtocol``/
+``DataProtocol``/``TableProtocol``/``BenchmarkProtocol``/``SuiteProtocol``/
 ``NodeProtocol`` below are the actual interfaces; the classes of the same name
 without the suffix are one convenient, inheritable implementation of them, not
 a requirement. A third-party ``Table`` backed by a live API instead of a
@@ -98,8 +104,8 @@ from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 # legacy_provider.py's own docstring.
 from .legacy_provider import legacy
 from .nodes import (
-    ALTERNATIVE_OF, BENCHMARK, Benchmark, alternatives, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
-    File, GitRepo, QlogTable, RESOURCE, Resource,
+    ALIAS_OF, ALTERNATIVE_OF, AnswerTable, BENCHMARK, Benchmark, alternatives, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
+    ADHOC_BENCHMARK, ALIAS, BUNDLE, DIRECTORY, FILE, File, GitRepo, QA_BENCHMARK, QlogTable, DATA, Resource,
     QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
 )
@@ -110,7 +116,7 @@ from .formats import (
 from .sources import Readable, Source, external_home, transform
 from .filters import DerivedTable, Filter, ids_from_lines, ids_of
 from .protocols import Node as NodeProtocol
-from .protocols import Resource as ResourceProtocol
+from .protocols import Data as DataProtocol
 from .protocols import Table as TableProtocol
 from .protocols import Benchmark as BenchmarkProtocol
 from .protocols import Suite as SuiteProtocol
@@ -152,7 +158,7 @@ def external_status():
     whether it's there yet."""
     from .sources import _ManualSource
     rows = []
-    for name in list_datasets(type=RESOURCE):
+    for name in list_datasets(type=DATA):
         try:
             node = graph[name]
         except Exception:
@@ -180,12 +186,12 @@ __all__ = [
     'is_subtype',
     # nodes
     'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'DocTable', 'QueryTable',
-    'QrelTable', 'RunTable', 'DocPairTable', 'QlogTable', 'Benchmark', 'Suite', 'ENTITIES',
+    'QrelTable', 'RunTable', 'DocPairTable', 'AnswerTable', 'QlogTable', 'Benchmark', 'Suite', 'ENTITIES',
     # protocols: the structural contracts Resource/Table/Benchmark/Suite/Node above
     # are one implementation of, not requirements to inherit from
-    'NodeProtocol', 'ResourceProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',
+    'NodeProtocol', 'DataProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',
     # vocabulary (declared on the irds provider)
-    'RESOURCE', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
+    'DATA', 'FILE', 'DIRECTORY', 'BUNDLE', 'ADHOC_BENCHMARK', 'ALIAS', 'ALIAS_OF', 'QA_BENCHMARK', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
     'STRUCTURAL_EDGES', 'DEFAULTABLE', 'source_resources',
     # sources
     'Source', 'Readable', 'transform', 'external_home',

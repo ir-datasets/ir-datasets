@@ -16,11 +16,19 @@ The entity bases still accept ``parser=`` for cases where the format is chosen a
 runtime rather than written down -- a wrapper inferring columns from a remote
 dataset, say. These classes are the common path; that is the escape hatch.
 """
+from typing import NamedTuple
+
 from ir_datasets import formats as _v1
 from ir_datasets.formats import GenericDoc, GenericDocPair, GenericQuery, TrecQuery
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 
 from .nodes import DocPairTable, DocTable, QrelTable, QueryTable, RunTable
+
+
+class GenericAnswer(NamedTuple):
+    """The record type of an ``AnswerTable``: a reference answer to one query."""
+    query_id: str
+    text: str
 
 
 class _V1TsvDocs(_v1.TsvDocs):
@@ -82,6 +90,45 @@ class _TsvDocsParser(Parser):
             count_hint=node.count_hint,
             store_path=node.docstore_path,
         )
+
+
+class _AnswersFromQueries:
+    """An ``answers`` handler that reads the answer string(s) a v1 queries
+    record carries in ``field`` (a string, or a tuple of them) and emits one
+    ``GenericAnswer`` per answer."""
+
+    def __init__(self, queries, field):
+        self._queries = queries
+        self._field = field
+
+    def answers_iter(self):
+        for q in self._queries.queries_iter():
+            value = getattr(q, self._field)
+            for text in ((value,) if isinstance(value, str) else value):
+                if text:
+                    yield GenericAnswer(q.query_id, text)
+
+    def answers_cls(self):
+        return GenericAnswer
+
+    def answers_count(self):
+        return None
+
+
+class AnswersFromQueriesParser(Parser):
+    """For an ``AnswerTable`` whose answers live on the same records as the
+    queries (BRIGHT's ``gold_answer``, DPR's ``answers``, MS MARCO QnA's
+    ``answers``): builds the queries handler with ``queries_parser``, then
+    flattens its ``field`` into answer rows. Give the table the same
+    ``source=`` as the queries."""
+    name = 'AnswersFromQueries'
+
+    def __init__(self, queries_parser, field='answers'):
+        self.queries_parser = queries_parser
+        self.field = field
+
+    def build(self, source, node):
+        return _AnswersFromQueries(self.queries_parser.build(source, node), self.field)
 
 
 class _TsvQueriesParser(Parser):

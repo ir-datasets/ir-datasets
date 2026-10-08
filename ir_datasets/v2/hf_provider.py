@@ -248,7 +248,7 @@ def _resolve_commit(repo, revision):
 class HfDataset(GitRepo):
     """A HuggingFace Hub dataset repo, as a whole, at a pinned commit --
     ``GitRepo`` (pinned-commit identity, commit-based ``attest``/``verify``,
-    ``.relative(path)`` member access) plus the one thing that's actually
+    ``.file(path)`` access) plus the one thing that's actually
     HF-specific: how the tree is fetched.
 
     ``path()`` is fetched via ``huggingface_hub.snapshot_download`` rather
@@ -465,8 +465,8 @@ def _build_table(name, hf_dataset, key, spec):
     defs = spec.get('defs')
     file = spec.get('file')
     if file:
-        source = ([hf_dataset.relative(f) for f in file] if isinstance(file, list)
-                 else hf_dataset.relative(file))
+        source = ([hf_dataset.file(f) for f in file] if isinstance(file, list)
+                 else hf_dataset.file(file))
         parser = _HfFileParser(entity, column_map, defs=defs)
     else:
         # key doubles as "config/split" (or bare "split", default config)

@@ -5,7 +5,7 @@ CLIRMatrix isn't like them: it's generator-only (no frozen node rows -- see
 ``datasets/clirmatrix.py``'s own docstring), on the order of 150,000
 addressable names, and its own self-contained vocabulary-reuser rather than a
 family that needs ``irds``'s shared registry for anything but the node types
-and edge kinds it borrows (``irds:Benchmark``, ``irds:DocTable``,
+and edge kinds it borrows (``irds:Benchmark``, ``irds:Docs``,
 ``irds:derived_from``, ...) -- reuse that ``check_type``/``add_edge`` already
 allow any provider to do, not something requiring shared registration.
 

@@ -26,12 +26,12 @@ needs its ``prefix:``.
 
 That ``legacy:`` fallback is also where a v1 id actually gets resolved to its
 v2 replacement. ``legacy_provider.py``'s ``legacy:`` provider makes every v1
-id a real, browsable ``legacy:V1Dataset`` node, with a ``legacy:replaced_by``
+id a real, browsable ``legacy:V1Dataset`` node, with an ``irds:alias_of``
 edge to its v2 counterpart where one is known -- an ordinary node and edge,
 nothing ``Graph`` needs to special-case to list or traverse. Loading one is
 the one deliberate exception: whenever ``Graph.__getitem__`` resolves *any*
-name (bare or qualified) to a ``legacy:V1Dataset``, it follows that node's
-``replaced_by`` edge and returns the v2 node instead -- or raises, if the v1
+name (bare or qualified) to a ``irds:Alias`` (``legacy:V1Dataset`` is one), it follows that node's
+``alias_of`` edge and returns the v2 node instead -- or raises, if the v1
 id has no known replacement, since a ``V1Dataset`` placeholder is browsable
 but never itself a working dataset.
 """
@@ -45,8 +45,8 @@ ENTRY_POINT_GROUP = 'ir_datasets.providers'
 #: The one node type ``Graph.__getitem__`` treats specially (see the module
 #: docstring) -- not part of the generic ``Provider``/vocabulary contract,
 #: just the two things needed to resolve a legacy id to its replacement.
-_V1_DATASET_TYPE = 'legacy:V1Dataset'
-_REPLACED_BY_KIND = 'legacy:replaced_by'
+_ALIAS_TYPE = 'irds:Alias'
+_ALIAS_OF_KIND = 'irds:alias_of'
 
 
 class Graph:
@@ -76,12 +76,15 @@ class Graph:
         reads from here rather than calling the provider again."""
         cached = self._catalogs.get(provider.prefix)
         if cached is None:
-            types, fwd, rev = {}, {}, {}
+            types, all_types, fwd, rev = {}, {}, {}, {}
             for subject, kind, obj in provider.discover_edges():
                 if isinstance(obj, Literal):
                     continue
                 if kind == 'type':
-                    types[subject] = obj
+                    # A node may have several types; `types` keeps the first
+                    # (its primary), `all_types` every one.
+                    types.setdefault(subject, obj)
+                    all_types.setdefault(subject, []).append(obj)
                 elif kind == 'subClassOf':
                     # Type-hierarchy metadata (vocabulary.py's own
                     # declare_type/ancestors already track this for
@@ -93,7 +96,7 @@ class Graph:
                     if obj not in bucket:
                         bucket.append(obj)
                     rev.setdefault(obj, set()).add((subject, kind))
-            cached = {'types': types, 'fwd': fwd, 'rev': rev}
+            cached = {'types': types, 'all_types': all_types, 'fwd': fwd, 'rev': rev}
             self._catalogs[provider.prefix] = cached
         return cached
 
@@ -147,11 +150,11 @@ class Graph:
             node, name = self._load_bare(name)
         else:
             node = self.provider_for(name).load(name)
-        if node.type == _V1_DATASET_TYPE:
-            targets = self.edges_of(name).get(_REPLACED_BY_KIND)
+        if is_subtype(node.type, _ALIAS_TYPE):
+            targets = self.edges_of(name).get(_ALIAS_OF_KIND)
             if not targets:
                 raise KeyError(
-                    f'{name!r} is a v1 id with no known v2 replacement')
+                    f'{name!r} is an alias with no known target')
             return self[targets[0]]
         return node
 
@@ -330,12 +333,20 @@ class Graph:
             return None
         return self._catalog(provider)['types'].get(name)
 
+    def types_of(self, name):
+        """Every node type of ``name`` (``type_of`` is just the first)."""
+        try:
+            provider = self.provider_for(name)
+        except KeyError:
+            return []
+        return list(self._catalog(provider)['all_types'].get(name, ()))
+
     def list(self, type=None):
         """Names from every provider's catalog (``discover_edges()``), without
         importing or downloading anything a node's own data would need.
-        ``type`` is a qualified node type (``irds:QrelTable``) -- matched by
+        ``type`` is a qualified node type (``irds:Qrels``) -- matched by
         subtype, so ``type='irds:Table'`` also finds
-        ``irds:QrelTable``/``irds:DocTable``/... nodes (see
+        ``irds:Qrels``/``irds:Docs``/... nodes (see
         ``vocabulary.is_subtype``). Every registered node is listed -- there's
         no "hidden"/internal-only tier; a node either exists in the graph,
         addressable, or it was never registered.
@@ -348,9 +359,9 @@ class Graph:
         """
         out = []
         for provider in self.providers.values():
-            types = self._catalog(provider)['types']
-            for name, node_type in types.items():
-                if type is not None and not is_subtype(node_type, type):
+            all_types = self._catalog(provider)['all_types']
+            for name, node_types in all_types.items():
+                if type is not None and not any(is_subtype(t, type) for t in node_types):
                     continue
                 out.append(name)
         return sorted(out)

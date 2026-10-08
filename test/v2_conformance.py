@@ -42,19 +42,125 @@ class TestV2Graph(unittest.TestCase):
                 self.assertIsNotNone(graph[name])
 
     def test_node_types_are_known(self):
-        known = {v2.RESOURCE, v2.BENCHMARK, v2.SUITE, *v2.TABLE_TYPES.values()}
+        known = {v2.FILE, v2.DIRECTORY, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK,
+                 v2.SUITE, *v2.TABLE_TYPES.values()}
         for name in irds.manifest()['nodes']:
             with self.subTest(node=name):
+                self.assertTrue(set(graph.types_of(name)) <= known)
                 self.assertIn(graph.type_of(name), known)
 
-    def test_exactly_ten_node_types(self):
-        """The paper's original nine (Resource, Table (+ one subtype per
-        benchmark-facet entity), Benchmark, Suite), plus one: QlogTable, a
-        Table subtype for an entity (raw query logs) that is never a
-        Benchmark facet -- see nodes.py's ENTITIES/TABLE_TYPES docstrings.
-        No more than that."""
-        self.assertEqual({v2.RESOURCE, v2.TABLE, v2.BENCHMARK, v2.SUITE, *v2.TABLE_TYPES.values()},
+    def test_exactly_these_node_types(self):
+        """The abstract parents (Resource, Table, Bundle), Alias (a stand-in for another node; legacy:V1Dataset is one), the leaf types
+        under each (File/Directory; one per table entity, incl. QlogTable,
+        which is never a Benchmark facet -- see nodes.py's
+        ENTITIES/TABLE_TYPES docstrings; Benchmark/Suite, with the
+        task-specific Adhoc/Qa benchmark types under Benchmark). No more."""
+        self.assertEqual({v2.DATA, v2.FILE, v2.DIRECTORY, v2.TABLE, *v2.TABLE_TYPES.values(),
+                          v2.BUNDLE, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK, v2.SUITE, v2.ALIAS},
                          set(irds.types))
+
+    def test_type_hierarchy(self):
+        for sub, parent in [(v2.FILE, v2.DATA), (v2.DIRECTORY, v2.DATA),
+                            (v2.BENCHMARK, v2.BUNDLE), (v2.SUITE, v2.BUNDLE),
+                            (v2.ADHOC_BENCHMARK, v2.BENCHMARK), (v2.QA_BENCHMARK, v2.BUNDLE)]:
+            self.assertTrue(v2.is_subtype(sub, parent), (sub, parent))
+        self.assertFalse(v2.is_subtype(v2.TABLE, v2.BUNDLE))
+        # legacy declares its own type under irds:Alias (cross-provider parent)
+        self.assertTrue(v2.is_subtype('legacy:V1Dataset', v2.ALIAS))
+        self.assertFalse(v2.is_subtype('legacy:V1Dataset', v2.DATA))
+
+    def test_declared_protocols_resolve_and_nodes_satisfy_them(self):
+        """Every type's protocol (its own or inherited) names an importable
+        Protocol class, and a real node of each type satisfies it."""
+        import importlib
+        from ir_datasets.v2.vocabulary import protocol_of
+
+        def resolve(ref):
+            module, _, qualname = ref.partition(':')
+            return getattr(importlib.import_module(module), qualname)
+
+        for t in {v2.DATA, v2.FILE, v2.DIRECTORY, v2.TABLE, *v2.TABLE_TYPES.values(),
+                  v2.BUNDLE, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK, v2.SUITE,
+                  v2.ALIAS, 'legacy:V1Dataset'}:
+            with self.subTest(type=t):
+                ref, declared_on = protocol_of(t)
+                self.assertIsNotNone(ref, t)
+                protocol = resolve(ref)
+                names = v2.list_datasets(type=t)
+                if not names:
+                    continue  # an abstract parent with no nodes of its own
+                provider = v2.graph.provider_for(names[0])
+                self.assertIsInstance(provider.load(names[0]), protocol, names[0])
+
+    def test_type_parents_mirror_protocol_bases(self):
+        """A type's parent is the type of its protocol's marked base protocol:
+        the hierarchy is written once, in protocols.py."""
+        import importlib
+        from ir_datasets.v2 import protocols
+        for t, info in v2.node_types().items():
+            if info['owner'] != 'irds' or not info.get('protocol'):
+                continue
+            module, _, qualname = info['protocol'].partition(':')
+            cls = getattr(importlib.import_module(module), qualname)
+            marked_bases = [b for b in cls.__bases__ if protocols.is_node_type(b)]
+            parent = info['parent']
+            with self.subTest(type=t):
+                if marked_bases:
+                    self.assertEqual(f'{marked_bases[0].__module__}:{marked_bases[0].__qualname__}',
+                                     v2.node_types()[parent]['protocol'])
+                else:
+                    self.assertIsNone(parent)
+                self.assertEqual(' '.join(cls.__doc__.split('\n\n')[0].split()), info['desc'])
+
+    def test_a_provider_declares_types_from_its_protocols(self):
+        import sys
+        import types
+        from typing import Protocol, runtime_checkable
+        from ir_datasets.v2 import protocols
+        module = types.ModuleType('acme_protocols')
+
+        @protocols.node_type
+        @runtime_checkable
+        class ThingTable(protocols.Table, Protocol):
+            """A table of things.
+
+            More detail that is not part of the short description."""
+        ThingTable.__module__ = module.__name__
+        module.ThingTable = ThingTable
+        acme = v2.ManifestProvider('acmedecl')
+        declared = acme.declare_types(module)
+        self.assertEqual({ThingTable: 'acmedecl:ThingTable'}, declared)
+        info = v2.node_types()['acmedecl:ThingTable']
+        self.assertEqual('irds:Table', info['parent'])
+        self.assertEqual('A table of things.', info['desc'])
+        self.assertTrue(v2.is_subtype('acmedecl:ThingTable', 'irds:Table'))
+
+    def test_protocol_class_or_string_is_stored_as_module_name(self):
+        from ir_datasets.v2.protocols import Table
+        from ir_datasets.v2.registry import ManifestProvider
+        acme = ManifestProvider('acmeproto')
+        by_class = acme.node_type('ByClass', protocol=Table)
+        by_string = acme.node_type('ByString', protocol='acme.protocols:Thing')
+        self.assertEqual('ir_datasets.v2.protocols:Table', v2.node_types()[by_class]['protocol'])
+        self.assertEqual('acme.protocols:Thing', v2.node_types()[by_string]['protocol'])
+
+    def test_benchmark_subtypes_follow_their_tables(self):
+        """AdhocBenchmark needs docs + queries + qrels; QaBenchmark needs
+        queries + answers (docs optional); one with both is both."""
+        for name in irds.manifest()['nodes']:
+            if not v2.is_subtype(graph.type_of(name), v2.BENCHMARK):
+                continue
+            with self.subTest(node=name):
+                node, types = graph[name], set(graph.types_of(name))
+                self.assertEqual(
+                    node.has('docs') and node.has('queries') and node.has('qrels'),
+                    v2.ADHOC_BENCHMARK in types)
+                self.assertEqual(node.has('queries') and node.has('answers'),
+                                 v2.QA_BENCHMARK in types)
+        both = v2.list_datasets(type=v2.ADHOC_BENCHMARK)
+        self.assertTrue(set(both) & set(v2.list_datasets(type=v2.QA_BENCHMARK)))
+        self.assertLessEqual(set(v2.list_datasets(type=v2.BENCHMARK)) | set(v2.list_datasets(type=v2.SUITE)),
+                             set(v2.list_datasets(type=v2.BUNDLE)))
 
     def test_benchmark_edges_resolve(self):
         for name in irds.manifest()['nodes']:
@@ -67,7 +173,7 @@ class TestV2Graph(unittest.TestCase):
         """Every registered node is listed -- no leading-underscore convention
         (dropped; it was a listing rule with no model backing, not worth the
         two-tier mental model)."""
-        antique_resource_names = [n for n in v2.list_datasets(type=v2.RESOURCE)
+        antique_resource_names = [n for n in v2.list_datasets(type=v2.DATA)
                                   if 'antique' in n]
         self.assertTrue(antique_resource_names)
         for name in antique_resource_names:
@@ -75,7 +181,7 @@ class TestV2Graph(unittest.TestCase):
 
     def test_legacy_ids_resolve_to_their_v2_replacement(self):
         """graph[v1_id] loads legacy:v1_id, sees a legacy:V1Dataset, and
-        follows its replaced_by edge -- see graph.py's own docstring."""
+        follows its alias_of edge -- see graph.py's own docstring."""
         from ir_datasets.v2.legacy_provider import _REPLACED_BY
         self.assertTrue(_REPLACED_BY)
         for v1_id, target in _REPLACED_BY.items():
@@ -85,7 +191,7 @@ class TestV2Graph(unittest.TestCase):
     def test_legacy_id_without_replacement_raises(self):
         from ir_datasets.v2.legacy_provider import _REPLACED_BY, _V1_IDS
         orphan = next(v1_id for v1_id in _V1_IDS if v1_id not in _REPLACED_BY)
-        with self.assertRaisesRegex(KeyError, 'no known v2 replacement'):
+        with self.assertRaisesRegex(KeyError, 'no known target'):
             graph[orphan]
 
     def test_bare_names_fall_back_to_irds_then_legacy(self):
@@ -100,21 +206,21 @@ class TestV2Graph(unittest.TestCase):
         self.assertTrue(all(':' in n for n in v2.list_datasets()))
 
     def test_vocabulary_is_owned_and_qualified(self):
-        self.assertEqual('irds:Benchmark', graph['irds:antique-test'].type)
-        self.assertEqual('irds:DocTable', v2.TsvDocs.type)
-        self.assertEqual('irds:QrelTable', v2.TrecQrels.type)
-        self.assertEqual('irds', v2.node_types()['irds:DocTable']['owner'])
+        self.assertEqual('irds:AdhocBenchmark', graph['irds:antique-test'].type)
+        self.assertEqual('irds:Docs', v2.TsvDocs.type)
+        self.assertEqual('irds:Qrels', v2.TrecQrels.type)
+        self.assertEqual('irds', v2.node_types()['irds:Docs']['owner'])
         self.assertEqual('irds', v2.edge_kinds()['irds:derived_from']['owner'])
-        docs = v2.list_datasets(type='irds:DocTable')
+        docs = v2.list_datasets(type='irds:Docs')
         self.assertIn('irds:antique-docs', docs)
-        self.assertTrue(all(v2.graph.type_of(n) == 'irds:DocTable' for n in docs))
-        qrels = v2.list_datasets(type='irds:QrelTable')
+        self.assertTrue(all(v2.graph.type_of(n) == 'irds:Docs' for n in docs))
+        qrels = v2.list_datasets(type='irds:Qrels')
         self.assertIn('irds:antique-test-qrels', qrels)
-        self.assertTrue(all(v2.graph.type_of(n) == 'irds:QrelTable' for n in qrels))
+        self.assertTrue(all(v2.graph.type_of(n) == 'irds:Qrels' for n in qrels))
         # the manifest records the provider's vocabulary
         m = irds.manifest()
-        self.assertIn('irds:DocTable', m['types'])
-        self.assertIn('irds:QrelTable', m['types'])
+        self.assertIn('irds:Docs', m['types'])
+        self.assertIn('irds:Qrels', m['types'])
         self.assertTrue(m['edge_kinds']['irds:derived_from']['structural'])
         self.assertEqual(['deprecated', 'dua', 'lang'], m['defaultable'])
 
@@ -126,7 +232,7 @@ class TestV2Graph(unittest.TestCase):
             with self.subTest(entity=entity):
                 self.assertTrue(v2.is_subtype(qualified, 'irds:Table'))
                 self.assertTrue(v2.is_subtype(qualified, qualified))
-        self.assertFalse(v2.is_subtype('irds:Table', 'irds:QrelTable'))
+        self.assertFalse(v2.is_subtype('irds:Table', 'irds:Qrels'))
         self.assertFalse(v2.is_subtype('irds:Benchmark', 'irds:Table'))
 
         tables = v2.list_datasets(type='irds:Table')
@@ -313,7 +419,7 @@ class TestV2Protocols(unittest.TestCase):
     convenience, never a requirement to join the graph."""
 
     def test_concrete_classes_satisfy_their_protocols(self):
-        self.assertIsInstance(graph['irds:antique-docs.txt'], v2.ResourceProtocol)
+        self.assertIsInstance(graph['irds:antique-docs.txt'], v2.DataProtocol)
         self.assertIsInstance(graph['irds:antique-docs'], v2.TableProtocol)
         self.assertIsInstance(graph['irds:antique-test'], v2.BenchmarkProtocol)
         for node in (graph['irds:antique-docs.txt'], graph['irds:antique-docs'],
@@ -342,7 +448,7 @@ class TestV2Protocols(unittest.TestCase):
     def test_conformance_check_gives_a_clear_error(self):
         class NotANode:
             pass
-        with self.assertRaisesRegex(TypeError, 'does not look like a Node'):
+        with self.assertRaisesRegex(TypeError, 'does not look like a Node: missing attest, metadata, name'):
             v2.ManifestProvider('acme3').register(NotANode())
 
 
@@ -561,16 +667,30 @@ class TestV2ResourceShapes(unittest.TestCase):
         repo = v2.GitRepo('acme/repo', commit='deadbeef', pinned=False)
         self.assertEqual([], repo.verify({'commit': 'someothersha'}))
 
-    def test_git_repo_relative_addresses_a_member(self):
+    def test_git_repo_file_addresses_one_file(self):
         repo = v2.GitRepo('acme/repo', commit='deadbeef', pinned=True)
-        member = repo.relative('data/file.jsonl')
-        self.assertEqual("GitRepo('acme/repo@deadbeef.git').relative('data/file.jsonl')",
+        member = repo.file('data/file.jsonl')
+        self.assertEqual("GitRepo('acme/repo@deadbeef.git').file('data/file.jsonl')",
                          repr(member))
+
+    def test_directory_files_lists_the_tree_sorted_by_path(self):
+        import os
+        import tempfile
+        with tempfile.TemporaryDirectory() as root:
+            for rel in ('b.txt', 'a/z.txt', 'a/y/deep.txt', 'a.txt'):
+                os.makedirs(os.path.dirname(os.path.join(root, rel)), exist_ok=True)
+                open(os.path.join(root, rel), 'w').close()
+
+            class Local(v2.Directory):
+                def path(self, force=True):
+                    return root
+            self.assertEqual(['a.txt', 'a/y/deep.txt', 'a/z.txt', 'b.txt'],
+                             list(Local('test-dir-files', sources=['https://x/y']).files()))
 
 
 class TestV2IdsFromLines(unittest.TestCase):
     """`ids_from_lines`'s dependency edge must resolve through a pipeline
-    (e.g. `.member()`/`.relative()`, as used for a file extracted from a
+    (e.g. `.member()`/`.file()`, as used for a file extracted from a
     shared archive) down to the real Resource it bottoms out in -- a bare
     pipeline step has no name/identity of its own to hang a `derived_from`
     edge off of (found while porting nfcorpus, whose id-list files are
@@ -583,7 +703,7 @@ class TestV2IdsFromLines(unittest.TestCase):
 
     def test_depends_on_resolves_through_a_pipeline(self):
         r = v2.Resource('test-idsfromlines-archive.tar.gz', sources=['https://x/y'])
-        pipeline = r.relative('ids.txt')
+        pipeline = r.file('ids.txt')
         ids_fn = v2.ids_from_lines(pipeline)
         self.assertEqual((r,), ids_fn.depends_on)
 

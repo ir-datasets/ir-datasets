@@ -40,6 +40,7 @@ import contextlib
 import hashlib
 import itertools
 import json
+import os
 import warnings
 
 import ir_datasets
@@ -48,6 +49,7 @@ from .context import default
 from .verify import Divergence
 
 from .provider import irds
+from . import protocols as proto
 from .sources import (
     describe_sources,
     DOCSTORE_FORMAT, Readable, as_source, build_download, default_cache_path,
@@ -79,29 +81,45 @@ def _deprecated(old, new):
 #: tripclick.py's own v1 modules, where the log sits next to docs/queries/
 #: qrels but is never one of a Benchmark's own facets), not a component a
 #: retrieval task is scored against. ``TABLE_TYPES`` below is the fuller,
-#: six-entry vocabulary of *table* kinds (this tuple's five plus ``qlogs``);
+#: seven-entry vocabulary of *table* kinds (this tuple's six plus ``qlogs``);
 #: keep the distinction in mind before adding something here versus only to
 #: ``TABLE_TYPES``.
-ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs')
+ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs', 'answers')
 
-#: Node types. Qualified (``irds:DocTable``) because the provider declares them --
+#: Node types. Qualified (``irds:Docs``) because the provider declares them --
 #: capitalized, RDF/OWL-convention-style, matching the Python class name
 #: (a type is class-like); edge kinds below stay lowercase (property-like).
 #: ``TABLE`` is the shared parent of the five per-entity table types declared
-#: below it (``irds:DocTable``, ``irds:QueryTable``, ...) rather than every
+#: below it (``irds:Docs``, ``irds:Queries``, ...) rather than every
 #: Table subclass sharing it *as their own* type -- each entity is its own
-#: first-class type (``list(type='irds:QrelTable')`` finds exactly qrels
+#: first-class type (``list(type='irds:Qrels')`` finds exactly qrels
 #: tables), while ``list(type='irds:Table')`` still finds all of them, by
 #: walking the declared ``parent`` chain (see ``vocabulary.is_subtype``). This
 #: also keeps the hierarchy open to extension: a third-party provider may
 #: declare its own ``ext:MyTable`` with ``parent=TABLE`` (a new entity kind
 #: this module never enumerated) or register a bare ``Table`` instance
 #: directly under the generic ``irds:Table`` type.
-RESOURCE = irds.node_type('Resource', desc='bytes (a file, or a directory tree), and where to get them')
-TABLE = irds.node_type('Table', desc='a structured set of records (docs/queries/qrels/...); '
-                                     'the shared parent of the per-entity table types below')
-BENCHMARK = irds.node_type('Benchmark', desc='an evaluable task: tables + citation + metrics')
-SUITE = irds.node_type('Suite', desc='a named set of related benchmarks (e.g. BEIR)')
+#: Every node type, declared by the protocol that defines it (see
+#: ``protocols.node_type`` and ``Provider.declare_types``): name, parent,
+#: description and protocol all come from the protocol class, so there is one
+#: place to read or change them.
+_TYPES = irds.declare_types(proto)
+DATA = _TYPES[proto.Data]
+FILE = _TYPES[proto.File]
+DIRECTORY = _TYPES[proto.Directory]
+TABLE = _TYPES[proto.Table]
+ALIAS = _TYPES[proto.Alias]
+BUNDLE = _TYPES[proto.Bundle]
+BENCHMARK = _TYPES[proto.Benchmark]
+SUITE = _TYPES[proto.Suite]
+
+#: Benchmark subtypes, the counterpart of ``TABLE_TYPES`` for benchmarks: each
+#: adds semantics -- which tables the task is built from. A benchmark may
+#: carry several (a corpus with both qrels and reference answers is both ad
+#: hoc and QA); see ``Benchmark.types``. One with neither combination of
+#: tables stays a plain ``irds:Benchmark``.
+ADHOC_BENCHMARK = _TYPES[proto.AdhocBenchmark]
+QA_BENCHMARK = _TYPES[proto.QaBenchmark]
 
 #: One declared node type per entity, each a subtype of ``TABLE`` -- what
 #: ``DocTable``/``QueryTable``/``QrelTable``/``RunTable``/``DocPairTable``/
@@ -109,8 +127,8 @@ SUITE = irds.node_type('Suite', desc='a named set of related benchmarks (e.g. BE
 #: class ``type``. Keyed by entity string so ``TABLE_TYPES[entity]`` is the
 #: one place that mapping lives (``DerivedTable`` also uses it, to pick its
 #: type from a runtime ``entity=`` argument rather than a class attribute).
-#: **Not** the same keys as ``ENTITIES``: this dict has six entries, one more
-#: than ``ENTITIES``' five -- ``qlogs`` is a first-class table kind (raw
+#: **Not** the same keys as ``ENTITIES``: this dict has seven entries, one more
+#: than ``ENTITIES``' six -- ``qlogs`` is a first-class table kind (raw
 #: query-log records, e.g. AOL's or TripClick's session logs) but is not a
 #: Benchmark facet (see the comment on ``ENTITIES`` above for why), so it is
 #: declared here and not there. ``FACET``/``Benchmark`` iterate ``ENTITIES``;
@@ -118,12 +136,13 @@ SUITE = irds.node_type('Suite', desc='a named set of related benchmarks (e.g. BE
 #: ``test_exactly_nine_node_types`` in test/v2_conformance.py, generalized to
 #: ten when this was added) should iterate ``TABLE_TYPES`` instead.
 TABLE_TYPES = {
-    'docs': irds.node_type('DocTable', parent=TABLE, desc='A Table representing a collection of documents (a corpus). Each row has a doc_id field.'),
-    'queries': irds.node_type('QueryTable', parent=TABLE, desc='A Table representing a collection of queries (topis). Each row has a query_id field.'),
-    'qrels': irds.node_type('QrelTable', parent=TABLE, desc='A Table representing a collection of relevance assessments (qrels). Each row has query_id, doc_id, and relevnace fields.'),
-    'scoreddocs': irds.node_type('RunTable', parent=TABLE, desc='A Table representing a collection of retrieved and scored documents for a set of queries (a run). Each row has query_id, doc_id, and score fields.'),
-    'docpairs': irds.node_type('DocPairTable', parent=TABLE, desc='A Table representing paired documents for a query (e.g. positive/negative pairs for training). Each row has query_id, doc_id_a, and doc_id_b fields.'),
-    'qlogs': irds.node_type('QlogTable', parent=TABLE, desc='A Table representing a raw query log (e.g. search-session records issued against a live system). Not a Benchmark facet -- a log is a standalone artifact alongside a corpus, not a component an evaluable task is built from. Row shape is family-specific, but typically carries a user/session id, the (possibly hashed) query, and the ranked/clicked items shown for it.'),
+    'docs': _TYPES[proto.Docs],
+    'queries': _TYPES[proto.Queries],
+    'qrels': _TYPES[proto.Qrels],
+    'scoreddocs': _TYPES[proto.AdhocRun],
+    'docpairs': _TYPES[proto.DocPairs],
+    'answers': _TYPES[proto.Answers],
+    'qlogs': _TYPES[proto.QueryLog],
 }
 
 #: Structural edges form a DAG and are what builds, caching and verification
@@ -166,6 +185,11 @@ VALIDATED_BY = irds.edge_kind('validated_by', structural=False,
 ALTERNATIVE_OF = irds.edge_kind('alternative_of', structural=False,
                                 desc='table -> the canonical table it is a drop-in '
                                      '(same id space) alternative for')
+#: An ``irds:Alias`` node -> the node it stands for. Informational (an alias is
+#: bookkeeping, never part of anything's build DAG). ``Graph.__getitem__``
+#: follows it, so loading an alias returns its target.
+ALIAS_OF = irds.edge_kind('alias_of', structural=False,
+                          desc='alias -> the node it stands for (loading the alias returns it)')
 STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
 #: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
@@ -289,7 +313,9 @@ class Resource(Node, Readable):
     migrated in place the first time it's found (moved to this location,
     with a symlink left at the old v1 path) -- see ``existing_path``.
     """
-    type = RESOURCE
+    #: A bare ``Resource(...)`` is a single blob (``File``); ``Directory``
+    #: overrides this. ``DATA`` itself is only the shared parent type.
+    type = FILE
 
     def __init__(self, name, *, sources=(), hash=(), size=None,
                  dua=None, **meta):
@@ -493,12 +519,12 @@ class ValidationError(IOError):
 
 class Directory(Resource):
     """A Resource that is a tree of files, not one blob -- addressed
-    member-by-member via ``.relative(path)`` (inherited from ``Readable``,
-    the same op ``.member()``/``.gunzip()`` use on a single file), never read
-    as a single stream. ``path()`` is unchanged from ``Resource``: it still
-    returns the root of the tree, for a caller that wants to walk it itself;
-    a parser reading one known member goes through ``.relative(path)``
-    instead.
+    file-by-file via ``.file(path)`` (inherited from ``Readable``, the same
+    kind of op ``.member()``/``.gunzip()`` are on a single file), never read
+    as a single stream. ``files()`` lists every file in the tree. ``path()`` is
+    unchanged from ``Resource``: it still returns the root of the tree, for a
+    caller that wants to walk it itself; a parser reading one known file goes
+    through ``.file(path)`` instead.
 
     ``manifest=`` is a Resource holding the tree's file manifest (see
     ``directory_manifest``). When given, the first access checks that every
@@ -506,6 +532,8 @@ class Directory(Resource):
     records that in ``external-validation.json``. The manifest also carries
     hashes, for a fuller check later.
     """
+    type = DIRECTORY
+
     def __init__(self, name, *, manifest=None, **kwargs):
         super().__init__(name, **kwargs)
         self.manifest = manifest
@@ -524,7 +552,17 @@ class Directory(Resource):
     def stream(self):
         raise TypeError(
             f'{self.name} is a directory, not a single file -- use '
-            f'.relative(path) to address one file within it')
+            f'.file(path) to address one file within it')
+
+    def files(self):
+        """Every file in the tree, as paths relative to its root (``/``-separated,
+        usable with ``.file(path)``), sorted by path -- so the same tree always
+        lists the same way. Fetches and validates the tree first, like
+        ``path()``."""
+        root = self.path()
+        paths = [os.path.relpath(os.path.join(dirpath, filename), root).replace(os.sep, '/')
+                 for dirpath, _, filenames in os.walk(root) for filename in filenames]
+        yield from sorted(paths)
 
     def _validate_external(self, path):
         if self.manifest is None:
@@ -671,7 +709,7 @@ class Table(Node):
       what v1's ``.metadata`` property exposed.
     """
     type = TABLE
-    entity = None  # 'docs' | 'queries' | 'qrels' | 'scoreddocs' | 'docpairs' | 'qlogs'
+    entity = None  # 'docs' | 'queries' | 'qrels' | 'scoreddocs' | 'docpairs' | 'answers' | 'qlogs'
 
     def __getattr__(self, attr):
         # Self-reference: `docs_table.docs is docs_table`, keyed off whatever
@@ -921,6 +959,13 @@ class Table(Node):
             elif self.entity == 'queries':
                 self._index = _MemoryIndex(
                     {q.query_id: q for q in self._iter()})
+            elif self.entity == 'answers':
+                # A query may have several answers (one row each, like qrels),
+                # so a lookup yields that query's list of answers.
+                grouped = {}
+                for a in self._iter():
+                    grouped.setdefault(a.query_id, []).append(a)
+                self._index = _MemoryIndex(grouped)
             else:
                 raise TypeError(f'{self.entity} does not support lookup')
         return self._index
@@ -1087,6 +1132,18 @@ class DocPairTable(Table):
         return self.handler.docpairs_iter()
 
 
+class AnswerTable(Table):
+    """Reference answers to queries (``query_id``, ``text``), one row per
+    answer -- so a query with several acceptable answers repeats its
+    ``query_id``, like qrels -- e.g. the ground-truth answer of a
+    deep-research benchmark, scored against an agent's generated answer rather
+    than a ranking. A Benchmark facet (``answers=``), query-keyed like
+    ``qrels``. ``lookup(query_id)`` returns the *list* of that query's
+    answers."""
+    type = TABLE_TYPES['answers']
+    entity = 'answers'
+
+
 class QlogTable(Table):
     """A raw query log (v1's ``BaseQlogs``) -- e.g. AOL's or TripClick's
     search-session records. Deliberately **not** wired into ``Benchmark`` as
@@ -1181,13 +1238,16 @@ class Benchmark(Node):
     them alongside it -- so ``load('irds:antique-test-non-offensive-queries')``
     works like any other name, with no special case anywhere.
     """
-    type = BENCHMARK
+    #: Only the fallback: ``types`` below is what says which task subtypes
+    #: apply, and ``type`` is its first entry.
+    _fallback_type = BENCHMARK
 
     def __init__(self, name, *, docs=None, queries=None, qrels=None,
-                 scoreddocs=None, docpairs=None, derived_from=None, filter=None,
+                 scoreddocs=None, docpairs=None, answers=None, derived_from=None, filter=None,
                  metrics=None, **meta):
         self._facets = {'docs': docs, 'queries': queries, 'qrels': qrels,
-                        'scoreddocs': scoreddocs, 'docpairs': docpairs}
+                        'scoreddocs': scoreddocs, 'docpairs': docpairs,
+                        'answers': answers}
         self.derived_from = derived_from
         self.filter = filter
         self.metrics = list(metrics) if metrics else None
@@ -1198,6 +1258,33 @@ class Benchmark(Node):
                       'metrics': self.metrics,
                       **meta.pop('metadata', {})},
             **meta)
+
+    def _has_facet(self, entity):
+        """Whether ``edge(entity)`` would be non-``None``, without building
+        the (filtered) table -- cheap enough to ask at registration time."""
+        if self._facets.get(entity) is not None:
+            return True
+        return self.parent is not None and self.parent._has_facet(entity)
+
+    @property
+    def types(self):
+        """Every node type this benchmark has, ``type`` first: the task
+        subtypes its tables qualify it for (``AdhocBenchmark`` with docs +
+        queries + qrels; ``QaBenchmark`` with queries + answers -- both when
+        it has all of them), or plain ``Benchmark`` when it fits neither."""
+        if getattr(self, '_types', None) is None:
+            has = self._has_facet
+            found = []
+            if has('docs') and has('queries') and has('qrels'):
+                found.append(ADHOC_BENCHMARK)
+            if has('queries') and has('answers'):
+                found.append(QA_BENCHMARK)
+            self._types = tuple(found) or (self._fallback_type,)
+        return self._types
+
+    @property
+    def type(self):
+        return self.types[0]
 
     def structural_edges(self):
         edges = []
@@ -1309,6 +1396,10 @@ class Benchmark(Node):
     @property
     def docpairs(self):
         return self.edge('docpairs')
+
+    @property
+    def answers(self):
+        return self.edge('answers')
 
     # -- legacy API (deprecated) ---------------------------------------------
     # The default API is property access (`benchmark.docs`, which returns the

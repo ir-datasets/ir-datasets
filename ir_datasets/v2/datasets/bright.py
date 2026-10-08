@@ -4,9 +4,12 @@
 each with docs + queries + qrels. Unlike most families in this catalog,
 BRIGHT's qrels are embedded in the *same* parquet file as its queries (not a
 separate qrels file) -- reflected here by ``QueryTable`` and ``QrelTable`` both
-declaring the same queries Resource as their ``source``. Queries also carry
-up to 5 auxiliary "reasoning" fields, one per LLM, each sourced from its own
-parquet file and joined in by v1's own ``BrightQueries.queries_iter``.
+declaring the same queries Resource as their ``source``. Each of 5 LLMs
+(GPT-4, Claude 3 Opus, Gemini 1.0, Llama 3 70B, GRIT) also rewrote every query
+into a reasoning-augmented one, from its own parquet file; each is its own
+``QueryTable`` (``bright-<subset>-queries-<model>``), an ``irds:alternative_of``
+the original queries (same query ids), so a benchmark can swap one in with
+``load('irds:bright-biology', queries='irds:bright-biology-queries-gpt4-reason')``.
 
 8 of the 12 domains additionally have a "long" variant: same queries (the
 QueryTable object is reused verbatim, not re-declared) against long-form
@@ -22,17 +25,29 @@ here: the ``aops`` and ``theoremqa-questions`` doc files share an identical
 md5/size. That's a property of the upstream data, not something this
 migration should second-guess.
 """
+from typing import NamedTuple
+
 from ir_datasets.datasets.bright import (
     BrightDocs as _V1BrightDocs, BrightQueries as _V1BrightQueries, BrightQrels as _V1BrightQrels,
-    REASONING_FIELDS,
+    REASONING_FIELDS, parquet_iter,
 )
+from ir_datasets.formats import BaseQueries, GenericQuery
 
-from ir_datasets.v2 import Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
-from ir_datasets.v2.formats import Parser
+from ir_datasets.v2 import AnswerTable, Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
+from ir_datasets.v2.formats import AnswersFromQueriesParser, Parser
 
 CITATION = 'dblp:conf/iclr/SuYXSMWLSST0YA025'
 METRICS = ['nDCG@10']
 QRELS_DEFS = {1: 'Relevant', -100: 'Excluded from evaluation'}
+
+#: Subsets whose ``gold_answer`` is the literal placeholder ``N/A`` for every
+#: query (checked against the released parquet files): there is no separate
+#: reference answer -- the solution/proof is in the relevant documents
+#: themselves -- so no AnswerTable for them. The other subsets' AnswerTables
+#: are registered standalone, not as a Benchmark facet: BRIGHT is used as a
+#: retrieval benchmark, not for QA, and a benchmark with an ``answers`` facet
+#: is typed QaBenchmark (see ``Benchmark.types``).
+NO_ANSWER_SUBSETS = {'aops', 'leetcode', 'pony', 'theoremqa-questions', 'theoremqa-theorems'}
 
 SHORT_SUBSETS = ['biology', 'earth-science', 'economics', 'psychology', 'robotics',
                  'stackoverflow', 'sustainable-living', 'leetcode', 'pony', 'aops',
@@ -167,14 +182,71 @@ class _BrightDocsParser(Parser):
         return _V1BrightDocs(self.subset, source)
 
 
+class BrightQuery(NamedTuple):
+    query_id: str
+    text: str
+    reasoning: str   # the human-annotated reasoning, same for every query's rewrites
+
+
+class _OriginalQueries(BaseQueries):
+    """The queries file's own queries -- no LLM rewrites (those are their own tables)."""
+
+    def __init__(self, source):
+        self._source = source
+
+    def queries_iter(self):
+        for q in parquet_iter(self._source.path()):
+            yield BrightQuery(str(q['id']), q['query'], q['reasoning'])
+
+    def queries_cls(self):
+        return BrightQuery
+
+    def queries_namespace(self):
+        return 'bright'
+
+    def queries_lang(self):
+        return 'en'
+
+
+class _RewrittenQueries(BaseQueries):
+    """One LLM's rewrite of every query: the model file's ``query`` column is the
+    generated reasoning (its ``reasoning`` column just repeats the annotated one,
+    identical for every model)."""
+
+    def __init__(self, source):
+        self._source = source
+
+    def queries_iter(self):
+        for q in parquet_iter(self._source.path()):
+            yield GenericQuery(str(q['id']), q['query'])
+
+    def queries_namespace(self):
+        return 'bright'
+
+    def queries_lang(self):
+        return 'en'
+
+
 class _BrightQueriesParser(Parser):
     name = 'BrightQueries'
 
-    def __init__(self, reasoning_sources):
-        self.reasoning_sources = reasoning_sources
+    def build(self, source, node):
+        return _OriginalQueries(source)
+
+
+class _BrightRewrittenQueriesParser(Parser):
+    name = 'BrightRewrittenQueries'
 
     def build(self, source, node):
-        return _V1BrightQueries(source, self.reasoning_sources)
+        return _RewrittenQueries(source)
+
+
+class _BrightPlainQueriesParser(Parser):
+    """The queries file alone (no reasoning files) -- all the answers need."""
+    name = 'BrightQueries'
+
+    def build(self, source, node):
+        return _V1BrightQueries(source)
 
 
 class _BrightQrelsParser(Parser):
@@ -190,8 +262,9 @@ class _BrightQrelsParser(Parser):
 # license verified 2026-09-30: https://huggingface.co/datasets/xlangai/BRIGHT (card metadata: CC-BY-4.0)
 with irds.defaults(lang='en', license='CC-BY-4.0'):
     benchmarks = {}          # short-document benchmarks: flat name -> Benchmark
+    rewritten_queries = []   # (LLM-rewritten QueryTable, the original it is an alternative of)
     long_benchmarks = {}     # long-document variants (their own suite, bright-long)
-    queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table)
+    queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table, AnswerTable or None)
 
     for subset in SHORT_SUBSETS:
         docs_url, docs_md5, docs_size = DOCS_SOURCES[subset]
@@ -208,12 +281,21 @@ with irds.defaults(lang='en', license='CC-BY-4.0'):
                 f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], hash=f'md5:{r_md5}', size=r_size)
 
         queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
-                          derived_from=list(reasoning_sources.values()),
-                          parser=_BrightQueriesParser(reasoning_sources))
+                          parser=_BrightQueriesParser())
+        for v1_field, reasoning_file in reasoning_sources.items():
+            rewritten = QueryTable(
+                f'bright-{subset}-queries-{_slug(v1_field)}', source=reasoning_file,
+                parser=_BrightRewrittenQueriesParser(),
+                metadata={'alternative_note': 'rewritten by ' + v1_field.replace('_reason', '')})
+            rewritten_queries.append((rewritten, queries))
         qrels = QrelTable(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
                       parser=_BrightQrelsParser(gold_field='gold_ids'))
 
-        queries_by_subset[subset] = (queries_file, queries)
+        answers = None if subset in NO_ANSWER_SUBSETS else AnswerTable(
+            f'bright-{subset}-answers', source=queries_file,
+            parser=AnswersFromQueriesParser(_BrightPlainQueriesParser(), 'gold_answer'))
+
+        queries_by_subset[subset] = (queries_file, queries, answers)
 
         name = f'bright-{subset}'
         benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
@@ -225,7 +307,7 @@ with irds.defaults(lang='en', license='CC-BY-4.0'):
         long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], hash=f'md5:{long_md5}', size=long_size)
         long_docs = DocTable(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset))
 
-        queries_file, queries = queries_by_subset[subset]
+        queries_file, queries, answers = queries_by_subset[subset]
         # Same QueryTable object as the short variant -- the long variant only
         # differs in docs (long-form) and qrels (ids mapped to those docs).
         long_qrels = QrelTable(f'bright-{subset}-long-qrels', source=queries_file, defs=QRELS_DEFS,
@@ -240,6 +322,10 @@ with irds.defaults(lang='en', license='CC-BY-4.0'):
 # Registration
 # -----------------------------------------
 irds.register(*benchmarks.values(), *long_benchmarks.values())
+irds.register(*(a for _, _, a in queries_by_subset.values() if a is not None))
+irds.register(*(rewritten for rewritten, _ in rewritten_queries))
+for _rewritten, _original in rewritten_queries:
+    irds.add_edge(_rewritten, 'alternative_of', _original)
 
 irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CITATION,
                     desc='The BRIGHT evaluation suite: reasoning-intensive retrieval '

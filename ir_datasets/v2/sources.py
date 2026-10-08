@@ -438,8 +438,9 @@ class Readable:
     def zip_member(self, path):
         return _Pipe(self, ZipExtract(self, path), f'zip_member({path!r})')
 
-    def relative(self, path):
-        return _Pipe(self, RelativePath(self, path), f'relative({path!r})')
+    def file(self, path):
+        """One file inside a directory tree, as a readable of its own."""
+        return _Pipe(self, RelativePath(self, path), f'file({path!r})')
 
     def gunzip(self):
         return _Pipe(self, GzipExtract(self), 'gunzip()')

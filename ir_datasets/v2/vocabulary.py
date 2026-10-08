@@ -13,18 +13,18 @@ learns from that provider's manifest.
 A type may declare a ``parent`` (another qualified type, same or different
 provider's namespace) -- a single-inheritance hierarchy, not a lattice, so
 "is this a Table" stays a plain walk-to-root rather than a graph search. This
-is what lets ``irds:QrelTable``/``irds:DocTable``/... each be their own
-first-class type (so ``list(type='irds:QrelTable')`` finds exactly qrels
+is what lets ``irds:Qrels``/``irds:Docs``/... each be their own
+first-class type (so ``list(type='irds:Qrels')`` finds exactly qrels
 tables) while ``list(type='irds:Table')`` still finds all of them -- and lets
 a third-party provider declare ``ext:MyTable`` as a subtype of ``irds:Table``
 without ``irds`` knowing ``ext`` exists.
 """
 
-_TYPES = {}   # qualified type -> {'desc': ..., 'owner': prefix, 'parent': qualified | None}
+_TYPES = {}   # qualified type -> {'desc', 'owner': prefix, 'parent': qualified | None, 'protocol': 'module:Name' | None}
 _KINDS = {}   # qualified kind -> {'structural': bool, 'desc': ..., 'owner': prefix}
 
 
-def declare_type(qualified, *, owner, desc=None, parent=None):
+def declare_type(qualified, *, owner, desc=None, parent=None, protocol=None):
     """Idempotent, like ``declare_kind`` below -- a type may be declared more
     than once (a live import's ``node_type()`` call, then that same
     provider's own manifest reloaded from disk on top of it, or vice versa).
@@ -42,19 +42,43 @@ def declare_type(qualified, *, owner, desc=None, parent=None):
                     f'node type {qualified!r} is already declared with parent '
                     f'{entry["parent"]!r}, not {parent!r}')
             entry['parent'] = parent
+        # Same "None means not specified" rule as `parent`: an older manifest
+        # has no protocol field and must not erase one a live import declared.
+        if protocol is not None:
+            entry['protocol'] = protocol
         return qualified
     # `parent` is stored as given even if it isn't declared *yet* -- a
     # provider that isn't imported may have its own manifest loaded before
     # the provider owning its parent type does; `ancestors()` just stops
     # early until that entry shows up too (same "degrade gracefully for an
     # unknown/not-yet-loaded provider" posture as `is_structural` below).
-    _TYPES[qualified] = {'desc': desc, 'owner': owner, 'parent': parent}
+    _TYPES[qualified] = {'desc': desc, 'owner': owner, 'parent': parent, 'protocol': protocol}
     return qualified
 
 
 def parent_of(qualified):
     entry = _TYPES.get(qualified)
     return entry.get('parent') if entry else None
+
+
+def protocol_of(qualified):
+    """``(protocol, declared_on)`` for a type: the ``'module:Name'`` protocol
+    reference declared on it or, failing that, its closest ancestor that has
+    one -- and which type that was. ``(None, None)`` if none do."""
+    for t in ancestors(qualified):
+        entry = _TYPES.get(t)
+        if entry and entry.get('protocol'):
+            return entry['protocol'], t
+    return None, None
+
+
+def type_for_protocol(ref):
+    """The qualified type whose declared protocol is ``ref`` (``'module:Name'``),
+    or ``None``. Used to find the parent type of a protocol that extends another."""
+    for qualified, entry in _TYPES.items():
+        if entry.get('protocol') == ref:
+            return qualified
+    return None
 
 
 def ancestors(qualified):
@@ -76,6 +100,13 @@ def is_subtype(sub, of):
     if sub is None:
         return False
     return of in ancestors(sub)
+
+
+def types_of(node):
+    """Every node type of a node: ``node.types`` if it has one (a node may be
+    several things at once, e.g. a benchmark that is both ad hoc and QA),
+    else just ``(node.type,)``. The first entry is always ``node.type``."""
+    return tuple(getattr(node, 'types', None) or (node.type,))
 
 
 def declare_kind(qualified, *, structural, owner, desc=None):

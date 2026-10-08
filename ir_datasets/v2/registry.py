@@ -40,8 +40,9 @@ from pathlib import Path
 
 from . import context
 from .base import Literal
+from . import protocols
 from .vocabulary import (
-    check_kind, check_type, declare_kind, declare_type, is_structural,
+    check_kind, check_type, declare_kind, declare_type, is_structural, type_for_protocol, types_of,
 )
 
 PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
@@ -50,7 +51,7 @@ PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 #: is not a per-provider concern any more -- see ``graph.py``'s own docstring
 #: and ``Graph.__getitem__``. The ``legacy:`` provider (``legacy_provider.py``)
 #: makes every v1 id -- across every bundled provider -- into a real,
-#: addressable ``legacy:V1Dataset`` node with a ``legacy:replaced_by`` edge to
+#: addressable ``legacy:V1Dataset`` node with an ``irds:alias_of`` edge to
 #: its v2 counterpart where one is known; ``Graph`` is what turns a lookup
 #: that lands on one of those into its replacement (or fails, if there is
 #: none).
@@ -58,6 +59,14 @@ PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 
 class DuplicateNameError(LookupError):
     pass
+
+
+def _decoded(text):
+    """``text`` parsed as JSON if it is a JSON string, else unchanged."""
+    try:
+        return json.loads(text) if isinstance(text, str) else text
+    except ValueError:
+        return text
 
 
 def row_triples(name, row):
@@ -74,7 +83,9 @@ def row_triples(name, row):
     (e.g. ``hf``) that builds rows from live nodes instead of a frozen
     manifest."""
     if row.get('type'):
-        yield name, 'type', row['type']
+        # A node with several types (``Benchmark.types``) freezes a list.
+        for node_type in ([row['type']] if isinstance(row['type'], str) else row['type']):
+            yield name, 'type', node_type
     for field, value in row.items():
         if field in ('name', 'type', 'module'):
             continue
@@ -82,6 +93,11 @@ def row_triples(name, row):
             for item in value:
                 yield name, field, Literal(item)
         elif isinstance(value, dict):
+            if field == 'samples':
+                # The manifest keeps each sampled record as its canonical JSON
+                # *string* (that exact text is what verify compares); in the
+                # graph it is the record itself, not a string inside a string.
+                value = {i: _decoded(record) for i, record in value.items()}
             yield name, f'{field}_json', Literal(json.dumps(value, sort_keys=True))
         else:
             yield name, field, Literal(value)
@@ -132,7 +148,7 @@ class ManifestProvider:
 
     # -- vocabulary ---------------------------------------------------------
 
-    def node_type(self, name, *, desc=None, parent=None):
+    def node_type(self, name, *, desc=None, parent=None, protocol=None):
         """Declare a node type this provider owns; returns the qualified type
         for a Node subclass to set as ``type``::
 
@@ -145,12 +161,53 @@ class ManifestProvider:
         ``is_subtype``/``Graph.list(type=...)`` purposes. The type itself is
         still owned (and only ever registerable) by this provider; ``parent``
         is a graph relationship, not a transfer of ownership.
+
+        ``protocol`` is the structural interface (see ``protocols.py``) nodes
+        of this type satisfy: the Protocol class itself (stored as
+        ``'module:Qualname'``) or that string, for a protocol that isn't
+        importable here. A type without one inherits its parent's.
         """
+        if protocol is not None and not isinstance(protocol, str):
+            protocol = f'{protocol.__module__}:{protocol.__qualname__}'
         qualified = self.qualify(name)
         if not self.owns(qualified):
             raise ValueError(f'{self} cannot declare the type {name!r}')
-        self.types[qualified] = {'desc': desc, 'parent': parent}
-        return declare_type(qualified, owner=self.prefix, desc=desc, parent=parent)
+        self.types[qualified] = {'desc': desc, 'parent': parent, 'protocol': protocol}
+        return declare_type(qualified, owner=self.prefix, desc=desc, parent=parent, protocol=protocol)
+
+    def declare_types(self, module):
+        """Declare every node type a module's protocols define: each protocol
+        class in ``module`` marked ``@protocols.node_type`` becomes a type owned
+        by this provider -- named after the class, its parent the type of the
+        nearest marked base protocol, described by the first paragraph of its
+        docstring, and with the class itself as its protocol. Returns
+        ``{protocol class: qualified type}``, in definition order.
+
+        So the protocol is the single declaration of a type::
+
+            @node_type
+            @runtime_checkable
+            class DocTable(Table, Protocol):
+                \"\"\"A Table representing a collection of documents.\"\"\"
+
+        A third party does the same with its own module and provider, with
+        protocols that extend ours (``class MyTable(Table, Protocol)``).
+        """
+        import inspect
+        out = {}
+        for cls in vars(module).values():
+            if not (isinstance(cls, type) and protocols.is_node_type(cls)
+                    and cls.__module__ == module.__name__):
+                continue
+            parent = None
+            for base in cls.__bases__:
+                if protocols.is_node_type(base):
+                    parent = out.get(base) or type_for_protocol(f'{base.__module__}:{base.__qualname__}')
+                    break
+            doc = inspect.getdoc(cls) or ''
+            out[cls] = self.node_type(cls.__name__, desc=' '.join(doc.split('\n\n')[0].split()) or None,
+                                      parent=parent, protocol=cls)
+        return out
 
     def edge_kind(self, name, *, structural, desc=None):
         """Declare an edge kind this provider owns. Structural kinds form the
@@ -198,11 +255,13 @@ class ManifestProvider:
         return nodes
 
     def _register_one(self, node, module):
-        missing = [m for m in ('structural_edges', 'attest', 'verify')
-                  if not callable(getattr(node, m, None))]
+        # What a node must have is whatever the Node protocol says, minus what
+        # this registration assigns -- not a list kept in step with it by hand.
+        missing = sorted(m for m in protocols.members(protocols.Node)
+                         if m not in protocols.ASSIGNED_AT_REGISTRATION and not hasattr(node, m))
         if missing:
             raise TypeError(
-                f'{node!r} does not look like a Node: missing {", ".join(missing)}(). '
+                f'{node!r} does not look like a Node: missing {", ".join(missing)}. '
                 f'A node needs no particular base class (see protocols.Node) -- '
                 f'just this shape.')
         if node.provider is self and node.qualified_name in self.nodes:
@@ -210,7 +269,6 @@ class ManifestProvider:
         if node.provider is not None and node.provider is not self:
             raise ValueError(
                 f'{node.name!r} is already registered with {node.provider}')
-        check_type(node.type)
         name = self.qualify(node.name)
         existing = self.nodes.get(name)
         if existing is not None and existing is not node:
@@ -222,6 +280,10 @@ class ManifestProvider:
         node.qualified_name = name
         node.provider = self
         node.defined_in = module
+        # After provider is set: a derived Benchmark's types depend on its
+        # parent's facets, resolved through this provider's namespace.
+        for node_type in types_of(node):
+            check_type(node_type)
         self.nodes[name] = node
         for edge in node.structural_edges():
             kind = check_kind(self.qualify(edge.kind))
@@ -309,7 +371,7 @@ class ManifestProvider:
             for qualified, entry in self._manifest.get('types', {}).items():
                 if self.owns(qualified):
                     declare_type(qualified, owner=self.prefix, desc=entry.get('desc'),
-                                parent=entry.get('parent'))
+                                parent=entry.get('parent'), protocol=entry.get('protocol'))
             for qualified, entry in self._manifest.get('edge_kinds', {}).items():
                 if self.owns(qualified):
                     declare_kind(qualified, structural=entry['structural'],
@@ -336,7 +398,8 @@ class ManifestProvider:
         node = self.nodes.get(name)
         if node is not None:
             return node.type
-        return self.frozen(name).get('type')
+        frozen = self.frozen(name).get('type')
+        return frozen[0] if isinstance(frozen, list) else frozen
 
     # -- protocols.Provider ---------------------------------------------------
 

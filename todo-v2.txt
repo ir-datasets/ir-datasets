@@ -3,6 +3,16 @@ v2 migration TODO
 
 TODO
 ---------------------
+- AnswerTable candidates still to convert (BRIGHT, DPR-w100 and MS MARCO QnA already have answers tables,
+  built from their queries' answer fields via formats.AnswersFromQueriesParser; their queries tables still
+  carry the same answers inline -- strip those fields from the query records as a follow-up):
+  * natural_questions.py: short answers and the yes/no answer are inside the qrel records
+    (NqQrel.short_answers / .yes_no_answer, one per annotated passage), not on the queries. An answers table
+    would have to be derived by merging them per query (and deciding how to represent yes/no).
+  * kilt.py: the upstream KILT files have an ``output`` answer for NQ, TriviaQA, HotpotQA and ELI5, but v1
+    only parses the provenance (as qrels), so this needs new parsing.
+  * filters.py has no filter for the ``answers`` facet yet, so a derived benchmark (e.g. a "-judged" subset)
+    can't inherit answers from its parent until FilteredAnswers exists.
 - csl.py's csl-trec-2023 (TREC NeuCLIR 2023 technical-document task) should split into
   trec_neuclir.py, referencing csl.py's docs by reference -- same "every TREC-branded benchmark
   gets its own per-track file with an unprefixed id" convention just applied to

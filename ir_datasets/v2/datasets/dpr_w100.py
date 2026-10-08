@@ -53,8 +53,8 @@ from ir_datasets.datasets.dpr_w100 import (
     DprW100Doc, DprW100Manager, DprW100Queries, QREL_DEFS,
 )
 from ir_datasets.formats import TrecQrels as _V1TrecQrels
-from ir_datasets.v2 import Benchmark, QrelTable, QueryTable, Resource, TsvDocs, irds
-from ir_datasets.v2.formats import Parser
+from ir_datasets.v2 import AnswerTable, Benchmark, QrelTable, QueryTable, Resource, TsvDocs, irds
+from ir_datasets.v2.formats import AnswersFromQueriesParser, Parser
 
 NAME = 'dpr-w100'
 BASE_PATH = ir_datasets.util.home_path() / NAME
@@ -138,6 +138,10 @@ with irds.defaults(lang='en'):
         parser=_DprW100QueriesParser(_nq_dev_manager),
         count_hint=6_515,
     )
+    nq_dev_answers = AnswerTable('dpr-w100-natural-questions-dev-answers',
+        source=nq_dev_file,
+        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_dev_manager), 'answers'),
+    )
     nq_dev_qrels = QrelTable('dpr-w100-natural-questions-dev-qrels',
         source=nq_dev_file,
         parser=_DprW100QrelsParser(_nq_dev_manager),
@@ -149,6 +153,10 @@ with irds.defaults(lang='en'):
         source=nq_train_file,
         parser=_DprW100QueriesParser(_nq_train_manager),
         count_hint=58_880,
+    )
+    nq_train_answers = AnswerTable('dpr-w100-natural-questions-train-answers',
+        source=nq_train_file,
+        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_train_manager), 'answers'),
     )
     nq_train_qrels = QrelTable('dpr-w100-natural-questions-train-qrels',
         source=nq_train_file,
@@ -162,6 +170,10 @@ with irds.defaults(lang='en'):
         parser=_DprW100QueriesParser(_tqa_dev_manager),
         count_hint=8_837,
     )
+    tqa_dev_answers = AnswerTable('dpr-w100-trivia-qa-dev-answers',
+        source=tqa_dev_file,
+        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_dev_manager), 'answers'),
+    )
     tqa_dev_qrels = QrelTable('dpr-w100-trivia-qa-dev-qrels',
         source=tqa_dev_file,
         parser=_DprW100QrelsParser(_tqa_dev_manager),
@@ -174,6 +186,10 @@ with irds.defaults(lang='en'):
         parser=_DprW100QueriesParser(_tqa_train_manager),
         count_hint=78_785,
     )
+    tqa_train_answers = AnswerTable('dpr-w100-trivia-qa-train-answers',
+        source=tqa_train_file,
+        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_train_manager), 'answers'),
+    )
     tqa_train_qrels = QrelTable('dpr-w100-trivia-qa-train-qrels',
         source=tqa_train_file,
         parser=_DprW100QrelsParser(_tqa_train_manager),
@@ -184,22 +200,22 @@ with irds.defaults(lang='en'):
     # Benchmarks
     # -----------------------------------------
     natural_questions_dev = Benchmark('dpr-w100-natural-questions-dev',
-        docs=docs, queries=nq_dev_queries, qrels=nq_dev_qrels,
+        docs=docs, queries=nq_dev_queries, qrels=nq_dev_qrels, answers=nq_dev_answers,
         citation=CITATION_NQ,
         desc='Dev subset from the Natural Questions Q&A collection, using the '
              'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
     natural_questions_train = Benchmark('dpr-w100-natural-questions-train',
-        docs=docs, queries=nq_train_queries, qrels=nq_train_qrels,
+        docs=docs, queries=nq_train_queries, qrels=nq_train_qrels, answers=nq_train_answers,
         citation=CITATION_NQ,
         desc='Training subset from the Natural Questions Q&A collection, using the '
              'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
     trivia_qa_dev = Benchmark('dpr-w100-trivia-qa-dev',
-        docs=docs, queries=tqa_dev_queries, qrels=tqa_dev_qrels,
+        docs=docs, queries=tqa_dev_queries, qrels=tqa_dev_qrels, answers=tqa_dev_answers,
         citation=CITATION_TQA,
         desc='Dev subset from the Trivia QA dataset, using the DPR Wikipedia '
              'dump as the source collection (see the DPR paper).')
     trivia_qa_train = Benchmark('dpr-w100-trivia-qa-train',
-        docs=docs, queries=tqa_train_queries, qrels=tqa_train_qrels,
+        docs=docs, queries=tqa_train_queries, qrels=tqa_train_qrels, answers=tqa_train_answers,
         citation=CITATION_TQA,
         desc='Training subset from the Trivia QA dataset, using the DPR Wikipedia '
              'dump as the source collection (see the DPR paper).')
@@ -208,9 +224,9 @@ with irds.defaults(lang='en'):
 # Registration
 # -----------------------------------------
 irds.register(docs,
-              nq_dev_queries, nq_dev_qrels,
-              nq_train_queries, nq_train_qrels,
-              tqa_dev_queries, tqa_dev_qrels,
-              tqa_train_queries, tqa_train_qrels,
+              nq_dev_queries, nq_dev_qrels, nq_dev_answers,
+              nq_train_queries, nq_train_qrels, nq_train_answers,
+              tqa_dev_queries, tqa_dev_qrels, tqa_dev_answers,
+              tqa_train_queries, tqa_train_qrels, tqa_train_answers,
               natural_questions_dev, natural_questions_train,
               trivia_qa_dev, trivia_qa_train)

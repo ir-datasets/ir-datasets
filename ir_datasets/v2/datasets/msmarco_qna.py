@@ -25,9 +25,9 @@ from ir_datasets.datasets.msmarco_qna import (
 )
 from ir_datasets.formats import DocstoreBackedDocs
 
-from ir_datasets.v2 import Benchmark, DocTable, Resource, TrecQrels, TrecScoredDocs, TsvQueries, irds
+from ir_datasets.v2 import AnswerTable, Benchmark, DocTable, Resource, TrecQrels, TrecScoredDocs, TsvQueries, irds
 from ir_datasets.v2.datasets.msmarco_passage import DUA
-from ir_datasets.v2.formats import Parser
+from ir_datasets.v2.formats import AnswersFromQueriesParser, Parser, _TsvQueriesParser
 from ir_datasets.v2.sources import default_cache_path
 
 CITATION = 'dblp:conf/nips/NguyenRSGTMD16'
@@ -88,6 +88,9 @@ with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msma
 
     train_queries = TsvQueries('msmarco-qna-train-queries', cls=MsMarcoQnAQuery,
         source=manager.file_ref('train.queries.tsv'))
+    train_answers = AnswerTable('msmarco-qna-train-answers',
+        source=manager.file_ref('train.queries.tsv'),
+        parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)))
     train_qrels = TrecQrels('msmarco-qna-train-qrels',
         source=manager.file_ref('train.qrels'), defs=QRELS_DEFS)
     train_scoreddocs = TrecScoredDocs('msmarco-qna-train-scoreddocs',
@@ -95,6 +98,9 @@ with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msma
 
     dev_queries = TsvQueries('msmarco-qna-dev-queries', cls=MsMarcoQnAQuery,
         source=manager.file_ref('dev.queries.tsv'))
+    dev_answers = AnswerTable('msmarco-qna-dev-answers',
+        source=manager.file_ref('dev.queries.tsv'),
+        parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)))
     dev_qrels = TrecQrels('msmarco-qna-dev-qrels',
         source=manager.file_ref('dev.qrels'), defs=QRELS_DEFS)
     dev_scoreddocs = TrecScoredDocs('msmarco-qna-dev-scoreddocs',
@@ -109,12 +115,14 @@ with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msma
     # -----------------------------------------
     train = Benchmark('msmarco-qna-train',
         docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
+        answers=train_answers,
         citation=CITATION,
         desc='Official train set. Queries are natural-language questions with '
              'free-text answers; qrels/scoreddocs mark which passages the '
              "annotator selected as contributing to the answer.")
     dev = Benchmark('msmarco-qna-dev',
         docs=docs, queries=dev_queries, qrels=dev_qrels, scoreddocs=dev_scoreddocs,
+        answers=dev_answers,
         citation=CITATION,
         desc='Official dev set.')
     eval_ = Benchmark('msmarco-qna-eval',
