@@ -110,7 +110,7 @@ from .nodes import (
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
 )
 from .formats import (
-    Parser, TrecDocs, TrecQrels, TrecQueries, TrecScoredDocs, TsvDocPairs,
+    Parser, RcpQrels, TrecDocs, TrecQrels, TrecQueries, TrecScoredDocs, TsvDocPairs,
     TsvDocs, TsvQueries,
 )
 from .sources import Readable, Source, external_home, transform
@@ -196,7 +196,7 @@ __all__ = [
     # sources
     'Source', 'Readable', 'transform', 'external_home',
     # formats (the node type IS the format)
-    'TsvDocs', 'TsvQueries', 'TrecDocs', 'TrecQueries', 'TrecQrels', 'TrecScoredDocs', 'TsvDocPairs',
+    'TsvDocs', 'TsvQueries', 'TrecDocs', 'TrecQueries', 'TrecQrels', 'RcpQrels', 'TrecScoredDocs', 'TsvDocPairs',
     'Parser',
     # derivation
     'Filter', 'DerivedTable', 'ids_of', 'ids_from_lines',

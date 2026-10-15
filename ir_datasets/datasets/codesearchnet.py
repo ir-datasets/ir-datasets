@@ -41,7 +41,7 @@ class CodeSearchNetDoc(NamedTuple):
 class CodeSearchNetChallengeQrel(NamedTuple):
     query_id: str
     doc_id: str
-    relevance: str
+    relevance: int
     note: str
 
 
@@ -190,7 +190,7 @@ class CodeSearchNetChallengeQrels(BaseQrels):
                 yield CodeSearchNetChallengeQrel(
                     query_id=query_map[data['Query']],
                     doc_id=data['GitHubUrl'],
-                    relevance=data['Relevance'],
+                    relevance=int(data['Relevance']),
                     note=data['Notes'])
 
     def qrels_cls(self):

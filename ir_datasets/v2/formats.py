@@ -16,10 +16,12 @@ The entity bases still accept ``parser=`` for cases where the format is chosen a
 runtime rather than written down -- a wrapper inferring columns from a remote
 dataset, say. These classes are the common path; that is the escape hatch.
 """
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 from ir_datasets import formats as _v1
+from ir_datasets import lazy_libs as _lazy_libs
 from ir_datasets.formats import GenericDoc, GenericDocPair, GenericQuery, TrecQuery
+from ir_datasets.formats import BaseQrels as _BaseQrels
 from ir_datasets.indices import DEFAULT_DOCSTORE_OPTIONS, PickleLz4FullStore
 
 from .nodes import DocPairTable, DocTable, QrelTable, QueryTable, RunTable
@@ -152,6 +154,53 @@ class _TrecQrelsParser(Parser):
                              format_3col=self.format_3col)
 
 
+class RcpQrel(NamedTuple):
+    """One RCP-calibrated judgment. ``relevance`` is a probability in [0, 1],
+    not an integer grade -- the gain RCP-nDCG uses. ``theta`` is the
+    calibrated latent ability behind it, on a scale shared across queries
+    (``None`` for documents outside the judged pool, whose ``relevance`` is
+    0.0)."""
+    query_id: str
+    doc_id: str
+    relevance: float
+    theta: Optional[float]
+
+
+class _RcpQrelsHandler(_BaseQrels):
+    """Reads RCP's ``qrels.parquet``: ``query-id``, ``corpus-id``, ``gain``
+    (calibrated probability), ``theta`` (calibrated ability); other columns
+    (e.g. the original human ``score``) are ignored."""
+
+    def __init__(self, qrels_dlc):
+        super().__init__()
+        self._qrels_dlc = qrels_dlc
+
+    def qrels_path(self):
+        return self._qrels_dlc.path()
+
+    def qrels_iter(self):
+        pq = _lazy_libs.pyarrow_parquet()
+        with pq.ParquetFile(self.qrels_path()) as parquet_file:
+            for batch in parquet_file.iter_batches(batch_size=1024):
+                for d in batch.to_pylist():
+                    theta = d['theta']
+                    yield RcpQrel(d['query-id'], d['corpus-id'], float(d['gain']),
+                                  None if theta is None else float(theta))
+
+    def qrels_cls(self):
+        return RcpQrel
+
+    def qrels_defs(self):
+        return {}
+
+
+class _RcpQrelsParser(Parser):
+    name = 'RcpQrels'
+
+    def build(self, source, node):
+        return _RcpQrelsHandler(source)
+
+
 class _TrecScoredDocsParser(Parser):
     name = 'TrecScoredDocs'
 
@@ -240,6 +289,16 @@ class TrecQrels(QrelTable):
 
     def __init__(self, name, *, format_3col=False, **kwargs):
         super().__init__(name, parser=_TrecQrelsParser(format_3col), **kwargs)
+
+
+class RcpQrels(QrelTable):
+    """RCP calibrated relevance probabilities (see ``RcpQrel``). No integer
+    grades, so ``defs`` is empty and ``freeze --verify`` does not tally
+    ``score_counts`` (one bucket per distinct float would be noise)."""
+    score_field = None
+
+    def __init__(self, name, **kwargs):
+        super().__init__(name, parser=_RcpQrelsParser(), **kwargs)
 
 
 class TrecScoredDocs(RunTable):

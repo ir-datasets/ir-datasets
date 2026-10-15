@@ -52,9 +52,9 @@ class TestCodeSearchNet(DatasetIntegrationTest):
             100528: TrecQrel('https://github.com/dherges/grunt-bower-event/blob/ce7dc2303ef186ccf5eaa8d5b691102e13523076/tasks/lib/BowerTask.js#L24-L30', 'https://github.com/dherges/grunt-bower-event/blob/ce7dc2303ef186ccf5eaa8d5b691102e13523076/tasks/lib/BowerTask.js#L24-L30', 1, '0'),
         })
         self._test_qrels('codesearchnet/challenge', count=4006, items={
-            0: CodeSearchNetChallengeQrel('71', 'https://github.com/tylertreat/BoomFilters/blob/611b3dbe80e85df3a0a10a43997d4d5784e86245/topk.go#L70-L85', '0', ''),
-            9: CodeSearchNetChallengeQrel('24', 'https://github.com/uber-go/ratelimit/blob/c15da02342779cb6dc027fc95ee2277787698f36/internal/clock/clock.go#L66-L76', '1', ''),
-            4005: CodeSearchNetChallengeQrel('45', 'https://github.com/conanite/aduki/blob/2e17522b9536fe0a12d2dd97ae601cabb2ee293e/lib/aduki.rb#L167-L176', '0', ''),
+            0: CodeSearchNetChallengeQrel('71', 'https://github.com/tylertreat/BoomFilters/blob/611b3dbe80e85df3a0a10a43997d4d5784e86245/topk.go#L70-L85', 0, ''),
+            9: CodeSearchNetChallengeQrel('24', 'https://github.com/uber-go/ratelimit/blob/c15da02342779cb6dc027fc95ee2277787698f36/internal/clock/clock.go#L66-L76', 1, ''),
+            4005: CodeSearchNetChallengeQrel('45', 'https://github.com/conanite/aduki/blob/2e17522b9536fe0a12d2dd97ae601cabb2ee293e/lib/aduki.rb#L167-L176', 0, ''),
         })
 
 

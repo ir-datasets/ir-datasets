@@ -16859,6 +16859,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-arguana-rcp": {
+      "name": "irds:nano-beir-arguana-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR arguana with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-arguana-rcp-qrels": {
+      "name": "irds:nano-beir-arguana-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-arguana-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-arguana-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-climate-fever": {
       "name": "irds:nano-beir-climate-fever",
       "type": "irds:AdhocBenchmark",
@@ -16901,6 +16920,25 @@
       "name": "irds:nano-beir-climate-fever-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-climate-fever-rcp": {
+      "name": "irds:nano-beir-climate-fever-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR climate-fever with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-climate-fever-rcp-qrels": {
+      "name": "irds:nano-beir-climate-fever-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-climate-fever-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-climate-fever-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
     },
     "irds:nano-beir-dbpedia-entity": {
       "name": "irds:nano-beir-dbpedia-entity",
@@ -16945,6 +16983,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-dbpedia-entity-rcp": {
+      "name": "irds:nano-beir-dbpedia-entity-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR dbpedia-entity with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-dbpedia-entity-rcp-qrels": {
+      "name": "irds:nano-beir-dbpedia-entity-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-dbpedia-entity-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-dbpedia-entity-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-fever": {
       "name": "irds:nano-beir-fever",
       "type": "irds:AdhocBenchmark",
@@ -16987,6 +17044,25 @@
       "name": "irds:nano-beir-fever-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-fever-rcp": {
+      "name": "irds:nano-beir-fever-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR fever with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-fever-rcp-qrels": {
+      "name": "irds:nano-beir-fever-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-fever-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-fever-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
     },
     "irds:nano-beir-fiqa": {
       "name": "irds:nano-beir-fiqa",
@@ -17031,6 +17107,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-fiqa-rcp": {
+      "name": "irds:nano-beir-fiqa-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR fiqa with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-fiqa-rcp-qrels": {
+      "name": "irds:nano-beir-fiqa-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-fiqa-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-fiqa-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-hotpotqa": {
       "name": "irds:nano-beir-hotpotqa",
       "type": "irds:AdhocBenchmark",
@@ -17073,6 +17168,25 @@
       "name": "irds:nano-beir-hotpotqa-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-hotpotqa-rcp": {
+      "name": "irds:nano-beir-hotpotqa-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR hotpotqa with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-hotpotqa-rcp-qrels": {
+      "name": "irds:nano-beir-hotpotqa-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-hotpotqa-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-hotpotqa-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
     },
     "irds:nano-beir-msmarco": {
       "name": "irds:nano-beir-msmarco",
@@ -17117,6 +17231,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-msmarco-rcp": {
+      "name": "irds:nano-beir-msmarco-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR msmarco with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-msmarco-rcp-qrels": {
+      "name": "irds:nano-beir-msmarco-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-msmarco-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-msmarco-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-nfcorpus": {
       "name": "irds:nano-beir-nfcorpus",
       "type": "irds:AdhocBenchmark",
@@ -17159,6 +17292,25 @@
       "name": "irds:nano-beir-nfcorpus-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-nfcorpus-rcp": {
+      "name": "irds:nano-beir-nfcorpus-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR nfcorpus with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-nfcorpus-rcp-qrels": {
+      "name": "irds:nano-beir-nfcorpus-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-nfcorpus-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-nfcorpus-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
     },
     "irds:nano-beir-nq": {
       "name": "irds:nano-beir-nq",
@@ -17203,6 +17355,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-nq-rcp": {
+      "name": "irds:nano-beir-nq-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR nq with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-nq-rcp-qrels": {
+      "name": "irds:nano-beir-nq-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-nq-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-nq-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-quora": {
       "name": "irds:nano-beir-quora",
       "type": "irds:AdhocBenchmark",
@@ -17245,6 +17416,32 @@
       "name": "irds:nano-beir-quora-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-quora-rcp": {
+      "name": "irds:nano-beir-quora-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR quora with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-quora-rcp-qrels": {
+      "name": "irds:nano-beir-quora-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-quora-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-quora-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
+    "irds:nano-beir-rcp": {
+      "name": "irds:nano-beir-rcp",
+      "type": "irds:Suite",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR (13 tasks) with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
     },
     "irds:nano-beir-scidocs": {
       "name": "irds:nano-beir-scidocs",
@@ -17289,6 +17486,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-scidocs-rcp": {
+      "name": "irds:nano-beir-scidocs-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR scidocs with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-scidocs-rcp-qrels": {
+      "name": "irds:nano-beir-scidocs-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-scidocs-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-scidocs-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-scifact": {
       "name": "irds:nano-beir-scifact",
       "type": "irds:AdhocBenchmark",
@@ -17332,6 +17548,25 @@
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
     },
+    "irds:nano-beir-scifact-rcp": {
+      "name": "irds:nano-beir-scifact-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR scifact with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-scifact-rcp-qrels": {
+      "name": "irds:nano-beir-scifact-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-scifact-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-scifact-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
+    },
     "irds:nano-beir-webis-touche2020": {
       "name": "irds:nano-beir-webis-touche2020",
       "type": "irds:AdhocBenchmark",
@@ -17374,6 +17609,25 @@
       "name": "irds:nano-beir-webis-touche2020-queries.parquet",
       "type": "irds:File",
       "module": "ir_datasets.v2.datasets.nano_beir"
+    },
+    "irds:nano-beir-webis-touche2020-rcp": {
+      "name": "irds:nano-beir-webis-touche2020-rcp",
+      "type": "irds:AdhocBenchmark",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "NanoBEIR webis-touche2020 with RCP calibrated relevance labels.",
+      "citation": "Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory. arXiv:2609.35739, 2026."
+    },
+    "irds:nano-beir-webis-touche2020-rcp-qrels": {
+      "name": "irds:nano-beir-webis-touche2020-rcp-qrels",
+      "type": "irds:Qrels",
+      "module": "ir_datasets.v2.datasets.rcp",
+      "desc": "Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the 150-document candidate pool. Judge: Qwen3.5-397B.",
+      "format": "RcpQrels"
+    },
+    "irds:nano-beir-webis-touche2020-rcp-qrels.parquet": {
+      "name": "irds:nano-beir-webis-touche2020-rcp-qrels.parquet",
+      "type": "irds:File",
+      "module": "ir_datasets.v2.datasets.rcp"
     },
     "irds:natural-questions-dev": {
       "name": "irds:natural-questions-dev",
@@ -37375,6 +37629,26 @@
       "irds:nano-beir-arguana-queries.parquet"
     ],
     [
+      "irds:nano-beir-arguana-rcp",
+      "irds:docs",
+      "irds:nano-beir-arguana-docs"
+    ],
+    [
+      "irds:nano-beir-arguana-rcp",
+      "irds:qrels",
+      "irds:nano-beir-arguana-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-arguana-rcp",
+      "irds:queries",
+      "irds:nano-beir-arguana-queries"
+    ],
+    [
+      "irds:nano-beir-arguana-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-arguana-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-climate-fever",
       "irds:docs",
       "irds:nano-beir-climate-fever-docs"
@@ -37403,6 +37677,26 @@
       "irds:nano-beir-climate-fever-queries",
       "irds:derived_from",
       "irds:nano-beir-climate-fever-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-climate-fever-rcp",
+      "irds:docs",
+      "irds:nano-beir-climate-fever-docs"
+    ],
+    [
+      "irds:nano-beir-climate-fever-rcp",
+      "irds:qrels",
+      "irds:nano-beir-climate-fever-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-climate-fever-rcp",
+      "irds:queries",
+      "irds:nano-beir-climate-fever-queries"
+    ],
+    [
+      "irds:nano-beir-climate-fever-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-climate-fever-rcp-qrels.parquet"
     ],
     [
       "irds:nano-beir-dbpedia-entity",
@@ -37435,6 +37729,26 @@
       "irds:nano-beir-dbpedia-entity-queries.parquet"
     ],
     [
+      "irds:nano-beir-dbpedia-entity-rcp",
+      "irds:docs",
+      "irds:nano-beir-dbpedia-entity-docs"
+    ],
+    [
+      "irds:nano-beir-dbpedia-entity-rcp",
+      "irds:qrels",
+      "irds:nano-beir-dbpedia-entity-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-dbpedia-entity-rcp",
+      "irds:queries",
+      "irds:nano-beir-dbpedia-entity-queries"
+    ],
+    [
+      "irds:nano-beir-dbpedia-entity-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-dbpedia-entity-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-fever",
       "irds:docs",
       "irds:nano-beir-fever-docs"
@@ -37463,6 +37777,26 @@
       "irds:nano-beir-fever-queries",
       "irds:derived_from",
       "irds:nano-beir-fever-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-fever-rcp",
+      "irds:docs",
+      "irds:nano-beir-fever-docs"
+    ],
+    [
+      "irds:nano-beir-fever-rcp",
+      "irds:qrels",
+      "irds:nano-beir-fever-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-fever-rcp",
+      "irds:queries",
+      "irds:nano-beir-fever-queries"
+    ],
+    [
+      "irds:nano-beir-fever-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-fever-rcp-qrels.parquet"
     ],
     [
       "irds:nano-beir-fiqa",
@@ -37495,6 +37829,26 @@
       "irds:nano-beir-fiqa-queries.parquet"
     ],
     [
+      "irds:nano-beir-fiqa-rcp",
+      "irds:docs",
+      "irds:nano-beir-fiqa-docs"
+    ],
+    [
+      "irds:nano-beir-fiqa-rcp",
+      "irds:qrels",
+      "irds:nano-beir-fiqa-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-fiqa-rcp",
+      "irds:queries",
+      "irds:nano-beir-fiqa-queries"
+    ],
+    [
+      "irds:nano-beir-fiqa-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-fiqa-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-hotpotqa",
       "irds:docs",
       "irds:nano-beir-hotpotqa-docs"
@@ -37523,6 +37877,26 @@
       "irds:nano-beir-hotpotqa-queries",
       "irds:derived_from",
       "irds:nano-beir-hotpotqa-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-hotpotqa-rcp",
+      "irds:docs",
+      "irds:nano-beir-hotpotqa-docs"
+    ],
+    [
+      "irds:nano-beir-hotpotqa-rcp",
+      "irds:qrels",
+      "irds:nano-beir-hotpotqa-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-hotpotqa-rcp",
+      "irds:queries",
+      "irds:nano-beir-hotpotqa-queries"
+    ],
+    [
+      "irds:nano-beir-hotpotqa-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-hotpotqa-rcp-qrels.parquet"
     ],
     [
       "irds:nano-beir-msmarco",
@@ -37555,6 +37929,26 @@
       "irds:nano-beir-msmarco-queries.parquet"
     ],
     [
+      "irds:nano-beir-msmarco-rcp",
+      "irds:docs",
+      "irds:nano-beir-msmarco-docs"
+    ],
+    [
+      "irds:nano-beir-msmarco-rcp",
+      "irds:qrels",
+      "irds:nano-beir-msmarco-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-msmarco-rcp",
+      "irds:queries",
+      "irds:nano-beir-msmarco-queries"
+    ],
+    [
+      "irds:nano-beir-msmarco-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-msmarco-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-nfcorpus",
       "irds:docs",
       "irds:nano-beir-nfcorpus-docs"
@@ -37583,6 +37977,26 @@
       "irds:nano-beir-nfcorpus-queries",
       "irds:derived_from",
       "irds:nano-beir-nfcorpus-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-nfcorpus-rcp",
+      "irds:docs",
+      "irds:nano-beir-nfcorpus-docs"
+    ],
+    [
+      "irds:nano-beir-nfcorpus-rcp",
+      "irds:qrels",
+      "irds:nano-beir-nfcorpus-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-nfcorpus-rcp",
+      "irds:queries",
+      "irds:nano-beir-nfcorpus-queries"
+    ],
+    [
+      "irds:nano-beir-nfcorpus-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-nfcorpus-rcp-qrels.parquet"
     ],
     [
       "irds:nano-beir-nq",
@@ -37615,6 +38029,26 @@
       "irds:nano-beir-nq-queries.parquet"
     ],
     [
+      "irds:nano-beir-nq-rcp",
+      "irds:docs",
+      "irds:nano-beir-nq-docs"
+    ],
+    [
+      "irds:nano-beir-nq-rcp",
+      "irds:qrels",
+      "irds:nano-beir-nq-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-nq-rcp",
+      "irds:queries",
+      "irds:nano-beir-nq-queries"
+    ],
+    [
+      "irds:nano-beir-nq-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-nq-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-quora",
       "irds:docs",
       "irds:nano-beir-quora-docs"
@@ -37643,6 +38077,91 @@
       "irds:nano-beir-quora-queries",
       "irds:derived_from",
       "irds:nano-beir-quora-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-quora-rcp",
+      "irds:docs",
+      "irds:nano-beir-quora-docs"
+    ],
+    [
+      "irds:nano-beir-quora-rcp",
+      "irds:qrels",
+      "irds:nano-beir-quora-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-quora-rcp",
+      "irds:queries",
+      "irds:nano-beir-quora-queries"
+    ],
+    [
+      "irds:nano-beir-quora-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-quora-rcp-qrels.parquet"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-arguana-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-climate-fever-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-dbpedia-entity-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-fever-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-fiqa-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-hotpotqa-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-msmarco-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-nfcorpus-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-nq-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-quora-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-scidocs-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-scifact-rcp"
+    ],
+    [
+      "irds:nano-beir-rcp",
+      "irds:member",
+      "irds:nano-beir-webis-touche2020-rcp"
     ],
     [
       "irds:nano-beir-scidocs",
@@ -37675,6 +38194,26 @@
       "irds:nano-beir-scidocs-queries.parquet"
     ],
     [
+      "irds:nano-beir-scidocs-rcp",
+      "irds:docs",
+      "irds:nano-beir-scidocs-docs"
+    ],
+    [
+      "irds:nano-beir-scidocs-rcp",
+      "irds:qrels",
+      "irds:nano-beir-scidocs-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-scidocs-rcp",
+      "irds:queries",
+      "irds:nano-beir-scidocs-queries"
+    ],
+    [
+      "irds:nano-beir-scidocs-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-scidocs-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-scifact",
       "irds:docs",
       "irds:nano-beir-scifact-docs"
@@ -37705,6 +38244,26 @@
       "irds:nano-beir-scifact-queries.parquet"
     ],
     [
+      "irds:nano-beir-scifact-rcp",
+      "irds:docs",
+      "irds:nano-beir-scifact-docs"
+    ],
+    [
+      "irds:nano-beir-scifact-rcp",
+      "irds:qrels",
+      "irds:nano-beir-scifact-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-scifact-rcp",
+      "irds:queries",
+      "irds:nano-beir-scifact-queries"
+    ],
+    [
+      "irds:nano-beir-scifact-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-scifact-rcp-qrels.parquet"
+    ],
+    [
       "irds:nano-beir-webis-touche2020",
       "irds:docs",
       "irds:nano-beir-webis-touche2020-docs"
@@ -37733,6 +38292,26 @@
       "irds:nano-beir-webis-touche2020-queries",
       "irds:derived_from",
       "irds:nano-beir-webis-touche2020-queries.parquet"
+    ],
+    [
+      "irds:nano-beir-webis-touche2020-rcp",
+      "irds:docs",
+      "irds:nano-beir-webis-touche2020-docs"
+    ],
+    [
+      "irds:nano-beir-webis-touche2020-rcp",
+      "irds:qrels",
+      "irds:nano-beir-webis-touche2020-rcp-qrels"
+    ],
+    [
+      "irds:nano-beir-webis-touche2020-rcp",
+      "irds:queries",
+      "irds:nano-beir-webis-touche2020-queries"
+    ],
+    [
+      "irds:nano-beir-webis-touche2020-rcp-qrels",
+      "irds:derived_from",
+      "irds:nano-beir-webis-touche2020-rcp-qrels.parquet"
     ],
     [
       "irds:natural-questions-dev",
