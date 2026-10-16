@@ -6,7 +6,7 @@ v1 machinery (`ir_datasets.util` downloads, `ir_datasets.formats` parsers,
 without reimplementing any of it. **v1 is untouched.**
 
 This one package holds both the generic graph machinery (`Node`, `Edge`,
-`Provider`, `Graph`, `Generator`, `freeze`/`verify`) and the dataset vocabulary
+`Provider`, `Graph`, `Generator`) and the dataset vocabulary
 built on it. The two used to be split across two packages (`ir_graph` +
 `ir_datasets.v2`); they were merged back into one once it was clear this paper
 only needs one domain — see [Deferred to a later
@@ -31,8 +31,8 @@ leaf types under it:
     queries + qrels) and **`QaBenchmark`** (queries + answers; docs optional).
     One with a benchmark's tables but neither combination (e.g. a test set
     with no qrels) stays a plain `Benchmark`. A node's types are `node.types`
-    (`node.type` is the first); the manifest stores a list when there are
-    several, and `list_datasets(type=...)` matches any of them.
+    (`node.type` is the first); a node with several types reports a list
+    of them, and `list_datasets(type=...)` matches any of them.
   - **`Suite`** — a named, structural set of related Benchmarks (e.g. BEIR)
 
 Citations-as-papers and metrics-as-measures (each with their own node type and
@@ -99,10 +99,6 @@ python -c "import ir_datasets.v2 as v2; print(v2.list_datasets()); print(v2.load
 ```
 
 ```bash
-python -m ir_datasets.v2.freeze --verify
-```
-
-```bash
 python -m unittest test.v2_conformance
 ```
 
@@ -115,10 +111,8 @@ python -m unittest test.v2_conformance
 | `vocabulary.py` | The process-wide index of declared node types / edge kinds, and which providers own them |
 | `context.py` | The `defaults()` stack (`ManifestProvider.defaults()` pushes onto it) |
 | `protocols.py` (`Provider`) | The two-method contract a package joins the graph with: `prefix`, `load(name)`, `discover_edges()` — not a class to inherit |
-| `registry.py` | `ManifestProvider` — one (batteries-included) implementation of `Provider`: nodes, edges, generators, aliases, manifest, and the vocabulary it declares |
+| `registry.py` | `ManifestProvider` — one (batteries-included) implementation of `Provider`: nodes, edges, generators, aliases, and the vocabulary it declares |
 | `graph.py` | `Graph`, `default_graph()`, `discover()` — the union over installed providers, entry-point discovery; touches a provider through nothing but `Provider`'s two methods |
-| `freeze.py` | `python -m ir_datasets.v2.freeze [provider] [--verify]` — writes a `ManifestProvider`'s manifest |
-| `verify.py` | `Divergence`, `verify()`, `verify_all()` — advisory checks against a frozen manifest, bound to the installed graph |
 | `provider.py` | The `irds` `ManifestProvider` instance itself |
 | `nodes.py` | `Resource`, `Table` (+ `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`), `Benchmark`, `Suite` — the dataset vocabulary, declared on `irds` |
 | `formats.py`, `sources.py`, `filters.py` | Format subclasses, download/cache machinery, derivation (`Filter`) |
@@ -135,7 +129,7 @@ python -m unittest test.v2_conformance
 | **Nine node types**: `Resource`, `Table`, `Benchmark`, `Suite`, and one `Table` subtype per entity — `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable` — each its own declared graph type, a subtype of `Table` (`.entity` is still a plain attribute, used for format-specific behavior) | `nodes.py` |
 | First-class **edges**; structural (DAG) vs informational split | `base.Edge` |
 | Nodes declare `structural_edges()`; a `ManifestProvider` stores edges (fwd + indexed reverse) | `ManifestProvider.register` |
-| Any provider may add *informational* edges about any node — they ship in *its* manifest; *structural* edges are the owner's alone | `ManifestProvider.add_edge` |
+| Any provider may add *informational* edges about any node — they are *its* contribution; *structural* edges are the owner's alone | `ManifestProvider.add_edge` |
 | Graph traversal without imports, from each provider's `discover_edges()`, cached per `Graph` | `Graph` |
 | Every node named and directly loadable — files and tables included, every registered node listed (no hidden/internal tier) | `nodes.py`, `Graph.list` |
 | Single-type nodes; facets by reference, never multi-type | `Benchmark.edge` |
@@ -144,17 +138,16 @@ python -m unittest test.v2_conformance
 | Construction is inert — ad-hoc/test nodes never touch any registry | `base.Node` |
 | **Node/Resource/Table/Benchmark/Suite are `Protocol`s, not base classes** — `ManifestProvider.register()` only ever checks the shape (a `hasattr` check on the three methods it calls), never `isinstance` against a concrete class; a node needs no particular ancestor | `protocols.py`, `TestV2Protocols` |
 | A Resource's `sources` accept bare URLs or `Source`/`Source.mirror()`/`Source.external()` for headers, auth, or manual acquisition | `sources.py` |
-| **Multi-algorithm integrity**: `hashes=['sha256:...', 'md5:...']` (OCI/pip's `algo:hexdigest` convention; `md5=` stays as shorthand for the common single-hash case). Checked in one streamed pass at `verify` time, against the *author's declared* value — not a frozen row, unlike `Table` | `nodes.parse_hash`, `Resource.verify`, `TestV2ResourceHashes` |
+| **Multi-algorithm integrity**: `hashes=['sha256:...', 'md5:...']` (OCI/pip's `algo:hexdigest` convention; `md5=` stays as shorthand for the common single-hash case). Checked in one streamed pass on first access, against the *author's declared* value | `nodes.parse_hash`, `Resource.path`, `TestV2ResourceHashes` |
 | Declarative stream pipeline (`.member().gunzip().pipe()`) over a `Readable` — distinct from a Resource's `Source`s (where to fetch bytes) | `sources.Readable` |
 | `derived_from` + `Filter` replaces hand-built Filtered\* stacks | `filters.py` |
 | Parametric / dynamic families as `Generator` (rule, not expansion) | `base.Generator` |
-| `freeze` replaces `docs/*.yaml`, `etc/downloads.json`, `etc/metadata.json`, and per-dataset tests; **what an attestation is belongs to the node type** (`Table.attest/verify`) | `freeze.py`, `nodes.Table` |
-| Lazy, additive verification registry — advisory, not a gate | `verify.py` |
+| The node declaration replaces `docs/*.yaml`, `etc/downloads.json`, `etc/metadata.json`, and per-dataset tests | `nodes.Table` |
 | **`Suite`**: a named, structural set of Benchmarks (e.g. BEIR); membership pulls its benchmarks (and their tables/files) in transitively, and a benchmark may belong to more than one suite | `nodes.Suite` |
 | **`citation`** is a generic field on `Node` — any node can carry one — and `metrics` is plain metadata on `Benchmark`; neither is an edge (yet) | `nodes.Benchmark` |
 | `Table` is the base type of docs/queries/qrels/… (schema + rows + key) | `nodes.Table` |
 | v1's "beta" API is the **default** (`len(ds.docs)`, `ds.docs[:10]`, `ds.docs.lookup(...)`); legacy methods still provided | `nodes.Table` |
-| Import-free discovery: manifest rows, one module imported per `load()`; derived facets register with their benchmark (no special case) | `ManifestProvider.__getitem__`, `Benchmark.structural_edges` |
+| Lazy discovery: the first unknown name imports every dataset module once; derived facets register with their benchmark (no special case) | `ManifestProvider.__getitem__`, `Benchmark.structural_edges` |
 | Legacy v1 ids as permanent aliases, discovered as an `irds:alias` edge like any other — no separate alias API on `Graph` | `ManifestProvider.alias`, `registry.ALIAS_KIND` |
 | Existing caches read **in place** — nothing moved, nothing re-downloaded | `cache_path` in `datasets/antique.py` |
 
@@ -169,7 +162,7 @@ ir_datasets/etc/downloads.json       urls / md5 / size       <- central file
 test/integration/antique.py          counts / sample records
 ```
 
-In v2 there is one authored file, plus `manifest.json` generated by `freeze`.
+In v2 there is one authored file.
 The two central files are gone, which is what makes extension packages possible
 at all — a third-party package cannot edit core's shared JSON.
 
@@ -183,8 +176,8 @@ This is a prototype, not a migration. Not yet addressed:
 - `Generator` exists but has no live example in this scope (no dynamic/
   parametric family is currently registered) — kept for the motivating cases
   this paper doesn't need yet (a ClueWeb-style family, a HuggingFace wrapper).
-- The manifest is JSON; a larger deployment would want SQLite for faceted
-  queries over thousands of nodes, plus a merged per-user `registry.db`.
+- A larger deployment would want SQLite for faceted queries over thousands
+  of nodes, plus a merged per-user `registry.db`.
 - Entry points are declared (`pyproject.toml`, group `ir_datasets.providers`)
   and `discover()` reads them, but this checkout is not installed, so the
   `irds` provider reaches the default graph via the on-import subscription in

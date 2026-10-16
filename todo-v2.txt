@@ -70,11 +70,7 @@ Verification notes
       upstream (Zenodo) than the old test fixture. Worth checking directly,
       this could be a real bug rather than just missing documentation.
   Revisit all of these (proper `--verify` runs) later.
-- After any node rename/split, refreeze with:
-    python3 -m ir_datasets.v2.freeze --only irds:<name1>,irds:<name2>,...
-  then confirm no nodes were unexpectedly removed:
-    python3 -c "import json,subprocess; new=json.load(open('ir_datasets/v2/manifest.json')); old=json.loads(subprocess.check_output(['git','show','HEAD:ir_datasets/v2/manifest.json'])); print(set(old['nodes'])-set(new['nodes']))"
-  and run:
+- After any node rename/split, run:
     python3 -m pytest test/v2_conformance.py -q
 
 Done

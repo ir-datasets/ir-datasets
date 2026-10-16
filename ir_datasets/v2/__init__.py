@@ -6,7 +6,7 @@ node model over the existing v1 machinery (``ir_datasets.util`` downloads,
 ideas can be exercised on real data without reimplementing any of it.
 
 The generic graph machinery -- ``Node``, ``Edge``, ``Provider``, ``Graph``,
-``Generator``, ``freeze``/``verify`` -- lives in this package (``base.py``,
+``Generator`` -- lives in this package (``base.py``,
 ``protocols.py``, ``registry.py``, ``graph.py``, ``vocabulary.py``,
 ``context.py``) but declares no vocabulary of its own; a *provider* declares
 vocabulary, and any package (this one included) may be one. ``Provider``
@@ -14,8 +14,8 @@ vocabulary, and any package (this one included) may be one. ``Provider``
 the provider's whole catalog as edges -- not a class to inherit; a provider
 is free to keep a list of registered datasets internally however it likes.
 ``ManifestProvider`` (``registry.py``) is the batteries-included
-implementation of it -- registration, vocabulary declaration, generators, a
-frozen manifest -- and what ``irds`` (this package's own provider) is built
+implementation of it -- registration, vocabulary declaration, generators --
+and what ``irds`` (this package's own provider) is built
 from. ``ir_datasets.v2`` contributes these node types, all owned by its own
 ``irds`` provider:
 
@@ -71,7 +71,7 @@ legacy method API available on the same objects::
 
     ds = ir_datasets.v2.load('irds:antique-test')
 
-    len(ds.docs), len(ds.queries), len(ds.qrels)   # counts (free if frozen)
+    len(ds.docs), len(ds.queries), len(ds.qrels)   # counts
     ds.queries[0], ds.queries[-1], ds.docs[:10]    # index / slice
     ds.docs.lookup(['2020338_0'])                  # random access
     ds.docs.record_type, ds.qrels.defs             # schema / relevance levels
@@ -94,9 +94,8 @@ from .vocabulary import (
 from .provider import irds
 from .hf_provider import hf
 from .clirmatrix_provider import clirmatrix
-# clirmatrix is generator-only (no frozen node rows of its own to trigger a
-# lazy per-name import the way every hand-written irds module does -- see
-# registry.ManifestProvider.__getitem__'s `row = self.frozen(name)` path) --
+# clirmatrix is generator-only (no hand-written node registrations for a
+# lookup to find by importing modules -- see registry.ManifestProvider.__getitem__)
 # so, like hf above, its module needs importing here to register its
 # Generators at all, rather than only on first (already-too-late) lookup.
 from .datasets import clirmatrix as _clirmatrix  # noqa: F401

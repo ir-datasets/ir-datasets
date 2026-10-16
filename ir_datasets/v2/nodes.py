@@ -33,7 +33,7 @@ work for a broader knowledge graph; for now both are plain metadata.
 ``Node``, ``Edge``, ``Generator`` and the registration/graph machinery are
 generic (``base.py``, ``registry.py``, ``graph.py``); this module is where the
 dataset vocabulary actually gets declared: node types, edge kinds, defaultable
-fields, and what an attestation of a table is.
+fields.
 """
 import collections
 import contextlib
@@ -46,7 +46,6 @@ import warnings
 import ir_datasets
 from .base import Edge, Node
 from .context import default
-from .verify import Divergence
 
 from .provider import irds
 from . import protocols as proto
@@ -197,50 +196,6 @@ STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated', 'license')
 
 
-# ── Attestation of tables ────────────────────────────────────────────────────
-# What ``freeze --verify`` records about a table and what ``verify`` compares.
-# This used to be a hand-written integration test per family.
-
-#: Bump when the canonicalization below changes, so old attestations are known
-#: to be incomparable rather than mysteriously mismatched.
-HASH_SCHEME = 'v1'
-
-#: Sample records frozen per table: the first N and the last N.
-DEFAULT_SAMPLES = 5
-
-#: Licenses under which showing a few records publicly (the manifest feeds the
-#: website's sample cards) is unambiguously allowed. A table's samples are only
-#: frozen when it declares a license and every entry is in this set: no license,
-#: a custom/URL license, a non-commercial one, or a mix containing any of those
-#: all mean "don't freeze records".
-SAMPLE_LICENSES = frozenset({
-    'Apache-2.0', 'MIT', 'BSD-2-Clause', 'BSD-3-Clause', 'CC0-1.0',
-    'CC-BY-3.0', 'CC-BY-4.0', 'CC-BY-SA-3.0', 'CC-BY-SA-4.0', 'ODC-By-1.0',
-})
-
-
-def _canonical(record):
-    """Stable bytes for one record. Field *names* are included so a schema
-    change is visible as a hash change rather than silently comparing tuples."""
-    data = dict(record._asdict()) if hasattr(record, '_asdict') else {'value': record}
-    return json.dumps(data, sort_keys=True, ensure_ascii=False,
-                      separators=(',', ':'), default=str).encode()
-
-
-def _score_counts(counter):
-    """``{score: count}`` with string keys, ordered by score (numerically when
-    the scores are numbers), so the frozen row is stable."""
-    return {str(k): counter[k] for k in sorted(counter)}
-
-
-def _schema(node):
-    try:
-        cls = node.record_type
-    except Exception:
-        return None
-    return f'{cls.__name__}({", ".join(getattr(cls, "_fields", ()))})'
-
-
 # ── Resource ─────────────────────────────────────────────────────────────────────
 
 def parse_hash(spec):
@@ -297,12 +252,10 @@ class Resource(Node, Readable):
     are keyed on regardless of what else is declared, so it stays privileged:
     ``self.md5`` is always the ``md5`` entry of ``self.hashes``, if any.
 
-    Every declared hash is checked at ``verify`` time (a single streamed pass,
-    all algorithms computed together) -- not only md5, and not only at
-    download time. A ``Resource`` with no hash declared at all is legal:
-    parametric families would otherwise require downloading every member at
-    freeze time just to record one, so those rely on the (lazy, additive)
-    verification registry instead.
+    Every declared hash is checked on first access (see ``path``), not only
+    md5. A ``Resource`` with no hash declared at all is legal: parametric
+    families would otherwise require downloading every member just to record
+    one.
 
     The cache path is **automatic** (see ``sources.default_cache_path``):
     ``<home>/<provider>/<qualified name>``, human-readable and naturally
@@ -364,41 +317,6 @@ class Resource(Node, Readable):
         directly (this node *is* the file, unlike a derived artifact such as
         ``DocTable.docstore_path``, which appends its own suffix)."""
         return _cache_base(self)
-
-    def _compute_hashes(self, algos):
-        """Every named algorithm's digest, in one streamed pass."""
-        hashers = {a: hashlib.new(a) for a in algos}
-        with self.stream() as f:
-            for chunk in iter(lambda: f.read(1 << 20), b''):
-                for hasher in hashers.values():
-                    hasher.update(chunk)
-        return {a: hasher.hexdigest() for a, hasher in hashers.items()}
-
-    def attest(self, *, verify=False, **options):
-        if not verify or not self.hashes:
-            return None
-        computed = self._compute_hashes(self.hashes)
-        return {'hashes_confirmed': [f'{a}:{computed[a]}' for a in sorted(computed)]}
-
-    def verify(self, frozen, **options):
-        """Unlike ``Table.verify`` (which has no author-declared expectation
-        and so compares against what a prior freeze observed), a Resource's
-        most meaningful check is against what the *author* declared
-        (``self.hashes``) -- ``frozen`` is accepted for interface consistency
-        but unused: a mismatch against a stale frozen value would just be the
-        same divergence already caught here, since ``attest()`` computes from
-        ``self.hashes`` in the first place.
-        """
-        if not self.hashes:
-            return []
-        name = self.qualified_name or self.name
-        computed = self._compute_hashes(self.hashes)
-        out = []
-        for algo, expected in sorted(self.hashes.items()):
-            actual = computed.get(algo)
-            if actual != expected:
-                out.append(Divergence(name, f'hash[{algo}]', expected, actual))
-        return out
 
     @property
     def download(self):
@@ -595,12 +513,7 @@ class GitRepo(Directory):
 
     ``commit`` is always the *resolved* SHA (never a floating branch name),
     so fetching is deterministic; ``pinned`` records only whether the caller
-    asked for a specific revision, which affects the node's *name* and what
-    ``verify`` checks -- an unpinned repo's verify asks "has the default
-    branch moved since"; a pinned one's is trivially satisfied (a commit SHA
-    cannot change what it points at). A subclass wanting that check
-    overrides ``_resolve_live_commit``; without it, an unpinned repo simply
-    has nothing for ``verify`` to compare against drift.
+    asked for a specific revision, which affects the node's *name*.
     """
     def __init__(self, repo, *, commit, pinned, **meta):
         self.repo = repo
@@ -634,28 +547,6 @@ class GitRepo(Directory):
         export, a UI) should use to distinguish/link to the repo. Override
         per host; the default means "no known URL for this host."""
         raise NotImplementedError
-
-    def _resolve_live_commit(self):
-        """The current commit of ``self.repo``'s default branch -- used by
-        ``verify`` to detect drift on an unpinned repo. Override per host;
-        the default means "can't check," not "no divergence found"."""
-        raise NotImplementedError
-
-    def attest(self, *, verify=False, **options):
-        return {'commit': self.commit}
-
-    def verify(self, frozen, **options):
-        if 'commit' not in frozen or self.pinned:
-            return []
-        try:
-            current = self._resolve_live_commit()
-        except NotImplementedError:
-            return []
-        if current != frozen['commit']:
-            name = self.qualified_name or self.name
-            return [Divergence(name, 'commit', frozen['commit'], current)]
-        return []
-
 
 # ── Tables ───────────────────────────────────────────────────────────────────
 
@@ -705,7 +596,7 @@ class Table(Node):
     * ``.type`` is the *node* kind (``'docs'``), which is the graph-level concept
       shared with files and collections. The record class is ``.record_type``
       (v1 beta overloaded ``.type`` for it).
-    * ``metadata()`` is a method returning the frozen manifest row, a superset of
+    * ``metadata()`` is a method returning the node's descriptive row, a superset of
       what v1's ``.metadata`` property exposed.
     """
     type = TABLE
@@ -723,9 +614,6 @@ class Table(Node):
         if attr == self.entity:
             return self
         raise AttributeError(attr)
-
-    #: Record field ``freeze --verify`` tallies into ``score_counts`` (None: don't).
-    score_field = None
 
     def __init__(self, name, *, source=None, parser=None, handler=None,
                  lang=None, defs=None, count_hint=None,
@@ -777,11 +665,8 @@ class Table(Node):
 
     @property
     def count_hint(self):
-        """Record count, taken from the frozen manifest rather than written by
-        hand (v1 kept these in etc/metadata.json)."""
-        if self._count_hint is not None:
-            return self._count_hint
-        return self._frozen().get('count')
+        """Record count hint, if the author declared one."""
+        return self._count_hint
 
     @property
     def handler(self):
@@ -833,10 +718,10 @@ class Table(Node):
             raise IndexError(key) from None
 
     def count(self):
-        """Record count. Prefers the frozen manifest, so it is usually free."""
-        frozen = self._frozen().get('count')
-        if frozen is not None:
-            return frozen
+        """Record count: the author's ``count_hint`` if given, else the handler's
+        own count, else by iterating."""
+        if self._count_hint is not None:
+            return self._count_hint
         handler_count = getattr(self.handler, f'{self.entity}_count', None)
         if handler_count is not None:
             value = handler_count()
@@ -869,83 +754,6 @@ class Table(Node):
     def record_cls(self):
         _deprecated('record_cls', 'record_type')
         return self.record_type
-
-    # -- attestation --------------------------------------------------------
-
-    def attest(self, *, verify=False, samples=DEFAULT_SAMPLES, **options):
-        """Count, content hash and sample records (the first and last
-        ``samples`` of them). Expensive (iterates the
-        table), so only with ``verify=True``. Sample records are included only
-        if ``samples_permitted`` (see ``SAMPLE_LICENSES``)."""
-        if not verify:
-            return None
-        hasher = hashlib.sha256()
-        collected, tail, count = {}, collections.deque(maxlen=samples), 0
-        scores = collections.Counter() if self.score_field else None
-        for i, record in enumerate(self._iter()):
-            hasher.update(_canonical(record))
-            hasher.update(b'\n')
-            if i < samples:
-                collected[i] = record
-            if samples:
-                tail.append(record)
-            if scores is not None:
-                scores[getattr(record, self.score_field)] += 1
-            count += 1
-        out = {
-            'count': count,
-            'content_sha256': hasher.hexdigest(),
-            'hash_scheme': HASH_SCHEME,
-            'record_schema': _schema(self),
-        }
-        if scores:
-            out['score_counts'] = _score_counts(scores)
-        if self.samples_permitted:
-            collected.update((count - len(tail) + j, r) for j, r in enumerate(tail))
-            out['samples'] = {str(i): _canonical(r).decode() for i, r in sorted(collected.items())}
-        return out
-
-    @property
-    def samples_permitted(self):
-        """Whether this table's license allows freezing sample records."""
-        licenses = [self.license] if isinstance(self.license, str) else (self.license or [])
-        return bool(licenses) and all(l in SAMPLE_LICENSES for l in licenses)
-
-    def verify(self, frozen, *, check_samples=True, **options):
-        if 'content_sha256' not in frozen:
-            return []
-        name = self.qualified_name or self.name
-        if frozen.get('hash_scheme') != HASH_SCHEME:
-            # Not a mismatch: the canonicalization changed, so the two hashes
-            # are simply not comparable. Say so rather than reporting a false
-            # failure.
-            return [Divergence(name, 'hash_scheme', frozen.get('hash_scheme'),
-                               HASH_SCHEME)]
-        out = []
-        schema = _schema(self)
-        if frozen.get('record_schema') not in (None, schema):
-            out.append(Divergence(name, 'record_schema', frozen['record_schema'], schema))
-        hasher = hashlib.sha256()
-        wanted = {int(i): v for i, v in frozen.get('samples', {}).items()}
-        scores = collections.Counter() if self.score_field else None
-        count = 0
-        for i, record in enumerate(self._iter()):
-            line = _canonical(record)
-            hasher.update(line)
-            hasher.update(b'\n')
-            if check_samples and i in wanted and line.decode() != wanted[i]:
-                out.append(Divergence(name, f'sample[{i}]', wanted[i], line.decode()))
-            if scores is not None:
-                scores[getattr(record, self.score_field)] += 1
-            count += 1
-        if scores is not None and 'score_counts' in frozen and _score_counts(scores) != frozen['score_counts']:
-            out.append(Divergence(name, 'score_counts', frozen['score_counts'], _score_counts(scores)))
-        if count != frozen['count']:
-            out.append(Divergence(name, 'count', frozen['count'], count))
-        digest = hasher.hexdigest()
-        if digest != frozen['content_sha256']:
-            out.append(Divergence(name, 'content_sha256', frozen['content_sha256'], digest))
-        return out
 
     # -- internals ----------------------------------------------------------
 
@@ -1083,8 +891,6 @@ class QueryTable(Table):
 class QrelTable(Table):
     type = TABLE_TYPES['qrels']
     entity = 'qrels'
-    #: Record field whose value ``freeze --verify`` tallies into ``score_counts``.
-    score_field = 'relevance'
 
     # -- legacy API (deprecated) ---------------------------------------------
 

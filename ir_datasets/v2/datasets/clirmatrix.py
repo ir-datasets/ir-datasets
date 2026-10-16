@@ -7,7 +7,7 @@ subset. On the order of 150,000 dataset ids -- this is the exact family
 ``nano_beir.py``'s "loop over a short hardcoded list at import time" pattern
 could afford. Five ``Generator``s below (docs + their backing Resource, the
 bilingual Benchmark shape + its Queries/Qrels tables + their shared Resource)
-resolve nodes on demand instead; ``freeze`` records only the rule, not the
+resolve nodes on demand instead; only the rule is registered, not the
 expansion (see ``ManifestProvider.generated``). Each declares its structural
 ``edges=`` too (see ``base.Generator``), so a listing sees a Benchmark's real
 docs/queries/qrels facets, and a table's real backing Resource, purely by
@@ -75,8 +75,7 @@ other standalone Resource, ``clirmatrix:metadata.json.lz4``, mirrors v1's own
 ``etc/downloads.json`` ``metadata`` entry; v1 read it into a
 ``MetadataProvider`` for per-dataset bookkeeping, but nothing in this port
 consumes it (deprecated bookkeeping the v2 model no longer needs -- ``desc``/
-``citation`` here are plain code, and counts/hashes come from
-``freeze --verify`` instead). It's registered anyway, since it's a real
+``citation`` here are plain code). It's registered anyway, since it's a real
 downloadable file this family depends on having *existed*, even unused.
 Neither has any edges: nothing is structurally derived from either of them --
 they're inputs to how other Resources get their URLs, not bytes any node is

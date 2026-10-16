@@ -2,12 +2,13 @@
 
 In v1 every family needed its own integration test with hand-pasted counts and
 sample records (test/integration/antique.py and ~60 siblings). Here there is
-ONE test: it walks the frozen manifests and checks every attested node. Adding a
-dataset adds no test code -- only a `freeze --verify` run.
+structural tests: they walk every registered node and check it. Adding a
+dataset adds no test code.
 
-    python -m unittest test.v2_conformance               # all attested nodes
+    python -m unittest test.v2_conformance               # everything
     python -m unittest test.v2_conformance.TestV2Graph    # structure only (no download)
 """
+import importlib
 import os
 import tempfile
 import unittest
@@ -16,10 +17,9 @@ from unittest import mock
 
 import ir_datasets.util
 import ir_datasets.v2 as v2
-from ir_datasets.v2 import freeze, graph, irds
+from ir_datasets.v2 import graph, irds
 from ir_datasets.v2 import sources as sourcesmod
 from ir_datasets.v2.sources import local_copy_hint
-from ir_datasets.v2.verify import attested as _attested, verify
 
 
 def _scratch(prefix='test'):
@@ -31,20 +31,20 @@ def _scratch(prefix='test'):
 
 
 class TestV2Graph(unittest.TestCase):
-    """Structural checks against the frozen manifest: no data is downloaded."""
+    """Structural checks over every registered node: no data is downloaded."""
 
-    def test_manifest_present(self):
-        self.assertTrue(_attested(), 'no attested nodes; run freeze --verify')
+    def test_catalog_is_not_empty(self):
+        self.assertTrue(irds.names(), 'no nodes registered')
 
     def test_every_node_resolves(self):
-        for name in irds.manifest()['nodes']:
+        for name in sorted(irds.names()):
             with self.subTest(node=name):
                 self.assertIsNotNone(graph[name])
 
     def test_node_types_are_known(self):
         known = {v2.FILE, v2.DIRECTORY, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK,
                  v2.SUITE, *v2.TABLE_TYPES.values()}
-        for name in irds.manifest()['nodes']:
+        for name in sorted(irds.names()):
             with self.subTest(node=name):
                 self.assertTrue(set(graph.types_of(name)) <= known)
                 self.assertIn(graph.type_of(name), known)
@@ -147,7 +147,7 @@ class TestV2Graph(unittest.TestCase):
     def test_benchmark_subtypes_follow_their_tables(self):
         """AdhocBenchmark needs docs + queries + qrels; QaBenchmark needs
         queries + answers (docs optional); one with both is both."""
-        for name in irds.manifest()['nodes']:
+        for name in sorted(irds.names()):
             if not v2.is_subtype(graph.type_of(name), v2.BENCHMARK):
                 continue
             with self.subTest(node=name):
@@ -163,7 +163,7 @@ class TestV2Graph(unittest.TestCase):
                              set(v2.list_datasets(type=v2.BUNDLE)))
 
     def test_benchmark_edges_resolve(self):
-        for name in irds.manifest()['nodes']:
+        for name in sorted(irds.names()):
             node = graph[name]
             if isinstance(node, v2.Benchmark):
                 with self.subTest(node=name):
@@ -217,12 +217,11 @@ class TestV2Graph(unittest.TestCase):
         qrels = v2.list_datasets(type='irds:Qrels')
         self.assertIn('irds:antique-test-qrels', qrels)
         self.assertTrue(all(v2.graph.type_of(n) == 'irds:Qrels' for n in qrels))
-        # the manifest records the provider's vocabulary
-        m = irds.manifest()
-        self.assertIn('irds:Docs', m['types'])
-        self.assertIn('irds:Qrels', m['types'])
-        self.assertTrue(m['edge_kinds']['irds:derived_from']['structural'])
-        self.assertEqual(['deprecated', 'dua', 'lang'], m['defaultable'])
+        # the provider records its own vocabulary
+        self.assertIn('irds:Docs', irds.types)
+        self.assertIn('irds:Qrels', irds.types)
+        self.assertTrue(irds.edge_kinds['irds:derived_from']['structural'])
+        self.assertEqual(['deprecated', 'dua', 'lang', 'license'], sorted(irds.defaultable_fields))
 
     def test_table_types_are_subtypes_of_table(self):
         """Each per-entity type is a declared subtype of the generic
@@ -268,7 +267,7 @@ class TestV2Graph(unittest.TestCase):
     def test_minimal_provider_satisfies_the_protocol(self):
         """A provider need not be a ManifestProvider -- protocols.Provider is
         just `prefix`, `load(name)`, `discover_edges()`; no registration, no
-        vocabulary, no manifest required. discover_edges() always runs its
+        vocabulary. discover_edges() always runs its
         full discovery (there is no cheap/expensive flag to opt into)."""
         class MadeUp:
             prefix = 'scratchknown'
@@ -291,7 +290,8 @@ class TestV2Graph(unittest.TestCase):
             eps = tomllib.load(f)['project']['entry-points'][v2.ENTRY_POINT_GROUP]
         for name, spec in eps.items():
             with self.subTest(entry_point=name):
-                self.assertEqual(name, freeze.load_provider(spec).prefix)
+                module, _, attr = spec.partition(':')
+                self.assertEqual(name, getattr(importlib.import_module(module), attr).prefix)
 
 
 class TestV2Registration(unittest.TestCase):
@@ -347,8 +347,7 @@ class TestV2Registration(unittest.TestCase):
         edges = graph.edges_of('irds:antique-test-non-offensive', structural_only=True)
         self.assertEqual(['irds:antique-test-non-offensive-queries'], edges['irds:queries'])
         self.assertEqual(['irds:antique-docs'], edges['irds:docs'])   # corpus shared by reference
-        # order isn't semantically meaningful (it depends on frozen-manifest
-        # vs. live-registration merge order), so compare as sets
+        # order isn't semantically meaningful, so compare as sets
         self.assertCountEqual(['irds:antique-test-queries', 'irds:antique-test-disallow-list.txt'],
                               graph.edges_of(facet.qualified_name)['irds:derived_from'])
 
@@ -387,12 +386,6 @@ class _FromScratchTable:
     def structural_edges(self):
         return []
 
-    def attest(self, *, verify=False, **options):
-        return {'count': len(self._rows)} if verify else None
-
-    def verify(self, frozen, **options):
-        return [] if frozen.get('count') == len(self._rows) else ['mismatch']
-
     def count(self):
         return len(self._rows)
 
@@ -427,7 +420,7 @@ class TestV2Protocols(unittest.TestCase):
             self.assertIsInstance(node, v2.NodeProtocol)
 
     def test_a_node_needs_no_particular_base_class(self):
-        """The from-scratch table registers, edges, freezes and traverses
+        """The from-scratch table registers, edges and traverses
         exactly like one of ours -- because the registry only ever asks for
         the shape, never an isinstance check against a concrete class."""
         table = _FromScratchTable('scratch-table', [('r1', 'hello'), ('r2', 'world')])
@@ -440,15 +433,11 @@ class TestV2Protocols(unittest.TestCase):
         g = v2.Graph([provider])
         self.assertEqual([], g.check())
         self.assertEqual([], g.closure('acme:scratch-table'))  # no structural edges
-        from ir_datasets.v2 import freeze as freeze_module
-        row, has_attestation = freeze_module._attested_row(table, g, True, {})
-        self.assertTrue(has_attestation)
-        self.assertEqual(2, row['count'])
 
     def test_conformance_check_gives_a_clear_error(self):
         class NotANode:
             pass
-        with self.assertRaisesRegex(TypeError, 'does not look like a Node: missing attest, metadata, name'):
+        with self.assertRaisesRegex(TypeError, 'does not look like a Node: missing metadata, name'):
             v2.ManifestProvider('acme3').register(NotANode())
 
 
@@ -509,17 +498,10 @@ class TestV2Edges(unittest.TestCase):
     def test_graph_is_valid(self):
         self.assertEqual([], graph.check())
 
-    def test_manifest_has_adjacency_list_not_per_row_edges(self):
-        manifest = irds.manifest()
-        self.assertTrue(manifest['edges'])
-        self.assertEqual(3, len(manifest['edges'][0]))
-        self.assertFalse([r for r in manifest['nodes'].values() if 'edges' in r])
-
-    def test_traversal_needs_no_imports(self):
-        fresh = v2.Graph([v2.ManifestProvider('irds', package=irds.package,
-                                      manifest_path=irds.manifest_path)])
-        self.assertIn('irds:antique-test', fresh.dependents('irds:antique-docs'))
-        self.assertFalse(fresh.providers['irds'].nodes)   # nothing was imported
+    def test_edges_are_an_adjacency_list(self):
+        rows = irds.edge_rows()
+        self.assertTrue(rows)
+        self.assertEqual(3, len(rows[0]))
 
 
 class TestV2Authority(unittest.TestCase):
@@ -534,7 +516,7 @@ class TestV2Authority(unittest.TestCase):
         self.acme.add_edge('irds:antique-docs', 'acme:see_also', 'acme:lite')
         self.assertEqual(['acme:lite'], self.graph.edges_of('irds:antique-docs')['acme:see_also'])
         self.assertEqual(['acme'], self.graph.edge_provenance('irds:antique-docs', 'acme:see_also', 'acme:lite'))
-        # it ships in acme's manifest, not irds'
+        # it is acme's contribution, not irds'
         self.assertIn(['irds:antique-docs', 'acme:see_also', 'acme:lite'], self.acme.edge_rows())
         self.assertNotIn('acme:see_also', graph.edges_of('irds:antique-docs'))
 
@@ -556,8 +538,8 @@ class TestV2ResourceHashes(unittest.TestCase):
     """Resources declare one or more 'algo:hexdigest' hashes (the OCI/pip
     convention) -- md5= is a shorthand for the common single-hash case, and
     stays privileged for cache addressing/the v1 download check, but any
-    number of additional algorithms can be declared and are all checked at
-    verify time."""
+    number of additional algorithms can be declared and are all checked on
+    first access."""
 
     def test_bare_hex_defaults_to_md5(self):
         r = v2.Resource('test-hash-bare', sources=['https://x/y'],
@@ -598,30 +580,6 @@ class TestV2ResourceHashes(unittest.TestCase):
         r = v2.Resource('test-hash-none', sources=['https://x/y'])
         self.assertEqual({}, r.hashes)
         self.assertIsNone(r.md5)
-        self.assertEqual([], r.verify({}))
-        self.assertIsNone(r.attest(verify=True))
-
-    def test_verify_against_the_real_cached_file(self):
-        """The antique docs file declares both md5 and sha256 -- exercises the
-        real multi-hash streamed verification path against real cached bytes,
-        not a mock."""
-        r = graph['irds:antique-docs.txt']
-        self.assertEqual({'md5', 'sha256'}, set(r.hashes))
-        self.assertEqual([], r.verify({}))
-        attestation = r.attest(verify=True)
-        self.assertEqual(sorted(f'{a}:{h}' for a, h in r.hashes.items()),
-                         attestation['hashes_confirmed'])
-
-    def test_verify_catches_a_real_mismatch(self):
-        r = graph['irds:antique-docs.txt']
-        saved = r.hashes['sha256']
-        r.hashes['sha256'] = '0' * 64
-        try:
-            divergences = r.verify({})
-            self.assertEqual(1, len(divergences))
-            self.assertIn('hash[sha256]', repr(divergences[0]))
-        finally:
-            r.hashes['sha256'] = saved
 
 
 class TestV2ResourceShapes(unittest.TestCase):
@@ -643,29 +601,13 @@ class TestV2ResourceShapes(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, 'not a single file'):
             d.stream()
 
-    def test_git_repo_identity_and_attest(self):
-        class FakeGitRepo(v2.GitRepo):
-            def _resolve_live_commit(self):
-                return 'newsha'
-
-        pinned = FakeGitRepo('acme/repo', commit='deadbeef', pinned=True)
+    def test_git_repo_identity(self):
+        pinned = v2.GitRepo('acme/repo', commit='deadbeef', pinned=True)
         self.assertEqual('acme/repo@deadbeef.git', pinned.name)
-        self.assertEqual({'commit': 'deadbeef'}, pinned.attest())
         self.assertEqual('acme/repo', pinned.metadata['repo'])
-        # pinned: a commit SHA can't drift, so verify is trivially clean
-        self.assertEqual([], pinned.verify({'commit': 'deadbeef'}))
 
-        unpinned = FakeGitRepo('acme/repo', commit='deadbeef', pinned=False)
+        unpinned = v2.GitRepo('acme/repo', commit='deadbeef', pinned=False)
         self.assertEqual('acme/repo.git', unpinned.name)
-        divergences = unpinned.verify({'commit': 'deadbeef'})
-        self.assertEqual(1, len(divergences))
-        self.assertIn('commit', repr(divergences[0]))
-
-    def test_git_repo_verify_without_live_commit_check_is_a_noop(self):
-        """A subclass that doesn't override `_resolve_live_commit` can't
-        detect drift -- verify() reports nothing rather than raising."""
-        repo = v2.GitRepo('acme/repo', commit='deadbeef', pinned=False)
-        self.assertEqual([], repo.verify({'commit': 'someothersha'}))
 
     def test_git_repo_file_addresses_one_file(self):
         repo = v2.GitRepo('acme/repo', commit='deadbeef', pinned=True)
@@ -824,8 +766,9 @@ class TestV2Citation(unittest.TestCase):
         self.assertEqual('dblp:conf/ecir/HashemiAZC20', v2.citation('irds:antique-test'))
         self.assertIsNone(v2.citation('irds:antique-docs'))
 
-    def test_citation_survives_freeze(self):
-        row = irds.manifest()['nodes']['irds:antique-test']
+    def test_citation_and_metrics_are_reported_at_discovery(self):
+        from ir_datasets.v2.vocabulary import row_for
+        row = row_for(graph['irds:antique-test'])
         self.assertEqual('dblp:conf/ecir/HashemiAZC20', row['citation'])
         self.assertEqual(['P(rel=3)@10', 'nDCG@10', 'MAP(rel=3)', 'RR(rel=3)'], row['metrics'])
         # not edges: no citation/measure-shaped edge kinds exist
@@ -998,15 +941,6 @@ class TestV2Api(unittest.TestCase):
         q = graph['irds:antique-test-queries']
         self.assertEqual(200, len(q))
         self.assertEqual('3990512', q[0].query_id)
-
-
-class TestV2Attestations(unittest.TestCase):
-    """Data checks: materializes each attested node (downloads as needed)."""
-
-    def test_attestations(self):
-        for name in _attested():
-            with self.subTest(node=name):
-                self.assertEqual([], verify(name))
 
 
 if __name__ == '__main__':

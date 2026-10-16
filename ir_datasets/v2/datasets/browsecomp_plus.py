@@ -7,8 +7,7 @@ The HuggingFace release (Tevatron/browsecomp-plus) obfuscates its queries and
 answers -- each string is XOR'd with a keystream derived from a public canary
 password (the dataset card's own decryption recipe, reproduced in
 ``_decrypt``) so they don't appear as plain text in crawled copies. They are
-decrypted here at read time, never written back to disk; their tables opt out
-of ``freeze``'s sample rows (``samples_permitted``) for the same reason.
+decrypted here at read time, never written back to disk.
 Document ids are not obfuscated, and the corpus is plain.
 
 Two relevance files ship with the benchmark (and are published on GitHub, not
@@ -185,15 +184,6 @@ class _AnswersParser(Parser):
         return _Answers(source)
 
 
-class _DecryptedQueryTable(QueryTable):
-    """Never freeze sample rows: the records are plain text of obfuscated data."""
-    samples_permitted = False
-
-
-class _DecryptedAnswerTable(AnswerTable):
-    samples_permitted = False
-
-
 # license verified 2026-10-03: https://huggingface.co/datasets/Tevatron/browsecomp-plus (card metadata: license mit); GitHub texttron/BrowseComp-Plus LICENSE is MIT
 with irds.defaults(lang='en', license='MIT'):
     # Files
@@ -258,9 +248,9 @@ with irds.defaults(lang='en', license='MIT'):
     passages = DocTable('browsecomp-plus-passages', source=passages_file, parser=_PassagesParser(),
         count_hint=2_772_255, citation=CITATION_PASSAGES,
         metadata={'alternative_note': 'split into passages; ids are browsecomp_plus_<docid>_<n>, so aggregate to documents (MaxP) before applying the qrels'})
-    queries = _DecryptedQueryTable('browsecomp-plus-queries', source=queries_files, parser=_QueriesParser(),
+    queries = QueryTable('browsecomp-plus-queries', source=queries_files, parser=_QueriesParser(),
         count_hint=830, citation=CITATION)
-    answers = _DecryptedAnswerTable('browsecomp-plus-answers', source=queries_files, parser=_AnswersParser(),
+    answers = AnswerTable('browsecomp-plus-answers', source=queries_files, parser=_AnswersParser(),
         count_hint=830, citation=CITATION)
     qrels = TrecQrels('browsecomp-plus-qrels', source=evidence_qrels_file,
         defs=EVIDENCE_DEFS, count_hint=5_064)

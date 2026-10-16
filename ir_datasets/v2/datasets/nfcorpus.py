@@ -7,9 +7,6 @@ Replaces:
     ir_datasets/etc/downloads.json         urls / md5 / size   (was central!)
     test/integration/nfcorpus.py           counts / sample records
 
-Counts, content hashes and sample records come from
-``python -m ir_datasets.v2.freeze --verify``, not from this file.
-
 One shared docs corpus, nine benchmarks (train/dev/test x main/nontopic/video)
 -- all but the "main" three lean on ``Benchmark``'s mix of explicit and
 inherited-filtered facets (see the ``*_nontopic``/``*_video`` benchmarks

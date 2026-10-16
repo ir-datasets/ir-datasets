@@ -293,9 +293,7 @@ class TrecQrels(QrelTable):
 
 class RcpQrels(QrelTable):
     """RCP calibrated relevance probabilities (see ``RcpQrel``). No integer
-    grades, so ``defs`` is empty and ``freeze --verify`` does not tally
-    ``score_counts`` (one bucket per distinct float would be noise)."""
-    score_field = None
+    grades, so ``defs`` is empty."""
 
     def __init__(self, name, **kwargs):
         super().__init__(name, parser=_RcpQrelsParser(), **kwargs)

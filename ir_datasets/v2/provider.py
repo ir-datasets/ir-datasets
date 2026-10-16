@@ -12,15 +12,8 @@ points are installed.
 
 A ``ManifestProvider`` -- the batteries-included implementation of
 ``protocols.Provider`` -- rather than something more minimal, because this
-package's own catalog is exactly the case it's for: static, worth freezing,
-and big enough that registration/vocabulary/generators earn their keep.
+package's own catalog is exactly the case it's for: static, and big enough that registration/vocabulary/generators earn their keep.
 """
-from pathlib import Path
-
 from .registry import ManifestProvider
 
-irds = ManifestProvider(
-    'irds',
-    package='ir_datasets.v2.datasets',
-    manifest_path=Path(__file__).parent / 'manifest.json',
-)
+irds = ManifestProvider('irds', package='ir_datasets.v2.datasets')

@@ -49,7 +49,7 @@ class RcpQrel(NamedTuple):
     theta: float          # calibrated ability on the shared logit scale
 ```
 
-`relevance` keeps the `QrelTable` contract (the field name `score_field` and downstream tools look for),
+`relevance` keeps the `QrelTable` contract (the field name downstream tools look for),
 but its meaning is a probability. `theta` is a second signal, kept because `g` saturates at 0/1 and
 `theta` preserves ordering there (Proposition 3.1 in the paper).
 
@@ -63,12 +63,7 @@ v1-style handler (same wrapper pattern as `_TrecQrelsParser`). A small v1 handle
 `RcpQrels(BaseQrels)`, goes beside `NanoBeirQrels` (it iterates the parquet and yields `RcpQrel`;
 `qrels_cls()` returns `RcpQrel`; `qrels_defs()` returns `{}`).
 
-Two overrides on the table:
-
-- `score_field = None`. `freeze --verify` tallies `score_counts` per distinct value
-  (`nodes.py:884-902`). A dense float field makes one bucket per qrel, which is noise. Binning is a later
-  refinement, not needed now.
-- `defs` stays empty. A continuous scale has no grade definitions. The node `desc` states the range.
+`defs` stays empty: a continuous scale has no grade definitions. The node `desc` states the range.
 
 ### Edges, not names
 
@@ -94,7 +89,7 @@ docs+queries+judgments triple. An aggregate `Suite` (`rcp-ndcg`) groups them.
 Each table's source is the HF repo's parquet, as a `Resource`. Two options:
 
 1. **Direct `File` nodes** with url + md5 + size per parquet, as `nano_beir.py` does (`SOURCES` dict).
-   Pinned, reproducible, plugs into the existing `freeze` path. **Recommended.**
+   Pinned and reproducible. **Recommended.**
 2. **`HfDataset`** (a `GitRepo` at a pinned commit, `hf_provider.py:248`) and `.file(path)` into it. Less
    to transcribe, and commit pinning gives identity for free. Worth it if the five repos have many small
    files, since `snapshot_download` fetches the whole repo.
@@ -146,5 +141,5 @@ wanted in the catalog.
 2. Add `RcpQrel` + v1-style handler + `RcpQrels` table (`formats.py`).
 3. `datasets/rcp_ndcg.py`: NanoBEIR tables first (the docs/queries already exist), then BRIGHT, then
    TREC-DL, then ViDoRe if a docs node exists.
-4. `freeze` and `freeze --verify`, and add the manifest entries.
+4. Check that the benchmarks load.
 5. Unit test the parser on a tiny fixture. Skip integration downloads unless asked.

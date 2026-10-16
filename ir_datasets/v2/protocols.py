@@ -102,9 +102,8 @@ def members(protocol):
 @runtime_checkable
 class Node(Protocol):
     """What ``Provider.register()`` and ``Graph`` require of every node: an
-    identity, a type, some descriptive metadata, and three hooks -- what it
-    depends on, what ``freeze`` should record about it, and how to check that
-    record later. Every other protocol below extends this one.
+    identity, a type, some descriptive metadata, and one hook -- what it
+    depends on. Every other protocol below extends this one.
 
     A node is created with a bare ``name``; registering it with a provider
     qualifies that name (``antique-test`` -> ``irds:antique-test``) and fills
@@ -121,14 +120,14 @@ class Node(Protocol):
     #: ``provider.node_type(...)``, which also says which protocol applies.
     type: str
     #: Descriptive fields (``desc``, ``citation``, ``license``, ...). These are
-    #: what ``freeze`` writes into the node's manifest row and what the graph
-    #: reports as the node's properties; never identity or data.
+    #: what the graph reports as the node's properties; never identity or
+    #: data.
     metadata: dict
     #: ``<prefix>:<name>``. ``None`` until the node is registered.
     qualified_name: Optional[str]
     #: The provider that registered it. ``None`` until then.
     provider: Optional[Any]
-    #: The module that defined it (for error messages and the manifest).
+    #: The module that defined it (for error messages).
     defined_in: Optional[str]
 
     def structural_edges(self) -> list:
@@ -136,22 +135,6 @@ class Node(Protocol):
         nodes or qualified names. They form the build DAG: building, caching
         and verification follow them, so a cycle is an error. Informational
         links (citations, alternatives, aliases) are *not* returned here."""
-        ...
-
-    def attest(self, *, verify: bool = False, **options) -> Optional[dict]:
-        """The facts ``freeze`` should record about this node, merged into its
-        manifest row (so they must not collide with ``name``/``type``/``module``
-        or the node's own metadata), or ``None`` if there is nothing to record.
-
-        With ``verify=False`` return only what is cheap to know; with
-        ``verify=True`` it may do the expensive work (download a file,
-        iterate a whole table to count and hash it)."""
-        ...
-
-    def verify(self, frozen: dict, **options) -> list:
-        """Compare this node with its ``frozen`` manifest row and return the
-        differences as ``Divergence`` objects -- ``[]`` if it matches or there
-        is nothing to compare."""
         ...
 
 
@@ -229,9 +212,8 @@ class Table(Node, Protocol):
     entity: str
 
     def count(self) -> int:
-        """The number of records. Usually free: it reads the count ``freeze``
-        recorded in the manifest, and only counts by iterating if there isn't
-        one."""
+        """The number of records: the author's count hint if there is one,
+        else the handler's own count, else by iterating."""
         ...
 
     @property
@@ -401,8 +383,8 @@ class Provider(Protocol):
     exactly these two members -- nothing else is load-bearing.
 
     ``registry.ManifestProvider`` is one implementation of this (a big one:
-    registration, vocabulary declaration, a frozen manifest, generators) --
-    a convenient default for a provider with a static catalog to freeze, not
+    registration, vocabulary declaration, generators) --
+    a convenient default for a provider with a static catalog, not
     the contract itself. A provider can be as small as a ``name``, a
     ``load()``, and a ``discover_edges()`` that yields nothing; a typical one
     keeps a list of registered datasets internally, however it likes.
@@ -421,8 +403,7 @@ class Provider(Protocol):
         ``(subject, predicate, object)`` rows -- ``object`` wrapped in
         ``base.Literal`` when it's a property value rather than another
         node's name (see ``registry.row_triples``) -- a ``type`` row per node
-        plus one row per field/edge, the same shape a
-        manifest export uses. Never materializes a real node (``load()`` does
+        plus one row per field/edge. Never materializes a real node (``load()`` does
         that); this is the cheap-to-read side of the graph -- listing,
         traversal, validation -- that works without importing or downloading
         anything a node itself would need.

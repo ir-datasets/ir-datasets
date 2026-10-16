@@ -273,8 +273,8 @@ class Graph:
         return cycles
 
     def check(self):
-        """Validate the graph: acyclic, and no dangling targets. Hard problems,
-        unlike a missing attestation: a cycle means the build order is
+        """Validate the graph: acyclic, and no dangling targets. Both are hard
+        problems: a cycle means the build order is
         undefined, a dangling edge means a node references something nothing
         provides."""
         problems = ['cycle: ' + ' -> '.join(c) for c in self.find_cycles()]
@@ -298,27 +298,14 @@ class Graph:
                         problems.append(f'dangling: {src} --{kind}--> {dst}')
         return problems
 
-    # -- frozen data --------------------------------------------------------
-
-    def frozen(self, name):
-        """A node's frozen row, from its own provider -- an optional
-        capability (a manifest-backed provider has one; a minimal
-        ``protocols.Provider`` need not)."""
-        try:
-            provider = self.provider_for(name)
-        except KeyError:
-            return {}
-        frozen_fn = getattr(provider, 'frozen', None)
-        return frozen_fn(name) if frozen_fn else {}
-
     def export_triples(self, providers=None):
         """Every provider's nodes/edges as RDF-ready ``(subject, predicate,
         object)`` triples (``object`` a ``base.Literal`` for a property
         value, an unwrapped qualified name for an edge target) -- for
         materializing the graph into an external triplestore. ``providers``
         restricts this to a subset of prefixes; each provider's own
-        ``discover_edges()`` decides how (from a manifest, or, like ``hf``,
-        via its own live crawl)."""
+        ``discover_edges()`` decides how (from its imported modules, or, like
+        ``hf``, via its own live crawl)."""
         for prefix, provider in self.providers.items():
             if providers is not None and prefix not in providers:
                 continue

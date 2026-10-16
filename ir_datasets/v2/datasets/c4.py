@@ -11,7 +11,7 @@ constructs one v1 ``Download`` per shard, lazily, the first time
 ``_docs_sources()`` in ``ir_datasets/datasets/c4.py``). There is no way to
 know the shard list -- let alone declare ~7168 individual ``Resource``
 nodes -- without fetching and reading that manifest, and doing so at import
-or freeze time is exactly the kind of eager, large-scale work v2 nodes are
+time is exactly the kind of eager, large-scale work v2 nodes are
 meant to avoid. So, following the same "thin reuse, don't reimplement"
 precedent as ``gov.py``, this module keeps v1's ``C4Docs``/``C4Source``/
 ``C4SourceIter``/``C4Docstore`` entirely as-is and simply constructs

@@ -7,9 +7,7 @@ This replaces all four v1 artifacts:
     ir_datasets/etc/downloads.json         urls / md5 / size   (was central!)
     test/integration/antique.py            counts / sample records
 
-Counts, content hashes and sample records are NOT written here — they come from
-`python -m ir_datasets.v2.freeze --verify`, which runs this module once and
-commits a manifest.
+Counts and sample records are NOT written here.
 
 Nodes defined (17), all under the ``irds:`` prefix:
 

@@ -4,11 +4,10 @@
 ``Graph`` requires nothing more of a provider than ``protocols.Provider``:
 a ``prefix``, ``load(name)``, and ``discover_edges()``. ``ManifestProvider``
 is the batteries-included way to satisfy that for a package with a static
-catalog worth freezing ahead of time -- registration, vocabulary declaration,
-generators, and a frozen manifest all come with it. A provider
+catalog -- registration, vocabulary declaration and generators all come with
+it. A provider
 doesn't have to be one of these (see ``hf_provider.HfProvider``, which mixes
-this in but overrides ``discover_edges`` for a live crawl instead of a
-manifest), and a minimal third-party provider need not use it at all::
+this in but overrides ``discover_edges`` for a live crawl), and a minimal third-party provider need not use it at all::
 
     # acme/__init__.py               [project.entry-points."ir_datasets.providers"]
     acme = ManifestProvider('acme')     # acme = "acme:acme"
@@ -25,7 +24,7 @@ The prefix is intrinsic to the provider object -- there is no ambient "current
 provider" state anywhere.
 
 A provider owns: its nodes, the edges *it* contributes (including informational
-edges about other providers' nodes), its generators, and its manifest -- and its
+edges about other providers' nodes), its and generators -- and its
 **vocabulary**: the node types and edge kinds it declares
 (``irds:docs``, ``irds:derived_from``) and the fields it allows ``defaults()`` to set.
 Everything in the graph has a home, and the home is in the name. The union over
@@ -36,7 +35,6 @@ import json
 import pkgutil
 import re
 import sys
-from pathlib import Path
 
 from . import context
 from .base import Literal
@@ -61,29 +59,19 @@ class DuplicateNameError(LookupError):
     pass
 
 
-def _decoded(text):
-    """``text`` parsed as JSON if it is a JSON string, else unchanged."""
-    try:
-        return json.loads(text) if isinstance(text, str) else text
-    except ValueError:
-        return text
-
-
 def row_triples(name, row):
-    """A manifest row (``freeze.row_for``'s shape, or a frozen row loaded from
-    disk) as RDF-ready ``(subject, predicate, object)`` triples: one ``type``
+    """A node's row (``row_for``'s shape) as RDF-ready ``(subject, predicate, object)`` triples: one ``type``
     triple, then one triple per non-identity field -- repeated for each
     element of a list-valued field (RDF's natural multi-valued-property
     idiom), or a single JSON-string literal for a dict-valued one
-    (``samples``, ``defs``: display blobs, not graph structure). Every field
+    (``defs``: a display blob, not graph structure). Every field
     value is wrapped in ``base.Literal`` -- only a ``type`` object (another
     node's declared type, not a property value) is left as a plain qualified
     name. ``name``/``module`` are identity/implementation detail, never
     triples. Shared by ``ManifestProvider.discover_edges`` and any provider
-    (e.g. ``hf``) that builds rows from live nodes instead of a frozen
-    manifest."""
+    (e.g. ``hf``) that builds rows from live nodes."""
     if row.get('type'):
-        # A node with several types (``Benchmark.types``) freezes a list.
+        # A node with several types (``Benchmark.types``) has a list.
         for node_type in ([row['type']] if isinstance(row['type'], str) else row['type']):
             yield name, 'type', node_type
     for field, value in row.items():
@@ -93,11 +81,6 @@ def row_triples(name, row):
             for item in value:
                 yield name, field, Literal(item)
         elif isinstance(value, dict):
-            if field == 'samples':
-                # The manifest keeps each sampled record as its canonical JSON
-                # *string* (that exact text is what verify compares); in the
-                # graph it is the record itself, not a string inside a string.
-                value = {i: _decoded(record) for i, record in value.items()}
             yield name, f'{field}_json', Literal(json.dumps(value, sort_keys=True))
         else:
             yield name, field, Literal(value)
@@ -112,15 +95,14 @@ def _caller_module(depth=2):
 
 
 class ManifestProvider:
-    def __init__(self, prefix, *, package=None, manifest_path=None):
+    def __init__(self, prefix, *, package=None):
         if not PREFIX.match(prefix or ''):
             raise ValueError(f'invalid provider prefix {prefix!r}')
         self.prefix = prefix
         #: Dotted path of the package whose modules register into this provider.
-        #: Used to import everything at freeze time, and to bootstrap before a
-        #: manifest exists.
+        #: Imported in full the first time a name isn't found, or the whole
+        #: catalog is wanted (``names``, ``indexes``, ``discover_edges``).
         self.package = package
-        self.manifest_path = Path(manifest_path) if manifest_path else None
         self.nodes = {}            # qualified name -> node
         self.generated = set()     # names of nodes a generator produced
         self.generators = []
@@ -131,8 +113,6 @@ class ManifestProvider:
         # Edges this provider contributes: src -> kind -> [dst]; dst -> {(src, kind)}.
         self._fwd = {}
         self._rev = {}
-        self._manifest = None
-        self._manifest_index = None
         self._bootstrapped = False
 
     def __repr__(self):
@@ -245,7 +225,7 @@ class ManifestProvider:
         registered is registered too, transitively -- a registered node with an
         unregistered dependency would be an invalid graph, so the module need
         only register its roots. Dependencies given as *names* are assumed to be
-        provided elsewhere and are checked at freeze time. A bare name or edge
+        provided elsewhere. A bare name or edge
         kind means this provider's own namespace -- the one shorthand, and only
         inside a provider's own modules, where the provider is in plain sight.
         """
@@ -323,7 +303,7 @@ class ManifestProvider:
         split: structural edges define what a node *is*, so only its own
         provider may declare them; informational edges (``citation``,
         ``see_also``, ...) describe a node, so any provider may add them to any
-        node -- they ship in *this* provider's manifest."""
+        node -- they are this provider's contribution."""
         kind = check_kind(self.qualify(kind))
         src, dst = self._name(src), self._name(dst)
         if is_structural(kind) and src not in self.nodes:
@@ -344,10 +324,9 @@ class ManifestProvider:
                       for k, dsts in kinds.items() for d in dsts)
 
     def indexes(self):
-        """(forward, reverse) over this provider's edges: manifest + memory."""
-        fwd, rev = self._manifest_indexes()
-        fwd = {s: {k: list(v) for k, v in kinds.items()} for s, kinds in fwd.items()}
-        rev = {d: set(v) for d, v in rev.items()}
+        """(forward, reverse) over this provider's edges."""
+        self._bootstrap()
+        fwd, rev = {}, {}
         for src, kinds in self._fwd.items():
             for kind, dsts in kinds.items():
                 bucket = fwd.setdefault(src, {}).setdefault(kind, [])
@@ -356,50 +335,17 @@ class ManifestProvider:
             rev.setdefault(dst, set()).update(pairs)
         return fwd, rev
 
-    # -- manifest -----------------------------------------------------------
-
-    def manifest(self):
-        if self._manifest is None:
-            if self.manifest_path and self.manifest_path.exists():
-                with open(self.manifest_path) as fin:
-                    self._manifest = json.load(fin)
-            else:
-                self._manifest = {'nodes': {}, 'edges': [], 'generators': [],
-                                  'types': {}, 'edge_kinds': {}, 'defaultable': []}
-            self._manifest_index = None
-            # A frozen provider's vocabulary is known without importing it.
-            for qualified, entry in self._manifest.get('types', {}).items():
-                if self.owns(qualified):
-                    declare_type(qualified, owner=self.prefix, desc=entry.get('desc'),
-                                parent=entry.get('parent'), protocol=entry.get('protocol'))
-            for qualified, entry in self._manifest.get('edge_kinds', {}).items():
-                if self.owns(qualified):
-                    declare_kind(qualified, structural=entry['structural'],
-                                 owner=self.prefix, desc=entry.get('desc'))
-        return self._manifest
-
-    def _manifest_indexes(self):
-        if self._manifest_index is None:
-            fwd, rev = {}, {}
-            for src, kind, dst in self.manifest().get('edges', []):
-                fwd.setdefault(src, {}).setdefault(kind, []).append(dst)
-                rev.setdefault(dst, set()).add((src, kind))
-            self._manifest_index = (fwd, rev)
-        return self._manifest_index
-
-    def frozen(self, name):
-        """The frozen manifest row for one of this provider's nodes."""
-        return self.manifest()['nodes'].get(name, {})
+    # -- catalog ------------------------------------------------------------
 
     def names(self):
-        return set(self.nodes) | set(self.manifest()['nodes'])
+        self._bootstrap()
+        return set(self.nodes)
 
     def type_of(self, name):
-        node = self.nodes.get(name)
-        if node is not None:
-            return node.type
-        frozen = self.frozen(name).get('type')
-        return frozen[0] if isinstance(frozen, list) else frozen
+        try:
+            return types_of(self[name])[0]
+        except KeyError:
+            return None
 
     # -- protocols.Provider ---------------------------------------------------
 
@@ -407,24 +353,14 @@ class ManifestProvider:
         """This provider's whole current catalog, as RDF-ready
         ``(subject, predicate, object)`` triples (``object`` wrapped in
         ``base.Literal`` when it's a property value rather than another
-        node's name -- see ``row_triples``) -- live-registered nodes (not yet
-        frozen) merged with whatever the
-        frozen manifest already has, plus every edge either contributes.
-        Never triggers a generator expansion (a parametric family is a rule,
-        not a catalog entry -- see ``freeze.build_manifest``'s own
-        ``generated`` skip). Bootstraps first (imports every module) if
-        nothing has been frozen yet, so an editable checkout with no
-        ``manifest.json`` still reports its full catalog; a subclass with a
-        genuinely live catalog (``hf_provider.HfProvider``) overrides this
-        entirely instead of relying on a manifest at all.
+        node's name -- see ``row_triples``) -- every node its modules
+        register, plus every edge it contributes. Never triggers a generator
+        expansion (a parametric family is a rule, not a catalog entry).
+        Imports the package's modules first. A subclass with a genuinely
+        live catalog (``hf_provider.HfProvider``) overrides this entirely.
         """
-        from .freeze import RETIRED_FIELDS, row_for
-        # Always import the package's modules, not only when nothing is frozen:
-        # facts derived from a node's own declaration (size, validation,
-        # sources -- see ``Node.discovery_literals``) are reported from the
-        # live node, never written to the manifest.
+        from .vocabulary import row_for
         self.import_all()
-        seen = set()
         for name, node in self.nodes.items():
             if name in self.generated:
                 continue
@@ -432,26 +368,13 @@ class ManifestProvider:
             # discovery_literals is optional.
             literals = getattr(node, 'discovery_literals', lambda: {})()
             row = {**row_for(node), **{k: v for k, v in literals.items() if v}}
-            # The live declaration wins, but what ``freeze --verify`` attested
-            # (count, content hash, samples, score counts, ...) only exists in
-            # the manifest: carry it over, minus fields that are now derived
-            # from the declaration instead (RETIRED_FIELDS).
-            row = {**{k: v for k, v in self.manifest()['nodes'].get(name, {}).items()
-                      if k not in RETIRED_FIELDS and k not in row}, **row}
-            if getattr(node, 'samples_permitted', True) is False:
-                row.pop('samples', None)  # see freeze._attested_row
             yield from row_triples(name, row)
-            seen.add(name)
-        for name, row in self.manifest()['nodes'].items():
-            if name not in seen:
-                yield from row_triples(name, row)
         fwd, _ = self.indexes()
         for src, kinds in fwd.items():
             for kind, dsts in kinds.items():
                 for dst in dsts:
                     yield src, kind, dst
-        types = {**self.manifest()['types'], **self.types}
-        for qualified, entry in types.items():
+        for qualified, entry in self.types.items():
             if self.owns(qualified) and entry.get('parent'):
                 yield qualified, 'subClassOf', entry['parent']
         # Enumerable generators (every param has a closed values= set, e.g.
@@ -497,15 +420,6 @@ class ManifestProvider:
         name = self.qualify(name)
         if name in self.nodes:
             return self.nodes[name]
-        # Import the ONE module that defines it, per the manifest.
-        row = self.frozen(name)
-        if row:
-            importlib.import_module(row['module'])
-            if name in self.nodes:
-                return self.nodes[name]
-            raise KeyError(
-                f'{name!r} is frozen as defined in {row["module"]}, but importing '
-                f'it did not register the node; re-run freeze')
         # Parametric / dynamic: build it.
         for generator in self.generators:
             params = generator.match(name)
@@ -520,7 +434,7 @@ class ManifestProvider:
                 self.register(node, module=generator.defined_in)
                 self.generated.add(node.qualified_name)
                 return node
-        # No manifest yet: import everything once and retry.
+        # Not registered yet: import every module once and retry.
         if self._bootstrap():
             return self[name]
         raise KeyError(f'no such node: {name!r}')
@@ -539,7 +453,7 @@ class ManifestProvider:
         return None
 
     def import_all(self):
-        """Import every module in this provider's package (freeze, bootstrap)."""
+        """Import every module in this provider's package."""
         if not self.package:
             return
         module = importlib.import_module(self.package)
@@ -547,7 +461,7 @@ class ManifestProvider:
             importlib.import_module(f'{self.package}.{info.name}')
 
     def _bootstrap(self):
-        if self._bootstrapped or not self.package or self.manifest()['nodes']:
+        if self._bootstrapped or not self.package:
             return False
         self._bootstrapped = True
         self.import_all()

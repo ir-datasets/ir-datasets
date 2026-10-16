@@ -7,9 +7,6 @@ Replaces:
     ir_datasets/etc/downloads.json             urls / md5 / size   (was central!)
     test/integration/msmarco-passage.py        counts / sample records
 
-Counts, content hashes and sample records come from
-``python -m ir_datasets.v2.freeze --verify``, not from this file.
-
 Not every v1 subset is covered here (see "Known gaps" at the bottom of this
 docstring / the package README): ``train/triples-small`` (needs a doc/query
 text->id hash-join, not just a stream transform) and ``dev/2`` (its ids come

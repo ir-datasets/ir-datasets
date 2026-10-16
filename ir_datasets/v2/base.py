@@ -7,15 +7,12 @@ own -- no node type, no edge kind -- because that's a provider's job (see
 ``registry.ManifestProvider.node_type``/``edge_kind``). ``nodes.py`` is where
 the dataset vocabulary actually gets declared, on the ``irds`` provider.
 
-A subclass participates in the graph through four optional hooks on ``Node``,
+A subclass participates in the graph through optional hooks on ``Node``,
 all derived from its own constructor arguments -- nothing is discovered by
 inspection:
 
     structural_edges()   the node's dependencies, as Edges
-    attest(...)          what ``freeze`` records about the node (counts,
-                         hashes, ...); None for nothing
-    verify(frozen)       compare the live node with a frozen attestation
-    (metadata)           the descriptive dict written to the manifest row
+    (metadata)           the descriptive dict reported at discovery
 
 ``citation`` sits alongside ``desc``/``pretty_name`` as a field any node can
 carry: "how do I cite this" is not specific to any one node type. It is plain
@@ -61,10 +58,9 @@ class Edge(NamedTuple):
 
     A node declares its structural edges with *object* targets (intra-package:
     refactor-safe, and the provider registers them along with the node) or
-    *name* targets (cross-package: resolved lazily, validated at freeze). In a
-    provider and in a manifest, targets are always qualified names -- which is
-    why every node having a name matters: the graph is traversable with
-    nothing imported.
+    *name* targets (cross-package: resolved lazily). In a provider, targets
+    are always qualified names -- which is why every node having a name
+    matters: the graph is traversable without materializing any data.
 
     Edge *kinds* are declared by providers and qualified like everything else
     (``irds:derived_from``); see ``vocabulary``.
@@ -108,8 +104,8 @@ class Node:
         #: The license the node's data is distributed under: an SPDX
         #: identifier (``'CC-BY-4.0'``) where one exists, else the URL of the
         #: governing terms; a list if several apply. Declared in code and
-        #: reported at discovery (``discovery_literals``), never frozen into
-        #: the manifest -- the declaration *is* the source of truth.
+        #: reported at discovery (``discovery_literals``) -- the declaration *is*
+        #: the source of truth.
         self.license = default('license', license)
         self.metadata = {k: v for k, v in {
             'desc': desc, 'pretty_name': pretty_name, 'citation': citation,
@@ -126,32 +122,9 @@ class Node:
 
     def discovery_literals(self):
         """Literal properties (``{field: value}``) reported when the graph is
-        discovered, but *not* written to the frozen manifest: facts derivable
-        from the node's own declaration (a Resource's size and how it is
-        validated), which a manifest row would only duplicate. Empty values are
-        dropped."""
+        discovered: facts derivable from the node's own declaration (a
+        Resource's size and how it is validated). Empty values are dropped."""
         return {'license': self.license} if self.license else {}
-
-    def attest(self, *, verify=False, **options):
-        """Data ``freeze`` should record for this node, or None.
-
-        ``verify=True`` permits expensive materialization (iterating a table);
-        without it, return only what is cheap. Keys are merged into the node's
-        manifest row, so they must not collide with ``name``/``type``/``module``
-        or the node's own metadata.
-        """
-        return None
-
-    def verify(self, frozen, **options):
-        """Divergences between this node and its frozen row (``[]`` if none, or
-        if there is nothing to compare)."""
-        return []
-
-    def _frozen(self):
-        """This node's manifest row, if it is registered and frozen."""
-        if self.provider is None or self.qualified_name is None:
-            return {}
-        return self.provider.frozen(self.qualified_name)
 
     def __repr__(self):
         return f'{type(self).__name__}({(self.qualified_name or self.name)!r})'
@@ -176,8 +149,8 @@ class Generator:
     """A rule that produces nodes on demand.
 
     Used where enumeration is impractical (a 139x139x4x3 parametric family) or
-    impossible (a family defined on a remote server). ``freeze`` records the
-    rule -- template, parameter domains, metadata -- not its expansion.
+    impossible (a family defined on a remote server). It is a rule -- template,
+    parameter domains, metadata -- not an expansion.
     ``type`` is the (qualified, declared) node type of what it produces.
 
     The name template doubles as the parameter spec, so name<->params

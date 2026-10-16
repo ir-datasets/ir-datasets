@@ -156,15 +156,13 @@ def _apply_column_map(source_columns, column_map):
 
 
 class HfProvider(ManifestProvider):
-    """No manifest to freeze from (see the module docstring: a repo can't be
-    enumerated or frozen ahead of time) -- ``discover_edges`` overrides the
-    manifest-based default entirely: it runs the live Hub crawl (``known()``,
-    defined below), which resolves and registers every repo it finds into
-    ``self.nodes`` with a real type, then reports exactly that -- and nothing
-    else -- as triples, the same shape a frozen manifest would report. See
+    """``discover_edges`` overrides the default entirely: it runs the live Hub
+    crawl (``known()``, defined below), which resolves and registers every
+    repo it finds into ``self.nodes`` with a real type, then reports exactly
+    that -- and nothing else -- as triples. See
     ``known()`` for what "every repo it finds" means and its own caveats."""
     def discover_edges(self):
-        from .freeze import row_for
+        from .vocabulary import row_for
         known()
         snapshot_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
         for name, node in sorted(self.nodes.items()):
@@ -247,8 +245,7 @@ def _resolve_commit(repo, revision):
 
 class HfDataset(GitRepo):
     """A HuggingFace Hub dataset repo, as a whole, at a pinned commit --
-    ``GitRepo`` (pinned-commit identity, commit-based ``attest``/``verify``,
-    ``.file(path)`` access) plus the one thing that's actually
+    ``GitRepo`` (pinned-commit identity and ``.file(path)`` access) plus the one thing that's actually
     HF-specific: how the tree is fetched.
 
     ``path()`` is fetched via ``huggingface_hub.snapshot_download`` rather
@@ -265,9 +262,6 @@ class HfDataset(GitRepo):
         hub = _hf_lib()
         return hub.snapshot_download(repo_id=self.repo, repo_type='dataset',
                                      revision=self.commit)
-
-    def _resolve_live_commit(self):
-        return _resolve_commit(self.repo, None)
 
     def __repr__(self):
         return f'HfDataset({self.url()!r}, commit={self.commit!r})'

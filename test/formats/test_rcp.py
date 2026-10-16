@@ -31,9 +31,6 @@ class TestRcpQrels(unittest.TestCase):
             self.assertIs(handler.qrels_cls(), RcpQrel)
             self.assertEqual(handler.qrels_defs(), {})
 
-    def test_no_score_tally(self):
-        self.assertIsNone(RcpQrels.score_field)
-
 
 if __name__ == '__main__':
     unittest.main()
