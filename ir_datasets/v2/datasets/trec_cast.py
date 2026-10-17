@@ -86,6 +86,7 @@ class _TrecCastDocsParser(Parser):
     see the module docstring for why this can't carry a real ``derived_from``
     edge to wapo.py/msmarco_passage.py/car.py's own v2 nodes."""
     name = 'TrecCastDocs'
+    requires = ('beautifulsoup4', 'lxml')
 
     def __init__(self, v1_id):
         self.v1_id = v1_id

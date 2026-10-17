@@ -104,11 +104,14 @@ def types_of(node):
 
 
 def row_for(node):
-    """A node's descriptive row: name, type(s), defining module and metadata.
-    Empty values are dropped so rows stay readable."""
+    """A node's descriptive row: name, type(s), defining module, the
+    ``package`` it comes from, and metadata. Empty values are dropped so rows
+    stay readable."""
+    from .requirements import distribution_of
     types = types_of(node)
+    package = distribution_of(node.defined_in) or getattr(node.provider, 'distribution', None)
     row = {'name': node.qualified_name, 'type': types[0] if len(types) == 1 else list(types),
-           'module': node.defined_in, **node.metadata}
+           'module': node.defined_in, 'package': package, **node.metadata}
     return {k: v for k, v in row.items() if v or k == 'name'}
 
 

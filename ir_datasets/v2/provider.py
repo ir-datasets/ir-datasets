@@ -16,4 +16,4 @@ package's own catalog is exactly the case it's for: static, and big enough that 
 """
 from .registry import ManifestProvider
 
-irds = ManifestProvider('irds', package='ir_datasets.v2.datasets')
+irds = ManifestProvider('irds', package='ir_datasets.v2.datasets', distribution='ir_datasets')

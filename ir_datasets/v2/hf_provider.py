@@ -255,6 +255,10 @@ class HfDataset(GitRepo):
     really is the repo's git tree), not how every read path happens to fetch
     it.
     """
+    @property
+    def requires(self):
+        return ('huggingface_hub', 'datasets')
+
     def url(self):
         return f'https://huggingface.co/datasets/{self.repo}'
 
@@ -369,6 +373,7 @@ class _HfDatasetsParser(Parser):
     every field explicitly.
     """
     name = 'HfDatasets'
+    requires = ('huggingface_hub', 'datasets')
 
     def __init__(self, repo, commit, config, split, entity, column_map, defs=None):
         self.repo = repo
@@ -421,6 +426,7 @@ class _HfFileParser(Parser):
     peeking the file's first row.
     """
     name = 'HfFile'
+    requires = ('huggingface_hub', 'datasets')
 
     def __init__(self, entity, column_map, defs=None):
         self.entity = entity

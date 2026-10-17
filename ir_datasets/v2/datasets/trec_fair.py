@@ -76,6 +76,7 @@ class _FairTrecDocsParser(Parser):
     two-element ``[docs, metadata]`` list from the ``DocTable``'s own
     ``source=`` (see module docstring)."""
     name = 'FairTrecDocs'
+    requires = ('pyautocorpus',)
 
     def build(self, source, node):
         docs_source, metadata_source = source

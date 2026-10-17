@@ -98,6 +98,7 @@ class _ClueWeb12DocsParser(Parser):
     """The full collection: a plain Directory tree plus a downloadable chk
     checkpoint archive -- same shape as ``clueweb09.py``'s parser."""
     name = 'ClueWeb12Docs'
+    requires = ('warc3-wet', 'zlib-state')
 
     def build(self, source, node):
         docs_source, chk_source = source
@@ -110,6 +111,7 @@ class _ClueWeb12b13DocsParser(Parser):
     (see module docstring for why its ``.path()`` needs an external tool, and
     why ``b13_extract_jar``'s pipeline nesting order matters)."""
     name = 'ClueWeb12Docs(b13)'
+    requires = ('warc3-wet', 'zlib-state')
 
     def build(self, source, node):
         docs_source, jar_source = source

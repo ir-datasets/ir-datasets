@@ -138,7 +138,7 @@ def load(name, **facets):
     v1 id (``antique/test``). For a Benchmark, ``facets`` swap in other tables
     (``load('irds:trec-covid', docs='irds:cord19-2020-07-16-fulltext')``); see
     ``Benchmark.replace`` (warns if not an ``irds:alternative_of``)."""
-    node = graph[name]
+    node = graph.load(name)
     return node.replace(**facets) if facets else node
 
 

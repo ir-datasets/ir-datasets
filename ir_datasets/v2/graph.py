@@ -37,6 +37,7 @@ but never itself a working dataset.
 """
 import sys
 
+from . import requirements
 from .base import Literal
 from .vocabulary import is_subtype, structural_kinds
 
@@ -166,7 +167,28 @@ class Graph:
             return False
 
     def load(self, name):
-        return self[name]
+        """``self[name]``, warning (``requirements.MissingDependencyWarning``) if the
+        node needs packages that aren't installed."""
+        node = self[name]
+        requirements.warn_if_missing(name, self.requires(node))
+        return node
+
+    def requires(self, node):
+        """Every extra package a node needs: its own, plus those of everything
+        it is built from. ``node`` is a node or a name."""
+        if isinstance(node, str):
+            node = self[node]
+        nodes, seen = [node], set()
+        for edge in node.structural_edges():
+            target = edge.target if isinstance(edge.target, str) else edge.target.qualified_name
+            for name in ([target, *self.closure(target)] if target else []):
+                if name not in seen:
+                    seen.add(name)
+                    nodes.append(self[name])
+        out = []
+        for n in nodes:
+            out.extend(getattr(n, 'requires', ()) or ())
+        return tuple(dict.fromkeys(out))
 
     def generator_for(self, name):
         """A provider's ``Generator`` for a name, if it has one -- an optional

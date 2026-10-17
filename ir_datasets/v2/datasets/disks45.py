@@ -61,6 +61,7 @@ docs = TrecDocs('disks45-nocr',
     source=docs_file,
     path_globs=['**/FBIS/FB*', '**/FR94/??/FR*', '**/FT/*/FT*', '**/LATIMES/LA*'],
     parser='sax',
+    requires=['unlzw3'],  # FR94 etc. ship as unix-compress (.Z/.0Z/.1Z/.2Z) files
     expected_file_count=2295,
     lang='en',
     count_hint=528_155,

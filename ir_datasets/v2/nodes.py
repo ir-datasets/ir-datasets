@@ -44,6 +44,7 @@ import os
 import warnings
 
 import ir_datasets
+from . import requirements
 from .base import Edge, Node
 from .context import default
 
@@ -650,11 +651,18 @@ class Table(Node):
     def structural_edges(self):
         return list(self._structural)
 
+    @property
+    def requires(self):
+        """Own required packages plus those the parser declares (see ``Parser.requires``)."""
+        return requirements.normalize((*self._requires, *getattr(self.parser, 'requires', ())))
+
     def discovery_literals(self):
         """Language and column names, reported at discovery (never frozen):
         both come from the table's own declaration. ``columns_json`` is one
         ordered JSON literal, since triples themselves are unordered."""
         literals = {**super().discovery_literals(), 'lang': self.lang}
+        if self._count_hint is not None:
+            literals['count'] = self._count_hint
         try:
             fields = list(getattr(self.record_type, '_fields', ()))
         except Exception:

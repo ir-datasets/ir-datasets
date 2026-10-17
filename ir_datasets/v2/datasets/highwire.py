@@ -28,6 +28,7 @@ from ir_datasets.v2.formats import Parser
 
 class _HighwireDocsParser(Parser):
     name = 'HighwireDocs'
+    requires = ('lxml',)
 
     def build(self, source, node):
         *corpus_sources, legalspans_source = source

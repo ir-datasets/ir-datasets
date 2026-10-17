@@ -66,6 +66,7 @@ CITATION_TQA = 'dblp:conf/acl/JoshiCWZ17; dblp:conf/emnlp/KarpukhinOMLWEC20'
 
 class _DprW100QueriesParser(Parser):
     name = 'DprW100Queries'
+    requires = ('ijson',)
 
     def __init__(self, manager):
         self.manager = manager
@@ -76,6 +77,7 @@ class _DprW100QueriesParser(Parser):
 
 class _DprW100QrelsParser(Parser):
     name = 'DprW100Qrels'
+    requires = ('ijson',)
 
     def __init__(self, manager):
         self.manager = manager

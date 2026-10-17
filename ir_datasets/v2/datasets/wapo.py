@@ -40,6 +40,7 @@ V4_INSTRUCTIONS = V2_INSTRUCTIONS
 
 class _WapoDocsParser(Parser):
     name = 'WapoDocs'
+    requires = ('beautifulsoup4', 'lxml')
 
     def __init__(self, file_name):
         self.file_name = file_name

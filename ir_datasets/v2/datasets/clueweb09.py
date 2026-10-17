@@ -64,6 +64,7 @@ _ALL_DIRS = ['ClueWeb09_Arabic_1', 'ClueWeb09_Chinese_1', 'ClueWeb09_Chinese_2',
 
 class _ClueWeb09DocsParser(Parser):
     name = 'ClueWeb09Docs'
+    requires = ('warc3-wet-clueweb09', 'zlib-state')
 
     def __init__(self, dirs=None):
         self.dirs = dirs

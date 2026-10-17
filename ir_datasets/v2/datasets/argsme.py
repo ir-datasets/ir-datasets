@@ -51,6 +51,7 @@ BASE = home_path() / 'argsme'
 
 class _ArgsMeDocsParser(Parser):
     name = 'ArgsMeDocs'
+    requires = ('ijson',)
 
     def build(self, source, node):
         return _V1ArgsMeDocs(source, language=node.lang, count_hint=node.count_hint)
@@ -58,6 +59,7 @@ class _ArgsMeDocsParser(Parser):
 
 class _ArgsMeProcessedDocsParser(Parser):
     name = 'ArgsMeProcessedDocs'
+    requires = ('ijson',)
 
     def build(self, source, node):
         return _V1ArgsMeProcessedDocs(source, language=node.lang, count_hint=node.count_hint)
@@ -84,6 +86,7 @@ class _ArgsMeCombinedDocs(_V1ArgsMeCombinedDocs):
 
 class _ArgsMeCombinedDocsParser(Parser):
     name = 'ArgsMeCombinedDocs'
+    requires = ('ijson',)
 
     def __init__(self, count_hints):
         self.count_hints = count_hints

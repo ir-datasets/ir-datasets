@@ -67,6 +67,7 @@ class _CarDocs(_V1CarDocs):
 
 class _CarDocsParser(Parser):
     name = 'CarDocs'
+    requires = ('trec-car-tools',)
 
     def build(self, source, node):
         return _CarDocs(source, count_hint=node.count_hint, store_path=node.docstore_path)
@@ -74,6 +75,7 @@ class _CarDocsParser(Parser):
 
 class _CarQueriesParser(Parser):
     name = 'CarQueries'
+    requires = ('trec-car-tools',)
 
     def build(self, source, node):
         return _V1CarQueries(source)

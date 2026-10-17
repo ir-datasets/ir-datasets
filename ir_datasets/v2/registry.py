@@ -95,7 +95,7 @@ def _caller_module(depth=2):
 
 
 class ManifestProvider:
-    def __init__(self, prefix, *, package=None):
+    def __init__(self, prefix, *, package=None, distribution=None):
         if not PREFIX.match(prefix or ''):
             raise ValueError(f'invalid provider prefix {prefix!r}')
         self.prefix = prefix
@@ -103,6 +103,9 @@ class ManifestProvider:
         #: Imported in full the first time a name isn't found, or the whole
         #: catalog is wanted (``names``, ``indexes``, ``discover_edges``).
         self.package = package
+        #: The pip distribution these nodes come from, reported as each node's
+        #: ``package`` when it can't be told from the defining module alone.
+        self.distribution = distribution
         self.nodes = {}            # qualified name -> node
         self.generated = set()     # names of nodes a generator produced
         self.generators = []

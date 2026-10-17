@@ -63,8 +63,12 @@ class Parser:
 
     An implementation detail of the classes below, and the thing ``parser=``
     takes when a format must be chosen at runtime.
+
+    ``requires`` names the pip packages reading this format needs (see
+    ``requirements``); a table using the parser inherits them.
     """
     name = None
+    requires = ()
 
     def build(self, source, node):
         raise NotImplementedError
@@ -224,11 +228,19 @@ class _TsvDocPairsParser(Parser):
 class _TrecDocsParser(Parser):
     name = 'TrecDocs'
 
+    #: What each document-markup parser imports (see ``_v1.TrecDocs``). ``BS4``
+    #: uses BeautifulSoup's lxml backend; ``text`` and ``tut`` need nothing.
+    _REQUIRES = {'BS4': ('beautifulsoup4', 'lxml'), 'sax': ('lxml',)}
+
     def __init__(self, encoding, path_globs, parser, expected_file_count):
         self.encoding = encoding
         self.path_globs = path_globs
         self.parser = parser
         self.expected_file_count = expected_file_count
+
+    @property
+    def requires(self):
+        return self._REQUIRES.get(self.parser, ())
 
     def build(self, source, node):
         # v1's TrecDocs already handles both a plain file and a tar (globbing

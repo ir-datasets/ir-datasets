@@ -49,6 +49,7 @@ class _C4DocsParser(Parser):
     declarations, and why ``base_path`` is v1's own well-known path rather
     than a v2 docstore path."""
     name = 'C4Docs'
+    requires = ('zlib-state',)
 
     def __init__(self, source_name_filter=None, filter_name=''):
         self.source_name_filter = source_name_filter

@@ -113,7 +113,10 @@ def xml_etree():
 
 def lxml_html():
     if 'lxml_html' not in _cache:
-        import lxml.html
+        try:
+            import lxml.html
+        except ImportError as ie:
+            raise ImportError("This dataset requires lxml. Run 'pip install ir_datasets[lxml]' to install dependencies for this dataset") from ie
         _cache['lxml_html'] = lxml.html
     return _cache['lxml_html']
 
@@ -149,7 +152,7 @@ def pyarrow_parquet():
         try:
             import pyarrow.parquet
         except ImportError as ie:
-            raise ImportError("This dataset requires pyarrow. Run 'pip install ir_datasets[pyarrow]' to install dependencies for this dataset") from ie
+            raise ImportError("pyarrow is required but not installed. Run 'pip install pyarrow'") from ie
         _cache['pyarrow_parquet'] = pyarrow.parquet
     return _cache['pyarrow_parquet']
 

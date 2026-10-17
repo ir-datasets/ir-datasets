@@ -94,6 +94,7 @@ class _NytDocsParser(Parser):
     """Wraps v1's ``NytDocs`` directly, unmodified -- no ``Migrator``; see
     the module docstring for why."""
     name = 'NytDocs'
+    requires = ('beautifulsoup4', 'lxml')
 
     def build(self, source, node):
         return _V1NytDocs(source)

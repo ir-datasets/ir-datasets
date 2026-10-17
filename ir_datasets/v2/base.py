@@ -23,6 +23,7 @@ import itertools
 import re
 from typing import NamedTuple, Union
 
+from . import requirements
 from .context import default
 from .vocabulary import is_structural
 
@@ -94,7 +95,7 @@ class Node:
     type = None
 
     def __init__(self, name, *, desc=None, pretty_name=None, citation=None,
-                 deprecated=None, license=None, metadata=None):
+                 deprecated=None, license=None, requires=None, metadata=None):
         if ':' in name:
             raise ValueError(
                 f'{name!r}: node names may not contain ":"; the prefix is '
@@ -107,6 +108,10 @@ class Node:
         #: reported at discovery (``discovery_literals``) -- the declaration *is*
         #: the source of truth.
         self.license = default('license', license)
+        #: Pip packages (see ``requirements``) this node needs beyond
+        #: the core install. A node's *effective* requirements include those
+        #: of everything it is built from -- see ``Graph.requires``.
+        self._requires = requirements.normalize(requires)
         self.metadata = {k: v for k, v in {
             'desc': desc, 'pretty_name': pretty_name, 'citation': citation,
             'deprecated': deprecated, **(metadata or {}),
@@ -124,7 +129,15 @@ class Node:
         """Literal properties (``{field: value}``) reported when the graph is
         discovered: facts derivable from the node's own declaration (a
         Resource's size and how it is validated). Empty values are dropped."""
-        return {'license': self.license} if self.license else {}
+        literals = {'license': self.license} if self.license else {}
+        if self.requires:
+            literals['requires-dependency'] = list(self.requires)
+        return literals
+
+    @property
+    def requires(self):
+        """The packages this node itself needs (a tuple of distribution names)."""
+        return self._requires
 
     def __repr__(self):
         return f'{type(self).__name__}({(self.qualified_name or self.name)!r})'

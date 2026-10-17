@@ -40,6 +40,7 @@ QRELS_DEFS = {
 
 class _QnADocsParser(Parser):
     name = 'MsMarcoQnADocs'
+    requires = ('ijson',)
 
     def __init__(self, manager):
         self.manager = manager
