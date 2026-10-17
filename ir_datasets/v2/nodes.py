@@ -44,6 +44,7 @@ import os
 import warnings
 
 import ir_datasets
+from . import log_utils
 from .base import Edge, Node
 from .context import default
 
@@ -404,7 +405,10 @@ class Resource(Node, Readable):
             return str(local)
         if force:
             self._hint_local_copy()
-        return self.download.path(force)
+        result = self.download.path(force)
+        if force:
+            log_utils.log_download(self, result)
+        return result
 
     @contextlib.contextmanager
     def stream(self):
@@ -416,6 +420,7 @@ class Resource(Node, Readable):
                 yield fin
         else:
             with self.download.stream() as stream:
+                log_utils.log_download(self, self.download.path(force=False))
                 yield stream
 
 
