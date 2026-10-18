@@ -104,83 +104,86 @@ class _ZipQueriesParser(Parser):
         return handler
 
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    main_file = Resource('nfcorpus-main.tar.gz',
-        sources=['https://www.cl.uni-heidelberg.de/statnlpgroup/nfcorpus/nfcorpus.tar.gz',
-                 Source.mirror()],
-        hash='md5:49c061fbadc52ba4d35d0e42e2d742fd',
-        size=31_039_523,
+# Files
+# -----------------------------------------
+main_file = Resource('nfcorpus-main.tar.gz',
+    sources=['https://www.cl.uni-heidelberg.de/statnlpgroup/nfcorpus/nfcorpus.tar.gz',
+             Source.mirror()],
+    hash='md5:49c061fbadc52ba4d35d0e42e2d742fd',
+    size=31_039_523,
+)
+nontopic_ids_file = main_file.member('nfcorpus/nontopics.ids').cache(BASE / 'nontopics.ids')
+video_ids_file = main_file.member('nfcorpus/all_videos.ids').cache(BASE / 'all_videos.ids')
+
+# Tables
+# -----------------------------------------
+docs = TsvDocs('nfcorpus-docs',
+    source=main_file.member('nfcorpus/raw/doc_dump.txt').cache(BASE / 'collection.tsv'),
+    cls=NfCorpusDoc,
+    count_hint=9_964,
+    lang='en',
+)
+
+# Per-split tables + benchmarks
+# -----------------------------------------
+# One block per split (train/dev/test): the shared docs corpus plus that
+# split's own queries/qrels, and its nontopic/video variants --
+# structurally identical across the three, so it is a loop rather than
+# copy-pasted thrice.
+_benchmarks = {}
+for _split in ('train', 'dev', 'test'):
+    title_member = main_file.member(f'nfcorpus/{_split}.titles.queries').cache(
+        BASE / _split / 'queries.titles.tsv')
+    all_member = main_file.member(f'nfcorpus/{_split}.all.queries').cache(
+        BASE / _split / 'queries.all.tsv')
+    queries = QueryTable(f'nfcorpus-{_split}-queries',
+        source=[title_member, all_member],
+        parser=_ZipQueriesParser(NfCorpusQuery),
+        lang='en',
     )
-    nontopic_ids_file = main_file.member('nfcorpus/nontopics.ids').cache(BASE / 'nontopics.ids')
-    video_ids_file = main_file.member('nfcorpus/all_videos.ids').cache(BASE / 'all_videos.ids')
-
-    # Tables
-    # -----------------------------------------
-    docs = TsvDocs('nfcorpus-docs',
-        source=main_file.member('nfcorpus/raw/doc_dump.txt').cache(BASE / 'collection.tsv'),
-        cls=NfCorpusDoc,
-        count_hint=9_964,
+    qrels = TrecQrels(f'nfcorpus-{_split}-qrels',
+        source=main_file.member(f'nfcorpus/{_split}.3-2-1.qrel').cache(
+            BASE / _split / 'qrels'),
+        defs=QREL_DEFS,
     )
+    main_bm = Benchmark(f'nfcorpus-{_split}',
+        docs=docs, queries=queries, qrels=qrels,
+        citation=CITATION,
+        desc=f'Official {_split} set of NFCorpus. Queries include both a '
+             '"title" and a combined "all" text field (titles, '
+             'descriptions, topics, transcripts and comments).')
 
-    # Per-split tables + benchmarks
-    # -----------------------------------------
-    # One block per split (train/dev/test): the shared docs corpus plus that
-    # split's own queries/qrels, and its nontopic/video variants --
-    # structurally identical across the three, so it is a loop rather than
-    # copy-pasted thrice.
-    _benchmarks = {}
-    for _split in ('train', 'dev', 'test'):
-        title_member = main_file.member(f'nfcorpus/{_split}.titles.queries').cache(
-            BASE / _split / 'queries.titles.tsv')
-        all_member = main_file.member(f'nfcorpus/{_split}.all.queries').cache(
-            BASE / _split / 'queries.all.tsv')
-        queries = QueryTable(f'nfcorpus-{_split}-queries',
-            source=[title_member, all_member],
-            parser=_ZipQueriesParser(NfCorpusQuery),
-        )
-        qrels = TrecQrels(f'nfcorpus-{_split}-qrels',
-            source=main_file.member(f'nfcorpus/{_split}.3-2-1.qrel').cache(
-                BASE / _split / 'qrels'),
-            defs=QREL_DEFS,
-        )
-        main_bm = Benchmark(f'nfcorpus-{_split}',
-            docs=docs, queries=queries, qrels=qrels,
-            citation=CITATION,
-            desc=f'Official {_split} set of NFCorpus. Queries include both a '
-                 '"title" and a combined "all" text field (titles, '
-                 'descriptions, topics, transcripts and comments).')
+    nontopic_queries = TsvQueries(f'nfcorpus-{_split}-nontopic-queries',
+        source=main_file.member(f'nfcorpus/{_split}.nontopic-titles.queries').cache(
+            BASE / _split / 'nontopic' / 'queries.tsv'),
+        lang='en',
+    )
+    nontopic_bm = Benchmark(f'nfcorpus-{_split}-nontopic',
+        queries=nontopic_queries,
+        derived_from=main_bm,
+        filter=Filter(query_ids=ids_from_lines(nontopic_ids_file), mode='include'),
+        citation=CITATION,
+        desc=f'Official {_split} set, filtered to exclude queries from topic pages.')
 
-        nontopic_queries = TsvQueries(f'nfcorpus-{_split}-nontopic-queries',
-            source=main_file.member(f'nfcorpus/{_split}.nontopic-titles.queries').cache(
-                BASE / _split / 'nontopic' / 'queries.tsv'),
-        )
-        nontopic_bm = Benchmark(f'nfcorpus-{_split}-nontopic',
-            queries=nontopic_queries,
-            derived_from=main_bm,
-            filter=Filter(query_ids=ids_from_lines(nontopic_ids_file), mode='include'),
-            citation=CITATION,
-            desc=f'Official {_split} set, filtered to exclude queries from topic pages.')
+    vid_title_member = main_file.member(f'nfcorpus/{_split}.vid-titles.queries').cache(
+        BASE / _split / 'video' / 'queries.titles.tsv')
+    vid_desc_member = main_file.member(f'nfcorpus/{_split}.vid-desc.queries').cache(
+        BASE / _split / 'video' / 'queries.desc.tsv')
+    video_queries = QueryTable(f'nfcorpus-{_split}-video-queries',
+        source=[vid_title_member, vid_desc_member],
+        parser=_ZipQueriesParser(NfCorpusVideoQuery),
+        lang='en',
+    )
+    video_bm = Benchmark(f'nfcorpus-{_split}-video',
+        queries=video_queries,
+        derived_from=main_bm,
+        filter=Filter(query_ids=ids_from_lines(video_ids_file), mode='include'),
+        citation=CITATION,
+        desc=f'Official {_split} set, filtered to only include queries from video pages.')
 
-        vid_title_member = main_file.member(f'nfcorpus/{_split}.vid-titles.queries').cache(
-            BASE / _split / 'video' / 'queries.titles.tsv')
-        vid_desc_member = main_file.member(f'nfcorpus/{_split}.vid-desc.queries').cache(
-            BASE / _split / 'video' / 'queries.desc.tsv')
-        video_queries = QueryTable(f'nfcorpus-{_split}-video-queries',
-            source=[vid_title_member, vid_desc_member],
-            parser=_ZipQueriesParser(NfCorpusVideoQuery),
-        )
-        video_bm = Benchmark(f'nfcorpus-{_split}-video',
-            queries=video_queries,
-            derived_from=main_bm,
-            filter=Filter(query_ids=ids_from_lines(video_ids_file), mode='include'),
-            citation=CITATION,
-            desc=f'Official {_split} set, filtered to only include queries from video pages.')
-
-        _benchmarks[_split] = main_bm
-        _benchmarks[f'{_split}-nontopic'] = nontopic_bm
-        _benchmarks[f'{_split}-video'] = video_bm
+    _benchmarks[_split] = main_bm
+    _benchmarks[f'{_split}-nontopic'] = nontopic_bm
+    _benchmarks[f'{_split}-video'] = video_bm
 
 
 # Registration

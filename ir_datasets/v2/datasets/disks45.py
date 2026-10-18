@@ -26,6 +26,14 @@ reference rather than duplicating it -- same cross-file pattern as
 import ir_datasets
 from ir_datasets.v2 import Directory, Resource, Source, TrecDocs, irds
 
+CITATION = '''@misc{Voorhees1996Disks45,
+  title = {NIST TREC Disks 4 and 5: Retrieval Test Collections Document Set},
+  author = {Ellen M. Voorhees},
+  doi = {10.18434/t47g6m},
+  year = {1996},
+  publisher = {National Institute of Standards and Technology}
+}'''
+
 DUA = ("Please confirm you agree to the TREC data usage agreement found at "
        "<https://trec.nist.gov/data/cd45/index.html>")
 
@@ -65,7 +73,7 @@ docs = TrecDocs('disks45-nocr',
     expected_file_count=2295,
     lang='en',
     count_hint=528_155,
-    citation='Voorhees1996Disks45',
+    citation=CITATION,
 )
 
 

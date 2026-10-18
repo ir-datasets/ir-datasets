@@ -71,113 +71,116 @@ class _HighwireQrelsParser(Parser):
         return _V1HighwireQrels(source, self.defs)
 
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    genomics_2004_queries_file = Resource('trec-genomics-2004-queries.zip',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2004/rest.zip'],
-        hash='md5:3f252c59774fe8e74337637d73f8afc6',
-        size=227_203,
-    )
-    genomics_2004_qrels_file = Resource('trec-genomics-2004-qrels.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2004/04.qrels.txt'],
-        hash='md5:1cb017045d7909102476bcb17fb19878',
-        size=128_056,
-    )
-    genomics_2005_queries_file = Resource('trec-genomics-2005-queries.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2005/adhoc2005narrative.txt'],
-        hash='md5:71e8044cb65458731f4496fdc2aad94a',
-        size=5_551,
-    )
-    genomics_2005_qrels_file = Resource('trec-genomics-2005-qrels.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2005/genomics.qrels.large.txt'],
-        hash='md5:fd6ac71dcd337c0c0cddf0ffc0528cc6',
-        size=661_626,
-    )
-    genomics_2006_queries_file = Resource('trec-genomics-2006-queries.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2006/topics/2006topics.txt'],
-        hash='md5:fd458f5398350e59831745e51854b2b0',
-        size=2_056,
-    )
-    genomics_2006_qrels_file = Resource('trec-genomics-2006-qrels.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2006/trec2006.raw.relevance.tsv.txt'],
-        hash='md5:a133e38bcd03c8b6509f46506cae753b',
-        size=1_323_494,
-    )
-    genomics_2007_queries_file = Resource('trec-genomics-2007-queries.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2007/2007topics.txt'],
-        hash='md5:be5fc2d4e984003da6aa9dfab9eb67a3',
-        size=2_576,
-    )
-    genomics_2007_qrels_file = Resource('trec-genomics-2007-qrels.txt',
-        sources=['https://dmice.ohsu.edu/trec-gen/data/2007/trecgen2007.all.judgments.tsv.txt'],
-        hash='md5:5be6b6eea10d8ec0dac25bbe21af38a0',
-        size=1_288_196,
-    )
+# Files
+# -----------------------------------------
+genomics_2004_queries_file = Resource('trec-genomics-2004-queries.zip',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2004/rest.zip'],
+    hash='md5:3f252c59774fe8e74337637d73f8afc6',
+    size=227_203,
+)
+genomics_2004_qrels_file = Resource('trec-genomics-2004-qrels.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2004/04.qrels.txt'],
+    hash='md5:1cb017045d7909102476bcb17fb19878',
+    size=128_056,
+)
+genomics_2005_queries_file = Resource('trec-genomics-2005-queries.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2005/adhoc2005narrative.txt'],
+    hash='md5:71e8044cb65458731f4496fdc2aad94a',
+    size=5_551,
+)
+genomics_2005_qrels_file = Resource('trec-genomics-2005-qrels.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2005/genomics.qrels.large.txt'],
+    hash='md5:fd6ac71dcd337c0c0cddf0ffc0528cc6',
+    size=661_626,
+)
+genomics_2006_queries_file = Resource('trec-genomics-2006-queries.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2006/topics/2006topics.txt'],
+    hash='md5:fd458f5398350e59831745e51854b2b0',
+    size=2_056,
+)
+genomics_2006_qrels_file = Resource('trec-genomics-2006-qrels.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2006/trec2006.raw.relevance.tsv.txt'],
+    hash='md5:a133e38bcd03c8b6509f46506cae753b',
+    size=1_323_494,
+)
+genomics_2007_queries_file = Resource('trec-genomics-2007-queries.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2007/2007topics.txt'],
+    hash='md5:be5fc2d4e984003da6aa9dfab9eb67a3',
+    size=2_576,
+)
+genomics_2007_qrels_file = Resource('trec-genomics-2007-qrels.txt',
+    sources=['https://dmice.ohsu.edu/trec-gen/data/2007/trecgen2007.all.judgments.tsv.txt'],
+    hash='md5:5be6b6eea10d8ec0dac25bbe21af38a0',
+    size=1_288_196,
+)
 
-    # Tables
-    # -----------------------------------------
-    genomics_2004_queries = QueryTable('trec-genomics-2004-queries',
-        source=genomics_2004_queries_file.zip_member('Official.xml'),
-        parser=_TrecXmlQueriesParser(TrecGenomicsQuery, qtype_map=TREC04_XML_MAP),
-        count_hint=50,
-        citation='dblp:conf/trec/HershBRCKJ04',
-    )
-    genomics_2004_qrels = TrecQrels('trec-genomics-2004-qrels',
-        source=genomics_2004_qrels_file, defs=QREL_DEFS_04_05, count_hint=8_268)
+# Tables
+# -----------------------------------------
+genomics_2004_queries = QueryTable('trec-genomics-2004-queries',
+    source=genomics_2004_queries_file.zip_member('Official.xml'),
+    parser=_TrecXmlQueriesParser(TrecGenomicsQuery, qtype_map=TREC04_XML_MAP),
+    count_hint=50,
+    citation='dblp:conf/trec/HershBRCKJ04',
+    lang='en',
+)
+genomics_2004_qrels = TrecQrels('trec-genomics-2004-qrels',
+    source=genomics_2004_qrels_file, defs=QREL_DEFS_04_05, count_hint=8_268)
 
-    genomics_2005_queries = QueryTable('trec-genomics-2005-queries',
-        source=genomics_2005_queries_file,
-        parser=_TrecGenomicsQueriesParser(),
-        count_hint=50,
-        citation='dblp:conf/trec/HershCYBRH05',
-    )
-    genomics_2005_qrels = TrecQrels('trec-genomics-2005-qrels',
-        source=genomics_2005_qrels_file, defs=QREL_DEFS_04_05, count_hint=39_958)
+genomics_2005_queries = QueryTable('trec-genomics-2005-queries',
+    source=genomics_2005_queries_file,
+    parser=_TrecGenomicsQueriesParser(),
+    count_hint=50,
+    citation='dblp:conf/trec/HershCYBRH05',
+    lang='en',
+)
+genomics_2005_qrels = TrecQrels('trec-genomics-2005-qrels',
+    source=genomics_2005_qrels_file, defs=QREL_DEFS_04_05, count_hint=39_958)
 
-    genomics_2006_queries = QueryTable('trec-genomics-2006-queries',
-        source=genomics_2006_queries_file,
-        parser=_TrecGenomicsQueriesParser(),
-        count_hint=28,
-        citation='dblp:conf/trec/HershCRR06',
-    )
-    genomics_2006_qrels = QrelTable('trec-genomics-2006-qrels',
-        source=genomics_2006_qrels_file,
-        parser=_HighwireQrelsParser(QREL_DEFS_2006),
-        defs=QREL_DEFS_2006,
-        count_hint=27_999,
-    )
-    genomics_2007_queries = QueryTable('trec-genomics-2007-queries',
-        source=genomics_2007_queries_file,
-        parser=_TrecGenomicsQueriesParser(),
-        count_hint=36,
-        citation='dblp:conf/trec/HershCRR07',
-    )
-    genomics_2007_qrels = QrelTable('trec-genomics-2007-qrels',
-        source=genomics_2007_qrels_file,
-        parser=_HighwireQrelsParser(QREL_DEFS_2007),
-        defs=QREL_DEFS_2007,
-        count_hint=35_996,
-    )
+genomics_2006_queries = QueryTable('trec-genomics-2006-queries',
+    source=genomics_2006_queries_file,
+    parser=_TrecGenomicsQueriesParser(),
+    count_hint=28,
+    citation='dblp:conf/trec/HershCRR06',
+    lang='en',
+)
+genomics_2006_qrels = QrelTable('trec-genomics-2006-qrels',
+    source=genomics_2006_qrels_file,
+    parser=_HighwireQrelsParser(QREL_DEFS_2006),
+    defs=QREL_DEFS_2006,
+    count_hint=27_999,
+)
+genomics_2007_queries = QueryTable('trec-genomics-2007-queries',
+    source=genomics_2007_queries_file,
+    parser=_TrecGenomicsQueriesParser(),
+    count_hint=36,
+    citation='dblp:conf/trec/HershCRR07',
+    lang='en',
+)
+genomics_2007_qrels = QrelTable('trec-genomics-2007-qrels',
+    source=genomics_2007_qrels_file,
+    parser=_HighwireQrelsParser(QREL_DEFS_2007),
+    defs=QREL_DEFS_2007,
+    count_hint=35_996,
+)
 
-    # Benchmarks
-    # -----------------------------------------
-    genomics_2004 = Benchmark('trec-genomics-2004',
-        docs=medline_2004_docs, queries=genomics_2004_queries, qrels=genomics_2004_qrels,
-        desc='TREC Genomics Track 2004.',
-        citation='dblp:conf/trec/HershBRCKJ04')
-    genomics_2005 = Benchmark('trec-genomics-2005',
-        docs=medline_2004_docs, queries=genomics_2005_queries, qrels=genomics_2005_qrels,
-        desc='TREC Genomics Track 2005.',
-        citation='dblp:conf/trec/HershCYBRH05')
-    genomics_2006 = Benchmark('trec-genomics-2006',
-        docs=highwire_docs, queries=genomics_2006_queries, qrels=genomics_2006_qrels,
-        desc='TREC Genomics Track 2006.',
-        citation='dblp:conf/trec/HershCRR06')
-    genomics_2007 = Benchmark('trec-genomics-2007',
-        docs=highwire_docs, queries=genomics_2007_queries, qrels=genomics_2007_qrels,
-        desc='TREC Genomics Track 2007.',
-        citation='dblp:conf/trec/HershCRR07')
+# Benchmarks
+# -----------------------------------------
+genomics_2004 = Benchmark('trec-genomics-2004',
+    docs=medline_2004_docs, queries=genomics_2004_queries, qrels=genomics_2004_qrels,
+    desc='TREC Genomics Track 2004.',
+    citation='dblp:conf/trec/HershBRCKJ04')
+genomics_2005 = Benchmark('trec-genomics-2005',
+    docs=medline_2004_docs, queries=genomics_2005_queries, qrels=genomics_2005_qrels,
+    desc='TREC Genomics Track 2005.',
+    citation='dblp:conf/trec/HershCYBRH05')
+genomics_2006 = Benchmark('trec-genomics-2006',
+    docs=highwire_docs, queries=genomics_2006_queries, qrels=genomics_2006_qrels,
+    desc='TREC Genomics Track 2006.',
+    citation='dblp:conf/trec/HershCRR06')
+genomics_2007 = Benchmark('trec-genomics-2007',
+    docs=highwire_docs, queries=genomics_2007_queries, qrels=genomics_2007_qrels,
+    desc='TREC Genomics Track 2007.',
+    citation='dblp:conf/trec/HershCRR07')
 
 
 # Registration

@@ -24,23 +24,23 @@ How types and protocols fit together
 ------------------------------------
 Every node has a *type* (``irds:Docs``) and every type promises a protocol
 (this module's ``Docs``). The protocol is also the type's only declaration:
-mark the class with ``@node_type`` and the provider declares it from there::
+mark the class with ``@graph_class`` and the provider declares it from there::
 
-    @node_type
+    @graph_class
     @runtime_checkable
     class Docs(Table, Protocol):
         '''A Table representing a collection of documents (a corpus).
 
         More detail, not part of the short description.'''
 
-    TYPES = irds.declare_types(this_module)   # {protocol class: 'irds:Docs'}
+    TYPES = irds.declare_graph_classes(this_module)   # {protocol class: 'irds:Docs'}
 
 The type's name is the class name, its parent is the type of the nearest marked
 base protocol (``Table``), its short description is the docstring's first
 paragraph, and its protocol is the class itself -- so there is nothing to keep
 in step by hand. A third party does the same with its own provider and
 protocols that extend ours. A type declared without a protocol of its own
-(``provider.node_type('Name', parent=...)``) inherits its parent's.
+(``provider.declare_graph_class('Name', parent=...)``) inherits its parent's.
 
 A protocol is a promise about *shape*, not a base class: anything with these
 members is a valid node of the type, whether or not it inherits from this
@@ -57,13 +57,13 @@ narrower check.
 from typing import Any, ContextManager, Optional, Protocol, runtime_checkable
 
 
-def node_type(cls):
-    """Mark a protocol class as declaring a node type.
+def graph_class(cls):
+    """Mark a protocol class as declaring a graph class.
 
     The class name is the type's name, the nearest marked base protocol is its
     parent type, the docstring's first paragraph is its short description, and
     the class itself is the protocol its nodes satisfy. Nothing is registered
-    by marking: a provider does that with ``provider.declare_types(module)``,
+    by marking: a provider does that with ``provider.declare_graph_classes(module)``,
     which declares every marked protocol class the module defines. So this
     module stays plain Python and a protocol can be written without a provider.
     """
@@ -74,8 +74,8 @@ def node_type(cls):
 _NODE_TYPES = set()
 
 
-def is_node_type(cls):
-    """Whether ``cls`` was marked with ``node_type``."""
+def is_graph_class(cls):
+    """Whether ``cls`` was marked with ``graph_class``."""
     return cls in _NODE_TYPES
 
 
@@ -116,8 +116,8 @@ class Node(Protocol):
     """
     #: The bare, unqualified name given at construction.
     name: str
-    #: The qualified node type (``irds:Docs``) -- declared with
-    #: ``provider.node_type(...)``, which also says which protocol applies.
+    #: The qualified graph class (``irds:Docs``) -- declared with
+    #: ``provider.declare_graph_class(...)``, which also says which protocol applies.
     type: str
     #: Descriptive fields (``desc``, ``citation``, ``license``, ...). These are
     #: what the graph reports as the node's properties; never identity or
@@ -138,7 +138,7 @@ class Node(Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Data(Node, Protocol):
     """Raw data and where to get it
@@ -162,7 +162,7 @@ class Data(Node, Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class File(Data, Protocol):
     """A single blob of bytes
@@ -175,7 +175,7 @@ class File(Data, Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Directory(Data, Protocol):
     """A tree of files (usually a non-downloadable external resource)
@@ -197,7 +197,7 @@ class Directory(Data, Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Table(Node, Protocol):
     """A structured set of records
@@ -245,7 +245,7 @@ class Table(Node, Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Docs(Table, Protocol):
     """A Table representing a collection of documents (a corpus). Each row has a doc_id field.
@@ -253,7 +253,7 @@ class Docs(Table, Protocol):
     ``lookup(doc_id)`` fetches a document by id."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Queries(Table, Protocol):
     """A Table representing a collection of queries (topics). Each row has a query_id field.
@@ -261,7 +261,7 @@ class Queries(Table, Protocol):
     ``lookup(query_id)`` fetches a query by id."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Qrels(Table, Protocol):
     """A Table representing a collection of relevance assessments (qrels). Each row has query_id, doc_id, and relevance fields.
@@ -270,19 +270,19 @@ class Qrels(Table, Protocol):
     each label means."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class AdhocRun(Table, Protocol):
     """A Table representing a collection of retrieved and scored documents for a set of queries (a run). Each row has query_id, doc_id, and score fields."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class DocPairs(Table, Protocol):
     """A Table representing paired documents for a query (e.g. positive/negative pairs for training). Each row has query_id, doc_id_a, and doc_id_b fields."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Answers(Table, Protocol):
     """A Table representing reference answers to queries (e.g. the ground-truth answer to a question, for end-to-end QA / deep-research evaluation). Each row has query_id and text fields.
@@ -291,7 +291,7 @@ class Answers(Table, Protocol):
     returns that query's list of answers."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class QueryLog(Table, Protocol):
     """A Table representing a raw query log (e.g. search-session records issued against a live system).
@@ -302,7 +302,7 @@ class QueryLog(Table, Protocol):
     hashed) query, and the ranked/clicked items shown for it."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Bundle(Node, Protocol):
     """A node composed of Tables and/or other Bundles.
@@ -314,19 +314,19 @@ class Bundle(Node, Protocol):
     ``Docs`` table."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Alias(Node, Protocol):
     """A node that redirects to another node
 
     Stands for another node and has no content of its own (for example a
-    dataset id from the first version of the library). Its ``irds:alias_of``
+    dataset id from the first version of the library). Its ``irds:aliasOf``
     edge names the target, and loading the alias through the graph returns that
     target instead. An alias with no ``alias_of`` edge is listed and
     browsable but cannot be loaded."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Benchmark(Bundle, Protocol):
     """A bundle of tables that represents a task that can be evaluated.
@@ -349,7 +349,7 @@ class Benchmark(Bundle, Protocol):
         ...
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class AdhocBenchmark(Benchmark, Protocol):
     """An ad hoc retrieval Benchmark: rank documents from a corpus for each query, evaluated against qrels.
@@ -357,7 +357,7 @@ class AdhocBenchmark(Benchmark, Protocol):
     Has ``docs``, ``queries`` and ``qrels`` facets (and may have a run)."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class QaBenchmark(Benchmark, Protocol):
     """A question-answering Benchmark: generate an answer for each query, evaluated against reference answers.
@@ -366,7 +366,7 @@ class QaBenchmark(Benchmark, Protocol):
     (open-book versus closed-book)."""
 
 
-@node_type
+@graph_class
 @runtime_checkable
 class Suite(Bundle, Protocol):
     """A set of related benchmarks.

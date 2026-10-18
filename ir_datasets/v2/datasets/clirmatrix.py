@@ -23,7 +23,7 @@ other bundled family, which shares ``irds``'s registry because there's a
 finite, hand-authored list of them. This one is generator-only, ~150,000
 names deep, and doesn't need anything from ``irds``'s registry besides the
 node types and edge kinds it borrows (``irds:Benchmark``, ``irds:Docs``,
-``irds:derived_from``, ...) -- which any provider may build nodes of/declare
+``irds:derivedFrom``, ...) -- which any provider may build nodes of/declare
 edges with, regardless of who owns them (see ``registry.py``'s own docstring
 on that). Being its own provider is also why names no longer repeat the
 family name: bare names below are just ``{lang}-docs``, not

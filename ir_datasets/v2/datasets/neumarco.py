@@ -31,30 +31,29 @@ VARIANTS = {
     'dev-small': passage_dev_small,
 }
 
-with irds.defaults(lang='en'):
-    main_file = Resource('neumarco-main.tar.gz',
-        sources=['https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/dlawrie1_jh_edu/'
-                 'EQcICtPaSqFNoCZHtoeZszoB7FC362BvaPvieUSk2j30tA?download=1'],
-        hash='md5:733181c211959a7c09c695bfcddaea54',
-        size=3_723_728_998,
-    )
+main_file = Resource('neumarco-main.tar.gz',
+    sources=['https://livejohnshopkins-my.sharepoint.com/:u:/g/personal/dlawrie1_jh_edu/'
+             'EQcICtPaSqFNoCZHtoeZszoB7FC362BvaPvieUSk2j30tA?download=1'],
+    hash='md5:733181c211959a7c09c695bfcddaea54',
+    size=3_723_728_998,
+)
 
-    nodes = {}
+nodes = {}
 
-    for lang3, lang2 in [('fas', 'fa'), ('zho', 'zh'), ('rus', 'ru')]:
-        docs = TsvDocs(f'neumarco-{lang2}',
-            source=main_file.member(f'eng-{lang3}/msmarco.collection.20210731-scale21-sockeye2-tm1.tsv')
-                             .cache(BASE / f'{lang2}.tsv'),
-            lang=lang2)
-        nodes[f'neumarco-{lang2}'] = docs
+for lang3, lang2 in [('fas', 'fa'), ('zho', 'zh'), ('rus', 'ru')]:
+    docs = TsvDocs(f'neumarco-{lang2}',
+        source=main_file.member(f'eng-{lang3}/msmarco.collection.20210731-scale21-sockeye2-tm1.tsv')
+                         .cache(BASE / f'{lang2}.tsv'),
+        lang=lang2)
+    nodes[f'neumarco-{lang2}'] = docs
 
-        for suffix, parent in VARIANTS.items():
-            name = f'neumarco-{lang2}-{suffix}'
-            nodes[name] = Benchmark(name,
-                docs=docs, queries=parent.queries, qrels=parent.qrels, docpairs=parent.docpairs,
-                citation=CITATION, metrics=MEASURES,
-                desc=f'neuMARCO: msmarco-passage-{suffix}, corpus translated to {lang2} '
-                     f'(queries/qrels/docpairs are msmarco-passage\'s own, unchanged).')
+    for suffix, parent in VARIANTS.items():
+        name = f'neumarco-{lang2}-{suffix}'
+        nodes[name] = Benchmark(name,
+            docs=docs, queries=parent.queries, qrels=parent.qrels, docpairs=parent.docpairs,
+            citation=CITATION, metrics=MEASURES,
+            desc=f'neuMARCO: msmarco-passage-{suffix}, corpus translated to {lang2} '
+                 f'(queries/qrels/docpairs are msmarco-passage\'s own, unchanged).')
 
 
 # Registration

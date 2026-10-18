@@ -51,85 +51,99 @@ class _QnADocsParser(Parser):
 
 
 # license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
-with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
-    # Files
-    # -----------------------------------------
-    train_file = Resource('msmarco-qna-train.json.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarco/train_v2.1.json.gz'],
-        hash='md5:576230a745a06943c3a49e76acea1d9d',
-        size=1_112_116_929,
-    )
-    dev_file = Resource('msmarco-qna-dev.json.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarco/dev_v2.1.json.gz'],
-        hash='md5:5e14839f31c933560fbb3bae4ce67829',
-        size=138_303_699,
-    )
-    eval_file = Resource('msmarco-qna-eval.json.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarco/eval_v2.1_public.json.gz'],
-        hash='md5:5fcca9336c7486498c3e1cf81fa89f74',
-        size=133_851_237,
-    )
+# Files
+# -----------------------------------------
+train_file = Resource('msmarco-qna-train.json.gz',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarco/train_v2.1.json.gz'],
+    hash='md5:576230a745a06943c3a49e76acea1d9d',
+    size=1_112_116_929,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+dev_file = Resource('msmarco-qna-dev.json.gz',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarco/dev_v2.1.json.gz'],
+    hash='md5:5e14839f31c933560fbb3bae4ce67829',
+    size=138_303_699,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+eval_file = Resource('msmarco-qna-eval.json.gz',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarco/eval_v2.1_public.json.gz'],
+    hash='md5:5fcca9336c7486498c3e1cf81fa89f74',
+    size=133_851_237,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
 
-    # The manager needs a directory to write its derived per-split files
-    # (queries.tsv/qrels/run) and the shared docs docstore into -- the same
-    # readable, provider-partitioned base every other v2 family's docstore
-    # uses (see ``nodes.DocTable.docstore_path``), computed directly (rather
-    # than via ``docs.docstore_path`` below) since the manager must exist
-    # before ``docs`` -- its Parser needs ``manager`` already built.
-    _base_path = default_cache_path(irds.prefix, 'msmarco-qna')
-    _base_path.mkdir(parents=True, exist_ok=True)
-    manager = MsMarcoQnAManager(train_file.gunzip(), dev_file.gunzip(), eval_file.gunzip(), _base_path)
+# The manager needs a directory to write its derived per-split files
+# (queries.tsv/qrels/run) and the shared docs docstore into -- the same
+# readable, provider-partitioned base every other v2 family's docstore
+# uses (see ``nodes.DocTable.docstore_path``), computed directly (rather
+# than via ``docs.docstore_path`` below) since the manager must exist
+# before ``docs`` -- its Parser needs ``manager`` already built.
+_base_path = default_cache_path(irds.prefix, 'msmarco-qna')
+_base_path.mkdir(parents=True, exist_ok=True)
+manager = MsMarcoQnAManager(train_file.gunzip(), dev_file.gunzip(), eval_file.gunzip(), _base_path)
 
-    # Tables
-    # -----------------------------------------
-    docs = DocTable('msmarco-qna',
-        source=[train_file, dev_file, eval_file],
-        parser=_QnADocsParser(manager),
-    )
+# Tables
+# -----------------------------------------
+docs = DocTable('msmarco-qna',
+    source=[train_file, dev_file, eval_file],
+    parser=_QnADocsParser(manager),
+    lang='en', license='https://microsoft.github.io/msmarco/',
+)
 
-    train_queries = TsvQueries('msmarco-qna-train-queries', cls=MsMarcoQnAQuery,
-        source=manager.file_ref('train.queries.tsv'))
-    train_answers = AnswerTable('msmarco-qna-train-answers',
-        source=manager.file_ref('train.queries.tsv'),
-        parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)))
-    train_qrels = TrecQrels('msmarco-qna-train-qrels',
-        source=manager.file_ref('train.qrels'), defs=QRELS_DEFS)
-    train_scoreddocs = TrecScoredDocs('msmarco-qna-train-scoreddocs',
-        source=manager.file_ref('train.run'))
+train_queries = TsvQueries('msmarco-qna-train-queries', cls=MsMarcoQnAQuery,
+    source=manager.file_ref('train.queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+train_answers = AnswerTable('msmarco-qna-train-answers',
+    source=manager.file_ref('train.queries.tsv'),
+    parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+train_qrels = TrecQrels('msmarco-qna-train-qrels',
+    source=manager.file_ref('train.qrels'), defs=QRELS_DEFS, license='https://microsoft.github.io/msmarco/')
+train_scoreddocs = TrecScoredDocs('msmarco-qna-train-scoreddocs',
+    source=manager.file_ref('train.run'),
+    license='https://microsoft.github.io/msmarco/')
 
-    dev_queries = TsvQueries('msmarco-qna-dev-queries', cls=MsMarcoQnAQuery,
-        source=manager.file_ref('dev.queries.tsv'))
-    dev_answers = AnswerTable('msmarco-qna-dev-answers',
-        source=manager.file_ref('dev.queries.tsv'),
-        parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)))
-    dev_qrels = TrecQrels('msmarco-qna-dev-qrels',
-        source=manager.file_ref('dev.qrels'), defs=QRELS_DEFS)
-    dev_scoreddocs = TrecScoredDocs('msmarco-qna-dev-scoreddocs',
-        source=manager.file_ref('dev.run'))
+dev_queries = TsvQueries('msmarco-qna-dev-queries', cls=MsMarcoQnAQuery,
+    source=manager.file_ref('dev.queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+dev_answers = AnswerTable('msmarco-qna-dev-answers',
+    source=manager.file_ref('dev.queries.tsv'),
+    parser=AnswersFromQueriesParser(_TsvQueriesParser(MsMarcoQnAQuery)),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+dev_qrels = TrecQrels('msmarco-qna-dev-qrels',
+    source=manager.file_ref('dev.qrels'), defs=QRELS_DEFS, license='https://microsoft.github.io/msmarco/')
+dev_scoreddocs = TrecScoredDocs('msmarco-qna-dev-scoreddocs',
+    source=manager.file_ref('dev.run'),
+    license='https://microsoft.github.io/msmarco/')
 
-    eval_queries = TsvQueries('msmarco-qna-eval-queries', cls=MsMarcoQnAEvalQuery,
-        source=manager.file_ref('eval.queries.tsv'))
-    eval_scoreddocs = TrecScoredDocs('msmarco-qna-eval-scoreddocs',
-        source=manager.file_ref('eval.run'))
+eval_queries = TsvQueries('msmarco-qna-eval-queries', cls=MsMarcoQnAEvalQuery,
+    source=manager.file_ref('eval.queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+eval_scoreddocs = TrecScoredDocs('msmarco-qna-eval-scoreddocs',
+    source=manager.file_ref('eval.run'),
+    license='https://microsoft.github.io/msmarco/')
 
-    # Benchmarks
-    # -----------------------------------------
-    train = Benchmark('msmarco-qna-train',
-        docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
-        answers=train_answers,
-        citation=CITATION,
-        desc='Official train set. Queries are natural-language questions with '
-             'free-text answers; qrels/scoreddocs mark which passages the '
-             "annotator selected as contributing to the answer.")
-    dev = Benchmark('msmarco-qna-dev',
-        docs=docs, queries=dev_queries, qrels=dev_qrels, scoreddocs=dev_scoreddocs,
-        answers=dev_answers,
-        citation=CITATION,
-        desc='Official dev set.')
-    eval_ = Benchmark('msmarco-qna-eval',
-        docs=docs, queries=eval_queries, scoreddocs=eval_scoreddocs,
-        citation=CITATION,
-        desc='Official eval set for the MS MARCO QnA leaderboard (qrels hidden).')
+# Benchmarks
+# -----------------------------------------
+train = Benchmark('msmarco-qna-train',
+    docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
+    answers=train_answers,
+    citation=CITATION,
+    desc='Official train set. Queries are natural-language questions with '
+         'free-text answers; qrels/scoreddocs mark which passages the '
+         "annotator selected as contributing to the answer.",
+    license='https://microsoft.github.io/msmarco/')
+dev = Benchmark('msmarco-qna-dev',
+    docs=docs, queries=dev_queries, qrels=dev_qrels, scoreddocs=dev_scoreddocs,
+    answers=dev_answers,
+    citation=CITATION,
+    desc='Official dev set.',
+    license='https://microsoft.github.io/msmarco/')
+eval_ = Benchmark('msmarco-qna-eval',
+    docs=docs, queries=eval_queries, scoreddocs=eval_scoreddocs,
+    citation=CITATION,
+    desc='Official eval set for the MS MARCO QnA leaderboard (qrels hidden).',
+    license='https://microsoft.github.io/msmarco/')
 
 
 # Registration

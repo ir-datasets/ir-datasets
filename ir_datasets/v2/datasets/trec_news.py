@@ -19,81 +19,86 @@ from ir_datasets.v2 import Benchmark, Resource, Source, TrecQrels, TrecQueries, 
 from ir_datasets.v2.datasets.wapo import docs_v2 as wapo_v2_docs
 
 CITATION_2018 = 'dblp:conf/trec/SoboroffHH18'
-CITATION_2019 = 'Soboroff2019News'
+CITATION_2019 = '''@inproceedings{Soboroff2019News,
+  title={TREC 2019 News Track Overview},
+  author={Ian Soboroff and Shudong Huang and Donna Harman},
+  booktitle={TREC},
+  year={2019}
+}'''
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    news_2018_queries_file = Resource('trec-news-2018-queries.txt',
-        sources=['https://trec.nist.gov/data/news/2018/newsir18-topics.txt', Source.mirror()],
-        hash='md5:73740793543b439d1ff1b8ee9359973a',
-        size=12_489,
-    )
-    news_2018_qrels_file = Resource('trec-news-2018-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2018/bqrels.exp-gains.txt', Source.mirror()],
-        hash='md5:396963175006cb3201ea7c16e874033a',
-        size=364_062,
-    )
-    news_2019_queries_file = Resource('trec-news-2019-queries.xml',
-        sources=['https://trec.nist.gov/data/news/2019/newsir19-background-linking-topics.xml', Source.mirror()],
-        hash='md5:388b5c96f8962da17eb1024b856d21c1',
-        size=14_847,
-    )
-    news_2019_qrels_file = Resource('trec-news-2019-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2019/newsir19-qrels-background.txt', Source.mirror()],
-        hash='md5:7b839a1a94e349d3facf28012542cc1d',
-        size=669_632,
-    )
-    news_2020_queries_file = Resource('trec-news-2020-queries.txt',
-        sources=['https://trec.nist.gov/data/news/2020/newsir20-topics.txt', Source.mirror()],
-        hash='md5:2674538a07fb7ac29200cbc4c4a05404',
-        size=13_217,
-    )
-    news_2020_qrels_file = Resource('trec-news-2020-qrels.txt',
-        sources=['https://trec.nist.gov/data/news/2020/qrels.background', Source.mirror()],
-        hash='md5:7c31f731775bdd4148d349df1a9e43fc',
-        size=729_348,
-    )
+# Files
+# -----------------------------------------
+news_2018_queries_file = Resource('trec-news-2018-queries.txt',
+    sources=['https://trec.nist.gov/data/news/2018/newsir18-topics.txt', Source.mirror()],
+    hash='md5:73740793543b439d1ff1b8ee9359973a',
+    size=12_489,
+)
+news_2018_qrels_file = Resource('trec-news-2018-qrels.txt',
+    sources=['https://trec.nist.gov/data/news/2018/bqrels.exp-gains.txt', Source.mirror()],
+    hash='md5:396963175006cb3201ea7c16e874033a',
+    size=364_062,
+)
+news_2019_queries_file = Resource('trec-news-2019-queries.xml',
+    sources=['https://trec.nist.gov/data/news/2019/newsir19-background-linking-topics.xml', Source.mirror()],
+    hash='md5:388b5c96f8962da17eb1024b856d21c1',
+    size=14_847,
+)
+news_2019_qrels_file = Resource('trec-news-2019-qrels.txt',
+    sources=['https://trec.nist.gov/data/news/2019/newsir19-qrels-background.txt', Source.mirror()],
+    hash='md5:7b839a1a94e349d3facf28012542cc1d',
+    size=669_632,
+)
+news_2020_queries_file = Resource('trec-news-2020-queries.txt',
+    sources=['https://trec.nist.gov/data/news/2020/newsir20-topics.txt', Source.mirror()],
+    hash='md5:2674538a07fb7ac29200cbc4c4a05404',
+    size=13_217,
+)
+news_2020_qrels_file = Resource('trec-news-2020-qrels.txt',
+    sources=['https://trec.nist.gov/data/news/2020/qrels.background', Source.mirror()],
+    hash='md5:7c31f731775bdd4148d349df1a9e43fc',
+    size=729_348,
+)
 
-    # Tables
-    # -----------------------------------------
-    news_2018_queries = TrecQueries('trec-news-2018-queries',
-        source=news_2018_queries_file,
-        qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
-        count_hint=50, citation=CITATION_2018)
-    news_2018_qrels = TrecQrels('trec-news-2018-qrels',
-        source=news_2018_qrels_file, defs=BL_QREL_DEFS, count_hint=8_508,
-        citation=CITATION_2018)
+# Tables
+# -----------------------------------------
+news_2018_queries = TrecQueries('trec-news-2018-queries',
+    source=news_2018_queries_file,
+    qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
+    count_hint=50, citation=CITATION_2018, lang='en')
+news_2018_qrels = TrecQrels('trec-news-2018-qrels',
+    source=news_2018_qrels_file, defs=BL_QREL_DEFS, count_hint=8_508,
+    citation=CITATION_2018)
 
-    news_2019_queries = TrecQueries('trec-news-2019-queries',
-        source=news_2019_queries_file,
-        qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
-        count_hint=60, citation=CITATION_2019)
-    news_2019_qrels = TrecQrels('trec-news-2019-qrels',
-        source=news_2019_qrels_file, defs=BL_QREL_DEFS, count_hint=15_655,
-        citation=CITATION_2019)
+news_2019_queries = TrecQueries('trec-news-2019-queries',
+    source=news_2019_queries_file,
+    qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
+    count_hint=60, citation=CITATION_2019, lang='en')
+news_2019_qrels = TrecQrels('trec-news-2019-qrels',
+    source=news_2019_qrels_file, defs=BL_QREL_DEFS, count_hint=15_655,
+    citation=CITATION_2019)
 
-    news_2020_queries = TrecQueries('trec-news-2020-queries',
-        source=news_2020_queries_file,
-        qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
-        count_hint=50)
-    news_2020_qrels = TrecQrels('trec-news-2020-qrels',
-        source=news_2020_qrels_file, defs=BL_QREL_DEFS, count_hint=17_764)
+news_2020_queries = TrecQueries('trec-news-2020-queries',
+    source=news_2020_queries_file,
+    qtype=TrecBackgroundLinkingQuery, qtype_map=BL_MAP, remove_tags=RM_TAGS,
+    count_hint=50,
+    lang='en')
+news_2020_qrels = TrecQrels('trec-news-2020-qrels',
+    source=news_2020_qrels_file, defs=BL_QREL_DEFS, count_hint=17_764)
 
-    # Benchmarks
-    # -----------------------------------------
-    news_2018 = Benchmark('trec-news-2018',
-        docs=wapo_v2_docs, queries=news_2018_queries, qrels=news_2018_qrels,
-        citation=CITATION_2018,
-        desc='TREC News Track 2018 background linking task.')
-    news_2019 = Benchmark('trec-news-2019',
-        docs=wapo_v2_docs, queries=news_2019_queries, qrels=news_2019_qrels,
-        citation=CITATION_2019,
-        desc='TREC News Track 2019 background linking task.')
-    news_2020 = Benchmark('trec-news-2020',
-        queries=news_2020_queries, qrels=news_2020_qrels,
-        desc='TREC News Track 2020 background linking task. v1 registers this '
-             'with no docs facet (no v3 collection was ever defined) -- preserved as-is.')
+# Benchmarks
+# -----------------------------------------
+news_2018 = Benchmark('trec-news-2018',
+    docs=wapo_v2_docs, queries=news_2018_queries, qrels=news_2018_qrels,
+    citation=CITATION_2018,
+    desc='TREC News Track 2018 background linking task.')
+news_2019 = Benchmark('trec-news-2019',
+    docs=wapo_v2_docs, queries=news_2019_queries, qrels=news_2019_qrels,
+    citation=CITATION_2019,
+    desc='TREC News Track 2019 background linking task.')
+news_2020 = Benchmark('trec-news-2020',
+    queries=news_2020_queries, qrels=news_2020_qrels,
+    desc='TREC News Track 2020 background linking task. v1 registers this '
+         'with no docs facet (no v3 collection was ever defined) -- preserved as-is.')
 
 
 # Registration

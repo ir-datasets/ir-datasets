@@ -23,6 +23,14 @@ from ir_datasets.datasets.trec_spanish import (
 from ir_datasets.v2 import Benchmark, Parser, QrelTable, QueryTable, Resource, Source, TrecDocs, TrecQrels, irds
 from ir_datasets.v2.formats import _v1
 
+CITATION = '''@misc{Rogers2000Spanish,
+  title={TREC Spanish LDC2000T51},
+  author={Rogers, Willie},
+  year={2000},
+  url={https://catalog.ldc.upenn.edu/LDC2000T51},
+  publisher={Linguistic Data Consortium}
+}'''
+
 DATA_ACCESS = [
     "Find the LDC's Spanish news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T51> (LDC2000T51.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
     "Download LDC2000T51.tgz.",
@@ -105,7 +113,7 @@ docs = TrecDocs('trec-spanish-docs',
     path_globs=['**/afp_text/af*', '**/infosel_data/ism_*'],
     lang='es',
     count_hint=120_605,
-    citation='Rogers2000Spanish',
+    citation=CITATION,
 )
 
 # Query text mixes Spanish and English fields, so no single lang applies --

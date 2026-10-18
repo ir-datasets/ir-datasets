@@ -19,6 +19,14 @@ from typing import NamedTuple
 
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecDocs, TrecQrels, TrecQueries, irds
 
+CITATION = '''@misc{Rogers2000Mandarin,
+  title={TREC Mandarin LDC2000T52},
+  author={Rogers, Willie},
+  year={2000},
+  url={https://catalog.ldc.upenn.edu/LDC2000T52},
+  publisher={Linguistic Data Consortium}
+}'''
+
 DATA_ACCESS = [
     "Find the LDC's Mandarin news collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2000T52> (LDC2000T52.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
     "Download LDC2000T52.tgz.",
@@ -97,7 +105,7 @@ docs = TrecDocs('trec-mandarin-docs',
     path_globs=['**/xinhua/x*', '**/peoples-daily/pd*'],
     lang='zh',
     count_hint=164_789,
-    citation='Rogers2000Mandarin',
+    citation=CITATION,
 )
 
 # Query text mixes English and Chinese fields (title_en/title_zh/...), so no

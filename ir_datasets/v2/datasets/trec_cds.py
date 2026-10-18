@@ -47,84 +47,86 @@ class _TrecXmlQueriesParser(Parser):
             namespace=node.name, lang=node.lang)
 
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    cds_2014_queries_file = Resource('trec-cds-2014-queries.xml',
-        sources=['http://www.trec-cds.org/topics2014.xml'],
-        hash='md5:4924e2a3bb539feac6cbb967f4875926',
-        size=22_514)
-    cds_2014_qrels_file = Resource('trec-cds-2014-qrels.txt',
-        sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2014.txt'],
-        hash='md5:07c8f85a7b7bcfd4211301ecaa3b4769',
-        size=556_628)
-    cds_2015_queries_file = Resource('trec-cds-2015-queries.xml',
-        sources=['https://trec.nist.gov/data/clinical/topics-2015-A.xml'],
-        hash='md5:462d9804257e7ad0128f16324c9ec06d',
-        size=22_491)
-    cds_2015_qrels_file = Resource('trec-cds-2015-qrels.txt',
-        sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2015.txt'],
-        hash='md5:7bbe901cfa36df56dd13cce0275c1a2b',
-        size=554_312)
-    cds_2016_queries_file = Resource('trec-cds-2016-queries.xml',
-        sources=['https://trec.nist.gov/data/clinical/topics2016.xml'],
-        hash='md5:22ccb3412931efe1ea084330737e41bc',
-        size=79_966)
-    cds_2016_qrels_file = Resource('trec-cds-2016-qrels.txt',
-        sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2016.txt'],
-        hash='md5:1a450d38137082e214c1201a3023a6d1',
-        size=553_709)
+# Files
+# -----------------------------------------
+cds_2014_queries_file = Resource('trec-cds-2014-queries.xml',
+    sources=['http://www.trec-cds.org/topics2014.xml'],
+    hash='md5:4924e2a3bb539feac6cbb967f4875926',
+    size=22_514)
+cds_2014_qrels_file = Resource('trec-cds-2014-qrels.txt',
+    sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2014.txt'],
+    hash='md5:07c8f85a7b7bcfd4211301ecaa3b4769',
+    size=556_628)
+cds_2015_queries_file = Resource('trec-cds-2015-queries.xml',
+    sources=['https://trec.nist.gov/data/clinical/topics-2015-A.xml'],
+    hash='md5:462d9804257e7ad0128f16324c9ec06d',
+    size=22_491)
+cds_2015_qrels_file = Resource('trec-cds-2015-qrels.txt',
+    sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2015.txt'],
+    hash='md5:7bbe901cfa36df56dd13cce0275c1a2b',
+    size=554_312)
+cds_2016_queries_file = Resource('trec-cds-2016-queries.xml',
+    sources=['https://trec.nist.gov/data/clinical/topics2016.xml'],
+    hash='md5:22ccb3412931efe1ea084330737e41bc',
+    size=79_966)
+cds_2016_qrels_file = Resource('trec-cds-2016-qrels.txt',
+    sources=['https://trec.nist.gov/data/clinical/qrels-treceval-2016.txt'],
+    hash='md5:1a450d38137082e214c1201a3023a6d1',
+    size=553_709)
 
-    # Tables
-    # -----------------------------------------
-    cds_2014_queries = QueryTable('trec-cds-2014-queries',
-        source=cds_2014_queries_file,
-        parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
-        count_hint=30,
-        citation='dblp:conf/trec/SimpsonVH14',
-    )
-    cds_2014_qrels = TrecQrels('trec-cds-2014-qrels',
-        source=cds_2014_qrels_file,
-        defs=QREL_DEFS,
-        count_hint=37_949,
-    )
-    cds_2015_queries = QueryTable('trec-cds-2015-queries',
-        source=cds_2015_queries_file,
-        parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
-        count_hint=30,
-        citation='dblp:conf/trec/RobertsSVH15',
-    )
-    cds_2015_qrels = TrecQrels('trec-cds-2015-qrels',
-        source=cds_2015_qrels_file,
-        defs=QREL_DEFS,
-        count_hint=37_807,
-    )
-    cds_2016_queries = QueryTable('trec-cds-2016-queries',
-        source=cds_2016_queries_file,
-        parser=_TrecXmlQueriesParser(TrecCds2016Query, QUERY_FILE_MAP),
-        count_hint=30,
-        citation='dblp:conf/trec/RobertsDVH16',
-    )
-    cds_2016_qrels = TrecQrels('trec-cds-2016-qrels',
-        source=cds_2016_qrels_file,
-        defs=QREL_DEFS,
-        count_hint=37_707,
-    )
+# Tables
+# -----------------------------------------
+cds_2014_queries = QueryTable('trec-cds-2014-queries',
+    source=cds_2014_queries_file,
+    parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
+    count_hint=30,
+    citation='dblp:conf/trec/SimpsonVH14',
+    lang='en',
+)
+cds_2014_qrels = TrecQrels('trec-cds-2014-qrels',
+    source=cds_2014_qrels_file,
+    defs=QREL_DEFS,
+    count_hint=37_949,
+)
+cds_2015_queries = QueryTable('trec-cds-2015-queries',
+    source=cds_2015_queries_file,
+    parser=_TrecXmlQueriesParser(TrecCdsQuery, QUERY_FILE_MAP),
+    count_hint=30,
+    citation='dblp:conf/trec/RobertsSVH15',
+    lang='en',
+)
+cds_2015_qrels = TrecQrels('trec-cds-2015-qrels',
+    source=cds_2015_qrels_file,
+    defs=QREL_DEFS,
+    count_hint=37_807,
+)
+cds_2016_queries = QueryTable('trec-cds-2016-queries',
+    source=cds_2016_queries_file,
+    parser=_TrecXmlQueriesParser(TrecCds2016Query, QUERY_FILE_MAP),
+    count_hint=30,
+    citation='dblp:conf/trec/RobertsDVH16',
+    lang='en',
+)
+cds_2016_qrels = TrecQrels('trec-cds-2016-qrels',
+    source=cds_2016_qrels_file,
+    defs=QREL_DEFS,
+    count_hint=37_707,
+)
 
-    # Benchmarks
-    # -----------------------------------------
-    cds_2014 = Benchmark('trec-cds-2014',
-        docs=pmc_v1_docs, queries=cds_2014_queries, qrels=cds_2014_qrels,
-        desc='TREC Clinical Decision Support track 2014.',
-        citation='dblp:conf/trec/SimpsonVH14')
-    cds_2015 = Benchmark('trec-cds-2015',
-        docs=pmc_v1_docs, queries=cds_2015_queries, qrels=cds_2015_qrels,
-        desc='TREC Clinical Decision Support track 2015.',
-        citation='dblp:conf/trec/RobertsSVH15')
-    cds_2016 = Benchmark('trec-cds-2016',
-        docs=pmc_v2_docs, queries=cds_2016_queries, qrels=cds_2016_qrels,
-        desc='TREC Clinical Decision Support track 2016.',
-        citation='dblp:conf/trec/RobertsDVH16')
+# Benchmarks
+# -----------------------------------------
+cds_2014 = Benchmark('trec-cds-2014',
+    docs=pmc_v1_docs, queries=cds_2014_queries, qrels=cds_2014_qrels,
+    desc='TREC Clinical Decision Support track 2014.',
+    citation='dblp:conf/trec/SimpsonVH14')
+cds_2015 = Benchmark('trec-cds-2015',
+    docs=pmc_v1_docs, queries=cds_2015_queries, qrels=cds_2015_qrels,
+    desc='TREC Clinical Decision Support track 2015.',
+    citation='dblp:conf/trec/RobertsSVH15')
+cds_2016 = Benchmark('trec-cds-2016',
+    docs=pmc_v2_docs, queries=cds_2016_queries, qrels=cds_2016_qrels,
+    desc='TREC Clinical Decision Support track 2016.',
+    citation='dblp:conf/trec/RobertsDVH16')
 
 
 # Registration

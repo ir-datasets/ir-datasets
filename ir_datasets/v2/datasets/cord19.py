@@ -26,7 +26,7 @@ snapshot/mode, so there's no collision to avoid here).
   first extracted to a fixed local directory (``extr_path``) if not already
   present, then ``metadata.csv`` plus per-article JSON bodies are read from
   that extracted tree. Every snapshot has a ``-fulltext`` table (an
-  ``irds:alternative_of`` its metadata-only one; v1 only offered 2020-07-16) --
+  ``irds:alternativeOf`` its metadata-only one; v1 only offered 2020-07-16) --
   ``extr_path`` is a plain local directory under
   ``ir_datasets.util.home_path()``, same convention as ``clueweb09.py``'s
   ``corpus.chk`` / ``c4.py``'s checkpoints extraction.
@@ -65,129 +65,148 @@ class _Cord19DocsParser(Parser):
 
 
 # license verified 2026-09-30: https://github.com/allenai/cord19/blob/master/LICENSE (COVID Dataset License Agreement; custom, text-and-data-mining only)
-with irds.defaults(lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE'):
-    # Files
-    # -----------------------------------------
-    docs_2020_07_16_metadata_file = Resource('cord19-2020-07-16-metadata.csv',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-07-16/metadata.csv'],
-        hash='md5:80d664e496b8b7e50a39c6f6bb92e0ef',
-        size=269_219_095,
-    )
-    docs_2020_07_16_file = Resource('cord19-2020-07-16.tar.gz',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-07-16.tar.gz'],
-        hash='md5:018c4bc4d76d4ae072a26ac28c8b456b',
-        size=3_662_861_028,
-    )
-    docs_2020_04_10_metadata_file = Resource('cord19-2020-04-10-metadata.csv',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv'],
-        hash='md5:42a21f386be86c24647a41bedde34046',
-        size=77_323_567,
-    )
-    docs_2020_05_01_metadata_file = Resource('cord19-2020-05-01-metadata.csv',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-01/metadata.csv'],
-        hash='md5:b1d2e409026494e0c8034278bacd1248',
-        size=89_290_114,
-    )
-    docs_2020_05_19_metadata_file = Resource('cord19-2020-05-19-metadata.csv',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-19/metadata.csv'],
-        hash='md5:e3c5c8af3a078e19cb179e630c345959',
-        size=189_687_667,
-    )
-    docs_2020_06_19_metadata_file = Resource('cord19-2020-06-19-metadata.csv',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-06-19/metadata.csv'],
-        hash='md5:4e8788b6e44f3428ff9ab1d4bfdfb6ab',
-        size=228_730_850,
-    )
-    # (the 2020-04-10 and 2020-05-01 releases are bzip2, despite their .tar.gz URLs)
-    docs_2020_04_10_file = Resource('cord19-2020-04-10.tar.bz2',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-04-10.tar.gz'],
-        hash='md5:f4c3e742af7a6d6907ac86b1ca9f5312',
-        size=1_516_963_708,
-    )
-    docs_2020_05_01_file = Resource('cord19-2020-05-01.tar.bz2',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-01.tar.gz'],
-        hash='md5:e8c56920c612b89e20b54f9f5b02c992',
-        size=1_742_677_535,
-    )
-    docs_2020_05_19_file = Resource('cord19-2020-05-19.tar.gz',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-19.tar.gz'],
-        hash='md5:6424de9c3bdf74b889df74f9b71d5cbc',
-        size=2_793_628_709,
-    )
-    docs_2020_06_19_file = Resource('cord19-2020-06-19.tar.gz',
-        sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-06-19.tar.gz'],
-        hash='md5:47b61215768b6fa72d7a152757d38d96',
-        size=3_336_210_521,
-    )
+# Files
+# -----------------------------------------
+docs_2020_07_16_metadata_file = Resource('cord19-2020-07-16-metadata.csv',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-07-16/metadata.csv'],
+    hash='md5:80d664e496b8b7e50a39c6f6bb92e0ef',
+    size=269_219_095,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_07_16_file = Resource('cord19-2020-07-16.tar.gz',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-07-16.tar.gz'],
+    hash='md5:018c4bc4d76d4ae072a26ac28c8b456b',
+    size=3_662_861_028,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_04_10_metadata_file = Resource('cord19-2020-04-10-metadata.csv',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-04-10/metadata.csv'],
+    hash='md5:42a21f386be86c24647a41bedde34046',
+    size=77_323_567,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_01_metadata_file = Resource('cord19-2020-05-01-metadata.csv',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-01/metadata.csv'],
+    hash='md5:b1d2e409026494e0c8034278bacd1248',
+    size=89_290_114,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_19_metadata_file = Resource('cord19-2020-05-19-metadata.csv',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-05-19/metadata.csv'],
+    hash='md5:e3c5c8af3a078e19cb179e630c345959',
+    size=189_687_667,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_06_19_metadata_file = Resource('cord19-2020-06-19-metadata.csv',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/2020-06-19/metadata.csv'],
+    hash='md5:4e8788b6e44f3428ff9ab1d4bfdfb6ab',
+    size=228_730_850,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+# (the 2020-04-10 and 2020-05-01 releases are bzip2, despite their .tar.gz URLs)
+docs_2020_04_10_file = Resource('cord19-2020-04-10.tar.bz2',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-04-10.tar.gz'],
+    hash='md5:f4c3e742af7a6d6907ac86b1ca9f5312',
+    size=1_516_963_708,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_01_file = Resource('cord19-2020-05-01.tar.bz2',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-01.tar.gz'],
+    hash='md5:e8c56920c612b89e20b54f9f5b02c992',
+    size=1_742_677_535,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_19_file = Resource('cord19-2020-05-19.tar.gz',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-05-19.tar.gz'],
+    hash='md5:6424de9c3bdf74b889df74f9b71d5cbc',
+    size=2_793_628_709,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_06_19_file = Resource('cord19-2020-06-19.tar.gz',
+    sources=['https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases/cord-19_2020-06-19.tar.gz'],
+    hash='md5:47b61215768b6fa72d7a152757d38d96',
+    size=3_336_210_521,
+    license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
 
-    # Tables
-    # -----------------------------------------
-    docs_2020_07_16 = DocTable('cord19-2020-07-16',
-        source=docs_2020_07_16_metadata_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-07-16', '2020-07-16'),
-        count_hint=192_509,
-        citation=CITATION_CORD19,
-    )
-    docs_2020_07_16_fulltext = DocTable('cord19-2020-07-16-fulltext',
-        source=docs_2020_07_16_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-07-16.fulltext', '2020-07-16', include_fulltext=True),
-        count_hint=192_509,
-        citation=CITATION_CORD19,
-        metadata={'alternative_note': 'adds article full text'},
-    )
-    docs_2020_04_10 = DocTable('cord19-2020-04-10',
-        source=docs_2020_04_10_metadata_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-04-10', '2020-04-10'),
-        count_hint=51_078,
-        citation=CITATION_CORD19,
-    )
-    docs_2020_05_01 = DocTable('cord19-2020-05-01',
-        source=docs_2020_05_01_metadata_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-05-01', '2020-05-01'),
-        count_hint=59_887,
-        citation=CITATION_CORD19,
-    )
-    docs_2020_05_19 = DocTable('cord19-2020-05-19',
-        source=docs_2020_05_19_metadata_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-05-19', '2020-05-19'),
-        count_hint=128_492,
-        citation=CITATION_CORD19,
-    )
-    docs_2020_06_19 = DocTable('cord19-2020-06-19',
-        source=docs_2020_06_19_metadata_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-06-19', '2020-06-19'),
-        count_hint=158_274,
-        citation=CITATION_CORD19,
-    )
+# Tables
+# -----------------------------------------
+docs_2020_07_16 = DocTable('cord19-2020-07-16',
+    source=docs_2020_07_16_metadata_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-07-16', '2020-07-16'),
+    count_hint=192_509,
+    citation=CITATION_CORD19,
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_07_16_fulltext = DocTable('cord19-2020-07-16-fulltext',
+    source=docs_2020_07_16_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-07-16.fulltext', '2020-07-16', include_fulltext=True),
+    count_hint=192_509,
+    citation=CITATION_CORD19,
+    metadata={'alternativeNote': 'adds article full text'},
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_04_10 = DocTable('cord19-2020-04-10',
+    source=docs_2020_04_10_metadata_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-04-10', '2020-04-10'),
+    count_hint=51_078,
+    citation=CITATION_CORD19,
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_01 = DocTable('cord19-2020-05-01',
+    source=docs_2020_05_01_metadata_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-05-01', '2020-05-01'),
+    count_hint=59_887,
+    citation=CITATION_CORD19,
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_19 = DocTable('cord19-2020-05-19',
+    source=docs_2020_05_19_metadata_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-05-19', '2020-05-19'),
+    count_hint=128_492,
+    citation=CITATION_CORD19,
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_06_19 = DocTable('cord19-2020-06-19',
+    source=docs_2020_06_19_metadata_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-06-19', '2020-06-19'),
+    count_hint=158_274,
+    citation=CITATION_CORD19,
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
 
-    docs_2020_04_10_fulltext = DocTable('cord19-2020-04-10-fulltext',
-        source=docs_2020_04_10_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-04-10.fulltext', '2020-04-10', include_fulltext=True),
-        count_hint=51_078,
-        citation=CITATION_CORD19,
-        metadata={'alternative_note': 'adds article full text'},
-    )
-    docs_2020_05_01_fulltext = DocTable('cord19-2020-05-01-fulltext',
-        source=docs_2020_05_01_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-05-01.fulltext', '2020-05-01', include_fulltext=True),
-        count_hint=59_887,
-        citation=CITATION_CORD19,
-        metadata={'alternative_note': 'adds article full text'},
-    )
-    docs_2020_05_19_fulltext = DocTable('cord19-2020-05-19-fulltext',
-        source=docs_2020_05_19_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-05-19.fulltext', '2020-05-19', include_fulltext=True),
-        count_hint=128_492,
-        citation=CITATION_CORD19,
-        metadata={'alternative_note': 'adds article full text'},
-    )
-    docs_2020_06_19_fulltext = DocTable('cord19-2020-06-19-fulltext',
-        source=docs_2020_06_19_file,
-        parser=_Cord19DocsParser(BASE_PATH / '2020-06-19.fulltext', '2020-06-19', include_fulltext=True),
-        count_hint=158_274,
-        citation=CITATION_CORD19,
-        metadata={'alternative_note': 'adds article full text'},
-    )
+docs_2020_04_10_fulltext = DocTable('cord19-2020-04-10-fulltext',
+    source=docs_2020_04_10_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-04-10.fulltext', '2020-04-10', include_fulltext=True),
+    count_hint=51_078,
+    citation=CITATION_CORD19,
+    metadata={'alternativeNote': 'adds article full text'},
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_01_fulltext = DocTable('cord19-2020-05-01-fulltext',
+    source=docs_2020_05_01_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-05-01.fulltext', '2020-05-01', include_fulltext=True),
+    count_hint=59_887,
+    citation=CITATION_CORD19,
+    metadata={'alternativeNote': 'adds article full text'},
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_05_19_fulltext = DocTable('cord19-2020-05-19-fulltext',
+    source=docs_2020_05_19_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-05-19.fulltext', '2020-05-19', include_fulltext=True),
+    count_hint=128_492,
+    citation=CITATION_CORD19,
+    metadata={'alternativeNote': 'adds article full text'},
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
+docs_2020_06_19_fulltext = DocTable('cord19-2020-06-19-fulltext',
+    source=docs_2020_06_19_file,
+    parser=_Cord19DocsParser(BASE_PATH / '2020-06-19.fulltext', '2020-06-19', include_fulltext=True),
+    count_hint=158_274,
+    citation=CITATION_CORD19,
+    metadata={'alternativeNote': 'adds article full text'},
+    lang='en', license='https://github.com/allenai/cord19/blob/master/LICENSE',
+)
 
 # Registration
 # -----------------------------------------
@@ -198,7 +217,7 @@ irds.register(docs_2020_07_16, docs_2020_07_16_fulltext,
 
 # The full-text docs share doc_ids (cord_uid) with the metadata-only ones, so
 # benchmarks over the latter (trec-covid, its rounds) can swap them in -- see
-# ``Benchmark.replace`` / ``irds:alternative_of``.
+# ``Benchmark.replace`` / ``irds:alternativeOf``.
 for _date in ('2020-04-10', '2020-05-01', '2020-05-19', '2020-06-19', '2020-07-16'):
     _v = _date.replace('-', '_')
-    irds.add_edge(globals()[f'docs_{_v}_fulltext'], 'alternative_of', globals()[f'docs_{_v}'])
+    irds.add_edge(globals()[f'docs_{_v}_fulltext'], 'alternativeOf', globals()[f'docs_{_v}'])

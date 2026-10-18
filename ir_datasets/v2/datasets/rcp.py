@@ -25,9 +25,7 @@ from ir_datasets.v2 import Benchmark, Resource, Suite, irds
 from ir_datasets.v2.datasets.nano_beir import nano_benchmarks
 from ir_datasets.v2.formats import RcpQrels
 
-CITATION = ('Schmidt, Crisostomi, Lassance, Reimers. Rubric-Calibrated Preferences: '
-            'Cross-Query Calibration of LLM Judgments via Item Response Theory. '
-            'arXiv:2609.35739, 2026.')
+CITATION = 'dblp:journals/corr/abs-2609-35739'
 
 REPO = 'fabianschmidt-cohere/rcp-ndcg-nanobeir'
 COMMIT = 'cb6c981c80a70b6a46f8b7ba3a60206a9fab5d8e'

@@ -1,10 +1,10 @@
 """``Node``, ``Edge``, and ``Generator`` -- the graph machinery this package's
-own node types (``Resource``, ``Table``, ``Benchmark``, ``Suite``) and any
+own graph classes (``Resource``, ``Table``, ``Benchmark``, ``Suite``) and any
 third-party provider's build on.
 
 This module knows nothing about datasets. It declares no vocabulary of its
-own -- no node type, no edge kind -- because that's a provider's job (see
-``registry.ManifestProvider.node_type``/``edge_kind``). ``nodes.py`` is where
+own -- no graph class, no edge kind -- because that's a provider's job (see
+``registry.ManifestProvider.graph_class``/``edge_kind``). ``nodes.py`` is where
 the dataset vocabulary actually gets declared, on the ``irds`` provider.
 
 A subclass participates in the graph through optional hooks on ``Node``,
@@ -15,7 +15,7 @@ inspection:
     (metadata)           the descriptive dict reported at discovery
 
 ``citation`` sits alongside ``desc``/``pretty_name`` as a field any node can
-carry: "how do I cite this" is not specific to any one node type. It is plain
+carry: "how do I cite this" is not specific to any one graph class. It is plain
 text here; a richer citation model (papers as nodes, citations as edges) is
 future work -- see the README.
 """
@@ -24,7 +24,6 @@ import re
 from typing import NamedTuple, Union
 
 from . import requirements
-from .context import default
 from .vocabulary import is_structural
 
 
@@ -39,10 +38,13 @@ class Literal:
     ``typing.Literal``, which is a static-typing annotation, not a runtime
     value wrapper; don't confuse the two.
     """
-    __slots__ = ('value',)
+    __slots__ = ('value', 'datatype')
 
-    def __init__(self, value):
+    def __init__(self, value, datatype=None):
         self.value = value
+        #: ``'json'`` for a literal holding a JSON document, else ``None`` (the
+        #: value's own type -- text, number -- is the datatype).
+        self.datatype = datatype
 
     def __repr__(self):
         return f'Literal({self.value!r})'
@@ -64,7 +66,7 @@ class Edge(NamedTuple):
     matters: the graph is traversable without materializing any data.
 
     Edge *kinds* are declared by providers and qualified like everything else
-    (``irds:derived_from``); see ``vocabulary``.
+    (``irds:derivedFrom``); see ``vocabulary``.
     """
     kind: str
     target: Union[str, 'Node']
@@ -84,7 +86,7 @@ class Edge(NamedTuple):
 
 class Node:
     """A name, a ``type`` (set on the subclass, and *declared by a provider*:
-    ``type = irds.node_type('Table')``), and a dict of descriptive
+    ``type = irds.declare_graph_class('Table')``), and a dict of descriptive
     ``metadata``.
 
     Constructing a node creates an object and nothing else. It joins a graph
@@ -101,19 +103,18 @@ class Node:
                 f'{name!r}: node names may not contain ":"; the prefix is '
                 f'applied by the provider at registration')
         self.name = name
-        deprecated = default('deprecated', deprecated)
         #: The license the node's data is distributed under: an SPDX
         #: identifier (``'CC-BY-4.0'``) where one exists, else the URL of the
         #: governing terms; a list if several apply. Declared in code and
         #: reported at discovery (``discovery_literals``) -- the declaration *is*
         #: the source of truth.
-        self.license = default('license', license)
+        self.license = license
         #: Pip packages (see ``requirements``) this node needs beyond
         #: the core install. A node's *effective* requirements include those
         #: of everything it is built from -- see ``Graph.requires``.
         self._requires = requirements.normalize(requires)
         self.metadata = {k: v for k, v in {
-            'desc': desc, 'pretty_name': pretty_name, 'citation': citation,
+            'description': desc, 'prettyName': pretty_name, 'citation': citation,
             'deprecated': deprecated, **(metadata or {}),
         }.items() if v}
         # Assigned by the provider at registration.
@@ -131,7 +132,7 @@ class Node:
         Resource's size and how it is validated). Empty values are dropped."""
         literals = {'license': self.license} if self.license else {}
         if self.requires:
-            literals['requires-dependency'] = list(self.requires)
+            literals['requiresDependency'] = list(self.requires)
         return literals
 
     @property
@@ -164,7 +165,7 @@ class Generator:
     Used where enumeration is impractical (a 139x139x4x3 parametric family) or
     impossible (a family defined on a remote server). It is a rule -- template,
     parameter domains, metadata -- not an expansion.
-    ``type`` is the (qualified, declared) node type of what it produces.
+    ``type`` is the (qualified, declared) graph class of what it produces.
 
     The name template doubles as the parameter spec, so name<->params
     round-trips by construction rather than via a regex kept in sync by hand.
@@ -175,7 +176,7 @@ class Generator:
                  defined_in=None, **meta):
         self.template = template
         self.params = params
-        self.node_type = type
+        self.graph_class = type
         #: Called with the matched parameters to build the node. Usually the
         #: node class itself, whose constructor takes the same parameter names
         #: as the template.
@@ -294,12 +295,12 @@ class Generator:
         those already has the cheaper ``enumerate()``)."""
         for params in self.enumerate_params():
             name = self._qualify(self.template.format(**params))
-            yield name, {'type': self.node_type, **self.row_metadata(**params)}
+            yield name, {'type': self.graph_class, **self.row_metadata(**params)}
 
     def metadata(self):
         resolver = getattr(self.resolver, '__qualname__', repr(self.resolver))
         return {'name_template': self.template, 'kind': 'generator',
-                'type': self.node_type, 'module': self.defined_in,
+                'type': self.graph_class, 'module': self.defined_in,
                 'resolver': resolver, 'enumerable': self.enumerable,
                 'params': {k: {'values': list(v.values) if v.values else None,
                                'pattern': v.pattern, 'desc': v.desc}

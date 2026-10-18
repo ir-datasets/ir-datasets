@@ -7,8 +7,7 @@ ideas can be exercised on real data without reimplementing any of it.
 
 The generic graph machinery -- ``Node``, ``Edge``, ``Provider``, ``Graph``,
 ``Generator`` -- lives in this package (``base.py``,
-``protocols.py``, ``registry.py``, ``graph.py``, ``vocabulary.py``,
-``context.py``) but declares no vocabulary of its own; a *provider* declares
+``protocols.py``, ``registry.py``, ``graph.py``, ``vocabulary.py``) but declares no vocabulary of its own; a *provider* declares
 vocabulary, and any package (this one included) may be one. ``Provider``
 (``protocols.py``) is a two-method contract -- resolve a node by name, report
 the provider's whole catalog as edges -- not a class to inherit; a provider
@@ -16,7 +15,7 @@ is free to keep a list of registered datasets internally however it likes.
 ``ManifestProvider`` (``registry.py``) is the batteries-included
 implementation of it -- registration, vocabulary declaration, generators --
 and what ``irds`` (this package's own provider) is built
-from. ``ir_datasets.v2`` contributes these node types, all owned by its own
+from. ``ir_datasets.v2`` contributes these graph classes, all owned by its own
 ``irds`` provider:
 
 * ``Data`` — bytes, and where to get them: ``File`` (one blob) or
@@ -25,7 +24,7 @@ from. ``ir_datasets.v2`` contributes these node types, all owned by its own
   per-entity subtypes, ``DocTable``, ``QueryTable``, ``QrelTable``,
   ``RunTable``, ``DocPairTable``, ``AnswerTable``, ``QlogTable`` (and their
   format subclasses).
-  Each is its own declared graph type (``is_subtype('irds:Qrels',
+  Each is its own declared graph type (``is_subclass('irds:Qrels',
   'irds:Table')`` is true), so ``list_datasets(type='irds:Table')`` finds all
   six kinds while ``list_datasets(type='irds:Qrels')`` finds only qrels
   tables. ``QlogTable`` (raw query logs, e.g. AOL's/TripClick's session data)
@@ -43,11 +42,11 @@ Citations-as-papers and metrics-as-measures (each with their own edges) are
 future work for a broader knowledge graph; for now both are plain metadata.
 
 The design still decentralizes: a third-party package can declare its own
-``Provider``, its own node types and edge kinds, and its own entry point in the
+``Provider``, its own graph classes and edge kinds, and its own entry point in the
 ``ir_datasets.providers`` group (``ENTRY_POINT_GROUP``) -- pointing at nodes
 this package's ``irds`` provider owns, or vice versa -- without either package
 importing the other until a node is actually resolved. A type it declares may
-also be a *subtype* of one of ours (``ext.node_type('MyTable', parent=TABLE)``),
+also be a *subtype* of one of ours (``ext.declare_graph_class('MyTable', parent=TABLE)``),
 so a new entity kind this package never enumerated still shows up under
 ``list(type='irds:Table')``.
 
@@ -61,7 +60,7 @@ a requirement. A third-party ``Table`` backed by a live API instead of a
 downloaded ``Resource`` is exactly as valid a graph node as any of ours.
 
 Every name has a home and the home is in the name: ``irds:antique-test``,
-type ``irds:Benchmark``, edge kind ``irds:derived_from``. There is no default
+type ``irds:Benchmark``, edge kind ``irds:derivedFrom``. There is no default
 provider, beyond ``load()``'s own bare-name fallback to ``irds:``/``legacy:``
 (see ``graph.py``'s docstring); legacy v1 ids (``antique/test``) still
 resolve that way, to whatever v2 node replaced them.
@@ -87,7 +86,7 @@ from .base import Edge, Generator, Literal, Node, Param
 from .registry import DuplicateNameError, ManifestProvider
 from .graph import ENTRY_POINT_GROUP, Graph, default_graph, discover
 from .vocabulary import (
-    edge_kinds, informational_kinds, is_structural, is_subtype, node_types,
+    edge_kinds, informational_kinds, is_structural, is_subclass, graph_classes, graph_properties, literal_properties,
     structural_kinds,
 )
 
@@ -103,7 +102,7 @@ from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 # legacy_provider.py's own docstring.
 from .legacy_provider import legacy
 from .nodes import (
-    ALIAS_OF, ALTERNATIVE_OF, AnswerTable, BENCHMARK, Benchmark, alternatives, DEFAULTABLE, Directory, DocPairTable, DocTable, ENTITIES,
+    ALIAS_OF, ALTERNATIVE_OF, AnswerTable, BENCHMARK, Benchmark, alternatives, Directory, DocPairTable, DocTable, ENTITIES,
     ADHOC_BENCHMARK, ALIAS, BUNDLE, DIRECTORY, FILE, File, GitRepo, QA_BENCHMARK, QlogTable, DATA, Resource,
     QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
@@ -137,7 +136,7 @@ def load(name, **facets):
     """Resolve a node by qualified name (``irds:antique-test``), or by legacy
     v1 id (``antique/test``). For a Benchmark, ``facets`` swap in other tables
     (``load('irds:trec-covid', docs='irds:cord19-2020-07-16-fulltext')``); see
-    ``Benchmark.replace`` (warns if not an ``irds:alternative_of``)."""
+    ``Benchmark.replace`` (warns if not an ``irds:alternativeOf``)."""
     node = graph.load(name)
     return node.replace(**facets) if facets else node
 
@@ -181,8 +180,8 @@ __all__ = [
     # generic graph machinery
     'Node', 'Edge', 'Literal', 'Generator', 'Param', 'Provider', 'ManifestProvider', 'Graph',
     'DuplicateNameError', 'default_graph', 'discover', 'ENTRY_POINT_GROUP',
-    'node_types', 'edge_kinds', 'structural_kinds', 'informational_kinds', 'is_structural',
-    'is_subtype',
+    'graph_classes', 'graph_properties', 'edge_kinds', 'literal_properties', 'structural_kinds', 'informational_kinds', 'is_structural',
+    'is_subclass',
     # nodes
     'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'DocTable', 'QueryTable',
     'QrelTable', 'RunTable', 'DocPairTable', 'AnswerTable', 'QlogTable', 'Benchmark', 'Suite', 'ENTITIES',
@@ -191,10 +190,10 @@ __all__ = [
     'NodeProtocol', 'DataProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',
     # vocabulary (declared on the irds provider)
     'DATA', 'FILE', 'DIRECTORY', 'BUNDLE', 'ADHOC_BENCHMARK', 'ALIAS', 'ALIAS_OF', 'QA_BENCHMARK', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
-    'STRUCTURAL_EDGES', 'DEFAULTABLE', 'source_resources',
+    'STRUCTURAL_EDGES', 'source_resources',
     # sources
     'Source', 'Readable', 'transform', 'external_home',
-    # formats (the node type IS the format)
+    # formats (the graph class IS the format)
     'TsvDocs', 'TsvQueries', 'TrecDocs', 'TrecQueries', 'TrecQrels', 'RcpQrels', 'TrecScoredDocs', 'TsvDocPairs',
     'Parser',
     # derivation

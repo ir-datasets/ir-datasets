@@ -25,7 +25,12 @@ from ir_datasets.v2.datasets.c4 import en_noclean_tr_docs as c4_docs
 from ir_datasets.v2.datasets.clueweb12 import docs_b13
 from ir_datasets.v2.formats import Parser
 
-CITATION = 'Abualsaud2019TrecDecision'
+CITATION = '''@inproceedings{Abualsaud2019TrecDecision,
+  title={Overview of the TREC 2019 Decision Track},
+  author={Mustafa Abualsaud and Christina Lioma and Maria Maistro and Mark D. Smucker and Guido Zuccon},
+  booktitle={TREC},
+  year={2019}
+}'''
 
 misinfo_2021_map = {'number': 'query_id', 'query': 'text', 'description': 'description',
                     'narrative': 'narrative', 'disclaimer': 'disclaimer', 'stance': 'stance',
@@ -51,56 +56,57 @@ class _MsinfoQrelsParser(Parser):
         return _V1MsinfoQrels(source, node.defs or {})
 
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    trec_misinfo_2019_queries_file = Resource('trec-misinfo-2019-queries.xml',
-        sources=['https://trec.nist.gov/data/misinfo/2019topics.xml', Source.mirror()],
-        hash='md5:e46bb8ff3058bbcc1bd73a0ecbda1621',
-        size=30_028,
-    )
-    trec_misinfo_2019_qrels_file = Resource('trec-misinfo-2019-qrels.txt',
-        sources=['https://trec.nist.gov/data/misinfo/2019qrels_raw.txt', Source.mirror()],
-        hash='md5:faf86b2ac5fcca52b189a3ad408fd019',
-        size=878_952,
-    )
+# Files
+# -----------------------------------------
+trec_misinfo_2019_queries_file = Resource('trec-misinfo-2019-queries.xml',
+    sources=['https://trec.nist.gov/data/misinfo/2019topics.xml', Source.mirror()],
+    hash='md5:e46bb8ff3058bbcc1bd73a0ecbda1621',
+    size=30_028,
+)
+trec_misinfo_2019_qrels_file = Resource('trec-misinfo-2019-qrels.txt',
+    sources=['https://trec.nist.gov/data/misinfo/2019qrels_raw.txt', Source.mirror()],
+    hash='md5:faf86b2ac5fcca52b189a3ad408fd019',
+    size=878_952,
+)
 
-    trec_misinfo_2021_queries_file = Resource('trec-misinfo-2021-queries.xml',
-        sources=['https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml'],
-        hash='md5:988ea3128eefa5814b550f5fe1a15e94',
-        size=50_722,
-    )
+trec_misinfo_2021_queries_file = Resource('trec-misinfo-2021-queries.xml',
+    sources=['https://trec.nist.gov/data/misinfo/misinfo-2021-topics.xml'],
+    hash='md5:988ea3128eefa5814b550f5fe1a15e94',
+    size=50_722,
+)
 
-    # Tables
-    # -----------------------------------------
-    trec_misinfo_2021_queries = QueryTable('trec-misinfo-2021-queries',
-        source=trec_misinfo_2021_queries_file,
-        parser=_TrecXmlQueriesParser(MisinfoQuery2021, qtype_map=misinfo_2021_map),
-        count_hint=50,
-        citation='dblp:conf/trec/ClarkeMS21',
-    )
-    trec_misinfo_2019_queries = QueryTable('trec-misinfo-2019-queries',
-        source=trec_misinfo_2019_queries_file,
-        parser=_TrecXmlQueriesParser(MisinfoQuery, qtype_map=misinfo_map),
-        count_hint=51,
-    citation=CITATION)
-    trec_misinfo_2019_qrels = QrelTable('trec-misinfo-2019-qrels',
-        source=trec_misinfo_2019_qrels_file,
-        parser=_MsinfoQrelsParser(),
-        defs=MISINFO_QREL_DEFS,
-        count_hint=22_859,
-    citation=CITATION)
+# Tables
+# -----------------------------------------
+trec_misinfo_2021_queries = QueryTable('trec-misinfo-2021-queries',
+    source=trec_misinfo_2021_queries_file,
+    parser=_TrecXmlQueriesParser(MisinfoQuery2021, qtype_map=misinfo_2021_map),
+    count_hint=50,
+    citation='dblp:conf/trec/ClarkeMS21',
+    lang='en',
+)
+trec_misinfo_2019_queries = QueryTable('trec-misinfo-2019-queries',
+    source=trec_misinfo_2019_queries_file,
+    parser=_TrecXmlQueriesParser(MisinfoQuery, qtype_map=misinfo_map),
+    count_hint=51,
+citation=CITATION,
+lang='en')
+trec_misinfo_2019_qrels = QrelTable('trec-misinfo-2019-qrels',
+    source=trec_misinfo_2019_qrels_file,
+    parser=_MsinfoQrelsParser(),
+    defs=MISINFO_QREL_DEFS,
+    count_hint=22_859,
+citation=CITATION)
 
-    # Benchmarks
-    # -----------------------------------------
-    trec_misinfo_2019 = Benchmark('trec-misinfo-2019',
-        docs=docs_b13, queries=trec_misinfo_2019_queries, qrels=trec_misinfo_2019_qrels,
-        citation=CITATION,
-        desc='TREC Misinfo 2019.')
-    trec_misinfo_2021 = Benchmark('trec-misinfo-2021',
-        docs=c4_docs, queries=trec_misinfo_2021_queries,
-        citation='dblp:conf/trec/ClarkeMS21',
-        desc='TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset).')
+# Benchmarks
+# -----------------------------------------
+trec_misinfo_2019 = Benchmark('trec-misinfo-2019',
+    docs=docs_b13, queries=trec_misinfo_2019_queries, qrels=trec_misinfo_2019_qrels,
+    citation=CITATION,
+    desc='TREC Misinfo 2019.')
+trec_misinfo_2021 = Benchmark('trec-misinfo-2021',
+    docs=c4_docs, queries=trec_misinfo_2021_queries,
+    citation='dblp:conf/trec/ClarkeMS21',
+    desc='TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset).')
 
 
 # Registration

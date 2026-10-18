@@ -178,7 +178,8 @@ def _docs(v1_id, zip_resource, doc_type):
     return DocTable(f'beir-{_flat(v1_id)}-docs',
                source=zip_resource.zip_member(f'{zip_folder}/corpus.jsonl'),
                parser=_BeirDocsParser(v1_id, doc_type),
-               citation=_cites(DOC_CITATIONS.get(v1_id)))
+               citation=_cites(DOC_CITATIONS.get(v1_id)),
+               lang='en')
 
 
 def _queries(v1_id, zip_resource, query_type):
@@ -186,7 +187,8 @@ def _queries(v1_id, zip_resource, query_type):
     return QueryTable(f'beir-{_flat(v1_id)}-queries',
                    source=zip_resource.zip_member(f'{zip_folder}/queries.jsonl'),
                    parser=_BeirQueriesParser(v1_id, query_type),
-                   citation=_eval_citation(v1_id))
+                   citation=_eval_citation(v1_id),
+                   lang='en')
 
 
 def _qrels(v1_id, zip_resource, split=None):
@@ -198,58 +200,57 @@ def _qrels(v1_id, zip_resource, split=None):
                 citation=_eval_citation(v1_id, split))
 
 
-with irds.defaults(lang='en'):
-    benchmarks = {}   # flat name -> Benchmark, for suite assembly + aliasing
+benchmarks = {}   # flat name -> Benchmark, for suite assembly + aliasing
 
-    for v1_id, splits, doc_type, query_type in BENCHMARKS:
-        zip_url, zip_md5, zip_size = ZIP_SOURCES[v1_id]
-        zip_resource = Resource(f'beir-{_flat(v1_id)}.zip',
-                                sources=[zip_url], hash=f'md5:{zip_md5}', size=zip_size)
-        docs = _docs(v1_id, zip_resource, doc_type)
-        queries = _queries(v1_id, zip_resource, query_type)
+for v1_id, splits, doc_type, query_type in BENCHMARKS:
+    zip_url, zip_md5, zip_size = ZIP_SOURCES[v1_id]
+    zip_resource = Resource(f'beir-{_flat(v1_id)}.zip',
+                            sources=[zip_url], hash=f'md5:{zip_md5}', size=zip_size)
+    docs = _docs(v1_id, zip_resource, doc_type)
+    queries = _queries(v1_id, zip_resource, query_type)
 
-        if len(splits) == 1:
-            qrels = _qrels(v1_id, zip_resource, splits[0] if splits[0] != 'test' else None)
-            name = f'beir-{_flat(v1_id)}'
-            benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                         citation=_eval_citation(v1_id),
-                                         desc=f'BEIR: {v1_id}.')
-        else:
-            # Not registered: a private parent for the per-split Benchmarks
-            # below to inherit docs/queries from (filtered by each split's
-            # qrels) via derived_from. There is no single qrels for the full
-            # query set, so this itself would not be a usable benchmark --
-            # see the per-split ones instead.
-            bare = Benchmark(f'beir-{_flat(v1_id)}', docs=docs, queries=queries,
-                             citation=_eval_citation(v1_id))
-            for split in splits:
-                split_name = f'beir-{_flat(v1_id)}-{split}'
-                split_qrels = _qrels(v1_id, zip_resource, split)
-                benchmarks[split_name] = Benchmark(
-                    split_name, derived_from=bare, qrels=split_qrels,
-                    # ids_of() resolves through the top-level graph, so it
-                    # needs a qualified name -- not just split_qrels.name.
-                    filter=Filter(query_ids=ids_of(f'irds:{split_qrels.name}'), mode='include'),
-                    citation=_eval_citation(v1_id, split),
-                    desc=f'BEIR: {v1_id}, {split} split.')
-
-    # CQADupStack: 12 sub-forums sharing one zip, each single-split.
-    cqa_url, cqa_md5, cqa_size = CQA_ZIP
-    cqa_zip = Resource('beir-cqadupstack.zip', sources=[cqa_url], hash=f'md5:{cqa_md5}', size=cqa_size)
-    for sub in CQA_SUBFORUMS:
-        v1_id = f'cqadupstack/{sub}'
-        docs = DocTable(f'beir-cqadupstack-{sub}-docs',
-                   source=cqa_zip.zip_member(f'cqadupstack/{sub}/corpus.jsonl'),
-                   parser=_BeirDocsParser(v1_id, BeirCqaDoc), citation=_cites(CQA_CITATION))
-        queries = QueryTable(f'beir-cqadupstack-{sub}-queries',
-                          source=cqa_zip.zip_member(f'cqadupstack/{sub}/queries.jsonl'),
-                          parser=_BeirQueriesParser(v1_id, BeirCqaQuery), citation=_cites(CQA_CITATION))
-        qrels = QrelTable(f'beir-cqadupstack-{sub}-qrels',
-                      source=cqa_zip.zip_member(f'cqadupstack/{sub}/qrels/test.tsv'),
-                      parser=_BeirQrelsParser(), citation=_cites(CQA_CITATION))
-        name = f'beir-cqadupstack-{sub}'
+    if len(splits) == 1:
+        qrels = _qrels(v1_id, zip_resource, splits[0] if splits[0] != 'test' else None)
+        name = f'beir-{_flat(v1_id)}'
         benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                     citation=_cites(CQA_CITATION), desc=f'BEIR: cqadupstack/{sub}.')
+                                     citation=_eval_citation(v1_id),
+                                     desc=f'BEIR: {v1_id}.')
+    else:
+        # Not registered: a private parent for the per-split Benchmarks
+        # below to inherit docs/queries from (filtered by each split's
+        # qrels) via derived_from. There is no single qrels for the full
+        # query set, so this itself would not be a usable benchmark --
+        # see the per-split ones instead.
+        bare = Benchmark(f'beir-{_flat(v1_id)}', docs=docs, queries=queries,
+                         citation=_eval_citation(v1_id))
+        for split in splits:
+            split_name = f'beir-{_flat(v1_id)}-{split}'
+            split_qrels = _qrels(v1_id, zip_resource, split)
+            benchmarks[split_name] = Benchmark(
+                split_name, derived_from=bare, qrels=split_qrels,
+                # ids_of() resolves through the top-level graph, so it
+                # needs a qualified name -- not just split_qrels.name.
+                filter=Filter(query_ids=ids_of(f'irds:{split_qrels.name}'), mode='include'),
+                citation=_eval_citation(v1_id, split),
+                desc=f'BEIR: {v1_id}, {split} split.')
+
+# CQADupStack: 12 sub-forums sharing one zip, each single-split.
+cqa_url, cqa_md5, cqa_size = CQA_ZIP
+cqa_zip = Resource('beir-cqadupstack.zip', sources=[cqa_url], hash=f'md5:{cqa_md5}', size=cqa_size)
+for sub in CQA_SUBFORUMS:
+    v1_id = f'cqadupstack/{sub}'
+    docs = DocTable(f'beir-cqadupstack-{sub}-docs',
+               source=cqa_zip.zip_member(f'cqadupstack/{sub}/corpus.jsonl'),
+               parser=_BeirDocsParser(v1_id, BeirCqaDoc), citation=_cites(CQA_CITATION), lang='en')
+    queries = QueryTable(f'beir-cqadupstack-{sub}-queries',
+                      source=cqa_zip.zip_member(f'cqadupstack/{sub}/queries.jsonl'),
+                      parser=_BeirQueriesParser(v1_id, BeirCqaQuery), citation=_cites(CQA_CITATION), lang='en')
+    qrels = QrelTable(f'beir-cqadupstack-{sub}-qrels',
+                  source=cqa_zip.zip_member(f'cqadupstack/{sub}/qrels/test.tsv'),
+                  parser=_BeirQrelsParser(), citation=_cites(CQA_CITATION))
+    name = f'beir-cqadupstack-{sub}'
+    benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
+                                 citation=_cites(CQA_CITATION), desc=f'BEIR: cqadupstack/{sub}.')
 
 
 # Registration

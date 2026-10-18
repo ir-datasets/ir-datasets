@@ -35,7 +35,7 @@ leaf types under it:
     of them, and `list_datasets(type=...)` matches any of them.
   - **`Suite`** — a named, structural set of related Benchmarks (e.g. BEIR)
 
-Citations-as-papers and metrics-as-measures (each with their own node type and
+Citations-as-papers and metrics-as-measures (each with their own graph class and
 edges) are explicitly out of scope for this iteration — see
 [Deferred to a later paper](#deferred-to-a-later-paper). For now both are
 plain metadata.
@@ -43,14 +43,13 @@ plain metadata.
 The design still decentralizes: a third-party package can declare its own
 provider — anything satisfying the two-method `Provider` protocol
 (`load(name)`, `discover_edges()`); `ManifestProvider` is the batteries-included
-implementation most datasets use, not a requirement — its own node types and
+implementation most datasets use, not a requirement — its own graph classes and
 edge kinds, and its own entry point in the `ir_datasets.providers` group —
 pointing at `irds`'s nodes or vice versa — without either package importing
 the other until a node is actually resolved.
 There is no default provider: every name has a home, and the home is in the
-name — `irds:antique-test`, type `irds:Benchmark`, edge kind `irds:derived_from`.
-Types are capitalized (RDF/OWL convention: classes are UpperCamelCase);
-edge kinds stay lowercase (properties aren't).
+name — `irds:antique-test`, graph class `irds:Benchmark`, graph property `irds:derivedFrom`.
+Graph classes are UpperCamelCase and graph properties lowerCamelCase (RDF/OWL convention).
 Legacy v1 ids (`antique/test`) resolve as explicit aliases.
 
 ANTIQUE is implemented end to end as the worked example:
@@ -76,7 +75,7 @@ and `anchor-text` are left out for the same reasons as their passage-side
 counterparts.
 
 BEIR, [`datasets/beir.py`](datasets/beir.py), is the worked example the
-`Suite` node type was designed around: 14 headline zero-shot benchmarks plus
+`Suite` graph class was designed around: 14 headline zero-shot benchmarks plus
 CQADupStack's 12 sub-forums, folded into one `irds:beir` suite rather than
 split into per-subgroup suites. NanoBEIR mirrors 13 of BEIR's headline
 benchmarks at a smaller scale (`datasets/nano_beir.py`).
@@ -108,8 +107,7 @@ python -m unittest test.v2_conformance
 |---|---|
 | `protocols.py` | `Node`, `Data`, `Table`, `Benchmark`, `Suite` as `typing.Protocol`s — the actual contract; no inheritance required to satisfy them |
 | `base.py` | `Node` (a convenient, optional base class implementing the protocol above), `Edge`, `Generator`, `Param` — generic, no vocabulary of their own |
-| `vocabulary.py` | The process-wide index of declared node types / edge kinds, and which providers own them |
-| `context.py` | The `defaults()` stack (`ManifestProvider.defaults()` pushes onto it) |
+| `vocabulary.py` | The process-wide index of declared graph classes / edge kinds, and which providers own them |
 | `protocols.py` (`Provider`) | The two-method contract a package joins the graph with: `prefix`, `load(name)`, `discover_edges()` — not a class to inherit |
 | `registry.py` | `ManifestProvider` — one (batteries-included) implementation of `Provider`: nodes, edges, generators, aliases, and the vocabulary it declares |
 | `graph.py` | `Graph`, `default_graph()`, `discover()` — the union over installed providers, entry-point discovery; touches a provider through nothing but `Provider`'s two methods |
@@ -123,10 +121,10 @@ python -m unittest test.v2_conformance
 | Decision | Where |
 |---|---|
 | Flat names; no hierarchy (`antique-test-qrels`, not `antique/test/qrels`) | `datasets/antique.py` |
-| **No default provider**: nodes, node types, edge kinds all `prefix:name`; legacy ids are explicit aliases | `Graph.provider_for` |
-| Node types, edge kinds and defaultable fields are **owned by a provider** (`irds.node_type('Table')`, `irds.edge_kind('derived_from', structural=True)`, `with irds.defaults(...)`) — types capitalized (RDF/OWL convention), kinds lowercase; the generic machinery declares none of its own | `nodes.py` top, `vocabulary.py` |
+| **No default provider**: nodes, graph classes, edge kinds all `prefix:name`; legacy ids are explicit aliases | `Graph.provider_for` |
+| Graph classes and graph properties are **owned by a provider** (`irds.declare_graph_class('Table')`, `irds.declare_graph_property('derivedFrom', structural=True)`, `irds.declare_graph_property('description', range='literal')`) — types UpperCamelCase, predicates lowerCamelCase (RDF/OWL convention); one `predicate()` declaration covers edges and properties, and every field a node reports must be declared (an undeclared one is left out of the graph with a warning); the generic machinery declares none of its own | `nodes.py` top, `vocabulary.py`, `registry.row_triples` |
 | **One `derived_from` kind covers both "parsed from these bytes" and "filtered from this other table"** — a table's dependency on a `Resource` and its dependency on a parent `Table` are the same shape of relationship (this node would not exist without that one), so there's no separate `source` kind | `nodes.Table.__init__`, `filters.DerivedTable` |
-| **Nine node types**: `Resource`, `Table`, `Benchmark`, `Suite`, and one `Table` subtype per entity — `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable` — each its own declared graph type, a subtype of `Table` (`.entity` is still a plain attribute, used for format-specific behavior) | `nodes.py` |
+| **Nine graph classes**: `Resource`, `Table`, `Benchmark`, `Suite`, and one `Table` subtype per entity — `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable` — each its own declared graph type, a subtype of `Table` (`.entity` is still a plain attribute, used for format-specific behavior) | `nodes.py` |
 | First-class **edges**; structural (DAG) vs informational split | `base.Edge` |
 | Nodes declare `structural_edges()`; a `ManifestProvider` stores edges (fwd + indexed reverse) | `ManifestProvider.register` |
 | Any provider may add *informational* edges about any node — they are *its* contribution; *structural* edges are the owner's alone | `ManifestProvider.add_edge` |
@@ -170,7 +168,7 @@ at all — a third-party package cannot edit core's shared JSON.
 
 This is a prototype, not a migration. Not yet addressed:
 
-- Citations-as-papers and metrics-as-measures (their own node types, resolved
+- Citations-as-papers and metrics-as-measures (their own graph classes, resolved
   and validated, linked by edges) are deferred to a later, broader knowledge
   graph paper — see [Deferred to a later paper](#deferred-to-a-later-paper).
 - `Generator` exists but has no live example in this scope (no dynamic/
@@ -199,7 +197,7 @@ An earlier iteration of this prototype was structured as two packages: a
 generic `ir_graph` kernel that knew nothing about datasets, and this package
 subscribing to it — motivated by other domains (papers, evaluation measures,
 runs) eventually becoming providers too, in a broader knowledge graph. That
-iteration also modeled papers and measures as their own node types (`Article`,
+iteration also modeled papers and measures as their own graph classes (`Article`,
 `Measure`), with citations and official measures as edges to them (a `dblp:`
 dynamic provider fetched BibTeX on demand; an `ir-measures:` provider resolved
 measure specs).

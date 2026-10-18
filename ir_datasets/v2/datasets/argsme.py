@@ -104,111 +104,127 @@ CITATION = 'dblp:conf/argmining/WachsmuthPKAPQD17; dblp:conf/ki/AjjourWKPHS19'
 
 # license verified 2026-09-30: Zenodo records 3274636, 4139439, 3734893, 6873574 (args.me corpus) all list CC-BY-4.0
 # (https://zenodo.org/api/records/3274636)
-with irds.defaults(lang='en', license='CC-BY-4.0'):
-    # Files
-    # -----------------------------------------
-    docs_1_0_file = Resource('argsme-1.0-docs.zip',
-        sources=['https://zenodo.org/record/3274636/files/argsme.zip'],
-        hash='md5:c2512648f46a403f8e5e1dc96779e357',
-        size=238_078_064,
-    ).zip_member('args-me.json')
-    docs_1_0_cleaned_file = Resource('argsme-1.0-cleaned-docs.zip',
-        sources=['https://zenodo.org/record/4139439/files/argsme-1.0-cleaned.zip'],
-        hash='md5:fb0837103a4860e1d4536174f55b12c3',
-        size=236_787_622,
-    ).zip_member('args-me-1.0-cleaned.json')
+# Files
+# -----------------------------------------
+docs_1_0_file = Resource('argsme-1.0-docs.zip',
+    sources=['https://zenodo.org/record/3274636/files/argsme.zip'],
+    hash='md5:c2512648f46a403f8e5e1dc96779e357',
+    size=238_078_064,
+    license='CC-BY-4.0',
+).zip_member('args-me.json')
+docs_1_0_cleaned_file = Resource('argsme-1.0-cleaned-docs.zip',
+    sources=['https://zenodo.org/record/4139439/files/argsme-1.0-cleaned.zip'],
+    hash='md5:fb0837103a4860e1d4536174f55b12c3',
+    size=236_787_622,
+    license='CC-BY-4.0',
+).zip_member('args-me-1.0-cleaned.json')
 
-    debateorg_file = Resource('argsme-2020-04-01-debateorg-docs.zip',
-        sources=['https://zenodo.org/record/3734893/files/debateorg.zip'],
-        hash='md5:0368ee47ce0ec8bed837c7e22c024493',
-        size=1_150_846_141,
-    ).zip_member('debateorg.json')
-    debatepedia_file = Resource('argsme-2020-04-01-debatepedia-docs.zip',
-        sources=['https://zenodo.org/record/3734893/files/debatepedia.zip'],
-        hash='md5:bde8e3ed832c19ca5ed8ed1506a862e8',
-        size=184_347_726,
-    ).zip_member('debatepedia.json')
-    debatewise_file = Resource('argsme-2020-04-01-debatewise-docs.zip',
-        sources=['https://zenodo.org/record/3734893/files/debatewise.zip'],
-        hash='md5:5e5c498a5f657ed7d02e06016e9ce3b1',
-        size=77_388_912,
-    ).zip_member('debatewise.json')
-    idebate_file = Resource('argsme-2020-04-01-idebate-docs.zip',
-        sources=['https://zenodo.org/record/3734893/files/idebate.zip'],
-        hash='md5:5b888c94cce740f1216c063e5e47c74c',
-        size=20_241_730,
-    ).zip_member('idebate.json')
-    parliamentary_file = Resource('argsme-2020-04-01-parliamentary-docs.zip',
-        sources=['https://zenodo.org/record/3734893/files/parliamentary.zip'],
-        hash='md5:c80d932c953b64fb300f13d0d93096bb',
-        size=27_319,
-    ).zip_member('parliamentary.json')
+debateorg_file = Resource('argsme-2020-04-01-debateorg-docs.zip',
+    sources=['https://zenodo.org/record/3734893/files/debateorg.zip'],
+    hash='md5:0368ee47ce0ec8bed837c7e22c024493',
+    size=1_150_846_141,
+    license='CC-BY-4.0',
+).zip_member('debateorg.json')
+debatepedia_file = Resource('argsme-2020-04-01-debatepedia-docs.zip',
+    sources=['https://zenodo.org/record/3734893/files/debatepedia.zip'],
+    hash='md5:bde8e3ed832c19ca5ed8ed1506a862e8',
+    size=184_347_726,
+    license='CC-BY-4.0',
+).zip_member('debatepedia.json')
+debatewise_file = Resource('argsme-2020-04-01-debatewise-docs.zip',
+    sources=['https://zenodo.org/record/3734893/files/debatewise.zip'],
+    hash='md5:5e5c498a5f657ed7d02e06016e9ce3b1',
+    size=77_388_912,
+    license='CC-BY-4.0',
+).zip_member('debatewise.json')
+idebate_file = Resource('argsme-2020-04-01-idebate-docs.zip',
+    sources=['https://zenodo.org/record/3734893/files/idebate.zip'],
+    hash='md5:5b888c94cce740f1216c063e5e47c74c',
+    size=20_241_730,
+    license='CC-BY-4.0',
+).zip_member('idebate.json')
+parliamentary_file = Resource('argsme-2020-04-01-parliamentary-docs.zip',
+    sources=['https://zenodo.org/record/3734893/files/parliamentary.zip'],
+    hash='md5:c80d932c953b64fb300f13d0d93096bb',
+    size=27_319,
+    license='CC-BY-4.0',
+).zip_member('parliamentary.json')
 
-    processed_file = Resource('argsme-2020-04-01-processed-docs.tar.gz',
-        sources=['https://zenodo.org/record/6873574/files/args_processed_04_01.tar.gz'],
-        hash='md5:43bfce957df69bf59b3d59744eb73ded',
-        size=1_547_009_833,
-    ).member('args_processed.csv').cache(BASE / '2020-04-01-processed.csv')
+processed_file = Resource('argsme-2020-04-01-processed-docs.tar.gz',
+    sources=['https://zenodo.org/record/6873574/files/args_processed_04_01.tar.gz'],
+    hash='md5:43bfce957df69bf59b3d59744eb73ded',
+    size=1_547_009_833,
+    license='CC-BY-4.0',
+).member('args_processed.csv').cache(BASE / '2020-04-01-processed.csv')
 
-    # Tables
-    # -----------------------------------------
-    docs_1_0 = DocTable('argsme-1.0-docs',
-        source=docs_1_0_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=387_692,
-        citation=CITATION,
-    )
-    docs_1_0_cleaned = DocTable('argsme-1.0-cleaned-docs',
-        source=docs_1_0_cleaned_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=382_545,
-        citation=CITATION,
-    )
+# Tables
+# -----------------------------------------
+docs_1_0 = DocTable('argsme-1.0-docs',
+    source=docs_1_0_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=387_692,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
+docs_1_0_cleaned = DocTable('argsme-1.0-cleaned-docs',
+    source=docs_1_0_cleaned_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=382_545,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
 
-    docs_2020_04_01_debateorg = DocTable('argsme-2020-04-01-debateorg-docs',
-        source=debateorg_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=338_620,
-        citation=CITATION,
-    )
-    docs_2020_04_01_debatepedia = DocTable('argsme-2020-04-01-debatepedia-docs',
-        source=debatepedia_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=21_197,
-        citation=CITATION,
-    )
-    docs_2020_04_01_debatewise = DocTable('argsme-2020-04-01-debatewise-docs',
-        source=debatewise_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=14_353,
-        citation=CITATION,
-    )
-    docs_2020_04_01_idebate = DocTable('argsme-2020-04-01-idebate-docs',
-        source=idebate_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=13_522,
-        citation=CITATION,
-    )
-    docs_2020_04_01_parliamentary = DocTable('argsme-2020-04-01-parliamentary-docs',
-        source=parliamentary_file,
-        parser=_ArgsMeDocsParser(),
-        count_hint=48,
-        citation=CITATION,
-    )
+docs_2020_04_01_debateorg = DocTable('argsme-2020-04-01-debateorg-docs',
+    source=debateorg_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=338_620,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
+docs_2020_04_01_debatepedia = DocTable('argsme-2020-04-01-debatepedia-docs',
+    source=debatepedia_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=21_197,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
+docs_2020_04_01_debatewise = DocTable('argsme-2020-04-01-debatewise-docs',
+    source=debatewise_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=14_353,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
+docs_2020_04_01_idebate = DocTable('argsme-2020-04-01-idebate-docs',
+    source=idebate_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=13_522,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
+docs_2020_04_01_parliamentary = DocTable('argsme-2020-04-01-parliamentary-docs',
+    source=parliamentary_file,
+    parser=_ArgsMeDocsParser(),
+    count_hint=48,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
 
-    docs_2020_04_01_processed = DocTable('argsme-2020-04-01-processed-docs',
-        source=processed_file,
-        parser=_ArgsMeProcessedDocsParser(),
-        count_hint=365_408,
-        citation=CITATION,
-    )
+docs_2020_04_01_processed = DocTable('argsme-2020-04-01-processed-docs',
+    source=processed_file,
+    parser=_ArgsMeProcessedDocsParser(),
+    count_hint=365_408,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
 
-    docs_2020_04_01 = DocTable('argsme-2020-04-01-docs',
-        source=[debateorg_file, debatepedia_file, debatewise_file, idebate_file, parliamentary_file],
-        parser=_ArgsMeCombinedDocsParser([338_620, 21_197, 14_353, 13_522, 48]),
-        count_hint=387_740,
-        citation=CITATION,
-    )
+docs_2020_04_01 = DocTable('argsme-2020-04-01-docs',
+    source=[debateorg_file, debatepedia_file, debatewise_file, idebate_file, parliamentary_file],
+    parser=_ArgsMeCombinedDocsParser([338_620, 21_197, 14_353, 13_522, 48]),
+    count_hint=387_740,
+    citation=CITATION,
+    lang='en', license='CC-BY-4.0',
+)
 
 
 # Registration

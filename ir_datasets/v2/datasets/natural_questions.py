@@ -203,46 +203,52 @@ class _NqScoredDocsParser(Parser):
 # -----------------------------------------
 # license verified 2026-09-30: https://huggingface.co/datasets/google-research-datasets/natural_questions
 # (card: Creative Commons Attribution-ShareAlike 3.0 Unported, CC-BY-SA-3.0)
-with irds.defaults(lang='en', license='CC-BY-SA-3.0'):
-    docs = DocTable('natural-questions-docs',
-        source=list(_all_files.values()),
-        parser=_NqDocsParser(),
-        count_hint=28_390_850,
-    )
+docs = DocTable('natural-questions-docs',
+    source=list(_all_files.values()),
+    parser=_NqDocsParser(),
+    count_hint=28_390_850,
+    lang='en', license='CC-BY-SA-3.0',
+)
 
-    dev_queries = QueryTable('natural-questions-dev-queries',
-        source=list(_dev_files.values()),
-        parser=_NqQueriesParser('dev'),
-        count_hint=7_830,
-    )
-    dev_qrels = QrelTable('natural-questions-dev-qrels',
-        source=list(_dev_files.values()),
-        parser=_NqQrelsParser('dev'),
-        defs=QREL_DEFS,
-        count_hint=7_695,
-    )
-    dev_scoreddocs = RunTable('natural-questions-dev-scoreddocs',
-        source=list(_dev_files.values()),
-        parser=_NqScoredDocsParser('dev'),
-        count_hint=973_480,
-    )
+dev_queries = QueryTable('natural-questions-dev-queries',
+    source=list(_dev_files.values()),
+    parser=_NqQueriesParser('dev'),
+    count_hint=7_830,
+    lang='en', license='CC-BY-SA-3.0',
+)
+dev_qrels = QrelTable('natural-questions-dev-qrels',
+    source=list(_dev_files.values()),
+    parser=_NqQrelsParser('dev'),
+    defs=QREL_DEFS,
+    count_hint=7_695,
+    license='CC-BY-SA-3.0',
+)
+dev_scoreddocs = RunTable('natural-questions-dev-scoreddocs',
+    source=list(_dev_files.values()),
+    parser=_NqScoredDocsParser('dev'),
+    count_hint=973_480,
+    license='CC-BY-SA-3.0',
+)
 
-    train_queries = QueryTable('natural-questions-train-queries',
-        source=list(_train_files.values()),
-        parser=_NqQueriesParser('train'),
-        count_hint=307_373,
-    )
-    train_qrels = QrelTable('natural-questions-train-qrels',
-        source=list(_train_files.values()),
-        parser=_NqQrelsParser('train'),
-        defs=QREL_DEFS,
-        count_hint=152_148,
-    )
-    train_scoreddocs = RunTable('natural-questions-train-scoreddocs',
-        source=list(_train_files.values()),
-        parser=_NqScoredDocsParser('train'),
-        count_hint=40_374_730,
-    )
+train_queries = QueryTable('natural-questions-train-queries',
+    source=list(_train_files.values()),
+    parser=_NqQueriesParser('train'),
+    count_hint=307_373,
+    lang='en', license='CC-BY-SA-3.0',
+)
+train_qrels = QrelTable('natural-questions-train-qrels',
+    source=list(_train_files.values()),
+    parser=_NqQrelsParser('train'),
+    defs=QREL_DEFS,
+    count_hint=152_148,
+    license='CC-BY-SA-3.0',
+)
+train_scoreddocs = RunTable('natural-questions-train-scoreddocs',
+    source=list(_train_files.values()),
+    parser=_NqScoredDocsParser('train'),
+    count_hint=40_374_730,
+    license='CC-BY-SA-3.0',
+)
 
 
 # Benchmarks

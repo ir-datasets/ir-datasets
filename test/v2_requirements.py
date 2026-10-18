@@ -112,8 +112,8 @@ class TestNodeRequires(unittest.TestCase):
     def test_requires_is_reported_at_discovery(self):
         g, _, _ = _scratch()
         found = {(s, p, getattr(o, 'value', o)) for s, p, o in g.providers['xtra'].discover_edges()
-                 if p == 'requires-dependency'}
-        self.assertEqual({('xtra:queries', 'requires-dependency', 'ijson')}, found)
+                 if p == 'irds:requiresDependency'}
+        self.assertEqual({('xtra:queries', 'irds:requiresDependency', 'ijson')}, found)
 
 
 class TestSourcePackage(unittest.TestCase):
@@ -136,8 +136,8 @@ class TestSourcePackage(unittest.TestCase):
     def test_package_is_reported_at_discovery(self):
         g, _, _ = _scratch()
         found = {(s, p, getattr(o, 'value', o)) for s, p, o in g.providers['xtra'].discover_edges()
-                 if p == 'package'}
-        self.assertIn(('xtra:queries', 'package', 'acme-datasets'), found)
+                 if p == 'irds:package'}
+        self.assertIn(('xtra:queries', 'irds:package', 'acme-datasets'), found)
 
 
 class TestLoadWarns(unittest.TestCase):

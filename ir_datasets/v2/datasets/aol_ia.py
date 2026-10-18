@@ -123,30 +123,32 @@ class _AolIaQlogsParser(Parser):
 
 # Tables
 # -----------------------------------------
-with irds.defaults(lang='en'):
-    docs = DocTable('aol-ia-docs',
-        source=[logs_file, id2wb_file],
-        parser=_AolIaDocsParser(),
-        count_hint=1_525_586,
-        citation='dblp:conf/ecir/MacAvaneyMO22',
-    )
-    queries = QueryTable('aol-ia-queries',
-        source=[logs_file, id2wb_file],
-        parser=_AolIaQueriesParser(),
-        count_hint=9_966_939,
-    )
-    qrels = QrelTable('aol-ia-qrels',
-        source=[logs_file, id2wb_file],
-        parser=_AolIaQrelsParser(),
-        defs=QREL_DEFS,
-        count_hint=19_442_629,
-    )
-    qlogs = QlogTable('aol-ia-qlogs',
-        source=[logs_file, id2wb_file],
-        parser=_AolIaQlogsParser(),
-        count_hint=36_389_567,
-        citation='dblp:conf/infoscale/PassCT06',
-    )
+docs = DocTable('aol-ia-docs',
+    source=[logs_file, id2wb_file],
+    parser=_AolIaDocsParser(),
+    count_hint=1_525_586,
+    citation='dblp:conf/ecir/MacAvaneyMO22',
+    lang='en',
+)
+queries = QueryTable('aol-ia-queries',
+    source=[logs_file, id2wb_file],
+    parser=_AolIaQueriesParser(),
+    count_hint=9_966_939,
+    lang='en',
+)
+qrels = QrelTable('aol-ia-qrels',
+    source=[logs_file, id2wb_file],
+    parser=_AolIaQrelsParser(),
+    defs=QREL_DEFS,
+    count_hint=19_442_629,
+)
+qlogs = QlogTable('aol-ia-qlogs',
+    source=[logs_file, id2wb_file],
+    parser=_AolIaQlogsParser(),
+    count_hint=36_389_567,
+    citation='dblp:conf/infoscale/PassCT06',
+    lang='en',
+)
 
 
 # Registration

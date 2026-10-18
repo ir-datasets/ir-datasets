@@ -41,35 +41,36 @@ class _LotteQrelsParser(Parser):
         return _V1LotteQrels(source)
 
 
-with irds.defaults(lang='en'):
-    source = Resource('lotte.tar.gz',
-        sources=['https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/lotte.tar.gz'],
-        hash='md5:3b2e88b1d66933627462950b4c3f5d0f',
-        size=3_576_167_599,
-    )
+source = Resource('lotte.tar.gz',
+    sources=['https://downloads.cs.stanford.edu/nlp/data/colbert/colbertv2/lotte.tar.gz'],
+    hash='md5:3b2e88b1d66933627462950b4c3f5d0f',
+    size=3_576_167_599,
+)
 
-    nodes = {}
+nodes = {}
 
-    for domain in DOMAINS:
-        for split in ['dev', 'test']:
-            docs = TsvDocs(f'lotte-{domain}-{split}',
-                source=source.member(f'lotte/{domain}/{split}/collection.tsv')
-                             .cache(BASE / domain / split / 'collection.tsv'))
-            nodes[f'lotte-{domain}-{split}'] = docs
+for domain in DOMAINS:
+    for split in ['dev', 'test']:
+        docs = TsvDocs(f'lotte-{domain}-{split}',
+            source=source.member(f'lotte/{domain}/{split}/collection.tsv')
+                         .cache(BASE / domain / split / 'collection.tsv'),
+            lang='en')
+        nodes[f'lotte-{domain}-{split}'] = docs
 
-            for qtype in ['search', 'forum']:
-                queries = TsvQueries(f'lotte-{domain}-{split}-{qtype}-queries',
-                    source=source.member(f'lotte/{domain}/{split}/questions.{qtype}.tsv')
-                                 .cache(BASE / domain / split / f'questions.{qtype}.tsv'))
-                qrels = QrelTable(f'lotte-{domain}-{split}-{qtype}-qrels',
-                    source=source.member(f'lotte/{domain}/{split}/qas.{qtype}.jsonl')
-                                 .cache(BASE / domain / split / f'qas.{qtype}.jsonl'),
-                    defs=QRELS_DEFS,
-                    parser=_LotteQrelsParser())
-                name = f'lotte-{domain}-{split}-{qtype}'
-                nodes[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                    citation=CITATION,
-                    desc=f'LoTTE: {domain} ({split} split), {qtype} queries.')
+        for qtype in ['search', 'forum']:
+            queries = TsvQueries(f'lotte-{domain}-{split}-{qtype}-queries',
+                source=source.member(f'lotte/{domain}/{split}/questions.{qtype}.tsv')
+                             .cache(BASE / domain / split / f'questions.{qtype}.tsv'),
+                lang='en')
+            qrels = QrelTable(f'lotte-{domain}-{split}-{qtype}-qrels',
+                source=source.member(f'lotte/{domain}/{split}/qas.{qtype}.jsonl')
+                             .cache(BASE / domain / split / f'qas.{qtype}.jsonl'),
+                defs=QRELS_DEFS,
+                parser=_LotteQrelsParser())
+            name = f'lotte-{domain}-{split}-{qtype}'
+            nodes[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
+                citation=CITATION,
+                desc=f'LoTTE: {domain} ({split} split), {qtype} queries.')
 
 
 # Registration

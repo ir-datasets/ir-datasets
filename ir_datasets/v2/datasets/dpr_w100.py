@@ -125,102 +125,110 @@ _tqa_train_manager = DprW100Manager(tqa_train_file.gunzip(), BASE_PATH / 'tqa-tr
 
 # Tables
 # -----------------------------------------
-with irds.defaults(lang='en'):
-    docs = TsvDocs('dpr-w100-docs',
-        source=docs_file.gunzip(),
-        cls=DprW100Doc,
-        skip_first_line=True,
-        docstore_size_hint=12_827_215_492,
-        count_hint=21_015_324,
-        citation=CITATION_DPR,
-    )
+docs = TsvDocs('dpr-w100-docs',
+    source=docs_file.gunzip(),
+    cls=DprW100Doc,
+    skip_first_line=True,
+    docstore_size_hint=12_827_215_492,
+    count_hint=21_015_324,
+    citation=CITATION_DPR,
+    lang='en',
+)
 
-    nq_dev_queries = QueryTable('dpr-w100-natural-questions-dev-queries',
-        source=nq_dev_file,
-        parser=_DprW100QueriesParser(_nq_dev_manager),
-        count_hint=6_515,
-    )
-    nq_dev_answers = AnswerTable('dpr-w100-natural-questions-dev-answers',
-        source=nq_dev_file,
-        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_dev_manager), 'answers'),
-    )
-    nq_dev_qrels = QrelTable('dpr-w100-natural-questions-dev-qrels',
-        source=nq_dev_file,
-        parser=_DprW100QrelsParser(_nq_dev_manager),
-        defs=QREL_DEFS,
-        count_hint=979_893,
-    )
+nq_dev_queries = QueryTable('dpr-w100-natural-questions-dev-queries',
+    source=nq_dev_file,
+    parser=_DprW100QueriesParser(_nq_dev_manager),
+    count_hint=6_515,
+    lang='en',
+)
+nq_dev_answers = AnswerTable('dpr-w100-natural-questions-dev-answers',
+    source=nq_dev_file,
+    parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_dev_manager), 'answers'),
+    lang='en',
+)
+nq_dev_qrels = QrelTable('dpr-w100-natural-questions-dev-qrels',
+    source=nq_dev_file,
+    parser=_DprW100QrelsParser(_nq_dev_manager),
+    defs=QREL_DEFS,
+    count_hint=979_893,
+)
 
-    nq_train_queries = QueryTable('dpr-w100-natural-questions-train-queries',
-        source=nq_train_file,
-        parser=_DprW100QueriesParser(_nq_train_manager),
-        count_hint=58_880,
-    )
-    nq_train_answers = AnswerTable('dpr-w100-natural-questions-train-answers',
-        source=nq_train_file,
-        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_train_manager), 'answers'),
-    )
-    nq_train_qrels = QrelTable('dpr-w100-natural-questions-train-qrels',
-        source=nq_train_file,
-        parser=_DprW100QrelsParser(_nq_train_manager),
-        defs=QREL_DEFS,
-        count_hint=8_856_662,
-    )
+nq_train_queries = QueryTable('dpr-w100-natural-questions-train-queries',
+    source=nq_train_file,
+    parser=_DprW100QueriesParser(_nq_train_manager),
+    count_hint=58_880,
+    lang='en',
+)
+nq_train_answers = AnswerTable('dpr-w100-natural-questions-train-answers',
+    source=nq_train_file,
+    parser=AnswersFromQueriesParser(_DprW100QueriesParser(_nq_train_manager), 'answers'),
+    lang='en',
+)
+nq_train_qrels = QrelTable('dpr-w100-natural-questions-train-qrels',
+    source=nq_train_file,
+    parser=_DprW100QrelsParser(_nq_train_manager),
+    defs=QREL_DEFS,
+    count_hint=8_856_662,
+)
 
-    tqa_dev_queries = QueryTable('dpr-w100-trivia-qa-dev-queries',
-        source=tqa_dev_file,
-        parser=_DprW100QueriesParser(_tqa_dev_manager),
-        count_hint=8_837,
-    )
-    tqa_dev_answers = AnswerTable('dpr-w100-trivia-qa-dev-answers',
-        source=tqa_dev_file,
-        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_dev_manager), 'answers'),
-    )
-    tqa_dev_qrels = QrelTable('dpr-w100-trivia-qa-dev-qrels',
-        source=tqa_dev_file,
-        parser=_DprW100QrelsParser(_tqa_dev_manager),
-        defs=QREL_DEFS,
-        count_hint=883_700,
-    )
+tqa_dev_queries = QueryTable('dpr-w100-trivia-qa-dev-queries',
+    source=tqa_dev_file,
+    parser=_DprW100QueriesParser(_tqa_dev_manager),
+    count_hint=8_837,
+    lang='en',
+)
+tqa_dev_answers = AnswerTable('dpr-w100-trivia-qa-dev-answers',
+    source=tqa_dev_file,
+    parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_dev_manager), 'answers'),
+    lang='en',
+)
+tqa_dev_qrels = QrelTable('dpr-w100-trivia-qa-dev-qrels',
+    source=tqa_dev_file,
+    parser=_DprW100QrelsParser(_tqa_dev_manager),
+    defs=QREL_DEFS,
+    count_hint=883_700,
+)
 
-    tqa_train_queries = QueryTable('dpr-w100-trivia-qa-train-queries',
-        source=tqa_train_file,
-        parser=_DprW100QueriesParser(_tqa_train_manager),
-        count_hint=78_785,
-    )
-    tqa_train_answers = AnswerTable('dpr-w100-trivia-qa-train-answers',
-        source=tqa_train_file,
-        parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_train_manager), 'answers'),
-    )
-    tqa_train_qrels = QrelTable('dpr-w100-trivia-qa-train-qrels',
-        source=tqa_train_file,
-        parser=_DprW100QrelsParser(_tqa_train_manager),
-        defs=QREL_DEFS,
-        count_hint=7_878_500,
-    )
+tqa_train_queries = QueryTable('dpr-w100-trivia-qa-train-queries',
+    source=tqa_train_file,
+    parser=_DprW100QueriesParser(_tqa_train_manager),
+    count_hint=78_785,
+    lang='en',
+)
+tqa_train_answers = AnswerTable('dpr-w100-trivia-qa-train-answers',
+    source=tqa_train_file,
+    parser=AnswersFromQueriesParser(_DprW100QueriesParser(_tqa_train_manager), 'answers'),
+    lang='en',
+)
+tqa_train_qrels = QrelTable('dpr-w100-trivia-qa-train-qrels',
+    source=tqa_train_file,
+    parser=_DprW100QrelsParser(_tqa_train_manager),
+    defs=QREL_DEFS,
+    count_hint=7_878_500,
+)
 
-    # Benchmarks
-    # -----------------------------------------
-    natural_questions_dev = Benchmark('dpr-w100-natural-questions-dev',
-        docs=docs, queries=nq_dev_queries, qrels=nq_dev_qrels, answers=nq_dev_answers,
-        citation=CITATION_NQ,
-        desc='Dev subset from the Natural Questions Q&A collection, using the '
-             'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
-    natural_questions_train = Benchmark('dpr-w100-natural-questions-train',
-        docs=docs, queries=nq_train_queries, qrels=nq_train_qrels, answers=nq_train_answers,
-        citation=CITATION_NQ,
-        desc='Training subset from the Natural Questions Q&A collection, using the '
-             'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
-    trivia_qa_dev = Benchmark('dpr-w100-trivia-qa-dev',
-        docs=docs, queries=tqa_dev_queries, qrels=tqa_dev_qrels, answers=tqa_dev_answers,
-        citation=CITATION_TQA,
-        desc='Dev subset from the Trivia QA dataset, using the DPR Wikipedia '
-             'dump as the source collection (see the DPR paper).')
-    trivia_qa_train = Benchmark('dpr-w100-trivia-qa-train',
-        docs=docs, queries=tqa_train_queries, qrels=tqa_train_qrels, answers=tqa_train_answers,
-        citation=CITATION_TQA,
-        desc='Training subset from the Trivia QA dataset, using the DPR Wikipedia '
-             'dump as the source collection (see the DPR paper).')
+# Benchmarks
+# -----------------------------------------
+natural_questions_dev = Benchmark('dpr-w100-natural-questions-dev',
+    docs=docs, queries=nq_dev_queries, qrels=nq_dev_qrels, answers=nq_dev_answers,
+    citation=CITATION_NQ,
+    desc='Dev subset from the Natural Questions Q&A collection, using the '
+         'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
+natural_questions_train = Benchmark('dpr-w100-natural-questions-train',
+    docs=docs, queries=nq_train_queries, qrels=nq_train_qrels, answers=nq_train_answers,
+    citation=CITATION_NQ,
+    desc='Training subset from the Natural Questions Q&A collection, using the '
+         'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
+trivia_qa_dev = Benchmark('dpr-w100-trivia-qa-dev',
+    docs=docs, queries=tqa_dev_queries, qrels=tqa_dev_qrels, answers=tqa_dev_answers,
+    citation=CITATION_TQA,
+    desc='Dev subset from the Trivia QA dataset, using the DPR Wikipedia '
+         'dump as the source collection (see the DPR paper).')
+trivia_qa_train = Benchmark('dpr-w100-trivia-qa-train',
+    docs=docs, queries=tqa_train_queries, qrels=tqa_train_qrels, answers=tqa_train_answers,
+    citation=CITATION_TQA,
+    desc='Training subset from the Trivia QA dataset, using the DPR Wikipedia '
+         'dump as the source collection (see the DPR paper).')
 
 
 # Registration

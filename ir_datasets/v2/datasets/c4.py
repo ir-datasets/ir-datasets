@@ -67,28 +67,30 @@ class _C4DocsParser(Parser):
 
 
 # license verified 2026-09-30: https://huggingface.co/datasets/allenai/c4 (licensing section: ODC-BY; also bound by Common Crawl terms of use)
-with irds.defaults(lang='en', license=['ODC-By-1.0', 'https://commoncrawl.org/terms-of-use/']):
-    # Files
-    # -----------------------------------------
-    en_noclean_sources_file = Resource('c4-en-noclean-sources.json.gz',
-        sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.sources.json.gz'],
-        hash='md5:3faf0f3aaf3f0e5bca573e118f815991',
-        size=240_518,
-    )
-    en_noclean_checkpoints_file = Resource('c4-en-noclean-checkpoints.tar.gz',
-        sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.checkpoints.tar.gz'],
-        hash='md5:eab00c3b5202564da998466198a01298',
-        size=8_983_526_491,
-    )
-    # Tables
-    # -----------------------------------------
-    # Only the train split (v1 excludes validation shards via filter_name='train').
-    en_noclean_tr_docs = DocTable('c4-en-noclean-tr',
-        source=[en_noclean_sources_file, en_noclean_checkpoints_file],
-        parser=_C4DocsParser(source_name_filter=r'en\.noclean\.c4-train', filter_name='train'),
-        count_hint=1_063_805_381,
-        citation='dblp:journals/jmlr/RaffelSRLNMZLL20',
-    )
+# Files
+# -----------------------------------------
+en_noclean_sources_file = Resource('c4-en-noclean-sources.json.gz',
+    sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.sources.json.gz'],
+    hash='md5:3faf0f3aaf3f0e5bca573e118f815991',
+    size=240_518,
+    license=['ODC-By-1.0', 'https://commoncrawl.org/terms-of-use/'],
+)
+en_noclean_checkpoints_file = Resource('c4-en-noclean-checkpoints.tar.gz',
+    sources=['https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/ir-datasets/c4/en.noclean.checkpoints.tar.gz'],
+    hash='md5:eab00c3b5202564da998466198a01298',
+    size=8_983_526_491,
+    license=['ODC-By-1.0', 'https://commoncrawl.org/terms-of-use/'],
+)
+# Tables
+# -----------------------------------------
+# Only the train split (v1 excludes validation shards via filter_name='train').
+en_noclean_tr_docs = DocTable('c4-en-noclean-tr',
+    source=[en_noclean_sources_file, en_noclean_checkpoints_file],
+    parser=_C4DocsParser(source_name_filter=r'en\.noclean\.c4-train', filter_name='train'),
+    count_hint=1_063_805_381,
+    citation='dblp:journals/jmlr/RaffelSRLNMZLL20',
+    lang='en', license=['ODC-By-1.0', 'https://commoncrawl.org/terms-of-use/'],
+)
 
 
 # Registration

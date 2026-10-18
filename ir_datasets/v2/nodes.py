@@ -1,4 +1,4 @@
-"""ir_datasets' node types.
+"""ir_datasets' graph classes.
 
 Every node has a name and is directly loadable::
 
@@ -32,8 +32,7 @@ work for a broader knowledge graph; for now both are plain metadata.
 
 ``Node``, ``Edge``, ``Generator`` and the registration/graph machinery are
 generic (``base.py``, ``registry.py``, ``graph.py``); this module is where the
-dataset vocabulary actually gets declared: node types, edge kinds, defaultable
-fields.
+dataset vocabulary actually gets declared: graph classes, edge kinds and graph properties.
 """
 import collections
 import contextlib
@@ -46,7 +45,6 @@ import warnings
 import ir_datasets
 from . import requirements
 from .base import Edge, Node
-from .context import default
 
 from .provider import irds
 from . import protocols as proto
@@ -86,7 +84,7 @@ def _deprecated(old, new):
 #: ``TABLE_TYPES``.
 ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs', 'answers')
 
-#: Node types. Qualified (``irds:Docs``) because the provider declares them --
+#: Graph classes. Qualified (``irds:Docs``) because the provider declares them --
 #: capitalized, RDF/OWL-convention-style, matching the Python class name
 #: (a type is class-like); edge kinds below stay lowercase (property-like).
 #: ``TABLE`` is the shared parent of the five per-entity table types declared
@@ -94,34 +92,34 @@ ENTITIES = ('docs', 'queries', 'qrels', 'scoreddocs', 'docpairs', 'answers')
 #: Table subclass sharing it *as their own* type -- each entity is its own
 #: first-class type (``list(type='irds:Qrels')`` finds exactly qrels
 #: tables), while ``list(type='irds:Table')`` still finds all of them, by
-#: walking the declared ``parent`` chain (see ``vocabulary.is_subtype``). This
+#: walking the declared ``parent`` chain (see ``vocabulary.is_subclass``). This
 #: also keeps the hierarchy open to extension: a third-party provider may
 #: declare its own ``ext:MyTable`` with ``parent=TABLE`` (a new entity kind
 #: this module never enumerated) or register a bare ``Table`` instance
 #: directly under the generic ``irds:Table`` type.
-#: Every node type, declared by the protocol that defines it (see
-#: ``protocols.node_type`` and ``Provider.declare_types``): name, parent,
+#: Every graph class, declared by the protocol that defines it (see
+#: ``protocols.graph_class`` and ``Provider.declare_graph_classes``): name, parent,
 #: description and protocol all come from the protocol class, so there is one
 #: place to read or change them.
-_TYPES = irds.declare_types(proto)
-DATA = _TYPES[proto.Data]
-FILE = _TYPES[proto.File]
-DIRECTORY = _TYPES[proto.Directory]
-TABLE = _TYPES[proto.Table]
-ALIAS = _TYPES[proto.Alias]
-BUNDLE = _TYPES[proto.Bundle]
-BENCHMARK = _TYPES[proto.Benchmark]
-SUITE = _TYPES[proto.Suite]
+_CLASSES = irds.declare_graph_classes(proto)
+DATA = _CLASSES[proto.Data]
+FILE = _CLASSES[proto.File]
+DIRECTORY = _CLASSES[proto.Directory]
+TABLE = _CLASSES[proto.Table]
+ALIAS = _CLASSES[proto.Alias]
+BUNDLE = _CLASSES[proto.Bundle]
+BENCHMARK = _CLASSES[proto.Benchmark]
+SUITE = _CLASSES[proto.Suite]
 
 #: Benchmark subtypes, the counterpart of ``TABLE_TYPES`` for benchmarks: each
 #: adds semantics -- which tables the task is built from. A benchmark may
 #: carry several (a corpus with both qrels and reference answers is both ad
 #: hoc and QA); see ``Benchmark.types``. One with neither combination of
 #: tables stays a plain ``irds:Benchmark``.
-ADHOC_BENCHMARK = _TYPES[proto.AdhocBenchmark]
-QA_BENCHMARK = _TYPES[proto.QaBenchmark]
+ADHOC_BENCHMARK = _CLASSES[proto.AdhocBenchmark]
+QA_BENCHMARK = _CLASSES[proto.QaBenchmark]
 
-#: One declared node type per entity, each a subtype of ``TABLE`` -- what
+#: One declared graph class per entity, each a subtype of ``TABLE`` -- what
 #: ``DocTable``/``QueryTable``/``QrelTable``/``RunTable``/``DocPairTable``/
 #: ``QlogTable`` (and their format subclasses, e.g. ``TsvDocs``) set as their
 #: class ``type``. Keyed by entity string so ``TABLE_TYPES[entity]`` is the
@@ -133,22 +131,22 @@ QA_BENCHMARK = _TYPES[proto.QaBenchmark]
 #: Benchmark facet (see the comment on ``ENTITIES`` above for why), so it is
 #: declared here and not there. ``FACET``/``Benchmark`` iterate ``ENTITIES``;
 #: anything that means "every table kind that exists" (e.g.
-#: ``test_exactly_nine_node_types`` in test/v2_conformance.py, generalized to
+#: ``test_exactly_these_graph_classes`` in test/v2_conformance.py, generalized to
 #: ten when this was added) should iterate ``TABLE_TYPES`` instead.
 TABLE_TYPES = {
-    'docs': _TYPES[proto.Docs],
-    'queries': _TYPES[proto.Queries],
-    'qrels': _TYPES[proto.Qrels],
-    'scoreddocs': _TYPES[proto.AdhocRun],
-    'docpairs': _TYPES[proto.DocPairs],
-    'answers': _TYPES[proto.Answers],
-    'qlogs': _TYPES[proto.QueryLog],
+    'docs': _CLASSES[proto.Docs],
+    'queries': _CLASSES[proto.Queries],
+    'qrels': _CLASSES[proto.Qrels],
+    'scoreddocs': _CLASSES[proto.AdhocRun],
+    'docpairs': _CLASSES[proto.DocPairs],
+    'answers': _CLASSES[proto.Answers],
+    'qlogs': _CLASSES[proto.QueryLog],
 }
 
 #: Structural edges form a DAG and are what builds, caching and verification
 #: follow. Keeping them separate from informational edges is what stops a
 #: "see also" link from creating a cycle in the build graph.
-FACET = {e: irds.edge_kind(e, structural=True, desc='benchmark -> table providing that facet')
+FACET = {e: irds.declare_graph_property(e, structural=True, desc='benchmark -> table providing that facet')
          for e in ENTITIES}
 #: What a node is built from -- covers "table parsed from these bytes"
 #: (formerly a separate ``source`` kind), "table filtered from this other
@@ -159,7 +157,7 @@ FACET = {e: irds.edge_kind(e, structural=True, desc='benchmark -> table providin
 #: depends on something by looking at what it is). All are the same shape
 #: of relationship (this node would not exist without that one), just with
 #: the far end being a Resource or another Table -- one kind, not several.
-DERIVED_FROM = irds.edge_kind('derived_from', structural=True,
+DERIVED_FROM = irds.declare_graph_property('derivedFrom', structural=True,
                               desc='what a node is built from: bytes it is '
                                    'parsed from, another table it is filtered '
                                    'from, or a node its filter took ids from')
@@ -168,33 +166,109 @@ DERIVED_FROM = irds.edge_kind('derived_from', structural=True,
 #: member is a Benchmark or a nested Suite (e.g. BEIR nests CQADupStack) --
 #: the member's own ``.type`` already says which, so a second kind would only
 #: duplicate it.
-SUITE_MEMBER = irds.edge_kind('member', structural=True,
+SUITE_MEMBER = irds.declare_graph_property('member', structural=True,
                               desc='suite -> a benchmark or nested suite it contains')
 #: Informational: a Directory -> the manifest its contents are checked against
 #: on first access. Not structural -- the directory is not built from it.
-VALIDATED_BY = irds.edge_kind('validated_by', structural=False,
-                              desc='what a node\'s contents are validated against '
-                                   '(e.g. a directory -> its file manifest)')
+DIRECTORY_MANIFEST = irds.declare_graph_property(
+    'directoryManifest', structural=False,
+    desc='a directory -> the file manifest its contents are checked against on first access')
 #: Informational: this table is a drop-in for the target -- same id space
 #: (doc_ids/query_ids), so anything keyed on one's ids (qrels, queries, a
 #: Benchmark) is valid for the other; only the representation differs (e.g.
 #: full-text vs metadata-only docs, other fields or parsing). Points from the
 #: alternative to the canonical table. NOT for other snapshots/versions, other
 #: judgment depths, or translations with their own ids. The alternative may
-#: carry a short ``alternative_note`` (metadata) saying how it differs.
-ALTERNATIVE_OF = irds.edge_kind('alternative_of', structural=False,
+#: carry a short ``alternativeNote`` (metadata) saying how it differs.
+ALTERNATIVE_OF = irds.declare_graph_property('alternativeOf', structural=False,
                                 desc='table -> the canonical table it is a drop-in '
                                      '(same id space) alternative for')
 #: An ``irds:Alias`` node -> the node it stands for. Informational (an alias is
 #: bookkeeping, never part of anything's build DAG). ``Graph.__getitem__``
 #: follows it, so loading an alias returns its target.
-ALIAS_OF = irds.edge_kind('alias_of', structural=False,
+ALIAS_OF = irds.declare_graph_property('aliasOf', structural=False,
                           desc='alias -> the node it stands for (loading the alias returns it)')
 STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
 
-#: Fields ``irds.defaults()`` may set. Descriptive only -- never identity or
-#: data (``name``, ``source``, ``md5``, ``defs``, ...).
-DEFAULTABLE = irds.defaultable('dua', 'lang', 'deprecated', 'license')
+# Literal-valued graph properties: what a node's row can carry. Every field
+# a row has must be declared here (or by another provider); an undeclared one is
+# left out of the graph with a warning (see ``registry.row_triples``).
+_P = irds.declare_graph_property
+_P('description', range='literal', desc='a short description of the node')
+_P('prettyName', range='literal', desc='a display name, where the identifier is not readable')
+_P('citation', range='literal', desc='how to cite it: a dblp key, or plain text')
+_P('deprecated', range='literal', desc='why the node is deprecated, and what to use instead')
+_P('license', range='literal', desc='the license its data is distributed under: an SPDX identifier, or a URL')
+_P('package', range='literal', desc='the pip package the node comes from')
+_P('requiresDependency', range='literal', desc='a pip package that must be installed beyond the core install')
+_P('lang', range='literal', desc='the language of its text')
+_P('relevanceLabel', range='json', desc='one relevance label a table\'s judgments use, as {"label": ..., "meaning": ...}')
+_P('column', range='json', desc='one column of a table\'s records, as {"name": ..., "order": ..., "data_type": ...} (plus "nullable": true if it can be missing, and "fields": [...] -- its own columns, if it holds nested records)')
+_P('count', range='literal', desc='the number of records, as declared by its author')
+_P('fileSize', range='literal', desc='the size of its file in bytes')
+_P('dua', range='literal', desc='the data use agreement a user must accept')
+_P('source', range='json', desc='a place its bytes can be obtained from, as one JSON document each')
+_P('validation', range='json', desc='how its contents are checked on first access, as {"type": ...}')
+_P('fileHash', range='literal', desc='a declared integrity hash of its file, as algo:hexdigest')
+_P('repo', range='literal', desc='the repository a git-backed resource is, as owner/name')
+_P('commit', range='literal', desc='the commit a git-backed resource is pinned to')
+_P('url', range='literal', desc='where a git-backed resource can be visited')
+_P('metric', range='literal', desc='an official evaluation measure for a benchmark')
+_P('filter', range='literal', desc='the filter a derived table applies to the table it is derived from')
+_P('alternativeNote', range='literal', desc='how an alternative table differs from the one it is an alternative to')
+
+
+def _data_type(annotation):
+    """``(name, nullable)`` for a record field's annotation: ``str``, ``int``,
+    ``list[str]``, ... -- ``Optional[X]`` is ``('X', True)``. The annotation's own
+    text for anything unusual."""
+    import typing
+    if annotation is Ellipsis:
+        return '…', False
+    origin, args = typing.get_origin(annotation), typing.get_args(annotation)
+    if origin is typing.Union and type(None) in args:
+        rest = [a for a in args if a is not type(None)]
+        if len(rest) == 1:
+            return _data_type(rest[0])[0], True
+    if origin is not None and args:
+        base = getattr(origin, '__name__', str(origin).replace('typing.', '')).lower()
+        return f'{base}[{", ".join(_data_type(a)[0] for a in args)}]', False
+    if isinstance(annotation, type):
+        return annotation.__name__, False
+    return str(annotation).replace('typing.', ''), False
+
+
+def _nested_record(annotation):
+    """The record class (a NamedTuple) a field's annotation holds, looking through
+    ``Optional``/``list``/``dict``/... wrappers; ``None`` if it holds none."""
+    import typing
+    if isinstance(annotation, type) and hasattr(annotation, '_fields'):
+        return annotation
+    for arg in typing.get_args(annotation):
+        found = _nested_record(arg)
+        if found is not None:
+            return found
+    return None
+
+
+def _column_documents(record_type, _seen=()):
+    """One ``{"name", "order", "data_type"[, "nullable"][, "fields"]}`` per field
+    of a record class (a NamedTuple); ``data_type`` is left out for an unannotated
+    field, and ``fields`` (the same documents, recursively) is there for a field
+    that holds nested records."""
+    out = []
+    annotations = getattr(record_type, '__annotations__', {})
+    for order, name in enumerate(getattr(record_type, '_fields', ())):
+        column = {'name': name, 'order': order}
+        if name in annotations:
+            column['data_type'], nullable = _data_type(annotations[name])
+            if nullable:
+                column['nullable'] = True
+            nested = _nested_record(annotations[name])
+            if nested is not None and nested not in _seen:
+                column['fields'] = _column_documents(nested, (*_seen, record_type))
+        out.append(column)
+    return out
 
 
 # ── Resource ─────────────────────────────────────────────────────────────────────
@@ -281,7 +355,7 @@ class Resource(Node, Readable):
         # placeholder needs self.md5, which is derived from self.hashes.
         self.sources = [materialize(as_source(s), self.md5) for s in sources]
         self.size = size
-        self.dua = dua = default('dua', dua)
+        self.dua = dua
         self._download = None
         self._hinted = False
         super().__init__(name, metadata={
@@ -290,17 +364,21 @@ class Resource(Node, Readable):
     def _validation(self):
         """How a consumer can check these bytes: one JSON blob
         (``irds:validation``), absent when nothing is declared, so "no
-        validation" is the absence of the field."""
+        validation" is the absence of the field. For a file this only names the
+        method; the hashes themselves are ``irds:fileHash``."""
         if not self.hashes:
             return None
-        return {'type': 'file_hash',
-                'hashes': [f'{a}:{self.hashes[a]}' for a in sorted(self.hashes)]}
+        return {'type': 'file_hash'}
+
+    def _hash_literals(self):
+        return [f'{a}:{self.hashes[a]}' for a in sorted(self.hashes)]
 
     def discovery_literals(self):
         return {k: v for k, v in
                 {**super().discovery_literals(),
-                 'size': self.size, 'validation': self._validation(),
-                 'sources': describe_sources(self.sources),
+                 'fileSize': self.size, 'validation': self._validation(),
+                 'fileHash': self._hash_literals(),
+                 'source': describe_sources(self.sources),
                  'dua': self.dua}.items() if v}
 
     @property
@@ -356,7 +434,7 @@ class Resource(Node, Readable):
 
     @property
     def manual_sources(self):
-        return [s for s in self.sources if getattr(s, 'kind', None) == 'manual']
+        return [s for s in self.sources if getattr(s, 'type', None) == 'manual']
 
     def _external_path(self):
         """The user-supplied copy of this file, in place, or None. Never
@@ -465,7 +543,7 @@ class Directory(Resource):
     def structural_edges(self):
         edges = list(super().structural_edges())
         if self.manifest is not None:
-            edges.append(Edge(VALIDATED_BY, self.manifest))
+            edges.append(Edge(DIRECTORY_MANIFEST, self.manifest))
         return edges
 
     def stream(self):
@@ -527,16 +605,16 @@ class GitRepo(Directory):
         self._git_source = None
         try:
             self.metadata['url'] = self.url()
-            self._git_source = json.dumps(
-                {'order': 0, 'kind': 'git', 'url': self.metadata['url'], 'commit': commit},
-                sort_keys=True)
+            from .vocabulary import canonical_json
+            self._git_source = canonical_json(
+                {'type': 'git', 'order': 0, 'url': self.metadata['url'], 'commit': commit})
         except NotImplementedError:
             pass  # a host that hasn't implemented url() yet -- repo/commit still identify it
 
     def discovery_literals(self):
         literals = super().discovery_literals()
         if self._git_source is not None:
-            literals['sources'] = [self._git_source]
+            literals['source'] = [self._git_source]
         return literals
 
     def url(self):
@@ -566,7 +644,7 @@ class Table(Node):
     ``Table`` can still be constructed and registered directly (for a record
     kind that doesn't fit ``ENTITIES``, or in a third-party extension) and is
     found by ``list(type='irds:Table')`` right alongside every ``DocTable``/
-    ``QueryTable``/... -- see ``vocabulary.is_subtype``.
+    ``QueryTable``/... -- see ``vocabulary.is_subclass``.
 
     Records come either from a ``source`` + ``parser``, or from a prebuilt
     ``handler`` (which is how a derived table wraps a filtered view of another).
@@ -623,7 +701,7 @@ class Table(Node):
             raise ValueError('pass exactly one of source= or handler=')
         self.source = source
         self.parser = parser
-        self.lang = lang = default('lang', lang)
+        self.lang = lang
         self.defs = defs
         self._count_hint = count_hint
         self.docstore_size_hint = docstore_size_hint
@@ -642,8 +720,6 @@ class Table(Node):
         super().__init__(
             name,
             metadata={
-                'format': repr(parser) if parser is not None else None,
-                'defs': ({str(k): v for k, v in defs.items()} if defs else None),
                 **meta.pop('metadata', {}),
             },
             **meta)
@@ -657,18 +733,21 @@ class Table(Node):
         return requirements.normalize((*self._requires, *getattr(self.parser, 'requires', ())))
 
     def discovery_literals(self):
-        """Language and column names, reported at discovery (never frozen):
-        both come from the table's own declaration. ``columns_json`` is one
-        ordered JSON literal, since triples themselves are unordered."""
+        """Language, declared count, columns and relevance labels, reported at
+        discovery: all come from the table's own declaration. Each column and each
+        label is its own JSON document (``order`` keeps a column's position, since
+        triples themselves are unordered)."""
         literals = {**super().discovery_literals(), 'lang': self.lang}
         if self._count_hint is not None:
             literals['count'] = self._count_hint
         try:
-            fields = list(getattr(self.record_type, '_fields', ()))
+            columns = _column_documents(self.record_type)
         except Exception:
-            fields = []  # e.g. a handler that can't say without touching its data
-        if fields:
-            literals['columns_json'] = json.dumps(fields)
+            columns = []  # e.g. a handler that can't say without touching its data
+        if columns:
+            literals['column'] = columns
+        if self.defs:
+            literals['relevanceLabel'] = [{'label': k, 'meaning': v} for k, v in self.defs.items()]
         return {k: v for k, v in literals.items() if v}
 
     @property
@@ -1010,7 +1089,7 @@ def source_resources(source):
 # ── Benchmark ────────────────────────────────────────────────────────────────
 
 def alternatives(table):
-    """Names of every table linked to ``table`` by ``irds:alternative_of``,
+    """Names of every table linked to ``table`` by ``irds:alternativeOf``,
     in either direction, transitively (its canonical table and that table's
     other alternatives), excluding itself."""
     from .graph import default_graph
@@ -1069,7 +1148,7 @@ class Benchmark(Node):
         super().__init__(
             name,
             metadata={'filter': repr(filter) if filter is not None else None,
-                      'metrics': self.metrics,
+                      'metric': self.metrics,
                       **meta.pop('metadata', {})},
             **meta)
 
@@ -1082,7 +1161,7 @@ class Benchmark(Node):
 
     @property
     def types(self):
-        """Every node type this benchmark has, ``type`` first: the task
+        """Every type this benchmark has, ``type`` first: the task
         subtypes its tables qualify it for (``AdhocBenchmark`` with docs +
         queries + qrels; ``QaBenchmark`` with queries + answers -- both when
         it has all of them), or plain ``Benchmark`` when it fits neither."""
@@ -1161,7 +1240,7 @@ class Benchmark(Node):
         """A new, unregistered Benchmark with some facets swapped
         (``bm.replace(docs='irds:cord19-2020-07-16-fulltext')``); each value is
         a table node or name. Swapping in a table that is not linked to the
-        one it replaces by ``irds:alternative_of`` is allowed, but warns: the
+        one it replaces by ``irds:alternativeOf`` is allowed, but warns: the
         id spaces may not match. The result is named
         ``<name>[docs=<table>,...]``."""
         unknown = set(facets) - set(ENTITIES)
@@ -1175,7 +1254,7 @@ class Benchmark(Node):
             if old is not None and table is not old and not are_alternatives(old, table):
                 warnings.warn(
                     f'{table.qualified_name or table.name} is not declared an '
-                    f'irds:alternative_of {old.qualified_name or old.name}; its '
+                    f'irds:alternativeOf {old.qualified_name or old.name}; its '
                     f'ids may not match the other facets of {self.qualified_name or self.name}',
                     stacklevel=2)
             new[entity] = table
@@ -1185,7 +1264,7 @@ class Benchmark(Node):
                         **{e: t for e, t in new.items() if t is not None},
                         metrics=self.metrics,
                         citation=self.metadata.get('citation'),
-                        desc=self.metadata.get('desc'))
+                        desc=self.metadata.get('description'))
         # Not registered anywhere, but carries its canonical spec as its name
         # (a registered name can't contain ':', hence set after construction).
         out.qualified_name = f'{self.qualified_name or self.name}[{spec}]'

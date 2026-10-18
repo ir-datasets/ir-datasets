@@ -25,8 +25,8 @@ provider" state anywhere.
 
 A provider owns: its nodes, the edges *it* contributes (including informational
 edges about other providers' nodes), its and generators -- and its
-**vocabulary**: the node types and edge kinds it declares
-(``irds:docs``, ``irds:derived_from``) and the fields it allows ``defaults()`` to set.
+**vocabulary**: the graph classes and edge kinds it declares
+(``irds:docs``, ``irds:derivedFrom``) and the fields it allows ``defaults()`` to set.
 Everything in the graph has a home, and the home is in the name. The union over
 all installed providers is a ``Graph``.
 """
@@ -36,11 +36,11 @@ import pkgutil
 import re
 import sys
 
-from . import context
 from .base import Literal
 from . import protocols
 from .vocabulary import (
-    check_kind, check_type, declare_kind, declare_type, is_structural, type_for_protocol, types_of,
+    RDF_TYPE, RDFS_SUBCLASS_OF, canonical_json, check_kind, check_graph_class, declare_graph_property, declare_graph_class,
+    is_structural, property_for, type_for_protocol, types_of, warn_undeclared,
 )
 
 PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
@@ -49,7 +49,7 @@ PREFIX = re.compile(r'^[A-Za-z0-9_\-]+$')
 #: is not a per-provider concern any more -- see ``graph.py``'s own docstring
 #: and ``Graph.__getitem__``. The ``legacy:`` provider (``legacy_provider.py``)
 #: makes every v1 id -- across every bundled provider -- into a real,
-#: addressable ``legacy:V1Dataset`` node with an ``irds:alias_of`` edge to
+#: addressable ``legacy:V1Dataset`` node with an ``irds:aliasOf`` edge to
 #: its v2 counterpart where one is known; ``Graph`` is what turns a lookup
 #: that lands on one of those into its replacement (or fails, if there is
 #: none).
@@ -60,30 +60,39 @@ class DuplicateNameError(LookupError):
 
 
 def row_triples(name, row):
-    """A node's row (``row_for``'s shape) as RDF-ready ``(subject, predicate, object)`` triples: one ``type``
-    triple, then one triple per non-identity field -- repeated for each
-    element of a list-valued field (RDF's natural multi-valued-property
-    idiom), or a single JSON-string literal for a dict-valued one
-    (``defs``: a display blob, not graph structure). Every field
-    value is wrapped in ``base.Literal`` -- only a ``type`` object (another
-    node's declared type, not a property value) is left as a plain qualified
+    """A node's row (``row_for``'s shape) as RDF-ready ``(subject, predicate, object)`` triples: one
+    ``rdf:type`` triple per type, then one triple per non-identity field, under
+    that field's *declared* property (``provider.declare_graph_property(field, range=...)``,
+    qualified by the owning provider: ``irds:description``). A field no provider
+    has declared is left out, with an ``UndeclaredPropertyWarning``. A
+    list value gets one triple per element (RDF has no single-valued
+    properties); a ``json`` property's value is a JSON literal (a dict is
+    serialized, a string is taken as already JSON). Every value is a ``base.Literal`` -- only a type object
+    (another node's declared type, not a property value) is a plain qualified
     name. ``name``/``module`` are identity/implementation detail, never
     triples. Shared by ``ManifestProvider.discover_edges`` and any provider
     (e.g. ``hf``) that builds rows from live nodes."""
+    from .vocabulary import graph_properties
     if row.get('type'):
         # A node with several types (``Benchmark.types``) has a list.
         for node_type in ([row['type']] if isinstance(row['type'], str) else row['type']):
-            yield name, 'type', node_type
+            yield name, RDF_TYPE, node_type
+    prefix = name.split(':', 1)[0]
+    declared = graph_properties()
     for field, value in row.items():
         if field in ('name', 'type', 'module'):
             continue
-        if isinstance(value, list):
-            for item in value:
-                yield name, field, Literal(item)
-        elif isinstance(value, dict):
-            yield name, f'{field}_json', Literal(json.dumps(value, sort_keys=True))
-        else:
-            yield name, field, Literal(value)
+        predicate = property_for(field, prefix)
+        if predicate is None:
+            warn_undeclared(field, name)
+            continue
+        is_json = declared[predicate]['range'] == 'json'
+        for item in (value if isinstance(value, (list, tuple)) else [value]):
+            if is_json:
+                text = item if isinstance(item, str) else canonical_json(item)
+                yield name, predicate, Literal(text, 'json')
+            else:
+                yield name, predicate, Literal(item)
 
 
 def _caller_module(depth=2):
@@ -110,9 +119,8 @@ class ManifestProvider:
         self.generated = set()     # names of nodes a generator produced
         self.generators = []
         # Vocabulary this provider owns.
-        self.types = {}            # qualified type -> {'desc', 'parent'}
-        self.edge_kinds = {}       # qualified kind -> {'structural', 'desc'}
-        self.defaultable_fields = set()
+        self.graph_classes = {}            # qualified type -> {'desc', 'parent'}
+        self.graph_properties = {}       # qualified graph property -> {'range', 'structural', 'desc'}
         # Edges this provider contributes: src -> kind -> [dst]; dst -> {(src, kind)}.
         self._fwd = {}
         self._rev = {}
@@ -131,17 +139,17 @@ class ManifestProvider:
 
     # -- vocabulary ---------------------------------------------------------
 
-    def node_type(self, name, *, desc=None, parent=None, protocol=None):
-        """Declare a node type this provider owns; returns the qualified type
+    def declare_graph_class(self, name, *, desc=None, parent=None, protocol=None):
+        """Declare a graph class this provider owns; returns the qualified type
         for a Node subclass to set as ``type``::
 
             class DocTable(Table):
-                type = irds.node_type('DocTable', parent=TABLE)
+                type = irds.declare_graph_class('DocTable', parent=TABLE)
 
         ``parent`` is another qualified type -- this provider's own, or
         another provider's entirely (a third-party ``ext:MyTable`` may set
         ``parent='irds:Table'``) -- making this one a subtype of it for
-        ``is_subtype``/``Graph.list(type=...)`` purposes. The type itself is
+        ``is_subclass``/``Graph.list(type=...)`` purposes. The type itself is
         still owned (and only ever registerable) by this provider; ``parent``
         is a graph relationship, not a transfer of ownership.
 
@@ -155,12 +163,12 @@ class ManifestProvider:
         qualified = self.qualify(name)
         if not self.owns(qualified):
             raise ValueError(f'{self} cannot declare the type {name!r}')
-        self.types[qualified] = {'desc': desc, 'parent': parent, 'protocol': protocol}
-        return declare_type(qualified, owner=self.prefix, desc=desc, parent=parent, protocol=protocol)
+        self.graph_classes[qualified] = {'desc': desc, 'parent': parent, 'protocol': protocol}
+        return declare_graph_class(qualified, owner=self.prefix, desc=desc, parent=parent, protocol=protocol)
 
-    def declare_types(self, module):
-        """Declare every node type a module's protocols define: each protocol
-        class in ``module`` marked ``@protocols.node_type`` becomes a type owned
+    def declare_graph_classes(self, module):
+        """Declare every graph class a module's protocols define: each protocol
+        class in ``module`` marked ``@protocols.graph_class`` becomes a type owned
         by this provider -- named after the class, its parent the type of the
         nearest marked base protocol, described by the first paragraph of its
         docstring, and with the class itself as its protocol. Returns
@@ -168,7 +176,7 @@ class ManifestProvider:
 
         So the protocol is the single declaration of a type::
 
-            @node_type
+            @graph_class
             @runtime_checkable
             class DocTable(Table, Protocol):
                 \"\"\"A Table representing a collection of documents.\"\"\"
@@ -179,43 +187,47 @@ class ManifestProvider:
         import inspect
         out = {}
         for cls in vars(module).values():
-            if not (isinstance(cls, type) and protocols.is_node_type(cls)
+            if not (isinstance(cls, type) and protocols.is_graph_class(cls)
                     and cls.__module__ == module.__name__):
                 continue
             parent = None
             for base in cls.__bases__:
-                if protocols.is_node_type(base):
+                if protocols.is_graph_class(base):
                     parent = out.get(base) or type_for_protocol(f'{base.__module__}:{base.__qualname__}')
                     break
             doc = inspect.getdoc(cls) or ''
-            out[cls] = self.node_type(cls.__name__, desc=' '.join(doc.split('\n\n')[0].split()) or None,
+            out[cls] = self.declare_graph_class(cls.__name__, desc=' '.join(doc.split('\n\n')[0].split()) or None,
                                       parent=parent, protocol=cls)
         return out
 
-    def edge_kind(self, name, *, structural, desc=None):
-        """Declare an edge kind this provider owns. Structural kinds form the
-        build DAG; informational kinds are anything else."""
+    def declare_graph_property(self, name, *, range='node', structural=False, desc=None):
+        """Declare a graph property this provider owns (and return its qualified name).
+        One declaration covers both kinds of property. An **edge** (the default,
+        ``range='node'``) links a node to another; structural edges form the
+        build DAG, informational ones are anything else. A **literal-valued
+        property** has a ``range`` of ``'literal'`` (a value) or ``'json'`` (a JSON
+        document). Any property may have several values on a node, as in RDF::
+
+            irds.declare_graph_property('derivedFrom', structural=True, desc='...')
+            irds.declare_graph_property('description', range='literal', desc='...')
+
+        Names are lowerCamelCase, as RDF vocabularies write properties."""
         qualified = self.qualify(name)
         if not self.owns(qualified):
-            raise ValueError(f'{self} cannot declare the edge kind {name!r}')
-        self.edge_kinds[qualified] = {'structural': structural, 'desc': desc}
-        return declare_kind(qualified, structural=structural, owner=self.prefix,
-                            desc=desc)
+            raise ValueError(f'{self} cannot declare the graph property {name!r}')
+        self.graph_properties[qualified] = {'range': range, 'structural': structural, 'desc': desc}
+        return declare_graph_property(qualified, owner=self.prefix, range=range,
+                                 structural=structural, desc=desc)
 
-    def defaultable(self, *fields):
-        """Declare node fields this provider's ``defaults()`` may set.
-        Descriptive fields only -- never identity or data."""
-        self.defaultable_fields.update(fields)
-        return fields
+    @property
+    def edge_kinds(self):
+        """This provider's graph properties that are edges between nodes."""
+        return {k: v for k, v in self.graph_properties.items() if v['range'] == 'node'}
 
-    def defaults(self, **kwargs):
-        """Fill in unset node fields for everything constructed in the block."""
-        unknown = sorted(set(kwargs) - self.defaultable_fields)
-        if unknown:
-            raise ValueError(
-                f'{self} cannot default {", ".join(unknown)}; declared: '
-                f'{", ".join(sorted(self.defaultable_fields)) or "(none)"}')
-        return context.push(kwargs)
+    @property
+    def literal_properties(self):
+        """This provider's graph properties that carry a literal or JSON value."""
+        return {k: v for k, v in self.graph_properties.items() if v['range'] in ('literal', 'json')}
 
     # -- registration -------------------------------------------------------
 
@@ -265,8 +277,8 @@ class ManifestProvider:
         node.defined_in = module
         # After provider is set: a derived Benchmark's types depend on its
         # parent's facets, resolved through this provider's namespace.
-        for node_type in types_of(node):
-            check_type(node_type)
+        for graph_class in types_of(node):
+            check_graph_class(graph_class)
         self.nodes[name] = node
         for edge in node.structural_edges():
             kind = check_kind(self.qualify(edge.kind))
@@ -280,7 +292,7 @@ class ManifestProvider:
             self._put_edge(name, kind, target)
 
     def register_generator(self, generator, module=None):
-        check_type(generator.node_type)
+        check_graph_class(generator.graph_class)
         generator.provider = self
         generator.defined_in = module or _caller_module()
         self.generators.append(generator)
@@ -377,9 +389,9 @@ class ManifestProvider:
             for kind, dsts in kinds.items():
                 for dst in dsts:
                     yield src, kind, dst
-        for qualified, entry in self.types.items():
+        for qualified, entry in self.graph_classes.items():
             if self.owns(qualified) and entry.get('parent'):
-                yield qualified, 'subClassOf', entry['parent']
+                yield qualified, RDFS_SUBCLASS_OF, entry['parent']
         # Enumerable generators (every param has a closed values= set, e.g.
         # CLIRMatrix's languages/splits) report a type row per name they
         # could produce, plus whatever structural edges the generator
@@ -407,7 +419,7 @@ class ManifestProvider:
                         yield from row_triples(name, row)
                 else:
                     for name in generator.enumerate():
-                        yield name, 'type', generator.node_type
+                        yield name, RDF_TYPE, generator.graph_class
                 yield from generator.enumerate_edges()
 
     # -- lookup -------------------------------------------------------------

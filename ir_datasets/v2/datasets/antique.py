@@ -54,106 +54,114 @@ VALIDATION_QIDS = {'1158088', '4032777', '1583099', '263783', '4237144', '109787
 
 
 # Everything in this family shares these; an explicit argument still wins.
-with irds.defaults(dua=DUA, lang='en'):
-    # Files
-    # -----------------------------------------
-    docs_file = Resource('antique-docs.txt',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-collection.txt'],
-        # Multiple hashes on one Resource, demonstrating the general
-        # 'algo:hexdigest' mechanism (see nodes.parse_hash) rather than the
-        # single-hash shorthand -- both computed from the same real file.
-        hash=['md5:684f7015aff377062a758e478476aac8',
-              'sha256:68b6688f5f2668c93f0e8e43384f66def768c4da46da4e9f7e2629c1c47a0c36'],
-        size=93_608_031
-    )
-    train_queries_file = Resource('antique-train-queries.txt',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train-queries.txt'],
-        hash='md5:7684bd977d2682177b559d8da714f45a',
-        size=136_512
-    )
-    train_qrels_file = Resource('antique-train-qrels.qrel',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train.qrel'],
-        hash='md5:bac76531a3313a2d1debf5f1602d88ab',
-        size=625_622
-    )
-    test_queries_file = Resource('antique-test-queries.txt',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test-queries.txt'],
-        hash='md5:d09c5d9ad14368c23c853f6be81e7f2e',
-        size=11_434
-    )
-    test_qrels_file = Resource('antique-test-qrels.qrel',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test.qrel'],
-        hash='md5:c93ab0f0ce7937c84270c1eef172db4e',
-        size=149_838
-    )
-    disallow_list_file = Resource('antique-test-disallow-list.txt',
-        sources=['https://ciir.cs.umass.edu/downloads/Antique/test-queries-blacklist.txt'],
-        hash='md5:4ca64485dabf26221b90cf96ae2997f9',
-        size=184
-    )
+# Files
+# -----------------------------------------
+docs_file = Resource('antique-docs.txt',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-collection.txt'],
+    # Multiple hashes on one Resource, demonstrating the general
+    # 'algo:hexdigest' mechanism (see nodes.parse_hash) rather than the
+    # single-hash shorthand -- both computed from the same real file.
+    hash=['md5:684f7015aff377062a758e478476aac8',
+          'sha256:68b6688f5f2668c93f0e8e43384f66def768c4da46da4e9f7e2629c1c47a0c36'],
+    size=93_608_031,
+    dua=DUA
+)
+train_queries_file = Resource('antique-train-queries.txt',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train-queries.txt'],
+    hash='md5:7684bd977d2682177b559d8da714f45a',
+    size=136_512,
+    dua=DUA
+)
+train_qrels_file = Resource('antique-train-qrels.qrel',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-train.qrel'],
+    hash='md5:bac76531a3313a2d1debf5f1602d88ab',
+    size=625_622,
+    dua=DUA
+)
+test_queries_file = Resource('antique-test-queries.txt',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test-queries.txt'],
+    hash='md5:d09c5d9ad14368c23c853f6be81e7f2e',
+    size=11_434,
+    dua=DUA
+)
+test_qrels_file = Resource('antique-test-qrels.qrel',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/antique-test.qrel'],
+    hash='md5:c93ab0f0ce7937c84270c1eef172db4e',
+    size=149_838,
+    dua=DUA
+)
+disallow_list_file = Resource('antique-test-disallow-list.txt',
+    sources=['https://ciir.cs.umass.edu/downloads/Antique/test-queries-blacklist.txt'],
+    hash='md5:4ca64485dabf26221b90cf96ae2997f9',
+    size=184,
+    dua=DUA
+)
 
-    # Datasets
-    # -----------------------------------------
-    docs = TsvDocs('antique-docs',
-        source=docs_file,
-    )
-    train_queries = TsvQueries('antique-train-queries',
-        source=train_queries_file
-    )
-    train_qrels = TrecQrels('antique-train-qrels',
-        source=train_qrels_file,
-        defs=QREL_DEFS
-    )
-    test_queries = TsvQueries('antique-test-queries',
-        source=test_queries_file
-    )
-    test_qrels = TrecQrels('antique-test-qrels',
-        source=test_qrels_file,
-        defs=QREL_DEFS
-    )
+# Datasets
+# -----------------------------------------
+docs = TsvDocs('antique-docs',
+    source=docs_file,
+    lang='en',
+)
+train_queries = TsvQueries('antique-train-queries',
+    source=train_queries_file,
+    lang='en'
+)
+train_qrels = TrecQrels('antique-train-qrels',
+    source=train_qrels_file,
+    defs=QREL_DEFS
+)
+test_queries = TsvQueries('antique-test-queries',
+    source=test_queries_file,
+    lang='en'
+)
+test_qrels = TrecQrels('antique-test-qrels',
+    source=test_qrels_file,
+    defs=QREL_DEFS
+)
 
-    # Benchmarks
-    # -----------------------------------------
-    train = Benchmark('antique-train',
-        docs=docs,
-        queries=train_queries,
-        qrels=train_qrels,
-        citation=CITATION,
-        metrics=MEASURES,
-        desc='Official train set of the ANTIQUE dataset.'
-    )
-    test = Benchmark('antique-test',
-        docs=docs,
-        queries=test_queries,
-        qrels=test_qrels,
-        citation=CITATION,
-        metrics=MEASURES,
-        desc='Official test set of the ANTIQUE dataset.'
-    )
-    split200_train = Benchmark('antique-split200-train',
-        derived_from=train,
-        filter=Filter(query_ids=VALIDATION_QIDS, mode='exclude'),
-        citation=CITATION,
-        metrics=MEASURES,
-        desc='antique-train without the 200 queries held out in '
-             'antique-split200-valid.'
-    )
-    split200_valid = Benchmark('antique-split200-valid',
-        derived_from=train,
-        filter=Filter(query_ids=VALIDATION_QIDS, mode='include'),
-        citation=CITATION,
-        metrics=MEASURES,
-        desc='A held-out subset of 200 queries from antique-train. Use with '
-             'antique-split200-train.'
-    )
-    non_offensive = Benchmark('antique-test-non-offensive',
-        derived_from=test,
-        filter=Filter(query_ids=ids_from_lines(disallow_list_file), mode='exclude'),
-        citation=CITATION,
-        metrics=MEASURES,
-        desc='antique-test without the queries the ANTIQUE authors deemed '
-             '"offensive (and noisy)".'
-    )
+# Benchmarks
+# -----------------------------------------
+train = Benchmark('antique-train',
+    docs=docs,
+    queries=train_queries,
+    qrels=train_qrels,
+    citation=CITATION,
+    metrics=MEASURES,
+    desc='Official train set of the ANTIQUE dataset.'
+)
+test = Benchmark('antique-test',
+    docs=docs,
+    queries=test_queries,
+    qrels=test_qrels,
+    citation=CITATION,
+    metrics=MEASURES,
+    desc='Official test set of the ANTIQUE dataset.'
+)
+split200_train = Benchmark('antique-split200-train',
+    derived_from=train,
+    filter=Filter(query_ids=VALIDATION_QIDS, mode='exclude'),
+    citation=CITATION,
+    metrics=MEASURES,
+    desc='antique-train without the 200 queries held out in '
+         'antique-split200-valid.'
+)
+split200_valid = Benchmark('antique-split200-valid',
+    derived_from=train,
+    filter=Filter(query_ids=VALIDATION_QIDS, mode='include'),
+    citation=CITATION,
+    metrics=MEASURES,
+    desc='A held-out subset of 200 queries from antique-train. Use with '
+         'antique-split200-train.'
+)
+non_offensive = Benchmark('antique-test-non-offensive',
+    derived_from=test,
+    filter=Filter(query_ids=ids_from_lines(disallow_list_file), mode='exclude'),
+    citation=CITATION,
+    metrics=MEASURES,
+    desc='antique-test without the queries the ANTIQUE authors deemed '
+         '"offensive (and noisy)".'
+)
 
 
 # Registration

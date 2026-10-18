@@ -4,9 +4,9 @@ Split out from ``irds`` (which every other bundled family shares) because
 CLIRMatrix isn't like them: it's generator-only (no node registrations -- see
 ``datasets/clirmatrix.py``'s own docstring), on the order of 150,000
 addressable names, and its own self-contained vocabulary-reuser rather than a
-family that needs ``irds``'s shared registry for anything but the node types
+family that needs ``irds``'s shared registry for anything but the graph classes
 and edge kinds it borrows (``irds:Benchmark``, ``irds:Docs``,
-``irds:derived_from``, ...) -- reuse that ``check_type``/``add_edge`` already
+``irds:derivedFrom``, ...) -- reuse that ``check_graph_class``/``add_edge`` already
 allow any provider to do, not something requiring shared registration.
 
 Exposed as the ``clirmatrix`` entry point in the ``ir_datasets.providers``

@@ -224,7 +224,7 @@ class Source:
             return GoogleDriveDownload(self.url, **kwargs)
         return RequestsDownload(self.url, **kwargs)
 
-    kind = 'url'
+    type = 'url'
 
     def describe(self, order):
         """This source as a plain dict -- the shape stored on a Resource's
@@ -232,8 +232,7 @@ class Source:
         position, since a graph's triples are unordered). Credentials are
         never included, only whether any are needed. Plain ``headers`` (an API
         version pin, say) are not credentials, so they don't count."""
-        kind = 'gdrive' if (self.url or '').startswith('https://drive.google.com/') else self.kind
-        d = {'order': order, 'kind': kind, 'url': self.url}
+        d = {'type': self.type, 'order': order, 'url': self.url}
         if self.auth or self.cookies:
             d['auth'] = True
         return d
@@ -252,7 +251,6 @@ class _MirrorSource(Source):
     (a genuine authoring mistake), in which case ``_build`` still raises,
     now purely as a fallback rather than the normal path.
     """
-    kind = 'mirror'
 
     def __init__(self):
         super().__init__(url=None)
@@ -268,8 +266,8 @@ class _MirrorSource(Source):
 
 class _ResolvedMirrorSource(Source):
     """A ``Source.mirror()`` once its md5 is known: an ordinary URL source
-    that still remembers it came from the community mirror."""
-    kind = 'mirror'
+    that still remembers it came from the community mirror (a graph reader can
+    tell from the host name; it is not a different kind of source)."""
 
 
 class _ManualSource(Source):
@@ -282,7 +280,7 @@ class _ManualSource(Source):
     exists at an old location, it is read there in place (never moved; these
     can be terabytes), so an existing setup keeps working while the default
     name can be whatever makes sense going forward."""
-    kind = 'manual'
+    type = 'manual'
 
     def __init__(self, default, old_locations, instructions):
         super().__init__(url=None)
@@ -326,7 +324,7 @@ class _ManualSource(Source):
         return LocalDownload(self.local_path, msg, mkdir=False)
 
     def describe(self, order):
-        d = {'order': order, 'kind': 'manual', 'path': self.default}
+        d = {'type': 'manual', 'order': order, 'path': self.default}
         if self.old_locations:
             d['old_locations'] = self.old_locations
         if self.instructions:
@@ -415,7 +413,8 @@ class ExternalValidationLog:
 
 def describe_sources(sources):
     """``sources`` as a list of JSON strings, one per source, in order."""
-    return [json.dumps(s.describe(i), sort_keys=True) for i, s in enumerate(sources)]
+    from .vocabulary import canonical_json
+    return [canonical_json(s.describe(i)) for i, s in enumerate(sources)]
 
 
 class Readable:

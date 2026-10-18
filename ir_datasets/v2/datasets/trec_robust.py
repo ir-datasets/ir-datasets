@@ -45,45 +45,47 @@ FOLDS = {
     'fold5': {'304', '305', '310', '311', '314', '315', '318', '329', '333', '339', '340', '345', '346', '353', '359', '366', '367', '372', '375', '384', '385', '388', '389', '391', '395', '399', '400', '401', '409', '416', '418', '429', '441', '442', '443', '609', '610', '613', '615', '621', '629', '634', '640', '645', '658', '660', '681', '694', '696', '699'},
 }
 
-with irds.defaults(dua=DUA, lang='en'):
-    # Files
-    # -----------------------------------------
-    queries_2004_file = Resource('trec-robust-2004-queries.gz',
-        sources=['https://trec.nist.gov/data/robust/04.testset.gz', Source.mirror()],
-        hash='md5:5eac3d774a2f87da61c08a94f945beff',
-        size=34_293,
-    )
-    qrels_2004_file = Resource('trec-robust-2004-qrels.txt',
-        sources=['https://trec.nist.gov/data/robust/qrels.robust2004.txt', Source.mirror()],
-        hash='md5:123c2a0ba2ec31178cb1050995dcfdfa',
-        size=6_543_541,
-    )
+# Files
+# -----------------------------------------
+queries_2004_file = Resource('trec-robust-2004-queries.gz',
+    sources=['https://trec.nist.gov/data/robust/04.testset.gz', Source.mirror()],
+    hash='md5:5eac3d774a2f87da61c08a94f945beff',
+    size=34_293,
+    dua=DUA,
+)
+qrels_2004_file = Resource('trec-robust-2004-qrels.txt',
+    sources=['https://trec.nist.gov/data/robust/qrels.robust2004.txt', Source.mirror()],
+    hash='md5:123c2a0ba2ec31178cb1050995dcfdfa',
+    size=6_543_541,
+    dua=DUA,
+)
 
-    # Tables
-    # -----------------------------------------
-    queries_2004 = TrecQueries('trec-robust-2004-queries', source=queries_2004_file.gunzip(), count_hint=250,
-        citation=CITATION_2004)
-    qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QREL_DEFS, count_hint=311_410,
-        citation=CITATION_2004)
+# Tables
+# -----------------------------------------
+queries_2004 = TrecQueries('trec-robust-2004-queries', source=queries_2004_file.gunzip(), count_hint=250,
+    citation=CITATION_2004,
+    lang='en')
+qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QREL_DEFS, count_hint=311_410,
+    citation=CITATION_2004)
 
-    # Benchmarks
-    # -----------------------------------------
-    robust2004 = Benchmark('trec-robust-2004',
-        docs=disks45_docs, queries=queries_2004, qrels=qrels_2004,
-        citation=CITATION_2004,
-        desc='TREC Robust 2004: focuses on improving the consistency of retrieval '
-             'technology by targeting poorly-performing topics.')
+# Benchmarks
+# -----------------------------------------
+robust2004 = Benchmark('trec-robust-2004',
+    docs=disks45_docs, queries=queries_2004, qrels=qrels_2004,
+    citation=CITATION_2004,
+    desc='TREC Robust 2004: focuses on improving the consistency of retrieval '
+         'technology by targeting poorly-performing topics.')
 
-    folds = {}
-    for fold, qids in FOLDS.items():
-        folds[fold] = Benchmark(f'trec-robust-2004-{fold}',
-            derived_from=robust2004, filter=Filter(query_ids=qids, mode='include'),
-            citation=CITATION_FOLDS,
-            desc=f'TREC Robust 2004, {fold} of the 5-fold cross-validation split '
-                 f'proposed by Huston & Croft (2014).')
+folds = {}
+for fold, qids in FOLDS.items():
+    folds[fold] = Benchmark(f'trec-robust-2004-{fold}',
+        derived_from=robust2004, filter=Filter(query_ids=qids, mode='include'),
+        citation=CITATION_FOLDS,
+        desc=f'TREC Robust 2004, {fold} of the 5-fold cross-validation split '
+             f'proposed by Huston & Croft (2014).')
 
 # TREC Robust 2005 -- its own topics/qrels, no NIST DUA (unlike 2004's disks45
-# corpus), so outside the irds.defaults(dua=...) block above.
+# corpus), so it carries no dua.
 # Files
 # -----------------------------------------
 queries_2005_file = Resource('trec-robust-2005-queries.txt',

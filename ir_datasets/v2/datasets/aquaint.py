@@ -17,6 +17,14 @@ duplicating it -- same cross-file pattern as ``trec_adhoc.py``/
 import ir_datasets
 from ir_datasets.v2 import Resource, Source, TrecDocs, irds
 
+CITATION = '''@misc{Graff2002Aquaint,
+  title={The AQUAINT Corpus of English News Text},
+  author={David Graff},
+  year={2002},
+  url={https://catalog.ldc.upenn.edu/LDC2002T31},
+  publisher={Linguistic Data Consortium}
+}'''
+
 DATA_ACCESS = [
     "Find the AQUAINT collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2002T31> (aquaint_comp_LDC2002T31.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
     "Download aquaint_comp_LDC2002T31.tgz.",
@@ -42,7 +50,7 @@ docs = TrecDocs('aquaint',
     path_globs=['aquaint_comp/apw/*/*.gz', 'aquaint_comp/nyt/*/*.gz', 'aquaint_comp/xie/*/*.gz'],
     lang='en',
     count_hint=1_033_461,
-    citation='Graff2002Aquaint',
+    citation=CITATION,
 )
 
 

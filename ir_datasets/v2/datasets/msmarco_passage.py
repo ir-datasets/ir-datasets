@@ -87,158 +87,189 @@ def extract_qid_pid(stream):
 
 
 # license verified 2026-09-30: https://microsoft.github.io/msmarco/ (Terms and Conditions: non-commercial research use only; applies to all MS MARCO datasets)
-with irds.defaults(dua=DUA, lang='en', license='https://microsoft.github.io/msmarco/'):
-    # Files
-    # -----------------------------------------
-    collectionandqueries_file = Resource('msmarco-passage-collectionandqueries.tar.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/collectionandqueries.tar.gz', headers=_MS_HEADERS)],
-        hash='md5:31644046b18952c1386cd4564ba2ae69',
-        size=1_057_717_952,
-    )
-    queries_file = Resource('msmarco-passage-queries.tar.gz',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/queries.tar.gz'],
-        hash='md5:c177b2795d5f2dcc524cf00fcd973be1',
-        size=18_882_551,
-    )
-    medmarco_ids_file = Resource('msmarco-passage-medmarco-ids.txt',
-        sources=['https://raw.githubusercontent.com/Georgetown-IR-Lab/covid-neural-ir/master/med-msmarco-train.txt'],
-        hash='md5:dc5199de7d4a872c361f89f08b1163ef',
-        size=548_428,
-    )
-    train_qrels_file = Resource('msmarco-passage-train-qrels.tsv',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.train.tsv'],
-        hash='md5:733fb9fe12d93e497f7289409316eccf',
-        size=10_589_532,
-    )
-    train_docpairs_file = Resource('msmarco-passage-train-docpairs.tsv.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz', headers=_MS_HEADERS)],
-        hash='md5:215a5204288820672f5e9451d9e202c5',
-        size=2_633_557_579,
-    )
-    train_docpairs_v2_file = Resource('msmarco-passage-train-docpairs-v2.tsv.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz', headers=_MS_HEADERS)],
-        hash='md5:219083e80a0a751c08b968c2f31a4e0b',
-        size=1_841_693_309,
-    )
-    train_scoreddocs_file = Resource('msmarco-passage-train-scoreddocs.tar.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.train.tar.gz', headers=_MS_HEADERS)],
-        hash='md5:d99fdbd5b2ea84af8aa23194a3263052',
-        size=11_519_984_492,
-    )
-    dev_qrels_file = Resource('msmarco-passage-dev-qrels.tsv',
-        sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.dev.tsv'],
-        hash='md5:9157ccaeaa8227f91722ba5770787b16',
-        size=1_201_626,
-    )
-    dev_small_scoreddocs_file = Resource('msmarco-passage-dev-small-scoreddocs.tar.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.dev.tar.gz', headers=_MS_HEADERS)],
-        hash='md5:8c140662bdf123a98fbfe3bb174c5831',
-        size=687_414_398,
-    )
-    eval_small_scoreddocs_file = Resource('msmarco-passage-eval-small-scoreddocs.tar.gz',
-        sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.eval.tar.gz', headers=_MS_HEADERS)],
-        hash='md5:73778cd99f6e0632d12d0b5731b20a02',
-        size=673_440_221,
-    )
-    # Tables
-    # -----------------------------------------
-    # NOTE: TsvDocs/TsvQueries read their source through io.TextIOWrapper,
-    # which calls .seekable() on it -- and tarfile's streaming-mode member
-    # objects (as produced directly by .member()) don't support that. So,
-    # same as v1, every tar member feeding a Tsv* format is materialized to a
-    # real file with .cache() first; TrecQrels/TrecScoredDocs read through
-    # codecs.getreader instead and don't need it.
-    docs = TsvDocs('msmarco-passage',
-        source=collectionandqueries_file.member('collection.tsv').pipe(fix_encoding).cache(BASE / 'collection.tsv'),
-        docstore_size_hint=14_373_971_970,
-        count_hint=8_841_823,
-    )
+# Files
+# -----------------------------------------
+collectionandqueries_file = Resource('msmarco-passage-collectionandqueries.tar.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/collectionandqueries.tar.gz', headers=_MS_HEADERS)],
+    hash='md5:31644046b18952c1386cd4564ba2ae69',
+    size=1_057_717_952,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+queries_file = Resource('msmarco-passage-queries.tar.gz',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/queries.tar.gz'],
+    hash='md5:c177b2795d5f2dcc524cf00fcd973be1',
+    size=18_882_551,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+medmarco_ids_file = Resource('msmarco-passage-medmarco-ids.txt',
+    sources=['https://raw.githubusercontent.com/Georgetown-IR-Lab/covid-neural-ir/master/med-msmarco-train.txt'],
+    hash='md5:dc5199de7d4a872c361f89f08b1163ef',
+    size=548_428,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+train_qrels_file = Resource('msmarco-passage-train-qrels.tsv',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.train.tsv'],
+    hash='md5:733fb9fe12d93e497f7289409316eccf',
+    size=10_589_532,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+train_docpairs_file = Resource('msmarco-passage-train-docpairs.tsv.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.tsv.gz', headers=_MS_HEADERS)],
+    hash='md5:215a5204288820672f5e9451d9e202c5',
+    size=2_633_557_579,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+train_docpairs_v2_file = Resource('msmarco-passage-train-docpairs-v2.tsv.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/qidpidtriples.train.full.2.tsv.gz', headers=_MS_HEADERS)],
+    hash='md5:219083e80a0a751c08b968c2f31a4e0b',
+    size=1_841_693_309,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+train_scoreddocs_file = Resource('msmarco-passage-train-scoreddocs.tar.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.train.tar.gz', headers=_MS_HEADERS)],
+    hash='md5:d99fdbd5b2ea84af8aa23194a3263052',
+    size=11_519_984_492,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+dev_qrels_file = Resource('msmarco-passage-dev-qrels.tsv',
+    sources=['https://msmarco.z22.web.core.windows.net/msmarcoranking/qrels.dev.tsv'],
+    hash='md5:9157ccaeaa8227f91722ba5770787b16',
+    size=1_201_626,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+dev_small_scoreddocs_file = Resource('msmarco-passage-dev-small-scoreddocs.tar.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.dev.tar.gz', headers=_MS_HEADERS)],
+    hash='md5:8c140662bdf123a98fbfe3bb174c5831',
+    size=687_414_398,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+eval_small_scoreddocs_file = Resource('msmarco-passage-eval-small-scoreddocs.tar.gz',
+    sources=[Source('https://msmarco.z22.web.core.windows.net/msmarcoranking/top1000.eval.tar.gz', headers=_MS_HEADERS)],
+    hash='md5:73778cd99f6e0632d12d0b5731b20a02',
+    size=673_440_221,
+    dua=DUA, license='https://microsoft.github.io/msmarco/',
+)
+# Tables
+# -----------------------------------------
+# NOTE: TsvDocs/TsvQueries read their source through io.TextIOWrapper,
+# which calls .seekable() on it -- and tarfile's streaming-mode member
+# objects (as produced directly by .member()) don't support that. So,
+# same as v1, every tar member feeding a Tsv* format is materialized to a
+# real file with .cache() first; TrecQrels/TrecScoredDocs read through
+# codecs.getreader instead and don't need it.
+docs = TsvDocs('msmarco-passage',
+    source=collectionandqueries_file.member('collection.tsv').pipe(fix_encoding).cache(BASE / 'collection.tsv'),
+    docstore_size_hint=14_373_971_970,
+    count_hint=8_841_823,
+    lang='en', license='https://microsoft.github.io/msmarco/',
+)
 
-    train_queries = TsvQueries('msmarco-passage-train-queries',
-        source=queries_file.member('queries.train.tsv').cache(BASE / 'train' / 'queries.tsv'))
-    train_qrels = TrecQrels('msmarco-passage-train-qrels',
-        source=train_qrels_file, defs=QRELS_DEFS)
-    train_docpairs = TsvDocPairs('msmarco-passage-train-docpairs',
-        source=train_docpairs_file.gunzip())
-    train_docpairs_v2 = TsvDocPairs('msmarco-passage-train-docpairs-v2',
-        source=train_docpairs_v2_file.gunzip())
-    train_scoreddocs = TrecScoredDocs('msmarco-passage-train-scoreddocs',
-        source=train_scoreddocs_file.member('top1000.train.txt').pipe(extract_qid_pid))
+train_queries = TsvQueries('msmarco-passage-train-queries',
+    source=queries_file.member('queries.train.tsv').cache(BASE / 'train' / 'queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+train_qrels = TrecQrels('msmarco-passage-train-qrels',
+    source=train_qrels_file, defs=QRELS_DEFS, license='https://microsoft.github.io/msmarco/')
+train_docpairs = TsvDocPairs('msmarco-passage-train-docpairs',
+    source=train_docpairs_file.gunzip(),
+    license='https://microsoft.github.io/msmarco/')
+train_docpairs_v2 = TsvDocPairs('msmarco-passage-train-docpairs-v2',
+    source=train_docpairs_v2_file.gunzip(),
+    license='https://microsoft.github.io/msmarco/')
+train_scoreddocs = TrecScoredDocs('msmarco-passage-train-scoreddocs',
+    source=train_scoreddocs_file.member('top1000.train.txt').pipe(extract_qid_pid),
+    license='https://microsoft.github.io/msmarco/')
 
-    dev_queries = TsvQueries('msmarco-passage-dev-queries',
-        source=queries_file.member('queries.dev.tsv').cache(BASE / 'dev' / 'queries.tsv'))
-    dev_qrels = TrecQrels('msmarco-passage-dev-qrels',
-        source=dev_qrels_file, defs=QRELS_DEFS)
+dev_queries = TsvQueries('msmarco-passage-dev-queries',
+    source=queries_file.member('queries.dev.tsv').cache(BASE / 'dev' / 'queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+dev_qrels = TrecQrels('msmarco-passage-dev-qrels',
+    source=dev_qrels_file, defs=QRELS_DEFS, license='https://microsoft.github.io/msmarco/')
 
-    dev_small_queries = TsvQueries('msmarco-passage-dev-small-queries',
-        source=collectionandqueries_file.member('queries.dev.small.tsv').cache(BASE / 'dev' / 'small' / 'queries.tsv'))
-    dev_small_qrels = TrecQrels('msmarco-passage-dev-small-qrels',
-        source=collectionandqueries_file.member('qrels.dev.small.tsv'), defs=QRELS_DEFS)
-    dev_small_scoreddocs = TrecScoredDocs('msmarco-passage-dev-small-scoreddocs',
-        source=dev_small_scoreddocs_file.member('top1000.dev').pipe(extract_qid_pid))
+dev_small_queries = TsvQueries('msmarco-passage-dev-small-queries',
+    source=collectionandqueries_file.member('queries.dev.small.tsv').cache(BASE / 'dev' / 'small' / 'queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+dev_small_qrels = TrecQrels('msmarco-passage-dev-small-qrels',
+    source=collectionandqueries_file.member('qrels.dev.small.tsv'), defs=QRELS_DEFS, license='https://microsoft.github.io/msmarco/')
+dev_small_scoreddocs = TrecScoredDocs('msmarco-passage-dev-small-scoreddocs',
+    source=dev_small_scoreddocs_file.member('top1000.dev').pipe(extract_qid_pid),
+    license='https://microsoft.github.io/msmarco/')
 
-    eval_queries = TsvQueries('msmarco-passage-eval-queries',
-        source=queries_file.member('queries.eval.tsv').cache(BASE / 'eval' / 'queries.tsv'))
-    eval_small_queries = TsvQueries('msmarco-passage-eval-small-queries',
-        source=collectionandqueries_file.member('queries.eval.small.tsv').cache(BASE / 'eval' / 'small' / 'queries.tsv'))
-    eval_small_scoreddocs = TrecScoredDocs('msmarco-passage-eval-small-scoreddocs',
-        source=eval_small_scoreddocs_file.member('top1000.eval').pipe(extract_qid_pid))
+eval_queries = TsvQueries('msmarco-passage-eval-queries',
+    source=queries_file.member('queries.eval.tsv').cache(BASE / 'eval' / 'queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+eval_small_queries = TsvQueries('msmarco-passage-eval-small-queries',
+    source=collectionandqueries_file.member('queries.eval.small.tsv').cache(BASE / 'eval' / 'small' / 'queries.tsv'),
+    lang='en', license='https://microsoft.github.io/msmarco/')
+eval_small_scoreddocs = TrecScoredDocs('msmarco-passage-eval-small-scoreddocs',
+    source=eval_small_scoreddocs_file.member('top1000.eval').pipe(extract_qid_pid),
+    license='https://microsoft.github.io/msmarco/')
 
-    # Benchmarks
-    # -----------------------------------------
-    train = Benchmark('msmarco-passage-train',
-        docs=docs, queries=train_queries, qrels=train_qrels,
-        docpairs=train_docpairs, scoreddocs=train_scoreddocs,
-        citation=CITATION, metrics=MEASURES,
-        desc='Official train set.')
-    train_judged = Benchmark('msmarco-passage-train-judged',
-        derived_from=train, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=MEASURES,
-        desc='msmarco-passage-train restricted to queries with >= 1 qrel.')
-    train_triples_v2 = Benchmark('msmarco-passage-train-triples-v2',
-        docs=docs, queries=train_queries, qrels=train_qrels,
-        docpairs=train_docpairs_v2, scoreddocs=train_scoreddocs,
-        citation=CITATION, metrics=MEASURES,
-        desc='msmarco-passage-train with the v2 (larger) docpairs release.')
-    train_split200_train = Benchmark('msmarco-passage-train-split200-train',
-        derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='exclude'),
-        citation=CITATION, metrics=MEASURES,
-        desc='msmarco-passage-train without the 200 queries held out in '
-             'msmarco-passage-train-split200-valid.')
-    train_split200_valid = Benchmark('msmarco-passage-train-split200-valid',
-        derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='include'),
-        citation=CITATION, metrics=MEASURES,
-        desc='A held-out subset of 200 queries from msmarco-passage-train. '
-             'Use with msmarco-passage-train-split200-train.')
-    train_medical = Benchmark('msmarco-passage-train-medical',
-        derived_from=train,
-        filter=Filter(query_ids=ids_from_lines(medmarco_ids_file), mode='include'),
-        citation=CITATION, metrics=MEASURES,
-        desc='Subset of msmarco-passage-train restricted to medical queries, '
-             'as identified by Georgetown-IR-Lab/covid-neural-ir.')
+# Benchmarks
+# -----------------------------------------
+train = Benchmark('msmarco-passage-train',
+    docs=docs, queries=train_queries, qrels=train_qrels,
+    docpairs=train_docpairs, scoreddocs=train_scoreddocs,
+    citation=CITATION, metrics=MEASURES,
+    desc='Official train set.',
+    license='https://microsoft.github.io/msmarco/')
+train_judged = Benchmark('msmarco-passage-train-judged',
+    derived_from=train, filter=Filter(queries_with_qrels=True),
+    citation=CITATION, metrics=MEASURES,
+    desc='msmarco-passage-train restricted to queries with >= 1 qrel.',
+    license='https://microsoft.github.io/msmarco/')
+train_triples_v2 = Benchmark('msmarco-passage-train-triples-v2',
+    docs=docs, queries=train_queries, qrels=train_qrels,
+    docpairs=train_docpairs_v2, scoreddocs=train_scoreddocs,
+    citation=CITATION, metrics=MEASURES,
+    desc='msmarco-passage-train with the v2 (larger) docpairs release.',
+    license='https://microsoft.github.io/msmarco/')
+train_split200_train = Benchmark('msmarco-passage-train-split200-train',
+    derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='exclude'),
+    citation=CITATION, metrics=MEASURES,
+    desc='msmarco-passage-train without the 200 queries held out in '
+         'msmarco-passage-train-split200-valid.',
+    license='https://microsoft.github.io/msmarco/')
+train_split200_valid = Benchmark('msmarco-passage-train-split200-valid',
+    derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='include'),
+    citation=CITATION, metrics=MEASURES,
+    desc='A held-out subset of 200 queries from msmarco-passage-train. '
+         'Use with msmarco-passage-train-split200-train.',
+    license='https://microsoft.github.io/msmarco/')
+train_medical = Benchmark('msmarco-passage-train-medical',
+    derived_from=train,
+    filter=Filter(query_ids=ids_from_lines(medmarco_ids_file), mode='include'),
+    citation=CITATION, metrics=MEASURES,
+    desc='Subset of msmarco-passage-train restricted to medical queries, '
+         'as identified by Georgetown-IR-Lab/covid-neural-ir.',
+    license='https://microsoft.github.io/msmarco/')
 
-    dev = Benchmark('msmarco-passage-dev',
-        docs=docs, queries=dev_queries, qrels=dev_qrels,
-        citation=CITATION, metrics=MEASURES,
-        desc='Official dev set.')
-    dev_judged = Benchmark('msmarco-passage-dev-judged',
-        derived_from=dev, filter=Filter(queries_with_qrels=True),
-        citation=CITATION, metrics=MEASURES,
-        desc='msmarco-passage-dev restricted to queries with >= 1 qrel.')
-    dev_small = Benchmark('msmarco-passage-dev-small',
-        docs=docs, queries=dev_small_queries, qrels=dev_small_qrels,
-        scoreddocs=dev_small_scoreddocs,
-        citation=CITATION, metrics=MEASURES,
-        desc='Official "small" dev set (6,980 queries).')
+dev = Benchmark('msmarco-passage-dev',
+    docs=docs, queries=dev_queries, qrels=dev_qrels,
+    citation=CITATION, metrics=MEASURES,
+    desc='Official dev set.',
+    license='https://microsoft.github.io/msmarco/')
+dev_judged = Benchmark('msmarco-passage-dev-judged',
+    derived_from=dev, filter=Filter(queries_with_qrels=True),
+    citation=CITATION, metrics=MEASURES,
+    desc='msmarco-passage-dev restricted to queries with >= 1 qrel.',
+    license='https://microsoft.github.io/msmarco/')
+dev_small = Benchmark('msmarco-passage-dev-small',
+    docs=docs, queries=dev_small_queries, qrels=dev_small_qrels,
+    scoreddocs=dev_small_scoreddocs,
+    citation=CITATION, metrics=MEASURES,
+    desc='Official "small" dev set (6,980 queries).',
+    license='https://microsoft.github.io/msmarco/')
 
-    eval_ = Benchmark('msmarco-passage-eval',
-        docs=docs, queries=eval_queries,
-        citation=CITATION, metrics=MEASURES,
-        desc='Official eval set for the MS MARCO leaderboard (qrels hidden).')
-    eval_small = Benchmark('msmarco-passage-eval-small',
-        docs=docs, queries=eval_small_queries, scoreddocs=eval_small_scoreddocs,
-        citation=CITATION, metrics=MEASURES,
-        desc='Official "small" eval set (6,837 queries).')
+eval_ = Benchmark('msmarco-passage-eval',
+    docs=docs, queries=eval_queries,
+    citation=CITATION, metrics=MEASURES,
+    desc='Official eval set for the MS MARCO leaderboard (qrels hidden).',
+    license='https://microsoft.github.io/msmarco/')
+eval_small = Benchmark('msmarco-passage-eval-small',
+    docs=docs, queries=eval_small_queries, scoreddocs=eval_small_scoreddocs,
+    citation=CITATION, metrics=MEASURES,
+    desc='Official "small" eval set (6,837 queries).',
+    license='https://microsoft.github.io/msmarco/')
 
 
 # Registration

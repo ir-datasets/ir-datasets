@@ -51,78 +51,80 @@ class _NtcirQrelsParser(Parser):
         return _V1NtcirQrels(source, node.defs or {})
 
 
-with irds.defaults(lang='en'):
-    # Files
-    # -----------------------------------------
-    ntcir_www_1_queries_file = Resource('ntcir-www-1-queries.zip',
-        sources=['http://www.thuir.cn/ntcirwww/files/eng.queries.xml.zip'],
-        hash='md5:ed43ba82791bb20776c049421525a055',
-        size=1_611,
-    ).zip_member('eng.queries.xml')
-    ntcir_www_1_qrels_file = Resource('ntcir-www-1-qrels.txt',
-        sources=['https://macavaney.us/misc/ntcir-www-1.qrels'],
-        hash='md5:634464456437bf378725958822910242',
-        size=865_810,
-    )
-    ntcir_www_2_queries_file = Resource('ntcir-www-2-queries.zip',
-        sources=['http://www.thuir.cn/ntcirwww2/qEng.zip'],
-        hash='md5:d4b108b52b2e2c8bedc2e12540414735',
-        size=3_466,
-    ).zip_member('qEng.xml')
-    ntcir_www_2_qrels_file = Resource('ntcir-www-2-qrels.txt',
-        sources=['http://www.thuir.cn/ntcirwww3/www2e.qrels'],
-        hash='md5:155b515dd9fc05e1aeb9c116c9147bb0',
-        size=939_318,
-    )
-    ntcir_www_3_queries_file = Resource('ntcir-www-3-queries.xml',
-        sources=['http://www.thuir.cn/ntcirwww3/www2www3topics-E.xml'],
-        hash='md5:1ecd1380b20894014a54eb6cb8064587',
-        size=28_823,
-    )
+# Files
+# -----------------------------------------
+ntcir_www_1_queries_file = Resource('ntcir-www-1-queries.zip',
+    sources=['http://www.thuir.cn/ntcirwww/files/eng.queries.xml.zip'],
+    hash='md5:ed43ba82791bb20776c049421525a055',
+    size=1_611,
+).zip_member('eng.queries.xml')
+ntcir_www_1_qrels_file = Resource('ntcir-www-1-qrels.txt',
+    sources=['https://macavaney.us/misc/ntcir-www-1.qrels'],
+    hash='md5:634464456437bf378725958822910242',
+    size=865_810,
+)
+ntcir_www_2_queries_file = Resource('ntcir-www-2-queries.zip',
+    sources=['http://www.thuir.cn/ntcirwww2/qEng.zip'],
+    hash='md5:d4b108b52b2e2c8bedc2e12540414735',
+    size=3_466,
+).zip_member('qEng.xml')
+ntcir_www_2_qrels_file = Resource('ntcir-www-2-qrels.txt',
+    sources=['http://www.thuir.cn/ntcirwww3/www2e.qrels'],
+    hash='md5:155b515dd9fc05e1aeb9c116c9147bb0',
+    size=939_318,
+)
+ntcir_www_3_queries_file = Resource('ntcir-www-3-queries.xml',
+    sources=['http://www.thuir.cn/ntcirwww3/www2www3topics-E.xml'],
+    hash='md5:1ecd1380b20894014a54eb6cb8064587',
+    size=28_823,
+)
 
-    # Tables
-    # -----------------------------------------
-    ntcir_www_1_queries = QueryTable('ntcir-www-1-queries',
-        source=ntcir_www_1_queries_file,
-        parser=_TrecXmlQueriesParser(GenericQuery, qtype_map={'qid': 'query_id', 'content': 'text'}),
-        count_hint=100,
-    citation='dblp:conf/ntcir/0001S0DXX17')
-    ntcir_www_1_qrels = QrelTable('ntcir-www-1-qrels',
-        source=ntcir_www_1_qrels_file,
-        parser=_NtcirQrelsParser(),
-        defs=NTCIR_QREL_DEFS,
-        count_hint=25_465,
-    citation='dblp:conf/ntcir/0001S0DXX17')
-    ntcir_www_2_queries = QueryTable('ntcir-www-2-queries',
-        source=ntcir_www_2_queries_file,
-        parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),
-        count_hint=80,
-    citation='dblp:conf/ntcir/MaoS0X0D19')
-    ntcir_www_2_qrels = QrelTable('ntcir-www-2-qrels',
-        source=ntcir_www_2_qrels_file,
-        parser=_NtcirQrelsParser(),
-        defs=NTCIR_QREL_DEFS,
-        count_hint=27_627,
-    citation='dblp:conf/ntcir/MaoS0X0D19')
-    ntcir_www_3_queries = QueryTable('ntcir-www-3-queries',
-        source=ntcir_www_3_queries_file,
-        parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),
-        count_hint=160,
-    )
+# Tables
+# -----------------------------------------
+ntcir_www_1_queries = QueryTable('ntcir-www-1-queries',
+    source=ntcir_www_1_queries_file,
+    parser=_TrecXmlQueriesParser(GenericQuery, qtype_map={'qid': 'query_id', 'content': 'text'}),
+    count_hint=100,
+citation='dblp:conf/ntcir/0001S0DXX17',
+lang='en')
+ntcir_www_1_qrels = QrelTable('ntcir-www-1-qrels',
+    source=ntcir_www_1_qrels_file,
+    parser=_NtcirQrelsParser(),
+    defs=NTCIR_QREL_DEFS,
+    count_hint=25_465,
+citation='dblp:conf/ntcir/0001S0DXX17')
+ntcir_www_2_queries = QueryTable('ntcir-www-2-queries',
+    source=ntcir_www_2_queries_file,
+    parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),
+    count_hint=80,
+citation='dblp:conf/ntcir/MaoS0X0D19',
+lang='en')
+ntcir_www_2_qrels = QrelTable('ntcir-www-2-qrels',
+    source=ntcir_www_2_qrels_file,
+    parser=_NtcirQrelsParser(),
+    defs=NTCIR_QREL_DEFS,
+    count_hint=27_627,
+citation='dblp:conf/ntcir/MaoS0X0D19')
+ntcir_www_3_queries = QueryTable('ntcir-www-3-queries',
+    source=ntcir_www_3_queries_file,
+    parser=_TrecXmlQueriesParser(NtcirQuery, qtype_map=ntcir_map),
+    count_hint=160,
+    lang='en',
+)
 
-    # Benchmarks
-    # -----------------------------------------
-    ntcir_www_1 = Benchmark('ntcir-www-1',
-        docs=docs_b13, queries=ntcir_www_1_queries, qrels=ntcir_www_1_qrels,
-        citation='dblp:conf/ntcir/0001S0DXX17',
-        desc='NTCIR-13 WWW-1.')
-    ntcir_www_2 = Benchmark('ntcir-www-2',
-        docs=docs_b13, queries=ntcir_www_2_queries, qrels=ntcir_www_2_qrels,
-        citation='dblp:conf/ntcir/MaoS0X0D19',
-        desc='NTCIR-14 WWW-2.')
-    ntcir_www_3 = Benchmark('ntcir-www-3',
-        docs=docs_b13, queries=ntcir_www_3_queries,
-        desc='NTCIR-15 WWW-3 (queries only; v1 does not wire up qrels for this dataset).')
+# Benchmarks
+# -----------------------------------------
+ntcir_www_1 = Benchmark('ntcir-www-1',
+    docs=docs_b13, queries=ntcir_www_1_queries, qrels=ntcir_www_1_qrels,
+    citation='dblp:conf/ntcir/0001S0DXX17',
+    desc='NTCIR-13 WWW-1.')
+ntcir_www_2 = Benchmark('ntcir-www-2',
+    docs=docs_b13, queries=ntcir_www_2_queries, qrels=ntcir_www_2_qrels,
+    citation='dblp:conf/ntcir/MaoS0X0D19',
+    desc='NTCIR-14 WWW-2.')
+ntcir_www_3 = Benchmark('ntcir-www-3',
+    docs=docs_b13, queries=ntcir_www_3_queries,
+    desc='NTCIR-15 WWW-3 (queries only; v1 does not wire up qrels for this dataset).')
 
 
 # Registration

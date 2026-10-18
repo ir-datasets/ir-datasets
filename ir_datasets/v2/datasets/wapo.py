@@ -50,37 +50,41 @@ class _WapoDocsParser(Parser):
 
 
 # license verified 2026-09-30: terms of the NIST TREC Washington Post Organization Application (research-only, no commercial use): https://trec.nist.gov/data/wapost/Organization%20Application.pdf
-with irds.defaults(dua=DUA, lang='en', license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf'):
-    # Files
-    # -----------------------------------------
-    docs_v2_file = Resource('wapo-v2.tar.gz',
-        sources=[Source.external('wapo-v2.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v2.tar.gz'], instructions=V2_INSTRUCTIONS)],
-        hash='md5:ce6e93f6ce9959b72c2de4f8d12089ab',
-        size=1_632_868_829,
-    )
-    docs_v3_file = Resource('wapo-v3.tar.gz',
-        sources=[Source.external('wapo-v3.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v3.tar.gz'], instructions=V3_INSTRUCTIONS)],
-        hash='md5:eef2db39c95e0dfa1ca8b53d6ff15143',
-        size=1_942_041_158,
-    )
-    docs_v4_file = Resource('wapo-v4.tar.gz',
-        sources=[Source.external('wapo-v4.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v4.tar.gz'], instructions=V4_INSTRUCTIONS)],
-        hash='md5:b45b8d34393b4df72737c11aa7fb2b3d',
-        size=2_538_859_710,
-    )
+# Files
+# -----------------------------------------
+docs_v2_file = Resource('wapo-v2.tar.gz',
+    sources=[Source.external('wapo-v2.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v2.tar.gz'], instructions=V2_INSTRUCTIONS)],
+    hash='md5:ce6e93f6ce9959b72c2de4f8d12089ab',
+    size=1_632_868_829,
+    dua=DUA, license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf',
+)
+docs_v3_file = Resource('wapo-v3.tar.gz',
+    sources=[Source.external('wapo-v3.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v3.tar.gz'], instructions=V3_INSTRUCTIONS)],
+    hash='md5:eef2db39c95e0dfa1ca8b53d6ff15143',
+    size=1_942_041_158,
+    dua=DUA, license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf',
+)
+docs_v4_file = Resource('wapo-v4.tar.gz',
+    sources=[Source.external('wapo-v4.tar.gz', old_locations=[f'{NAME}/WashingtonPost.v4.tar.gz'], instructions=V4_INSTRUCTIONS)],
+    hash='md5:b45b8d34393b4df72737c11aa7fb2b3d',
+    size=2_538_859_710,
+    dua=DUA, license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf',
+)
 
-    # Tables
-    # -----------------------------------------
-    docs_v2 = DocTable('wapo-v2',
-        source=docs_v2_file,
-        parser=_WapoDocsParser('WashingtonPost.v2/data/TREC_Washington_Post_collection.v2.jl'),
-        count_hint=595_037,
-    )
-    docs_v4 = DocTable('wapo-v4',
-        source=docs_v4_file,
-        parser=_WapoDocsParser('WashingtonPost.v4/data/TREC_Washington_Post_collection.v4.jl'),
-        count_hint=728_626,
-    )
+# Tables
+# -----------------------------------------
+docs_v2 = DocTable('wapo-v2',
+    source=docs_v2_file,
+    parser=_WapoDocsParser('WashingtonPost.v2/data/TREC_Washington_Post_collection.v2.jl'),
+    count_hint=595_037,
+    lang='en', license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf',
+)
+docs_v4 = DocTable('wapo-v4',
+    source=docs_v4_file,
+    parser=_WapoDocsParser('WashingtonPost.v4/data/TREC_Washington_Post_collection.v4.jl'),
+    count_hint=728_626,
+    lang='en', license='https://trec.nist.gov/data/wapost/Organization%20Application.pdf',
+)
 
 
 # Registration

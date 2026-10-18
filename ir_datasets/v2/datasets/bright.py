@@ -7,7 +7,7 @@ separate qrels file) -- reflected here by ``QueryTable`` and ``QrelTable`` both
 declaring the same queries Resource as their ``source``. Each of 5 LLMs
 (GPT-4, Claude 3 Opus, Gemini 1.0, Llama 3 70B, GRIT) also rewrote every query
 into a reasoning-augmented one, from its own parquet file; each is its own
-``QueryTable`` (``bright-<subset>-queries-<model>``), an ``irds:alternative_of``
+``QueryTable`` (``bright-<subset>-queries-<model>``), an ``irds:alternativeOf``
 the original queries (same query ids), so a benchmark can swap one in with
 ``load('irds:bright-biology', queries='irds:bright-biology-queries-gpt4-reason')``.
 
@@ -260,63 +260,69 @@ class _BrightQrelsParser(Parser):
 
 
 # license verified 2026-09-30: https://huggingface.co/datasets/xlangai/BRIGHT (card metadata: CC-BY-4.0)
-with irds.defaults(lang='en', license='CC-BY-4.0'):
-    benchmarks = {}          # short-document benchmarks: flat name -> Benchmark
-    rewritten_queries = []   # (LLM-rewritten QueryTable, the original it is an alternative of)
-    long_benchmarks = {}     # long-document variants (their own suite, bright-long)
-    queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table, AnswerTable or None)
+benchmarks = {}          # short-document benchmarks: flat name -> Benchmark
+rewritten_queries = []   # (LLM-rewritten QueryTable, the original it is an alternative of)
+long_benchmarks = {}     # long-document variants (their own suite, bright-long)
+queries_by_subset = {}   # subset -> (queries_file Resource, QueryTable table, AnswerTable or None)
 
-    for subset in SHORT_SUBSETS:
-        docs_url, docs_md5, docs_size = DOCS_SOURCES[subset]
-        docs_file = Resource(f'bright-{subset}-docs.parquet', sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size)
-        docs = DocTable(f'bright-{subset}-docs', source=docs_file, parser=_BrightDocsParser(subset))
+for subset in SHORT_SUBSETS:
+    docs_url, docs_md5, docs_size = DOCS_SOURCES[subset]
+    docs_file = Resource(f'bright-{subset}-docs.parquet', sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size, license='CC-BY-4.0')
+    docs = DocTable(f'bright-{subset}-docs', source=docs_file, parser=_BrightDocsParser(subset), lang='en', license='CC-BY-4.0')
 
-        queries_url, queries_md5, queries_size = QUERIES_SOURCES[subset]
-        queries_file = Resource(f'bright-{subset}-queries.parquet', sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size)
+    queries_url, queries_md5, queries_size = QUERIES_SOURCES[subset]
+    queries_file = Resource(f'bright-{subset}-queries.parquet', sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size, license='CC-BY-4.0')
 
-        reasoning_sources = {}
-        for v1_field in REASONING_FIELDS:
-            r_url, r_md5, r_size = REASONING_SOURCES[(subset, v1_field)]
-            reasoning_sources[v1_field] = Resource(
-                f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], hash=f'md5:{r_md5}', size=r_size)
+    reasoning_sources = {}
+    for v1_field in REASONING_FIELDS:
+        r_url, r_md5, r_size = REASONING_SOURCES[(subset, v1_field)]
+        reasoning_sources[v1_field] = Resource(
+            f'bright-{subset}-{_slug(v1_field)}.parquet', sources=[r_url], hash=f'md5:{r_md5}', size=r_size, license='CC-BY-4.0')
 
-        queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
-                          parser=_BrightQueriesParser())
-        for v1_field, reasoning_file in reasoning_sources.items():
-            rewritten = QueryTable(
-                f'bright-{subset}-queries-{_slug(v1_field)}', source=reasoning_file,
-                parser=_BrightRewrittenQueriesParser(),
-                metadata={'alternative_note': 'rewritten by ' + v1_field.replace('_reason', '')})
-            rewritten_queries.append((rewritten, queries))
-        qrels = QrelTable(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
-                      parser=_BrightQrelsParser(gold_field='gold_ids'))
+    queries = QueryTable(f'bright-{subset}-queries', source=queries_file,
+                      parser=_BrightQueriesParser(),
+                      lang='en', license='CC-BY-4.0')
+    for v1_field, reasoning_file in reasoning_sources.items():
+        rewritten = QueryTable(
+            f'bright-{subset}-queries-{_slug(v1_field)}', source=reasoning_file,
+            parser=_BrightRewrittenQueriesParser(),
+            metadata={'alternativeNote': 'rewritten by ' + v1_field.replace('_reason', '')},
+            lang='en', license='CC-BY-4.0')
+        rewritten_queries.append((rewritten, queries))
+    qrels = QrelTable(f'bright-{subset}-qrels', source=queries_file, defs=QRELS_DEFS,
+                  parser=_BrightQrelsParser(gold_field='gold_ids'),
+                  license='CC-BY-4.0')
 
-        answers = None if subset in NO_ANSWER_SUBSETS else AnswerTable(
-            f'bright-{subset}-answers', source=queries_file,
-            parser=AnswersFromQueriesParser(_BrightPlainQueriesParser(), 'gold_answer'))
+    answers = None if subset in NO_ANSWER_SUBSETS else AnswerTable(
+        f'bright-{subset}-answers', source=queries_file,
+        parser=AnswersFromQueriesParser(_BrightPlainQueriesParser(), 'gold_answer'),
+        lang='en', license='CC-BY-4.0')
 
-        queries_by_subset[subset] = (queries_file, queries, answers)
+    queries_by_subset[subset] = (queries_file, queries, answers)
 
-        name = f'bright-{subset}'
-        benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                     citation=CITATION, metrics=METRICS,
-                                     desc=f'BRIGHT: {subset} (reasoning-intensive retrieval).')
+    name = f'bright-{subset}'
+    benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
+                                 citation=CITATION, metrics=METRICS,
+                                 desc=f'BRIGHT: {subset} (reasoning-intensive retrieval).',
+                                 license='CC-BY-4.0')
 
-    for subset in LONG_SUBSETS:
-        long_url, long_md5, long_size = LONG_DOCS_SOURCES[subset]
-        long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], hash=f'md5:{long_md5}', size=long_size)
-        long_docs = DocTable(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset))
+for subset in LONG_SUBSETS:
+    long_url, long_md5, long_size = LONG_DOCS_SOURCES[subset]
+    long_docs_file = Resource(f'bright-{subset}-long-docs.parquet', sources=[long_url], hash=f'md5:{long_md5}', size=long_size, license='CC-BY-4.0')
+    long_docs = DocTable(f'bright-{subset}-long-docs', source=long_docs_file, parser=_BrightDocsParser(subset), lang='en', license='CC-BY-4.0')
 
-        queries_file, queries, answers = queries_by_subset[subset]
-        # Same QueryTable object as the short variant -- the long variant only
-        # differs in docs (long-form) and qrels (ids mapped to those docs).
-        long_qrels = QrelTable(f'bright-{subset}-long-qrels', source=queries_file, defs=QRELS_DEFS,
-                           parser=_BrightQrelsParser(gold_field='gold_ids_long'))
+    queries_file, queries, answers = queries_by_subset[subset]
+    # Same QueryTable object as the short variant -- the long variant only
+    # differs in docs (long-form) and qrels (ids mapped to those docs).
+    long_qrels = QrelTable(f'bright-{subset}-long-qrels', source=queries_file, defs=QRELS_DEFS,
+                       parser=_BrightQrelsParser(gold_field='gold_ids_long'),
+                       license='CC-BY-4.0')
 
-        name = f'bright-{subset}-long'
-        long_benchmarks[name] = Benchmark(name, docs=long_docs, queries=queries, qrels=long_qrels,
-                                     citation=CITATION, metrics=METRICS,
-                                     desc=f'BRIGHT: {subset}, long-form documents.')
+    name = f'bright-{subset}-long'
+    long_benchmarks[name] = Benchmark(name, docs=long_docs, queries=queries, qrels=long_qrels,
+                                 citation=CITATION, metrics=METRICS,
+                                 desc=f'BRIGHT: {subset}, long-form documents.',
+                                 license='CC-BY-4.0')
 
 
 # Registration
@@ -325,7 +331,7 @@ irds.register(*benchmarks.values(), *long_benchmarks.values())
 irds.register(*(a for _, _, a in queries_by_subset.values() if a is not None))
 irds.register(*(rewritten for rewritten, _ in rewritten_queries))
 for _rewritten, _original in rewritten_queries:
-    irds.add_edge(_rewritten, 'alternative_of', _original)
+    irds.add_edge(_rewritten, 'alternativeOf', _original)
 
 irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CITATION,
                     desc='The BRIGHT evaluation suite: reasoning-intensive retrieval '

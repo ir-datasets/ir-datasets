@@ -23,8 +23,13 @@ from ir_datasets.formats import GenericDoc, GenericQuery
 from ir_datasets.v2 import Benchmark, DocTable, QrelTable, QueryTable, Resource, Suite, irds
 from ir_datasets.v2.formats import Parser
 
-CITATION = ('zeta-alpha-ai/NanoBEIR (huggingface.co/collections/zeta-alpha-ai/nanobeir); '
-           'see beir-suite for the full-size benchmarks these sample from')
+CITATION = '''@misc{ZetaAlpha2024NanoBEIR,
+  title={NanoBEIR},
+  author={{Zeta Alpha}},
+  year={2024},
+  url={https://huggingface.co/collections/zeta-alpha-ai/nanobeir},
+  note={Small samples of the BEIR benchmarks; see beir-suite for the full-size originals}
+}'''
 
 #: v1 id -> {docs, queries, qrels: (url, md5, size)}, transcribed from
 #: ir_datasets/etc/downloads.json's "nano-beir" entries.
@@ -124,34 +129,35 @@ class _NanoBeirQrelsParser(Parser):
         return _V1NanoBeirQrels(source, node.defs or {1: 'relevant'})
 
 
-with irds.defaults(lang='en'):
-    nano_benchmarks = {}
+nano_benchmarks = {}
 
-    for v1_id, files in SOURCES.items():
-        docs_url, docs_md5, docs_size = files['docs']
-        queries_url, queries_md5, queries_size = files['queries']
-        qrels_url, qrels_md5, qrels_size = files['qrels']
+for v1_id, files in SOURCES.items():
+    docs_url, docs_md5, docs_size = files['docs']
+    queries_url, queries_md5, queries_size = files['queries']
+    qrels_url, qrels_md5, qrels_size = files['qrels']
 
-        # All three are .parquet on the Hub -- named by extension, not a
-        # generic "-file" suffix.
-        docs_file = Resource(f'nano-beir-{v1_id}-docs.parquet',
-                             sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size)
-        queries_file = Resource(f'nano-beir-{v1_id}-queries.parquet',
-                                sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size)
-        qrels_file = Resource(f'nano-beir-{v1_id}-qrels.parquet',
-                              sources=[qrels_url], hash=f'md5:{qrels_md5}', size=qrels_size)
+    # All three are .parquet on the Hub -- named by extension, not a
+    # generic "-file" suffix.
+    docs_file = Resource(f'nano-beir-{v1_id}-docs.parquet',
+                         sources=[docs_url], hash=f'md5:{docs_md5}', size=docs_size)
+    queries_file = Resource(f'nano-beir-{v1_id}-queries.parquet',
+                            sources=[queries_url], hash=f'md5:{queries_md5}', size=queries_size)
+    qrels_file = Resource(f'nano-beir-{v1_id}-qrels.parquet',
+                          sources=[qrels_url], hash=f'md5:{qrels_md5}', size=qrels_size)
 
-        docs = DocTable(f'nano-beir-{v1_id}-docs', source=docs_file,
-                   parser=_NanoBeirDocsParser(v1_id))
-        queries = QueryTable(f'nano-beir-{v1_id}-queries', source=queries_file,
-                          parser=_NanoBeirQueriesParser(v1_id))
-        qrels = QrelTable(f'nano-beir-{v1_id}-qrels', source=qrels_file,
-                      defs={1: 'relevant'}, parser=_NanoBeirQrelsParser())
+    docs = DocTable(f'nano-beir-{v1_id}-docs', source=docs_file,
+               parser=_NanoBeirDocsParser(v1_id),
+               lang='en')
+    queries = QueryTable(f'nano-beir-{v1_id}-queries', source=queries_file,
+                      parser=_NanoBeirQueriesParser(v1_id),
+                      lang='en')
+    qrels = QrelTable(f'nano-beir-{v1_id}-qrels', source=qrels_file,
+                  defs={1: 'relevant'}, parser=_NanoBeirQrelsParser())
 
-        name = f'nano-beir-{v1_id}'
-        nano_benchmarks[name] = Benchmark(
-            name, docs=docs, queries=queries, qrels=qrels, citation=CITATION,
-            desc=f'NanoBEIR: a small sample of BEIR\'s {v1_id} benchmark.')
+    name = f'nano-beir-{v1_id}'
+    nano_benchmarks[name] = Benchmark(
+        name, docs=docs, queries=queries, qrels=qrels, citation=CITATION,
+        desc=f'NanoBEIR: a small sample of BEIR\'s {v1_id} benchmark.')
 
 
 # Registration

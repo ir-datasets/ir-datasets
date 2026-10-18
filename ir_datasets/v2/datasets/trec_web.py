@@ -148,398 +148,423 @@ WEB04_QTYPE_MAP = {
     '<title>': 'text',
 }
 
-with irds.defaults(dua=DUA, lang='en'):
-    # Files
-    # -----------------------------------------
-    web2002_queries_file = Resource('trec-web-2002-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/webtopics_551-600.txt.gz', Source.mirror()],
-        hash='md5:133e5d1628684f7a044df86ad08907f0',
-        size=6_528,
-    )
-    web2002_qrels_file = Resource('trec-web-2002-qrels.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.txt.gz', Source.mirror()],
-        hash='md5:313d1cab9a37aa9b76b6c647cf7151a8',
-        size=402_641,
-    )
-    web2002_np_queries_file = Resource('trec-web-2002-named-page-queries.gz',
-        sources=['https://trec.nist.gov/data/topics_eng/webnamed_page_topics.1-150.txt.gz', Source.mirror()],
-        hash='md5:00422f1c1f5109d7f609708de071e527',
-        size=3_168,
-    )
-    web2002_np_qrels_file = Resource('trec-web-2002-named-page-qrels.gz',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.txt.gz', Source.mirror()],
-        hash='md5:ed7e69528faddd1baece4cae41c6f613',
-        size=1_649,
-    )
+# Files
+# -----------------------------------------
+web2002_queries_file = Resource('trec-web-2002-queries.gz',
+    sources=['https://trec.nist.gov/data/topics_eng/webtopics_551-600.txt.gz', Source.mirror()],
+    hash='md5:133e5d1628684f7a044df86ad08907f0',
+    size=6_528,
+    dua=DUA,
+)
+web2002_qrels_file = Resource('trec-web-2002-qrels.gz',
+    sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.txt.gz', Source.mirror()],
+    hash='md5:313d1cab9a37aa9b76b6c647cf7151a8',
+    size=402_641,
+    dua=DUA,
+)
+web2002_np_queries_file = Resource('trec-web-2002-named-page-queries.gz',
+    sources=['https://trec.nist.gov/data/topics_eng/webnamed_page_topics.1-150.txt.gz', Source.mirror()],
+    hash='md5:00422f1c1f5109d7f609708de071e527',
+    size=3_168,
+    dua=DUA,
+)
+web2002_np_qrels_file = Resource('trec-web-2002-named-page-qrels.gz',
+    sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.txt.gz', Source.mirror()],
+    hash='md5:ed7e69528faddd1baece4cae41c6f613',
+    size=1_649,
+    dua=DUA,
+)
 
-    web2003_queries_file = Resource('trec-web-2003-queries.txt',
-        sources=['https://trec.nist.gov/data/topics_eng/2003.distillation_topics.1-50.txt', Source.mirror()],
-        hash='md5:409e5d16eb8c795945715850c7d26a8e',
-        size=8_221,
-    )
-    web2003_qrels_file = Resource('trec-web-2003-qrels.txt',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.2003.txt', Source.mirror()],
-        hash='md5:ce11fa22c6f7f5d8048bdc0d104986e5',
-        size=1_113_881,
-    )
-    web2003_np_queries_file = Resource('trec-web-2003-named-page-queries.txt',
-        sources=['https://trec.nist.gov/data/topics_eng/2003.named_page_topics.151-450.txt', Source.mirror()],
-        hash='md5:0b9bbe2bce309c5bf5754536abaaa0b6',
-        size=26_337,
-    )
-    web2003_np_qrels_file = Resource('trec-web-2003-named-page-qrels.txt',
-        sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.2003.txt', Source.mirror()],
-        hash='md5:e7b05e05fab39862d5f8ad6ebc0c36fd',
-        size=8_096,
-    )
+web2003_queries_file = Resource('trec-web-2003-queries.txt',
+    sources=['https://trec.nist.gov/data/topics_eng/2003.distillation_topics.1-50.txt', Source.mirror()],
+    hash='md5:409e5d16eb8c795945715850c7d26a8e',
+    size=8_221,
+    dua=DUA,
+)
+web2003_qrels_file = Resource('trec-web-2003-qrels.txt',
+    sources=['https://trec.nist.gov/data/qrels_eng/qrels.distillation.2003.txt', Source.mirror()],
+    hash='md5:ce11fa22c6f7f5d8048bdc0d104986e5',
+    size=1_113_881,
+    dua=DUA,
+)
+web2003_np_queries_file = Resource('trec-web-2003-named-page-queries.txt',
+    sources=['https://trec.nist.gov/data/topics_eng/2003.named_page_topics.151-450.txt', Source.mirror()],
+    hash='md5:0b9bbe2bce309c5bf5754536abaaa0b6',
+    size=26_337,
+    dua=DUA,
+)
+web2003_np_qrels_file = Resource('trec-web-2003-named-page-qrels.txt',
+    sources=['https://trec.nist.gov/data/qrels_eng/qrels.named-page.2003.txt', Source.mirror()],
+    hash='md5:e7b05e05fab39862d5f8ad6ebc0c36fd',
+    size=8_096,
+    dua=DUA,
+)
 
-    web2004_queries_file = Resource('trec-web-2004-queries.txt',
-        sources=['https://trec.nist.gov/data/web/Web2004.query.stream.trecformat.txt', Source.mirror()],
-        hash='md5:10821f7a000b8bec058097ede39570be',
-        size=15_657,
-    )
-    web2004_qrels_file = Resource('trec-web-2004-qrels.txt',
-        sources=['https://trec.nist.gov/data/web/04.qrels.web.mixed.txt', Source.mirror()],
-        hash='md5:93daa0e4b4190c84e30d2cce78a0f674',
-        size=1_996_931,
-    )
+web2004_queries_file = Resource('trec-web-2004-queries.txt',
+    sources=['https://trec.nist.gov/data/web/Web2004.query.stream.trecformat.txt', Source.mirror()],
+    hash='md5:10821f7a000b8bec058097ede39570be',
+    size=15_657,
+    dua=DUA,
+)
+web2004_qrels_file = Resource('trec-web-2004-qrels.txt',
+    sources=['https://trec.nist.gov/data/web/04.qrels.web.mixed.txt', Source.mirror()],
+    hash='md5:93daa0e4b4190c84e30d2cce78a0f674',
+    size=1_996_931,
+    dua=DUA,
+)
 
-    # Tables
-    # -----------------------------------------
-    web2002_queries = TrecQueries('trec-web-2002-queries', source=web2002_queries_file.gunzip(), count_hint=50, citation='dblp:conf/trec/CraswellH02')
-    web2002_qrels = TrecQrels('trec-web-2002-qrels', source=web2002_qrels_file.gunzip(), defs=QREL_DEFS, count_hint=56_650, citation='dblp:conf/trec/CraswellH02')
-    web2002_np_queries = TrecQueries('trec-web-2002-named-page-queries',
-        source=web2002_np_queries_file.gunzip(),
-        qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
-        count_hint=150, citation='dblp:conf/trec/CraswellH02')
-    web2002_np_qrels = TrecQrels('trec-web-2002-named-page-qrels',
-        source=web2002_np_qrels_file.gunzip(), defs=NAMED_PAGE_QREL_DEFS, count_hint=170, citation='dblp:conf/trec/CraswellH02')
+# Tables
+# -----------------------------------------
+web2002_queries = TrecQueries('trec-web-2002-queries', source=web2002_queries_file.gunzip(), count_hint=50, citation='dblp:conf/trec/CraswellH02', lang='en')
+web2002_qrels = TrecQrels('trec-web-2002-qrels', source=web2002_qrels_file.gunzip(), defs=QREL_DEFS, count_hint=56_650, citation='dblp:conf/trec/CraswellH02')
+web2002_np_queries = TrecQueries('trec-web-2002-named-page-queries',
+    source=web2002_np_queries_file.gunzip(),
+    qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
+    count_hint=150, citation='dblp:conf/trec/CraswellH02', lang='en')
+web2002_np_qrels = TrecQrels('trec-web-2002-named-page-qrels',
+    source=web2002_np_qrels_file.gunzip(), defs=NAMED_PAGE_QREL_DEFS, count_hint=170, citation='dblp:conf/trec/CraswellH02')
 
-    web2003_queries = TrecQueries('trec-web-2003-queries',
-        source=web2003_queries_file,
-        qtype=GovWeb02Query, qtype_map=WEB03_QTYPE_MAP,
-        count_hint=50, citation='dblp:conf/trec/CraswellHWW03')
-    web2003_qrels = TrecQrels('trec-web-2003-qrels', source=web2003_qrels_file, defs=QREL_DEFS, count_hint=51_062, citation='dblp:conf/trec/CraswellHWW03')
-    web2003_np_queries = TrecQueries('trec-web-2003-named-page-queries',
-        source=web2003_np_queries_file,
-        qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
-        count_hint=300, citation='dblp:conf/trec/CraswellHWW03')
-    web2003_np_qrels = TrecQrels('trec-web-2003-named-page-qrels',
-        source=web2003_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=352, citation='dblp:conf/trec/CraswellHWW03')
+web2003_queries = TrecQueries('trec-web-2003-queries',
+    source=web2003_queries_file,
+    qtype=GovWeb02Query, qtype_map=WEB03_QTYPE_MAP,
+    count_hint=50, citation='dblp:conf/trec/CraswellHWW03', lang='en')
+web2003_qrels = TrecQrels('trec-web-2003-qrels', source=web2003_qrels_file, defs=QREL_DEFS, count_hint=51_062, citation='dblp:conf/trec/CraswellHWW03')
+web2003_np_queries = TrecQueries('trec-web-2003-named-page-queries',
+    source=web2003_np_queries_file,
+    qtype=GenericQuery, qtype_map=NAMED_PAGE_QTYPE_MAP,
+    count_hint=300, citation='dblp:conf/trec/CraswellHWW03', lang='en')
+web2003_np_qrels = TrecQrels('trec-web-2003-named-page-qrels',
+    source=web2003_np_qrels_file, defs=NAMED_PAGE_QREL_DEFS, count_hint=352, citation='dblp:conf/trec/CraswellHWW03')
 
-    web2004_queries = TrecQueries('trec-web-2004-queries',
-        source=web2004_queries_file,
-        qtype=GenericQuery, qtype_map=WEB04_QTYPE_MAP,
-        count_hint=225, citation='dblp:conf/trec/CraswellH04')
-    web2004_qrels = TrecQrels('trec-web-2004-qrels', source=web2004_qrels_file, defs=QREL_DEFS, count_hint=88_566, citation='dblp:conf/trec/CraswellH04')
+web2004_queries = TrecQueries('trec-web-2004-queries',
+    source=web2004_queries_file,
+    qtype=GenericQuery, qtype_map=WEB04_QTYPE_MAP,
+    count_hint=225, citation='dblp:conf/trec/CraswellH04', lang='en')
+web2004_qrels = TrecQrels('trec-web-2004-qrels', source=web2004_qrels_file, defs=QREL_DEFS, count_hint=88_566, citation='dblp:conf/trec/CraswellH04')
 
-    # Benchmarks
-    # -----------------------------------------
-    web2002 = Benchmark('trec-web-2002',
-        docs=docs, queries=web2002_queries, qrels=web2002_qrels,
-        citation='dblp:conf/trec/CraswellH02',
-        desc='TREC Web Track 2002 ad hoc (topic distillation) ranking benchmark.')
-    web2002_named_page = Benchmark('trec-web-2002-named-page',
-        docs=docs, queries=web2002_np_queries, qrels=web2002_np_qrels,
-        citation='dblp:conf/trec/CraswellH02',
-        desc='TREC Web Track 2002 named page finding benchmark.')
+# Benchmarks
+# -----------------------------------------
+web2002 = Benchmark('trec-web-2002',
+    docs=docs, queries=web2002_queries, qrels=web2002_qrels,
+    citation='dblp:conf/trec/CraswellH02',
+    desc='TREC Web Track 2002 ad hoc (topic distillation) ranking benchmark.')
+web2002_named_page = Benchmark('trec-web-2002-named-page',
+    docs=docs, queries=web2002_np_queries, qrels=web2002_np_qrels,
+    citation='dblp:conf/trec/CraswellH02',
+    desc='TREC Web Track 2002 named page finding benchmark.')
 
-    web2003 = Benchmark('trec-web-2003',
-        docs=docs, queries=web2003_queries, qrels=web2003_qrels,
-        citation='dblp:conf/trec/CraswellHWW03',
-        desc='TREC Web Track 2003 ad hoc (topic distillation) ranking benchmark.')
-    web2003_named_page = Benchmark('trec-web-2003-named-page',
-        docs=docs, queries=web2003_np_queries, qrels=web2003_np_qrels,
-        citation='dblp:conf/trec/CraswellHWW03',
-        desc='TREC Web Track 2003 named page finding benchmark.')
+web2003 = Benchmark('trec-web-2003',
+    docs=docs, queries=web2003_queries, qrels=web2003_qrels,
+    citation='dblp:conf/trec/CraswellHWW03',
+    desc='TREC Web Track 2003 ad hoc (topic distillation) ranking benchmark.')
+web2003_named_page = Benchmark('trec-web-2003-named-page',
+    docs=docs, queries=web2003_np_queries, qrels=web2003_np_qrels,
+    citation='dblp:conf/trec/CraswellHWW03',
+    desc='TREC Web Track 2003 named page finding benchmark.')
 
-    web2004 = Benchmark('trec-web-2004',
-        docs=docs, queries=web2004_queries, qrels=web2004_qrels,
-        citation='dblp:conf/trec/CraswellH04',
-        desc='TREC Web Track 2004 ad hoc ranking benchmark: a mix of topic '
-             'distillation, homepage finding, and named page finding queries.')
+web2004 = Benchmark('trec-web-2004',
+    docs=docs, queries=web2004_queries, qrels=web2004_qrels,
+    citation='dblp:conf/trec/CraswellH04',
+    desc='TREC Web Track 2004 ad hoc ranking benchmark: a mix of topic '
+         'distillation, homepage finding, and named page finding queries.')
 
-with irds.defaults(dua=CW09_DUA, lang='en'):
-    # Files (ClueWeb09)
-    # -----------------------------------------
-    web2009_queries_file = Resource('trec-web-2009-queries.xml',
-        sources=['https://trec.nist.gov/data/web/09/wt09.topics.full.xml', Source.mirror()],
-        hash='md5:52e4a03d32718fa11290286e8e8dff47',
-        size=35_853,
-    )
-    web2009_qrels_adhoc_file = Resource('trec-web-2009-qrels-adhoc.gz',
-        sources=['https://trec.nist.gov/data/web/09/prels.1-50.gz', Source.mirror()],
-        hash='md5:3afdef86adf3211629182e3380f9e751',
-        size=171_396,
-    )
-    web2009_qrels_all_file = Resource('trec-web-2009-qrels-all.gz',
-        sources=['https://trec.nist.gov/data/web/09/qrels.diversity.gz', Source.mirror()],
-        hash='md5:0a3fb04bfdaa1551d8960d862e925c9e',
-        size=166_538,
-    )
+# Files (ClueWeb09)
+# -----------------------------------------
+web2009_queries_file = Resource('trec-web-2009-queries.xml',
+    sources=['https://trec.nist.gov/data/web/09/wt09.topics.full.xml', Source.mirror()],
+    hash='md5:52e4a03d32718fa11290286e8e8dff47',
+    size=35_853,
+    dua=CW09_DUA,
+)
+web2009_qrels_adhoc_file = Resource('trec-web-2009-qrels-adhoc.gz',
+    sources=['https://trec.nist.gov/data/web/09/prels.1-50.gz', Source.mirror()],
+    hash='md5:3afdef86adf3211629182e3380f9e751',
+    size=171_396,
+    dua=CW09_DUA,
+)
+web2009_qrels_all_file = Resource('trec-web-2009-qrels-all.gz',
+    sources=['https://trec.nist.gov/data/web/09/qrels.diversity.gz', Source.mirror()],
+    hash='md5:0a3fb04bfdaa1551d8960d862e925c9e',
+    size=166_538,
+    dua=CW09_DUA,
+)
 
-    web2010_queries_file = Resource('trec-web-2010-queries.xml',
-        sources=['https://trec.nist.gov/data/web/10/wt2010-topics.xml', Source.mirror()],
-        hash='md5:8f084cc90c13e4cd66192d3a9585235e',
-        size=32_661,
-    )
-    web2010_qrels_adhoc_file = Resource('trec-web-2010-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/10/10.adhoc-qrels.final', Source.mirror()],
-        hash='md5:8a22083b0370d6ac799e1e779110de06',
-        size=837_288,
-    )
-    web2010_qrels_all_file = Resource('trec-web-2010-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/10/10.diversity-qrels.final', Source.mirror()],
-        hash='md5:0a78c8bf7a809039a1fc9013a4bfe4eb',
-        size=297_198,
-    )
+web2010_queries_file = Resource('trec-web-2010-queries.xml',
+    sources=['https://trec.nist.gov/data/web/10/wt2010-topics.xml', Source.mirror()],
+    hash='md5:8f084cc90c13e4cd66192d3a9585235e',
+    size=32_661,
+    dua=CW09_DUA,
+)
+web2010_qrels_adhoc_file = Resource('trec-web-2010-qrels-adhoc.txt',
+    sources=['https://trec.nist.gov/data/web/10/10.adhoc-qrels.final', Source.mirror()],
+    hash='md5:8a22083b0370d6ac799e1e779110de06',
+    size=837_288,
+    dua=CW09_DUA,
+)
+web2010_qrels_all_file = Resource('trec-web-2010-qrels-all.txt',
+    sources=['https://trec.nist.gov/data/web/10/10.diversity-qrels.final', Source.mirror()],
+    hash='md5:0a78c8bf7a809039a1fc9013a4bfe4eb',
+    size=297_198,
+    dua=CW09_DUA,
+)
 
-    web2011_queries_file = Resource('trec-web-2011-queries.xml',
-        sources=['https://trec.nist.gov/data/web/11/full-topics.xml', Source.mirror()],
-        hash='md5:23914875d80a5d24571d4f458a83c7fa',
-        size=29_693,
-    )
-    web2011_qrels_adhoc_file = Resource('trec-web-2011-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/11/qrels.adhoc', Source.mirror()],
-        hash='md5:7844c8a9cc3a4b6f740d45e56013693d',
-        size=659_973,
-    )
-    web2011_qrels_all_file = Resource('trec-web-2011-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/11/qrels.diversity', Source.mirror()],
-        hash='md5:b88c1d42afbbbc5a4a776dd3f0b905c2',
-        size=2_208_947,
-    )
+web2011_queries_file = Resource('trec-web-2011-queries.xml',
+    sources=['https://trec.nist.gov/data/web/11/full-topics.xml', Source.mirror()],
+    hash='md5:23914875d80a5d24571d4f458a83c7fa',
+    size=29_693,
+    dua=CW09_DUA,
+)
+web2011_qrels_adhoc_file = Resource('trec-web-2011-qrels-adhoc.txt',
+    sources=['https://trec.nist.gov/data/web/11/qrels.adhoc', Source.mirror()],
+    hash='md5:7844c8a9cc3a4b6f740d45e56013693d',
+    size=659_973,
+    dua=CW09_DUA,
+)
+web2011_qrels_all_file = Resource('trec-web-2011-qrels-all.txt',
+    sources=['https://trec.nist.gov/data/web/11/qrels.diversity', Source.mirror()],
+    hash='md5:b88c1d42afbbbc5a4a776dd3f0b905c2',
+    size=2_208_947,
+    dua=CW09_DUA,
+)
 
-    web2012_queries_file = Resource('trec-web-2012-queries.xml',
-        sources=['https://trec.nist.gov/data/web/12/full-topics.xml', Source.mirror()],
-        hash='md5:a0b8ee33da312a284fda379582b0bc2a',
-        size=29_353,
-    )
-    web2012_qrels_adhoc_file = Resource('trec-web-2012-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/12/qrels.adhoc', Source.mirror()],
-        hash='md5:079723ba3e955269f0de6254c4bec180',
-        size=610_948,
-    )
-    web2012_qrels_all_file = Resource('trec-web-2012-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/12/qrels.diversity', Source.mirror()],
-        hash='md5:bbfde42fc4bc502b19aec5dcc6922faa',
-        size=2_124_769,
-    )
+web2012_queries_file = Resource('trec-web-2012-queries.xml',
+    sources=['https://trec.nist.gov/data/web/12/full-topics.xml', Source.mirror()],
+    hash='md5:a0b8ee33da312a284fda379582b0bc2a',
+    size=29_353,
+    dua=CW09_DUA,
+)
+web2012_qrels_adhoc_file = Resource('trec-web-2012-qrels-adhoc.txt',
+    sources=['https://trec.nist.gov/data/web/12/qrels.adhoc', Source.mirror()],
+    hash='md5:079723ba3e955269f0de6254c4bec180',
+    size=610_948,
+    dua=CW09_DUA,
+)
+web2012_qrels_all_file = Resource('trec-web-2012-qrels-all.txt',
+    sources=['https://trec.nist.gov/data/web/12/qrels.diversity', Source.mirror()],
+    hash='md5:bbfde42fc4bc502b19aec5dcc6922faa',
+    size=2_124_769,
+    dua=CW09_DUA,
+)
 
-    # Tables (ClueWeb09)
-    # -----------------------------------------
-    web2009_queries = QueryTable('trec-web-2009-queries',
-        source=web2009_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCS09')
-    web2009_qrels_adhoc = QrelTable('trec-web-2009-qrels-adhoc',
-        source=web2009_qrels_adhoc_file.gunzip(), parser=_TrecPrelsParser(),
-        defs=QREL_DEFS_09, count_hint=23_601, citation='dblp:conf/trec/ClarkeCS09')
-    web2009_qrels_all = QrelTable('trec-web-2009-qrels-all',
-        source=web2009_qrels_all_file.gunzip(), parser=_TrecSubQrelsParser(),
-        defs=SQREL_DEFS_09, count_hint=27_964, citation='dblp:conf/trec/ClarkeCS09')
-    web2009_catb_qrels_adhoc = QrelTable('trec-web-2009-catb-qrels-adhoc',
-        source=web2009_qrels_adhoc_file.gunzip(),
-        parser=_CatBQrelsParser(_TrecPrelsParser()),
-        defs=QREL_DEFS_09, count_hint=13_118, citation='dblp:conf/trec/ClarkeCS09')
-    web2009_catb_qrels_all = QrelTable('trec-web-2009-catb-qrels-all',
-        source=web2009_qrels_all_file.gunzip(),
-        parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=SQREL_DEFS_09, count_hint=16_347, citation='dblp:conf/trec/ClarkeCS09')
+# Tables (ClueWeb09)
+# -----------------------------------------
+web2009_queries = QueryTable('trec-web-2009-queries',
+    source=web2009_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCS09', lang='en')
+web2009_qrels_adhoc = QrelTable('trec-web-2009-qrels-adhoc',
+    source=web2009_qrels_adhoc_file.gunzip(), parser=_TrecPrelsParser(),
+    defs=QREL_DEFS_09, count_hint=23_601, citation='dblp:conf/trec/ClarkeCS09')
+web2009_qrels_all = QrelTable('trec-web-2009-qrels-all',
+    source=web2009_qrels_all_file.gunzip(), parser=_TrecSubQrelsParser(),
+    defs=SQREL_DEFS_09, count_hint=27_964, citation='dblp:conf/trec/ClarkeCS09')
+web2009_catb_qrels_adhoc = QrelTable('trec-web-2009-catb-qrels-adhoc',
+    source=web2009_qrels_adhoc_file.gunzip(),
+    parser=_CatBQrelsParser(_TrecPrelsParser()),
+    defs=QREL_DEFS_09, count_hint=13_118, citation='dblp:conf/trec/ClarkeCS09')
+web2009_catb_qrels_all = QrelTable('trec-web-2009-catb-qrels-all',
+    source=web2009_qrels_all_file.gunzip(),
+    parser=_CatBQrelsParser(_TrecSubQrelsParser()),
+    defs=SQREL_DEFS_09, count_hint=16_347, citation='dblp:conf/trec/ClarkeCS09')
 
-    web2010_queries = QueryTable('trec-web-2010-queries',
-        source=web2010_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSC10')
-    web2010_qrels_adhoc = QrelTable('trec-web-2010-qrels-adhoc',
-        source=web2010_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=25_329, citation='dblp:conf/trec/ClarkeCSC10')
-    web2010_qrels_all = QrelTable('trec-web-2010-qrels-all',
-        source=web2010_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=9_006, citation='dblp:conf/trec/ClarkeCSC10')
-    web2010_catb_qrels_adhoc = QrelTable('trec-web-2010-catb-qrels-adhoc',
-        source=web2010_qrels_adhoc_file,
-        parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=15_845, citation='dblp:conf/trec/ClarkeCSC10')
-    web2010_catb_qrels_all = QrelTable('trec-web-2010-catb-qrels-all',
-        source=web2010_qrels_all_file,
-        parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=5_522, citation='dblp:conf/trec/ClarkeCSC10')
+web2010_queries = QueryTable('trec-web-2010-queries',
+    source=web2010_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSC10', lang='en')
+web2010_qrels_adhoc = QrelTable('trec-web-2010-qrels-adhoc',
+    source=web2010_qrels_adhoc_file, parser=_TrecQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=25_329, citation='dblp:conf/trec/ClarkeCSC10')
+web2010_qrels_all = QrelTable('trec-web-2010-qrels-all',
+    source=web2010_qrels_all_file, parser=_TrecSubQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=9_006, citation='dblp:conf/trec/ClarkeCSC10')
+web2010_catb_qrels_adhoc = QrelTable('trec-web-2010-catb-qrels-adhoc',
+    source=web2010_qrels_adhoc_file,
+    parser=_CatBQrelsParser(_TrecQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=15_845, citation='dblp:conf/trec/ClarkeCSC10')
+web2010_catb_qrels_all = QrelTable('trec-web-2010-catb-qrels-all',
+    source=web2010_qrels_all_file,
+    parser=_CatBQrelsParser(_TrecSubQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=5_522, citation='dblp:conf/trec/ClarkeCSC10')
 
-    web2011_queries = QueryTable('trec-web-2011-queries',
-        source=web2011_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSV11')
-    web2011_qrels_adhoc = QrelTable('trec-web-2011-qrels-adhoc',
-        source=web2011_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=19_381, citation='dblp:conf/trec/ClarkeCSV11')
-    web2011_qrels_all = QrelTable('trec-web-2011-qrels-all',
-        source=web2011_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=64_868, citation='dblp:conf/trec/ClarkeCSV11')
-    web2011_catb_qrels_adhoc = QrelTable('trec-web-2011-catb-qrels-adhoc',
-        source=web2011_qrels_adhoc_file,
-        parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=13_081, citation='dblp:conf/trec/ClarkeCSV11')
-    web2011_catb_qrels_all = QrelTable('trec-web-2011-catb-qrels-all',
-        source=web2011_qrels_all_file,
-        parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=43_889, citation='dblp:conf/trec/ClarkeCSV11')
+web2011_queries = QueryTable('trec-web-2011-queries',
+    source=web2011_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCSV11', lang='en')
+web2011_qrels_adhoc = QrelTable('trec-web-2011-qrels-adhoc',
+    source=web2011_qrels_adhoc_file, parser=_TrecQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=19_381, citation='dblp:conf/trec/ClarkeCSV11')
+web2011_qrels_all = QrelTable('trec-web-2011-qrels-all',
+    source=web2011_qrels_all_file, parser=_TrecSubQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=64_868, citation='dblp:conf/trec/ClarkeCSV11')
+web2011_catb_qrels_adhoc = QrelTable('trec-web-2011-catb-qrels-adhoc',
+    source=web2011_qrels_adhoc_file,
+    parser=_CatBQrelsParser(_TrecQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=13_081, citation='dblp:conf/trec/ClarkeCSV11')
+web2011_catb_qrels_all = QrelTable('trec-web-2011-catb-qrels-all',
+    source=web2011_qrels_all_file,
+    parser=_CatBQrelsParser(_TrecSubQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=43_889, citation='dblp:conf/trec/ClarkeCSV11')
 
-    web2012_queries = QueryTable('trec-web-2012-queries',
-        source=web2012_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCV12')
-    web2012_qrels_adhoc = QrelTable('trec-web-2012-qrels-adhoc',
-        source=web2012_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=16_055, citation='dblp:conf/trec/ClarkeCV12')
-    web2012_qrels_all = QrelTable('trec-web-2012-qrels-all',
-        source=web2012_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=62_394, citation='dblp:conf/trec/ClarkeCV12')
-    web2012_catb_qrels_adhoc = QrelTable('trec-web-2012-catb-qrels-adhoc',
-        source=web2012_qrels_adhoc_file,
-        parser=_CatBQrelsParser(_TrecQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=10_022, citation='dblp:conf/trec/ClarkeCV12')
-    web2012_catb_qrels_all = QrelTable('trec-web-2012-catb-qrels-all',
-        source=web2012_qrels_all_file,
-        parser=_CatBQrelsParser(_TrecSubQrelsParser()),
-        defs=QREL_DEFS_CW, count_hint=38_992, citation='dblp:conf/trec/ClarkeCV12')
+web2012_queries = QueryTable('trec-web-2012-queries',
+    source=web2012_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/ClarkeCV12', lang='en')
+web2012_qrels_adhoc = QrelTable('trec-web-2012-qrels-adhoc',
+    source=web2012_qrels_adhoc_file, parser=_TrecQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=16_055, citation='dblp:conf/trec/ClarkeCV12')
+web2012_qrels_all = QrelTable('trec-web-2012-qrels-all',
+    source=web2012_qrels_all_file, parser=_TrecSubQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=62_394, citation='dblp:conf/trec/ClarkeCV12')
+web2012_catb_qrels_adhoc = QrelTable('trec-web-2012-catb-qrels-adhoc',
+    source=web2012_qrels_adhoc_file,
+    parser=_CatBQrelsParser(_TrecQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=10_022, citation='dblp:conf/trec/ClarkeCV12')
+web2012_catb_qrels_all = QrelTable('trec-web-2012-catb-qrels-all',
+    source=web2012_qrels_all_file,
+    parser=_CatBQrelsParser(_TrecSubQrelsParser()),
+    defs=QREL_DEFS_CW, count_hint=38_992, citation='dblp:conf/trec/ClarkeCV12')
 
-    # Benchmarks (ClueWeb09)
-    # -----------------------------------------
-    web2009 = Benchmark('trec-web-2009',
-        docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCS09',
-        desc='TREC Web Track 2009 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
-    web2009_diversity = Benchmark('trec-web-2009-diversity',
-        docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_all,
-        citation='dblp:conf/trec/ClarkeCS09',
-        desc='TREC Web Track 2009 diversity (subtopic-level) ranking benchmark '
-             '(over the full ClueWeb09 English subset).')
-    web2009_catb = Benchmark('trec-web-2009-catb',
-        docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCS09',
-        desc='TREC Web Track 2009 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
-    web2009_catb_diversity = Benchmark('trec-web-2009-catb-diversity',
-        docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_all,
-        citation='dblp:conf/trec/ClarkeCS09',
-        desc='TREC Web Track 2009 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+# Benchmarks (ClueWeb09)
+# -----------------------------------------
+web2009 = Benchmark('trec-web-2009',
+    docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCS09',
+    desc='TREC Web Track 2009 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
+web2009_diversity = Benchmark('trec-web-2009-diversity',
+    docs=cw09_docs_en, queries=web2009_queries, qrels=web2009_qrels_all,
+    citation='dblp:conf/trec/ClarkeCS09',
+    desc='TREC Web Track 2009 diversity (subtopic-level) ranking benchmark '
+         '(over the full ClueWeb09 English subset).')
+web2009_catb = Benchmark('trec-web-2009-catb',
+    docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCS09',
+    desc='TREC Web Track 2009 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2009_catb_diversity = Benchmark('trec-web-2009-catb-diversity',
+    docs=cw09_docs_catb, queries=web2009_queries, qrels=web2009_catb_qrels_all,
+    citation='dblp:conf/trec/ClarkeCS09',
+    desc='TREC Web Track 2009 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
-    web2010 = Benchmark('trec-web-2010',
-        docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCSC10',
-        desc='TREC Web Track 2010 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
-    web2010_diversity = Benchmark('trec-web-2010-diversity',
-        docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_all,
-        citation='dblp:conf/trec/ClarkeCSC10',
-        desc='TREC Web Track 2010 diversity ranking benchmark (over the full ClueWeb09 English subset).')
-    web2010_catb = Benchmark('trec-web-2010-catb',
-        docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCSC10',
-        desc='TREC Web Track 2010 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
-    web2010_catb_diversity = Benchmark('trec-web-2010-catb-diversity',
-        docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_all,
-        citation='dblp:conf/trec/ClarkeCSC10',
-        desc='TREC Web Track 2010 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2010 = Benchmark('trec-web-2010',
+    docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCSC10',
+    desc='TREC Web Track 2010 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
+web2010_diversity = Benchmark('trec-web-2010-diversity',
+    docs=cw09_docs_en, queries=web2010_queries, qrels=web2010_qrels_all,
+    citation='dblp:conf/trec/ClarkeCSC10',
+    desc='TREC Web Track 2010 diversity ranking benchmark (over the full ClueWeb09 English subset).')
+web2010_catb = Benchmark('trec-web-2010-catb',
+    docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCSC10',
+    desc='TREC Web Track 2010 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2010_catb_diversity = Benchmark('trec-web-2010-catb-diversity',
+    docs=cw09_docs_catb, queries=web2010_queries, qrels=web2010_catb_qrels_all,
+    citation='dblp:conf/trec/ClarkeCSC10',
+    desc='TREC Web Track 2010 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
-    web2011 = Benchmark('trec-web-2011',
-        docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCSV11',
-        desc='TREC Web Track 2011 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
-    web2011_diversity = Benchmark('trec-web-2011-diversity',
-        docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_all,
-        citation='dblp:conf/trec/ClarkeCSV11',
-        desc='TREC Web Track 2011 diversity ranking benchmark (over the full ClueWeb09 English subset).')
-    web2011_catb = Benchmark('trec-web-2011-catb',
-        docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCSV11',
-        desc='TREC Web Track 2011 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
-    web2011_catb_diversity = Benchmark('trec-web-2011-catb-diversity',
-        docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_all,
-        citation='dblp:conf/trec/ClarkeCSV11',
-        desc='TREC Web Track 2011 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2011 = Benchmark('trec-web-2011',
+    docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCSV11',
+    desc='TREC Web Track 2011 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
+web2011_diversity = Benchmark('trec-web-2011-diversity',
+    docs=cw09_docs_en, queries=web2011_queries, qrels=web2011_qrels_all,
+    citation='dblp:conf/trec/ClarkeCSV11',
+    desc='TREC Web Track 2011 diversity ranking benchmark (over the full ClueWeb09 English subset).')
+web2011_catb = Benchmark('trec-web-2011-catb',
+    docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCSV11',
+    desc='TREC Web Track 2011 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2011_catb_diversity = Benchmark('trec-web-2011-catb-diversity',
+    docs=cw09_docs_catb, queries=web2011_queries, qrels=web2011_catb_qrels_all,
+    citation='dblp:conf/trec/ClarkeCSV11',
+    desc='TREC Web Track 2011 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
-    web2012 = Benchmark('trec-web-2012',
-        docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCV12',
-        desc='TREC Web Track 2012 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
-    web2012_diversity = Benchmark('trec-web-2012-diversity',
-        docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_all,
-        citation='dblp:conf/trec/ClarkeCV12',
-        desc='TREC Web Track 2012 diversity ranking benchmark (over the full ClueWeb09 English subset).')
-    web2012_catb = Benchmark('trec-web-2012-catb',
-        docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_adhoc,
-        citation='dblp:conf/trec/ClarkeCV12',
-        desc='TREC Web Track 2012 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
-    web2012_catb_diversity = Benchmark('trec-web-2012-catb-diversity',
-        docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_all,
-        citation='dblp:conf/trec/ClarkeCV12',
-        desc='TREC Web Track 2012 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2012 = Benchmark('trec-web-2012',
+    docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCV12',
+    desc='TREC Web Track 2012 ad hoc ranking benchmark (over the full ClueWeb09 English subset).')
+web2012_diversity = Benchmark('trec-web-2012-diversity',
+    docs=cw09_docs_en, queries=web2012_queries, qrels=web2012_qrels_all,
+    citation='dblp:conf/trec/ClarkeCV12',
+    desc='TREC Web Track 2012 diversity ranking benchmark (over the full ClueWeb09 English subset).')
+web2012_catb = Benchmark('trec-web-2012-catb',
+    docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_adhoc,
+    citation='dblp:conf/trec/ClarkeCV12',
+    desc='TREC Web Track 2012 ad hoc ranking benchmark, restricted to the ClueWeb09 Category B subset.')
+web2012_catb_diversity = Benchmark('trec-web-2012-catb-diversity',
+    docs=cw09_docs_catb, queries=web2012_queries, qrels=web2012_catb_qrels_all,
+    citation='dblp:conf/trec/ClarkeCV12',
+    desc='TREC Web Track 2012 diversity ranking benchmark, restricted to the ClueWeb09 Category B subset.')
 
-with irds.defaults(dua=CW12_DUA, lang='en'):
-    # Files (ClueWeb12)
-    # -----------------------------------------
-    web2013_queries_file = Resource('trec-web-2013-queries.xml',
-        sources=['https://trec.nist.gov/data/web/2013/trec2013-topics.xml', Source.mirror()],
-        hash='md5:4c0ecdddc8632d3fa8fecb507f19801d',
-        size=23_143,
-    )
-    web2013_qrels_adhoc_file = Resource('trec-web-2013-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/2013/qrels.adhoc.txt', Source.mirror()],
-        hash='md5:44aa6300f9df4a77f7205c574afb9c2d',
-        size=492_350,
-    )
-    web2013_qrels_all_file = Resource('trec-web-2013-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/2013/qrels.all.txt', Source.mirror()],
-        hash='md5:741e76258543ad47ae75030363be13a9',
-        size=1_598_265,
-    )
-    web2014_queries_file = Resource('trec-web-2014-queries.xml',
-        sources=['https://trec.nist.gov/data/web/2014/trec2014-topics.xml', Source.mirror()],
-        hash='md5:b1bf5c7aa9f6e7026e1558686330744f',
-        size=22_873,
-    )
-    web2014_qrels_adhoc_file = Resource('trec-web-2014-qrels-adhoc.txt',
-        sources=['https://trec.nist.gov/data/web/2014/qrels.adhoc.txt', Source.mirror()],
-        hash='md5:afa1db71680acf71283adc7846282a44',
-        size=491_247,
-    )
-    web2014_qrels_all_file = Resource('trec-web-2014-qrels-all.txt',
-        sources=['https://trec.nist.gov/data/web/2014/qrels.all.txt', Source.mirror()],
-        hash='md5:085256d18544cd3e34b9fa9cc29ae513',
-        size=1_492_061,
-    )
+# Files (ClueWeb12)
+# -----------------------------------------
+web2013_queries_file = Resource('trec-web-2013-queries.xml',
+    sources=['https://trec.nist.gov/data/web/2013/trec2013-topics.xml', Source.mirror()],
+    hash='md5:4c0ecdddc8632d3fa8fecb507f19801d',
+    size=23_143,
+    dua=CW12_DUA,
+)
+web2013_qrels_adhoc_file = Resource('trec-web-2013-qrels-adhoc.txt',
+    sources=['https://trec.nist.gov/data/web/2013/qrels.adhoc.txt', Source.mirror()],
+    hash='md5:44aa6300f9df4a77f7205c574afb9c2d',
+    size=492_350,
+    dua=CW12_DUA,
+)
+web2013_qrels_all_file = Resource('trec-web-2013-qrels-all.txt',
+    sources=['https://trec.nist.gov/data/web/2013/qrels.all.txt', Source.mirror()],
+    hash='md5:741e76258543ad47ae75030363be13a9',
+    size=1_598_265,
+    dua=CW12_DUA,
+)
+web2014_queries_file = Resource('trec-web-2014-queries.xml',
+    sources=['https://trec.nist.gov/data/web/2014/trec2014-topics.xml', Source.mirror()],
+    hash='md5:b1bf5c7aa9f6e7026e1558686330744f',
+    size=22_873,
+    dua=CW12_DUA,
+)
+web2014_qrels_adhoc_file = Resource('trec-web-2014-qrels-adhoc.txt',
+    sources=['https://trec.nist.gov/data/web/2014/qrels.adhoc.txt', Source.mirror()],
+    hash='md5:afa1db71680acf71283adc7846282a44',
+    size=491_247,
+    dua=CW12_DUA,
+)
+web2014_qrels_all_file = Resource('trec-web-2014-qrels-all.txt',
+    sources=['https://trec.nist.gov/data/web/2014/qrels.all.txt', Source.mirror()],
+    hash='md5:085256d18544cd3e34b9fa9cc29ae513',
+    size=1_492_061,
+    dua=CW12_DUA,
+)
 
-    # Tables (ClueWeb12)
-    # -----------------------------------------
-    web2013_queries = QueryTable('trec-web-2013-queries',
-        source=web2013_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson13')
-    web2013_qrels_adhoc = QrelTable('trec-web-2013-qrels-adhoc',
-        source=web2013_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=14_474, citation='dblp:conf/trec/Collins-Thompson13')
-    web2013_qrels_all = QrelTable('trec-web-2013-qrels-all',
-        source=web2013_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=46_985, citation='dblp:conf/trec/Collins-Thompson13')
+# Tables (ClueWeb12)
+# -----------------------------------------
+web2013_queries = QueryTable('trec-web-2013-queries',
+    source=web2013_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson13', lang='en')
+web2013_qrels_adhoc = QrelTable('trec-web-2013-qrels-adhoc',
+    source=web2013_qrels_adhoc_file, parser=_TrecQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=14_474, citation='dblp:conf/trec/Collins-Thompson13')
+web2013_qrels_all = QrelTable('trec-web-2013-qrels-all',
+    source=web2013_qrels_all_file, parser=_TrecSubQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=46_985, citation='dblp:conf/trec/Collins-Thompson13')
 
-    web2014_queries = QueryTable('trec-web-2014-queries',
-        source=web2014_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson14')
-    web2014_qrels_adhoc = QrelTable('trec-web-2014-qrels-adhoc',
-        source=web2014_qrels_adhoc_file, parser=_TrecQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=14_432, citation='dblp:conf/trec/Collins-Thompson14')
-    web2014_qrels_all = QrelTable('trec-web-2014-qrels-all',
-        source=web2014_qrels_all_file, parser=_TrecSubQrelsParser(),
-        defs=QREL_DEFS_CW, count_hint=43_840, citation='dblp:conf/trec/Collins-Thompson14')
+web2014_queries = QueryTable('trec-web-2014-queries',
+    source=web2014_queries_file, parser=_TrecXmlQueriesParser(), count_hint=50, citation='dblp:conf/trec/Collins-Thompson14', lang='en')
+web2014_qrels_adhoc = QrelTable('trec-web-2014-qrels-adhoc',
+    source=web2014_qrels_adhoc_file, parser=_TrecQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=14_432, citation='dblp:conf/trec/Collins-Thompson14')
+web2014_qrels_all = QrelTable('trec-web-2014-qrels-all',
+    source=web2014_qrels_all_file, parser=_TrecSubQrelsParser(),
+    defs=QREL_DEFS_CW, count_hint=43_840, citation='dblp:conf/trec/Collins-Thompson14')
 
-    # Benchmarks (ClueWeb12)
-    # -----------------------------------------
-    web2013 = Benchmark('trec-web-2013',
-        docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_adhoc,
-        citation='dblp:conf/trec/Collins-Thompson13',
-        desc='TREC Web Track 2013 ad hoc ranking benchmark.')
-    web2013_diversity = Benchmark('trec-web-2013-diversity',
-        docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_all,
-        citation='dblp:conf/trec/Collins-Thompson13',
-        desc='TREC Web Track 2013 diversity ranking benchmark.')
+# Benchmarks (ClueWeb12)
+# -----------------------------------------
+web2013 = Benchmark('trec-web-2013',
+    docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_adhoc,
+    citation='dblp:conf/trec/Collins-Thompson13',
+    desc='TREC Web Track 2013 ad hoc ranking benchmark.')
+web2013_diversity = Benchmark('trec-web-2013-diversity',
+    docs=cw12_docs, queries=web2013_queries, qrels=web2013_qrels_all,
+    citation='dblp:conf/trec/Collins-Thompson13',
+    desc='TREC Web Track 2013 diversity ranking benchmark.')
 
-    web2014 = Benchmark('trec-web-2014',
-        docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_adhoc,
-        citation='dblp:conf/trec/Collins-Thompson14',
-        desc='TREC Web Track 2014 ad hoc ranking benchmark.')
-    web2014_diversity = Benchmark('trec-web-2014-diversity',
-        docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_all,
-        citation='dblp:conf/trec/Collins-Thompson14',
-        desc='TREC Web Track 2014 diversity ranking benchmark.')
+web2014 = Benchmark('trec-web-2014',
+    docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_adhoc,
+    citation='dblp:conf/trec/Collins-Thompson14',
+    desc='TREC Web Track 2014 ad hoc ranking benchmark.')
+web2014_diversity = Benchmark('trec-web-2014-diversity',
+    docs=cw12_docs, queries=web2014_queries, qrels=web2014_qrels_all,
+    citation='dblp:conf/trec/Collins-Thompson14',
+    desc='TREC Web Track 2014 diversity ranking benchmark.')
 
 
 # Registration

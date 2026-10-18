@@ -219,46 +219,48 @@ class _MiraclQueriesParser(Parser):
 
 
 # license verified 2026-09-30: HF dataset cards miracl/miracl-corpus, miracl/miracl and macavaney/miracl-noauth (metadata license: apache-2.0)
-with irds.defaults(license='Apache-2.0'):
-    _benchmarks = []
+_benchmarks = []
 
-    for _lang, _topic_sets in SPLITS.items():
-        _corpus_resources = [
-            Resource(f'miracl-{_lang}-corpus-{_i}.jsonl.gz',
-                sources=[CORPUS_URL.format(lang=_lang, i=_i)], hash=f'md5:{_md5}', size=_size)
-            for _i, (_md5, _size) in enumerate(CORPUS[_lang])
-        ]
-        _docs = DocTable(f'miracl-{_lang}-docs',
-            source=[r.gunzip() for r in _corpus_resources],
-            parser=_MiraclDocsParser(), lang=_lang,
-            desc=f'The MIRACL {_lang} Wikipedia passage corpus.')
+for _lang, _topic_sets in SPLITS.items():
+    _corpus_resources = [
+        Resource(f'miracl-{_lang}-corpus-{_i}.jsonl.gz',
+            sources=[CORPUS_URL.format(lang=_lang, i=_i)], hash=f'md5:{_md5}', size=_size, license='Apache-2.0')
+        for _i, (_md5, _size) in enumerate(CORPUS[_lang])
+    ]
+    _docs = DocTable(f'miracl-{_lang}-docs',
+        source=[r.gunzip() for r in _corpus_resources],
+        parser=_MiraclDocsParser(), lang=_lang,
+        desc=f'The MIRACL {_lang} Wikipedia passage corpus.',
+        license='Apache-2.0')
 
-        for _split in _topic_sets:
-            _topics_md5, _topics_size = TOPICS[(_lang, _split)]
-            _topics_file = Resource(f'miracl-{_lang}-{_split}-topics.tsv',
-                sources=[TOPICS_URL.format(lang=_lang, split=_split)],
-                hash=f'md5:{_topics_md5}', size=_topics_size)
-            _queries = QueryTable(f'miracl-{_lang}-{_split}-queries',
-                source=_topics_file, parser=_MiraclQueriesParser(), lang=_lang)
+    for _split in _topic_sets:
+        _topics_md5, _topics_size = TOPICS[(_lang, _split)]
+        _topics_file = Resource(f'miracl-{_lang}-{_split}-topics.tsv',
+            sources=[TOPICS_URL.format(lang=_lang, split=_split)],
+            hash=f'md5:{_topics_md5}', size=_topics_size, license='Apache-2.0')
+        _queries = QueryTable(f'miracl-{_lang}-{_split}-queries',
+            source=_topics_file, parser=_MiraclQueriesParser(), lang=_lang, license='Apache-2.0')
 
-            _name = f'miracl-{_lang}-{_split}'
-            if (_lang, _split) in QRELS:
-                _qrels_md5, _qrels_size = QRELS[(_lang, _split)]
-                _qrels_file = Resource(f'miracl-{_lang}-{_split}-qrels.tsv',
-                    sources=[QRELS_URL.format(lang=_lang, split=_split)],
-                    hash=f'md5:{_qrels_md5}', size=_qrels_size)
-                _qrels = TrecQrels(f'{_name}-qrels', source=_qrels_file, defs=QREL_DEFS)
-                _benchmarks.append(Benchmark(_name,
-                    docs=_docs, queries=_queries, qrels=_qrels,
-                    citation=CITATION,
-                    desc=f'MIRACL {_lang}, {_split} split.'))
-            else:
-                # test-a/test-b: held-out leaderboard queries, no public qrels.
-                _benchmarks.append(Benchmark(_name,
-                    docs=_docs, queries=_queries,
-                    citation=CITATION,
-                    desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
-                         'no public qrels).'))
+        _name = f'miracl-{_lang}-{_split}'
+        if (_lang, _split) in QRELS:
+            _qrels_md5, _qrels_size = QRELS[(_lang, _split)]
+            _qrels_file = Resource(f'miracl-{_lang}-{_split}-qrels.tsv',
+                sources=[QRELS_URL.format(lang=_lang, split=_split)],
+                hash=f'md5:{_qrels_md5}', size=_qrels_size, license='Apache-2.0')
+            _qrels = TrecQrels(f'{_name}-qrels', source=_qrels_file, defs=QREL_DEFS, license='Apache-2.0')
+            _benchmarks.append(Benchmark(_name,
+                docs=_docs, queries=_queries, qrels=_qrels,
+                citation=CITATION,
+                desc=f'MIRACL {_lang}, {_split} split.',
+                license='Apache-2.0'))
+        else:
+            # test-a/test-b: held-out leaderboard queries, no public qrels.
+            _benchmarks.append(Benchmark(_name,
+                docs=_docs, queries=_queries,
+                citation=CITATION,
+                desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
+                     'no public qrels).',
+                license='Apache-2.0'))
 
 
 # Registration

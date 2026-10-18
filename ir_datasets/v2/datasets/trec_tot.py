@@ -123,203 +123,213 @@ class _TrecToT2025DocsParser(Parser):
         return JsonlDocumentsWithOffsets(docs_resource, offsets_resource)
 
 
-with irds.defaults(lang='en'):
-    # Files -- 2023
-    # -----------------------------------------
-    corpus_2023_file = Resource('trec-tot-2023-corpus.zip',
-        sources=['https://surfdrive.surf.nl/files/index.php/s/FaEK4xc6Xp2JcAJ/download'],
-        hash='md5:f84fe82cb80e3ee1072576c8d6c4a417',
-    )
+# Files -- 2023
+# -----------------------------------------
+corpus_2023_file = Resource('trec-tot-2023-corpus.zip',
+    sources=['https://surfdrive.surf.nl/files/index.php/s/FaEK4xc6Xp2JcAJ/download'],
+    hash='md5:f84fe82cb80e3ee1072576c8d6c4a417',
+)
 
-    # Tables -- 2023
-    # -----------------------------------------
-    docs_2023 = DocTable('trec-tot-2023-docs',
-        source=corpus_2023_file.zip_member('TREC-TOT/corpus.jsonl'),
-        parser=_JsonlDocsParser(TipOfTheTongueDoc, BASE_PATH / '2023/corpus.jsonl'),
-        count_hint=231_852)
+# Tables -- 2023
+# -----------------------------------------
+docs_2023 = DocTable('trec-tot-2023-docs',
+    source=corpus_2023_file.zip_member('TREC-TOT/corpus.jsonl'),
+    parser=_JsonlDocsParser(TipOfTheTongueDoc, BASE_PATH / '2023/corpus.jsonl'),
+    count_hint=231_852,
+    lang='en')
 
-    train_2023_queries = QueryTable('trec-tot-2023-train-queries',
-        source=corpus_2023_file.zip_member('TREC-TOT/train/queries.jsonl'),
-        parser=_JsonlQueriesParser(TipOfTheTongueQuery, mapping=QUERY_MAP),
-        count_hint=150)
-    train_2023_qrels = TrecQrels('trec-tot-2023-train-qrels',
-        source=corpus_2023_file.zip_member('TREC-TOT/train/qrel.txt'),
-        defs=QREL_DEFS, count_hint=150)
+train_2023_queries = QueryTable('trec-tot-2023-train-queries',
+    source=corpus_2023_file.zip_member('TREC-TOT/train/queries.jsonl'),
+    parser=_JsonlQueriesParser(TipOfTheTongueQuery, mapping=QUERY_MAP),
+    count_hint=150,
+    lang='en')
+train_2023_qrels = TrecQrels('trec-tot-2023-train-qrels',
+    source=corpus_2023_file.zip_member('TREC-TOT/train/qrel.txt'),
+    defs=QREL_DEFS, count_hint=150)
 
-    dev_2023_queries = QueryTable('trec-tot-2023-dev-queries',
-        source=corpus_2023_file.zip_member('TREC-TOT/dev/queries.jsonl'),
-        parser=_JsonlQueriesParser(TipOfTheTongueQuery, mapping=QUERY_MAP),
-        count_hint=150)
-    dev_2023_qrels = TrecQrels('trec-tot-2023-dev-qrels',
-        source=corpus_2023_file.zip_member('TREC-TOT/dev/qrel.txt'),
-        defs=QREL_DEFS, count_hint=150)
+dev_2023_queries = QueryTable('trec-tot-2023-dev-queries',
+    source=corpus_2023_file.zip_member('TREC-TOT/dev/queries.jsonl'),
+    parser=_JsonlQueriesParser(TipOfTheTongueQuery, mapping=QUERY_MAP),
+    count_hint=150,
+    lang='en')
+dev_2023_qrels = TrecQrels('trec-tot-2023-dev-qrels',
+    source=corpus_2023_file.zip_member('TREC-TOT/dev/qrel.txt'),
+    defs=QREL_DEFS, count_hint=150)
 
-    # Benchmarks -- 2023
-    # -----------------------------------------
-    trec_tot_2023_train = Benchmark('trec-tot-2023-train',
-        citation='dblp:conf/trec/ArguelloBDKM23',
-        docs=docs_2023, queries=train_2023_queries, qrels=train_2023_qrels,
-        desc='TREC Tip-of-the-Tongue 2023: train query set.')
-    trec_tot_2023_dev = Benchmark('trec-tot-2023-dev',
-        citation='dblp:conf/trec/ArguelloBDKM23',
-        docs=docs_2023, queries=dev_2023_queries, qrels=dev_2023_qrels,
-        desc='TREC Tip-of-the-Tongue 2023: dev query set.')
+# Benchmarks -- 2023
+# -----------------------------------------
+trec_tot_2023_train = Benchmark('trec-tot-2023-train',
+    citation='dblp:conf/trec/ArguelloBDKM23',
+    docs=docs_2023, queries=train_2023_queries, qrels=train_2023_qrels,
+    desc='TREC Tip-of-the-Tongue 2023: train query set.')
+trec_tot_2023_dev = Benchmark('trec-tot-2023-dev',
+    citation='dblp:conf/trec/ArguelloBDKM23',
+    docs=docs_2023, queries=dev_2023_queries, qrels=dev_2023_qrels,
+    desc='TREC Tip-of-the-Tongue 2023: dev query set.')
 
-    # Files -- 2024
-    # -----------------------------------------
-    corpus_2024_file = Resource('trec-tot-2024-corpus.zip',
-        sources=['https://zenodo.org/records/13370657/files/corpus.jsonl.zip?download=1'],
-        hash='md5:4ea86770817e46a06fea5c94f596409c',
-    )
-    test_2024_queries_file = Resource('trec-tot-2024-test-queries.zip',
-        sources=['https://zenodo.org/records/13370657/files/test-2024.zip?download=1'],
-        hash='md5:3d0a4d83957ee6a1398afefbc96162fa',
-    )
+# Files -- 2024
+# -----------------------------------------
+corpus_2024_file = Resource('trec-tot-2024-corpus.zip',
+    sources=['https://zenodo.org/records/13370657/files/corpus.jsonl.zip?download=1'],
+    hash='md5:4ea86770817e46a06fea5c94f596409c',
+)
+test_2024_queries_file = Resource('trec-tot-2024-test-queries.zip',
+    sources=['https://zenodo.org/records/13370657/files/test-2024.zip?download=1'],
+    hash='md5:3d0a4d83957ee6a1398afefbc96162fa',
+)
 
-    # Tables -- 2024
-    # -----------------------------------------
-    docs_2024 = DocTable('trec-tot-2024-docs',
-        source=corpus_2024_file.zip_member('corpus.jsonl'),
-        parser=_JsonlDocsParser(TipOfTheTongueDoc2024, BASE_PATH / '2024/corpus.jsonl'),
-        count_hint=3_185_450)
+# Tables -- 2024
+# -----------------------------------------
+docs_2024 = DocTable('trec-tot-2024-docs',
+    source=corpus_2024_file.zip_member('corpus.jsonl'),
+    parser=_JsonlDocsParser(TipOfTheTongueDoc2024, BASE_PATH / '2024/corpus.jsonl'),
+    count_hint=3_185_450,
+    lang='en')
 
-    # license verified 2026-09-30 (2024/2025 queries and qrels; corpora left unlicensed, Wikipedia-derived text):
-    # Zenodo records 13370657, 15356599, 15869078 list CC-BY-4.0 (https://zenodo.org/api/records/15356599)
-    test_2024_queries = QueryTable('trec-tot-2024-test-queries',
-        license='CC-BY-4.0',
-        source=test_2024_queries_file.zip_member('test-2024/queries.jsonl'),
-        parser=_JsonlQueriesParser(TipOfTheTongueQuery2024),
-        count_hint=600)
+# license verified 2026-09-30 (2024/2025 queries and qrels; corpora left unlicensed, Wikipedia-derived text):
+# Zenodo records 13370657, 15356599, 15869078 list CC-BY-4.0 (https://zenodo.org/api/records/15356599)
+test_2024_queries = QueryTable('trec-tot-2024-test-queries',
+    license='CC-BY-4.0',
+    source=test_2024_queries_file.zip_member('test-2024/queries.jsonl'),
+    parser=_JsonlQueriesParser(TipOfTheTongueQuery2024),
+    count_hint=600,
+    lang='en')
 
-    # Benchmarks -- 2024
-    # -----------------------------------------
-    trec_tot_2024_test = Benchmark('trec-tot-2024-test',
-        citation='dblp:conf/trec/Arguello00KHK024',
-        docs=docs_2024, queries=test_2024_queries,
-        desc='TREC Tip-of-the-Tongue 2024: test query set (queries only; '
-             'v1 does not wire up qrels for this dataset).')
+# Benchmarks -- 2024
+# -----------------------------------------
+trec_tot_2024_test = Benchmark('trec-tot-2024-test',
+    citation='dblp:conf/trec/Arguello00KHK024',
+    docs=docs_2024, queries=test_2024_queries,
+    desc='TREC Tip-of-the-Tongue 2024: test query set (queries only; '
+         'v1 does not wire up qrels for this dataset).')
 
-    # Files -- 2025
-    # -----------------------------------------
-    corpus_2025_file = Resource('trec-tot-2025-corpus.jsonl.gz',
-        sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-corpus.jsonl.gz'],
-        hash='md5:a2c82398aa86df6a68c8706b9b462bf2',
-    )
-    offsets_2025_file = Resource('trec-tot-2025-offsets.jsonl.gz',
-        sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-offsets.jsonl.gz'],
-        hash='md5:00678e3155d962bb244e034e6401b79b',
-    )
+# Files -- 2025
+# -----------------------------------------
+corpus_2025_file = Resource('trec-tot-2025-corpus.jsonl.gz',
+    sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-corpus.jsonl.gz'],
+    hash='md5:a2c82398aa86df6a68c8706b9b462bf2',
+)
+offsets_2025_file = Resource('trec-tot-2025-offsets.jsonl.gz',
+    sources=['https://zenodo.org/records/15356599/files/trec-tot-2025-offsets.jsonl.gz'],
+    hash='md5:00678e3155d962bb244e034e6401b79b',
+)
 
-    train_2025_queries_file = Resource('trec-tot-2025-train-queries.jsonl',
-        sources=['https://zenodo.org/records/15356599/files/train-2025-queries.jsonl'],
-        hash='md5:288b7707b4e897f7447aac2cc2f613be',
-    )
-    train_2025_qrels_file = Resource('trec-tot-2025-train-qrels.txt',
-        sources=['https://zenodo.org/records/15356599/files/train-2025-qrel.txt'],
-        hash='md5:10a3c727fc5806ec4510f7a071b57cd7',
-    )
-    dev1_2025_queries_file = Resource('trec-tot-2025-dev1-queries.jsonl',
-        sources=['https://zenodo.org/records/15356599/files/dev1-2025-queries.jsonl'],
-        hash='md5:b87c2f51d058de844e258a69b02e70fc',
-    )
-    dev1_2025_qrels_file = Resource('trec-tot-2025-dev1-qrels.txt',
-        sources=['https://zenodo.org/records/15356599/files/dev1-2025-qrel.txt'],
-        hash='md5:0c913ce8b5b287c73a6dfac662971e82',
-    )
-    dev2_2025_queries_file = Resource('trec-tot-2025-dev2-queries.jsonl',
-        sources=['https://zenodo.org/records/15356599/files/dev2-2025-queries.jsonl'],
-        hash='md5:b174a128a255e92d0d54b76465d596b5',
-    )
-    dev2_2025_qrels_file = Resource('trec-tot-2025-dev2-qrels.txt',
-        sources=['https://zenodo.org/records/15356599/files/dev2-2025-qrel.txt'],
-        hash='md5:4548eb41e639905384aa017c69129bfc',
-    )
-    dev3_2025_queries_file = Resource('trec-tot-2025-dev3-queries.jsonl',
-        sources=['https://zenodo.org/records/15356599/files/dev3-2025-queries.jsonl'],
-        hash='md5:259c11645694a3c5230b66c7852d4d80',
-    )
-    dev3_2025_qrels_file = Resource('trec-tot-2025-dev3-qrels.txt',
-        sources=['https://zenodo.org/records/15356599/files/dev3-2025-qrel.txt'],
-        hash='md5:48ab0d24a5946861546e54064238477f',
-    )
-    test_2025_queries_file = Resource('trec-tot-2025-test-queries.jsonl',
-        sources=['https://zenodo.org/records/15869078/files/test-2025-queries.jsonl'],
-        hash='md5:374cdc9142240f8bc9e4b071c35713f8',
-    )
+train_2025_queries_file = Resource('trec-tot-2025-train-queries.jsonl',
+    sources=['https://zenodo.org/records/15356599/files/train-2025-queries.jsonl'],
+    hash='md5:288b7707b4e897f7447aac2cc2f613be',
+)
+train_2025_qrels_file = Resource('trec-tot-2025-train-qrels.txt',
+    sources=['https://zenodo.org/records/15356599/files/train-2025-qrel.txt'],
+    hash='md5:10a3c727fc5806ec4510f7a071b57cd7',
+)
+dev1_2025_queries_file = Resource('trec-tot-2025-dev1-queries.jsonl',
+    sources=['https://zenodo.org/records/15356599/files/dev1-2025-queries.jsonl'],
+    hash='md5:b87c2f51d058de844e258a69b02e70fc',
+)
+dev1_2025_qrels_file = Resource('trec-tot-2025-dev1-qrels.txt',
+    sources=['https://zenodo.org/records/15356599/files/dev1-2025-qrel.txt'],
+    hash='md5:0c913ce8b5b287c73a6dfac662971e82',
+)
+dev2_2025_queries_file = Resource('trec-tot-2025-dev2-queries.jsonl',
+    sources=['https://zenodo.org/records/15356599/files/dev2-2025-queries.jsonl'],
+    hash='md5:b174a128a255e92d0d54b76465d596b5',
+)
+dev2_2025_qrels_file = Resource('trec-tot-2025-dev2-qrels.txt',
+    sources=['https://zenodo.org/records/15356599/files/dev2-2025-qrel.txt'],
+    hash='md5:4548eb41e639905384aa017c69129bfc',
+)
+dev3_2025_queries_file = Resource('trec-tot-2025-dev3-queries.jsonl',
+    sources=['https://zenodo.org/records/15356599/files/dev3-2025-queries.jsonl'],
+    hash='md5:259c11645694a3c5230b66c7852d4d80',
+)
+dev3_2025_qrels_file = Resource('trec-tot-2025-dev3-qrels.txt',
+    sources=['https://zenodo.org/records/15356599/files/dev3-2025-qrel.txt'],
+    hash='md5:48ab0d24a5946861546e54064238477f',
+)
+test_2025_queries_file = Resource('trec-tot-2025-test-queries.jsonl',
+    sources=['https://zenodo.org/records/15869078/files/test-2025-queries.jsonl'],
+    hash='md5:374cdc9142240f8bc9e4b071c35713f8',
+)
 
-    # Tables -- 2025
-    # -----------------------------------------
-    # Shared by every 2025 split -- see module docstring.
-    docs_2025 = DocTable('trec-tot-2025-docs',
-        source=[corpus_2025_file, offsets_2025_file],
-        parser=_TrecToT2025DocsParser(),
-        count_hint=6_407_814)
+# Tables -- 2025
+# -----------------------------------------
+# Shared by every 2025 split -- see module docstring.
+docs_2025 = DocTable('trec-tot-2025-docs',
+    source=[corpus_2025_file, offsets_2025_file],
+    parser=_TrecToT2025DocsParser(),
+    count_hint=6_407_814,
+    lang='en')
 
-    train_2025_queries = QueryTable('trec-tot-2025-train-queries',
-        license='CC-BY-4.0',
-        source=train_2025_queries_file,
-        parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
-        count_hint=143)
-    train_2025_qrels = TrecQrels('trec-tot-2025-train-qrels',
-        license='CC-BY-4.0',
-        source=train_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
+train_2025_queries = QueryTable('trec-tot-2025-train-queries',
+    license='CC-BY-4.0',
+    source=train_2025_queries_file,
+    parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
+    count_hint=143,
+    lang='en')
+train_2025_qrels = TrecQrels('trec-tot-2025-train-qrels',
+    license='CC-BY-4.0',
+    source=train_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
 
-    dev1_2025_queries = QueryTable('trec-tot-2025-dev1-queries',
-        license='CC-BY-4.0',
-        source=dev1_2025_queries_file,
-        parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
-        count_hint=142)
-    dev1_2025_qrels = TrecQrels('trec-tot-2025-dev1-qrels',
-        license='CC-BY-4.0',
-        source=dev1_2025_qrels_file, defs=QREL_DEFS, count_hint=142)
+dev1_2025_queries = QueryTable('trec-tot-2025-dev1-queries',
+    license='CC-BY-4.0',
+    source=dev1_2025_queries_file,
+    parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
+    count_hint=142,
+    lang='en')
+dev1_2025_qrels = TrecQrels('trec-tot-2025-dev1-qrels',
+    license='CC-BY-4.0',
+    source=dev1_2025_qrels_file, defs=QREL_DEFS, count_hint=142)
 
-    dev2_2025_queries = QueryTable('trec-tot-2025-dev2-queries',
-        license='CC-BY-4.0',
-        source=dev2_2025_queries_file,
-        parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
-        count_hint=143)
-    dev2_2025_qrels = TrecQrels('trec-tot-2025-dev2-qrels',
-        license='CC-BY-4.0',
-        source=dev2_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
+dev2_2025_queries = QueryTable('trec-tot-2025-dev2-queries',
+    license='CC-BY-4.0',
+    source=dev2_2025_queries_file,
+    parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
+    count_hint=143,
+    lang='en')
+dev2_2025_qrels = TrecQrels('trec-tot-2025-dev2-qrels',
+    license='CC-BY-4.0',
+    source=dev2_2025_qrels_file, defs=QREL_DEFS, count_hint=143)
 
-    dev3_2025_queries = QueryTable('trec-tot-2025-dev3-queries',
-        license='CC-BY-4.0',
-        source=dev3_2025_queries_file,
-        parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
-        count_hint=536)
-    dev3_2025_qrels = TrecQrels('trec-tot-2025-dev3-qrels',
-        license='CC-BY-4.0',
-        source=dev3_2025_qrels_file, defs=QREL_DEFS, count_hint=536)
+dev3_2025_queries = QueryTable('trec-tot-2025-dev3-queries',
+    license='CC-BY-4.0',
+    source=dev3_2025_queries_file,
+    parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
+    count_hint=536,
+    lang='en')
+dev3_2025_qrels = TrecQrels('trec-tot-2025-dev3-qrels',
+    license='CC-BY-4.0',
+    source=dev3_2025_qrels_file, defs=QREL_DEFS, count_hint=536)
 
-    test_2025_queries = QueryTable('trec-tot-2025-test-queries',
-        license='CC-BY-4.0',
-        source=test_2025_queries_file,
-        parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
-        count_hint=622)
+test_2025_queries = QueryTable('trec-tot-2025-test-queries',
+    license='CC-BY-4.0',
+    source=test_2025_queries_file,
+    parser=_JsonlQueriesParser(mapping=QUERY_MAP_2025),
+    count_hint=622,
+    lang='en')
 
-    # Benchmarks -- 2025
-    # -----------------------------------------
-    trec_tot_2025_train = Benchmark('trec-tot-2025-train',
-        citation='dblp:journals/corr/abs-2601-20671',
-        docs=docs_2025, queries=train_2025_queries, qrels=train_2025_qrels,
-        desc='TREC Tip-of-the-Tongue 2025: train query set.')
-    trec_tot_2025_dev1 = Benchmark('trec-tot-2025-dev1',
-        citation='dblp:journals/corr/abs-2601-20671',
-        docs=docs_2025, queries=dev1_2025_queries, qrels=dev1_2025_qrels,
-        desc='TREC Tip-of-the-Tongue 2025: dev-1 query set (the original 2023 dev set).')
-    trec_tot_2025_dev2 = Benchmark('trec-tot-2025-dev2',
-        citation='dblp:journals/corr/abs-2601-20671',
-        docs=docs_2025, queries=dev2_2025_queries, qrels=dev2_2025_qrels,
-        desc='TREC Tip-of-the-Tongue 2025: dev-2 query set (the original 2023 test set).')
-    trec_tot_2025_dev3 = Benchmark('trec-tot-2025-dev3',
-        citation='dblp:journals/corr/abs-2601-20671',
-        docs=docs_2025, queries=dev3_2025_queries, qrels=dev3_2025_qrels,
-        desc='TREC Tip-of-the-Tongue 2025: dev-3 query set (the original 2024 test set).')
-    trec_tot_2025_test = Benchmark('trec-tot-2025-test',
-        citation='dblp:journals/corr/abs-2601-20671',
-        docs=docs_2025, queries=test_2025_queries,
-        desc='TREC Tip-of-the-Tongue 2025: test query set (queries only; '
-             'no qrels released yet).')
+# Benchmarks -- 2025
+# -----------------------------------------
+trec_tot_2025_train = Benchmark('trec-tot-2025-train',
+    citation='dblp:journals/corr/abs-2601-20671',
+    docs=docs_2025, queries=train_2025_queries, qrels=train_2025_qrels,
+    desc='TREC Tip-of-the-Tongue 2025: train query set.')
+trec_tot_2025_dev1 = Benchmark('trec-tot-2025-dev1',
+    citation='dblp:journals/corr/abs-2601-20671',
+    docs=docs_2025, queries=dev1_2025_queries, qrels=dev1_2025_qrels,
+    desc='TREC Tip-of-the-Tongue 2025: dev-1 query set (the original 2023 dev set).')
+trec_tot_2025_dev2 = Benchmark('trec-tot-2025-dev2',
+    citation='dblp:journals/corr/abs-2601-20671',
+    docs=docs_2025, queries=dev2_2025_queries, qrels=dev2_2025_qrels,
+    desc='TREC Tip-of-the-Tongue 2025: dev-2 query set (the original 2023 test set).')
+trec_tot_2025_dev3 = Benchmark('trec-tot-2025-dev3',
+    citation='dblp:journals/corr/abs-2601-20671',
+    docs=docs_2025, queries=dev3_2025_queries, qrels=dev3_2025_qrels,
+    desc='TREC Tip-of-the-Tongue 2025: dev-3 query set (the original 2024 test set).')
+trec_tot_2025_test = Benchmark('trec-tot-2025-test',
+    citation='dblp:journals/corr/abs-2601-20671',
+    docs=docs_2025, queries=test_2025_queries,
+    desc='TREC Tip-of-the-Tongue 2025: test query set (queries only; '
+         'no qrels released yet).')
 
 
 # Registration

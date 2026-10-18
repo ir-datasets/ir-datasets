@@ -1,4 +1,4 @@
-"""Format node classes: the node type *is* the format.
+"""Format node classes: the graph class *is* the format.
 
     docs   = TsvDocs('antique-docs', source=docs_file, lang='en')
     qrels  = TrecQrels('antique-test-qrels', source=qrels_file, defs=QREL_DEFS)

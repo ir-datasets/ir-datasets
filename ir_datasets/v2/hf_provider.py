@@ -167,13 +167,14 @@ class HfProvider(ManifestProvider):
         snapshot_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
         for name, node in sorted(self.nodes.items()):
             row = row_for(node)
-            row['snapshot_at'] = snapshot_at
+            row['snapshotAt'] = snapshot_at
             yield from row_triples(name, row)
         for src, kind, dst in self.edge_rows():
             yield src, kind, dst
 
 
 hf = HfProvider('hf')
+hf.declare_graph_property('snapshotAt', range='literal', desc='when the crawl that found this node ran (ISO 8601)')
 
 
 # ── addressing ────────────────────────────────────────────────────────────

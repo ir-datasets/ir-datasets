@@ -14,13 +14,21 @@ The corpus is a user-supplied file (``Source.external()``) at
 """
 from ir_datasets.v2 import Benchmark, Resource, Source, TrecDocs, TrecQrels, TrecQueries, irds
 
+CITATION = '''@misc{Graff2001Arabic,
+  title={Arabic Newswire Part 1 LDC2001T55},
+  author={Graff, David, and Walker, Kevin},
+  year={2001},
+  url={https://catalog.ldc.upenn.edu/LDC2001T55},
+  publisher={Linguistic Data Consortium}
+}'''
+
 DATA_ACCESS = [
     "Find the LDC's Arabic Newswire collection in the LDC catalog: <https://catalog.ldc.upenn.edu/LDC2001T55> (LDC2001T55.tgz).\nMany organizations already have an LDC subscription; check with your library for access.",
     "Download LDC2001T55.tgz.",
 ]
 
 CITATION_2001 = 'dblp:conf/trec/GeyO01'
-CITATION_2002 = 'Gey2002Arabic'
+CITATION_2002 = 'dblp:conf/trec/OardG02'
 
 QREL_DEFS = {
     1: 'relevant',
@@ -74,7 +82,7 @@ docs = TrecDocs('trec-arabic-docs',
     path_globs=['arabic_newswire_a/transcripts/*/*.sgm.gz'],
     lang='ar',
     count_hint=383_872,
-    citation='Graff2001Arabic',
+    citation=CITATION,
 )
 
 ar2001_queries = TrecQueries('trec-arabic-2001-queries',

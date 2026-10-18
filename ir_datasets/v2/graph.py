@@ -26,7 +26,7 @@ needs its ``prefix:``.
 
 That ``legacy:`` fallback is also where a v1 id actually gets resolved to its
 v2 replacement. ``legacy_provider.py``'s ``legacy:`` provider makes every v1
-id a real, browsable ``legacy:V1Dataset`` node, with an ``irds:alias_of``
+id a real, browsable ``legacy:V1Dataset`` node, with an ``irds:aliasOf``
 edge to its v2 counterpart where one is known -- an ordinary node and edge,
 nothing ``Graph`` needs to special-case to list or traverse. Loading one is
 the one deliberate exception: whenever ``Graph.__getitem__`` resolves *any*
@@ -39,15 +39,15 @@ import sys
 
 from . import requirements
 from .base import Literal
-from .vocabulary import is_subtype, structural_kinds
+from .vocabulary import RDF_TYPE, RDFS_SUBCLASS_OF, is_subclass, structural_kinds
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
 
-#: The one node type ``Graph.__getitem__`` treats specially (see the module
+#: The one graph class ``Graph.__getitem__`` treats specially (see the module
 #: docstring) -- not part of the generic ``Provider``/vocabulary contract,
 #: just the two things needed to resolve a legacy id to its replacement.
 _ALIAS_TYPE = 'irds:Alias'
-_ALIAS_OF_KIND = 'irds:alias_of'
+_ALIAS_OF_KIND = 'irds:aliasOf'
 
 
 class Graph:
@@ -81,15 +81,15 @@ class Graph:
             for subject, kind, obj in provider.discover_edges():
                 if isinstance(obj, Literal):
                     continue
-                if kind == 'type':
+                if kind == RDF_TYPE:
                     # A node may have several types; `types` keeps the first
                     # (its primary), `all_types` every one.
                     types.setdefault(subject, obj)
                     all_types.setdefault(subject, []).append(obj)
-                elif kind == 'subClassOf':
+                elif kind == RDFS_SUBCLASS_OF:
                     # Type-hierarchy metadata (vocabulary.py's own
-                    # declare_type/ancestors already track this for
-                    # is_subtype) -- not a node-to-node edge, so it must not
+                    # declare_graph_class/ancestors already track this for
+                    # is_subclass) -- not a node-to-node edge, so it must not
                     # show up in edges_of/check's dangling-target search.
                     continue
                 else:
@@ -151,7 +151,7 @@ class Graph:
             node, name = self._load_bare(name)
         else:
             node = self.provider_for(name).load(name)
-        if is_subtype(node.type, _ALIAS_TYPE):
+        if is_subclass(node.type, _ALIAS_TYPE):
             targets = self.edges_of(name).get(_ALIAS_OF_KIND)
             if not targets:
                 raise KeyError(
@@ -343,7 +343,7 @@ class Graph:
         return self._catalog(provider)['types'].get(name)
 
     def types_of(self, name):
-        """Every node type of ``name`` (``type_of`` is just the first)."""
+        """Every type (``rdf:type``) of ``name`` (``type_of`` is just the first)."""
         try:
             provider = self.provider_for(name)
         except KeyError:
@@ -353,10 +353,10 @@ class Graph:
     def list(self, type=None):
         """Names from every provider's catalog (``discover_edges()``), without
         importing or downloading anything a node's own data would need.
-        ``type`` is a qualified node type (``irds:Qrels``) -- matched by
+        ``type`` is a qualified graph class (``irds:Qrels``) -- matched by
         subtype, so ``type='irds:Table'`` also finds
         ``irds:Qrels``/``irds:Docs``/... nodes (see
-        ``vocabulary.is_subtype``). Every registered node is listed -- there's
+        ``vocabulary.is_subclass``). Every registered node is listed -- there's
         no "hidden"/internal-only tier; a node either exists in the graph,
         addressable, or it was never registered.
 
@@ -370,7 +370,7 @@ class Graph:
         for provider in self.providers.values():
             all_types = self._catalog(provider)['all_types']
             for name, node_types in all_types.items():
-                if type is not None and not any(is_subtype(t, type) for t in node_types):
+                if type is not None and not any(is_subclass(t, type) for t in node_types):
                     continue
                 out.append(name)
         return sorted(out)

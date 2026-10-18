@@ -41,7 +41,7 @@ class TestV2Graph(unittest.TestCase):
             with self.subTest(node=name):
                 self.assertIsNotNone(graph[name])
 
-    def test_node_types_are_known(self):
+    def test_graph_classes_are_known(self):
         known = {v2.FILE, v2.DIRECTORY, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK,
                  v2.SUITE, *v2.TABLE_TYPES.values()}
         for name in sorted(irds.names()):
@@ -49,7 +49,7 @@ class TestV2Graph(unittest.TestCase):
                 self.assertTrue(set(graph.types_of(name)) <= known)
                 self.assertIn(graph.type_of(name), known)
 
-    def test_exactly_these_node_types(self):
+    def test_exactly_these_graph_classes(self):
         """The abstract parents (Resource, Table, Bundle), Alias (a stand-in for another node; legacy:V1Dataset is one), the leaf types
         under each (File/Directory; one per table entity, incl. QlogTable,
         which is never a Benchmark facet -- see nodes.py's
@@ -57,17 +57,17 @@ class TestV2Graph(unittest.TestCase):
         task-specific Adhoc/Qa benchmark types under Benchmark). No more."""
         self.assertEqual({v2.DATA, v2.FILE, v2.DIRECTORY, v2.TABLE, *v2.TABLE_TYPES.values(),
                           v2.BUNDLE, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK, v2.SUITE, v2.ALIAS},
-                         set(irds.types))
+                         set(irds.graph_classes))
 
     def test_type_hierarchy(self):
         for sub, parent in [(v2.FILE, v2.DATA), (v2.DIRECTORY, v2.DATA),
                             (v2.BENCHMARK, v2.BUNDLE), (v2.SUITE, v2.BUNDLE),
                             (v2.ADHOC_BENCHMARK, v2.BENCHMARK), (v2.QA_BENCHMARK, v2.BUNDLE)]:
-            self.assertTrue(v2.is_subtype(sub, parent), (sub, parent))
-        self.assertFalse(v2.is_subtype(v2.TABLE, v2.BUNDLE))
+            self.assertTrue(v2.is_subclass(sub, parent), (sub, parent))
+        self.assertFalse(v2.is_subclass(v2.TABLE, v2.BUNDLE))
         # legacy declares its own type under irds:Alias (cross-provider parent)
-        self.assertTrue(v2.is_subtype('legacy:V1Dataset', v2.ALIAS))
-        self.assertFalse(v2.is_subtype('legacy:V1Dataset', v2.DATA))
+        self.assertTrue(v2.is_subclass('legacy:V1Dataset', v2.ALIAS))
+        self.assertFalse(v2.is_subclass('legacy:V1Dataset', v2.DATA))
 
     def test_declared_protocols_resolve_and_nodes_satisfy_them(self):
         """Every type's protocol (its own or inherited) names an importable
@@ -97,17 +97,17 @@ class TestV2Graph(unittest.TestCase):
         the hierarchy is written once, in protocols.py."""
         import importlib
         from ir_datasets.v2 import protocols
-        for t, info in v2.node_types().items():
+        for t, info in v2.graph_classes().items():
             if info['owner'] != 'irds' or not info.get('protocol'):
                 continue
             module, _, qualname = info['protocol'].partition(':')
             cls = getattr(importlib.import_module(module), qualname)
-            marked_bases = [b for b in cls.__bases__ if protocols.is_node_type(b)]
+            marked_bases = [b for b in cls.__bases__ if protocols.is_graph_class(b)]
             parent = info['parent']
             with self.subTest(type=t):
                 if marked_bases:
                     self.assertEqual(f'{marked_bases[0].__module__}:{marked_bases[0].__qualname__}',
-                                     v2.node_types()[parent]['protocol'])
+                                     v2.graph_classes()[parent]['protocol'])
                 else:
                     self.assertIsNone(parent)
                 self.assertEqual(' '.join(cls.__doc__.split('\n\n')[0].split()), info['desc'])
@@ -119,7 +119,7 @@ class TestV2Graph(unittest.TestCase):
         from ir_datasets.v2 import protocols
         module = types.ModuleType('acme_protocols')
 
-        @protocols.node_type
+        @protocols.graph_class
         @runtime_checkable
         class ThingTable(protocols.Table, Protocol):
             """A table of things.
@@ -128,27 +128,27 @@ class TestV2Graph(unittest.TestCase):
         ThingTable.__module__ = module.__name__
         module.ThingTable = ThingTable
         acme = v2.ManifestProvider('acmedecl')
-        declared = acme.declare_types(module)
+        declared = acme.declare_graph_classes(module)
         self.assertEqual({ThingTable: 'acmedecl:ThingTable'}, declared)
-        info = v2.node_types()['acmedecl:ThingTable']
+        info = v2.graph_classes()['acmedecl:ThingTable']
         self.assertEqual('irds:Table', info['parent'])
         self.assertEqual('A table of things.', info['desc'])
-        self.assertTrue(v2.is_subtype('acmedecl:ThingTable', 'irds:Table'))
+        self.assertTrue(v2.is_subclass('acmedecl:ThingTable', 'irds:Table'))
 
     def test_protocol_class_or_string_is_stored_as_module_name(self):
         from ir_datasets.v2.protocols import Table
         from ir_datasets.v2.registry import ManifestProvider
         acme = ManifestProvider('acmeproto')
-        by_class = acme.node_type('ByClass', protocol=Table)
-        by_string = acme.node_type('ByString', protocol='acme.protocols:Thing')
-        self.assertEqual('ir_datasets.v2.protocols:Table', v2.node_types()[by_class]['protocol'])
-        self.assertEqual('acme.protocols:Thing', v2.node_types()[by_string]['protocol'])
+        by_class = acme.declare_graph_class('ByClass', protocol=Table)
+        by_string = acme.declare_graph_class('ByString', protocol='acme.protocols:Thing')
+        self.assertEqual('ir_datasets.v2.protocols:Table', v2.graph_classes()[by_class]['protocol'])
+        self.assertEqual('acme.protocols:Thing', v2.graph_classes()[by_string]['protocol'])
 
     def test_benchmark_subtypes_follow_their_tables(self):
         """AdhocBenchmark needs docs + queries + qrels; QaBenchmark needs
         queries + answers (docs optional); one with both is both."""
         for name in sorted(irds.names()):
-            if not v2.is_subtype(graph.type_of(name), v2.BENCHMARK):
+            if not v2.is_subclass(graph.type_of(name), v2.BENCHMARK):
                 continue
             with self.subTest(node=name):
                 node, types = graph[name], set(graph.types_of(name))
@@ -209,8 +209,8 @@ class TestV2Graph(unittest.TestCase):
         self.assertEqual('irds:AdhocBenchmark', graph['irds:antique-test'].type)
         self.assertEqual('irds:Docs', v2.TsvDocs.type)
         self.assertEqual('irds:Qrels', v2.TrecQrels.type)
-        self.assertEqual('irds', v2.node_types()['irds:Docs']['owner'])
-        self.assertEqual('irds', v2.edge_kinds()['irds:derived_from']['owner'])
+        self.assertEqual('irds', v2.graph_classes()['irds:Docs']['owner'])
+        self.assertEqual('irds', v2.edge_kinds()['irds:derivedFrom']['owner'])
         docs = v2.list_datasets(type='irds:Docs')
         self.assertIn('irds:antique-docs', docs)
         self.assertTrue(all(v2.graph.type_of(n) == 'irds:Docs' for n in docs))
@@ -218,10 +218,9 @@ class TestV2Graph(unittest.TestCase):
         self.assertIn('irds:antique-test-qrels', qrels)
         self.assertTrue(all(v2.graph.type_of(n) == 'irds:Qrels' for n in qrels))
         # the provider records its own vocabulary
-        self.assertIn('irds:Docs', irds.types)
-        self.assertIn('irds:Qrels', irds.types)
-        self.assertTrue(irds.edge_kinds['irds:derived_from']['structural'])
-        self.assertEqual(['deprecated', 'dua', 'lang', 'license'], sorted(irds.defaultable_fields))
+        self.assertIn('irds:Docs', irds.graph_classes)
+        self.assertIn('irds:Qrels', irds.graph_classes)
+        self.assertTrue(irds.edge_kinds['irds:derivedFrom']['structural'])
 
     def test_table_types_are_subtypes_of_table(self):
         """Each per-entity type is a declared subtype of the generic
@@ -229,22 +228,22 @@ class TestV2Graph(unittest.TestCase):
         specific kind or the whole family."""
         for entity, qualified in v2.TABLE_TYPES.items():
             with self.subTest(entity=entity):
-                self.assertTrue(v2.is_subtype(qualified, 'irds:Table'))
-                self.assertTrue(v2.is_subtype(qualified, qualified))
-        self.assertFalse(v2.is_subtype('irds:Table', 'irds:Qrels'))
-        self.assertFalse(v2.is_subtype('irds:Benchmark', 'irds:Table'))
+                self.assertTrue(v2.is_subclass(qualified, 'irds:Table'))
+                self.assertTrue(v2.is_subclass(qualified, qualified))
+        self.assertFalse(v2.is_subclass('irds:Table', 'irds:Qrels'))
+        self.assertFalse(v2.is_subclass('irds:Benchmark', 'irds:Table'))
 
         tables = v2.list_datasets(type='irds:Table')
         self.assertIn('irds:antique-docs', tables)         # a DocTable
         self.assertIn('irds:antique-test-qrels', tables)    # a QrelTable
         self.assertNotIn('irds:antique-test', tables)       # a Benchmark
-        self.assertTrue(all(v2.is_subtype(v2.graph.type_of(n), 'irds:Table')
+        self.assertTrue(all(v2.is_subclass(v2.graph.type_of(n), 'irds:Table')
                             for n in tables))
 
-    def test_undeclared_type_cannot_register(self):
+    def test_undeclared_graph_class_cannot_register(self):
         class Rogue(v2.Node):
             type = 'acme:never-declared'
-        with self.assertRaisesRegex(ValueError, 'undeclared node type'):
+        with self.assertRaisesRegex(ValueError, 'undeclared graph class'):
             v2.ManifestProvider('acme').register(Rogue('x'))
         class Typeless(v2.Node):
             pass
@@ -253,12 +252,12 @@ class TestV2Graph(unittest.TestCase):
 
     def test_provider_declares_only_in_its_own_namespace(self):
         acme = v2.ManifestProvider('acme')
-        self.assertEqual('acme:thing', acme.node_type('thing'))
-        self.assertEqual('acme:made_from', acme.edge_kind('made_from', structural=True))
+        self.assertEqual('acme:thing', acme.declare_graph_class('thing'))
+        self.assertEqual('acme:made_from', acme.declare_graph_property('made_from', structural=True))
         with self.assertRaises(ValueError):
-            acme.node_type('irds:thing')
+            acme.declare_graph_class('irds:thing')
         with self.assertRaises(ValueError):
-            acme.edge_kind('irds:derived_from', structural=True)
+            acme.declare_graph_property('irds:derivedFrom', structural=True)
 
     def test_providers_subscribe_to_the_default_graph(self):
         self.assertEqual(['clirmatrix', 'hf', 'irds', 'legacy'], sorted(graph.providers))
@@ -276,7 +275,7 @@ class TestV2Graph(unittest.TestCase):
                 raise KeyError(name)
 
             def discover_edges(self):
-                yield 'scratchknown:made-up-name', 'type', 'irds:Table'
+                yield 'scratchknown:made-up-name', 'rdf:type', 'irds:Table'
 
         provider = MadeUp()
         self.assertIsInstance(provider, v2.Provider)
@@ -303,7 +302,7 @@ class TestV2Registration(unittest.TestCase):
         self.assertIsNone(table.qualified_name)
         self.assertNotIn('irds:scratch-queries', irds.nodes)
         # ...but the object is fully usable
-        self.assertEqual([v2.Edge('irds:derived_from', src)], table.structural_edges())
+        self.assertEqual([v2.Edge('irds:derivedFrom', src)], table.structural_edges())
 
     def test_register_applies_prefix_and_pulls_in_dependencies(self):
         provider, src, table = _scratch('acme')
@@ -313,7 +312,7 @@ class TestV2Registration(unittest.TestCase):
         self.assertEqual(__name__, table.defined_in)
         # the Resource came along, and the edge was qualified
         self.assertEqual('acme:scratch-file', src.qualified_name)
-        self.assertEqual({'irds:derived_from': ['acme:scratch-file']},   # acme uses irds' vocabulary
+        self.assertEqual({'irds:derivedFrom': ['acme:scratch-file']},   # acme uses irds' vocabulary
                          v2.Graph([provider]).edges_of('acme:scratch-queries'))
 
     def test_cannot_register_with_two_providers(self):
@@ -349,12 +348,12 @@ class TestV2Registration(unittest.TestCase):
         self.assertEqual(['irds:antique-docs'], edges['irds:docs'])   # corpus shared by reference
         # order isn't semantically meaningful, so compare as sets
         self.assertCountEqual(['irds:antique-test-queries', 'irds:antique-test-disallow-list.txt'],
-                              graph.edges_of(facet.qualified_name)['irds:derived_from'])
+                              graph.edges_of(facet.qualified_name)['irds:derivedFrom'])
 
     def test_bare_names_and_kinds_mean_own_namespace(self):
         """The one shorthand, usable only inside a provider's own modules."""
         provider, src, table = _scratch('acme')
-        provider.edge_kind('like', structural=False)
+        provider.declare_graph_property('like', structural=False)
         provider.register(table)
         provider.add_edge('scratch-queries', 'like', 'other')
         self.assertEqual([['acme:scratch-queries', 'acme:like', 'acme:other']],
@@ -426,7 +425,7 @@ class TestV2Protocols(unittest.TestCase):
         table = _FromScratchTable('scratch-table', [('r1', 'hello'), ('r2', 'world')])
         self.assertIsInstance(table, v2.TableProtocol)
         provider = v2.ManifestProvider('acme')
-        provider.node_type('scratch-table')   # qualifies to 'acme:scratch-table'
+        provider.declare_graph_class('scratch-table')   # qualifies to 'acme:scratch-table'
         provider.register(table)
         self.assertEqual('acme:scratch-table', table.qualified_name)
         self.assertIn('acme:scratch-table', provider.nodes)
@@ -446,7 +445,7 @@ class TestV2Edges(unittest.TestCase):
 
     def test_tables_declare_their_source_files(self):
         self.assertEqual(['irds:antique-docs.txt'],
-                         graph.edges_of('irds:antique-docs')['irds:derived_from'])
+                         graph.edges_of('irds:antique-docs')['irds:derivedFrom'])
 
     def test_benchmarks_declare_facet_edges(self):
         self.assertEqual(
@@ -460,10 +459,10 @@ class TestV2Edges(unittest.TestCase):
         filter's id source, folded into derived_from -- there's no separate
         filtered_by kind)."""
         edges = graph.edges_of('irds:antique-test-non-offensive')
-        self.assertNotIn('irds:derived_from', edges)
+        self.assertNotIn('irds:derivedFrom', edges)
         facet_edges = graph.edges_of('irds:antique-test-non-offensive-queries')
         self.assertCountEqual(['irds:antique-test-queries', 'irds:antique-test-disallow-list.txt'],
-                              facet_edges['irds:derived_from'])
+                              facet_edges['irds:derivedFrom'])
 
     def test_files_are_leaves(self):
         self.assertEqual({}, graph.edges_of('irds:antique-docs.txt'))
@@ -481,8 +480,8 @@ class TestV2Edges(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'undeclared edge kind'):
             acme.add_edge('irds:antique-docs', 'indexed_frm', 'acme:idx')
         with self.assertRaises(ValueError):      # disagreeing re-declaration
-            irds.edge_kind('docs', structural=False)
-        irds.edge_kind('docs', structural=True)   # agreeing one is a no-op
+            irds.declare_graph_property('docs', structural=False)
+        irds.declare_graph_property('docs', structural=True)   # agreeing one is a no-op
 
     def test_reverse_lookup(self):
         self.assertEqual(
@@ -509,7 +508,7 @@ class TestV2Authority(unittest.TestCase):
 
     def setUp(self):
         self.acme = v2.ManifestProvider('acme')
-        self.acme.edge_kind('see_also', structural=False)
+        self.acme.declare_graph_property('see_also', structural=False)
         self.graph = v2.Graph([irds, self.acme])
 
     def test_other_provider_may_add_informational_edge(self):
@@ -522,7 +521,7 @@ class TestV2Authority(unittest.TestCase):
 
     def test_other_provider_may_not_add_structural_edge(self):
         with self.assertRaises(PermissionError):
-            self.acme.add_edge('irds:antique-docs', 'irds:derived_from', 'acme:file')
+            self.acme.add_edge('irds:antique-docs', 'irds:derivedFrom', 'acme:file')
 
     def test_third_party_edges_are_validated(self):
         self.acme.add_edge('irds:antique-docs', 'acme:see_also', 'acme:does-not-exist')
@@ -551,9 +550,8 @@ class TestV2ResourceHashes(unittest.TestCase):
         r = v2.Resource('test-hash-multi', sources=['https://x/y'],
                         hashes=['md5:' + 'a' * 32, 'sha256:' + 'b' * 64])
         self.assertEqual({'md5': 'a' * 32, 'sha256': 'b' * 64}, r.hashes)
-        self.assertEqual({'type': 'file_hash',
-                          'hashes': ['md5:' + 'a' * 32, 'sha256:' + 'b' * 64]},
-                         r.discovery_literals()['validation'])
+        self.assertEqual({'type': 'file_hash'}, r.discovery_literals()['validation'])
+        self.assertEqual(['md5:' + 'a' * 32, 'sha256:' + 'b' * 64], r.discovery_literals()['fileHash'])
 
     def test_dict_form(self):
         r = v2.Resource('test-hash-dict', sources=['https://x/y'],
@@ -563,8 +561,8 @@ class TestV2ResourceHashes(unittest.TestCase):
     def test_md5_kwarg_is_shorthand(self):
         r = v2.Resource('test-hash-md5kw', sources=['https://x/y'], md5='f' * 32)
         self.assertEqual({'md5': 'f' * 32}, r.hashes)
-        self.assertEqual({'type': 'file_hash', 'hashes': ['md5:' + 'f' * 32]},
-                         r.discovery_literals()['validation'])
+        self.assertEqual({'type': 'file_hash'}, r.discovery_literals()['validation'])
+        self.assertEqual(['md5:' + 'f' * 32], r.discovery_literals()['fileHash'])
 
     def test_explicit_hashes_win_over_md5_kwarg(self):
         r = v2.Resource('test-hash-precedence', sources=['https://x/y'],
@@ -760,7 +758,7 @@ class TestV2Citation(unittest.TestCase):
         self.assertEqual('dblp:conf/ecir/HashemiAZC20', node.metadata['citation'])
         self.assertEqual(['P(rel=3)@10', 'nDCG@10', 'MAP(rel=3)', 'RR(rel=3)'],
                          node.metrics)
-        self.assertEqual(node.metrics, node.metadata['metrics'])
+        self.assertEqual(node.metrics, node.metadata['metric'])
 
     def test_citation_accessor(self):
         self.assertEqual('dblp:conf/ecir/HashemiAZC20', v2.citation('irds:antique-test'))
@@ -770,7 +768,7 @@ class TestV2Citation(unittest.TestCase):
         from ir_datasets.v2.vocabulary import row_for
         row = row_for(graph['irds:antique-test'])
         self.assertEqual('dblp:conf/ecir/HashemiAZC20', row['citation'])
-        self.assertEqual(['P(rel=3)@10', 'nDCG@10', 'MAP(rel=3)', 'RR(rel=3)'], row['metrics'])
+        self.assertEqual(['P(rel=3)@10', 'nDCG@10', 'MAP(rel=3)', 'RR(rel=3)'], row['metric'])
         # not edges: no citation/measure-shaped edge kinds exist
         self.assertNotIn('citation', v2.edge_kinds())
         self.assertFalse([k for k in irds.edge_kinds if 'measure' in k or 'citation' in k])
@@ -841,47 +839,6 @@ class TestV2Suite(unittest.TestCase):
         provider2.register(suite)
         g = v2.Graph([provider2])
         self.assertEqual(['acme3:acme3-task'], g.edges_of('acme3:acme3-suite')['irds:member'])
-
-
-class TestV2Defaults(unittest.TestCase):
-    """defaults() fills in shared descriptive fields, and nothing else."""
-
-    def test_defaults_reached_every_node(self):
-        for name in ['irds:antique-docs.txt', 'irds:antique-test-qrels.qrel']:
-            self.assertTrue(graph[name].dua, name)
-        for name in ['irds:antique-docs', 'irds:antique-test-queries', 'irds:antique-test-qrels']:
-            self.assertEqual('en', graph[name].lang, name)
-
-    def test_explicit_argument_wins(self):
-        src = v2.Resource('test-defaults-src', sources=['https://example.org/x'])
-        with irds.defaults(lang='en'):
-            node = v2.TsvQueries('test-defaults-explicit', source=src, lang='de')
-        self.assertEqual('de', node.lang)
-
-    def test_identity_and_data_fields_are_rejected(self):
-        self.assertEqual({'dua', 'lang', 'deprecated'}, irds.defaultable_fields)
-        for field in ('md5', 'source', 'defs', 'name', 'parser'):
-            with self.subTest(field=field), self.assertRaises(ValueError):
-                with irds.defaults(**{field: 'x'}):
-                    pass
-
-    def test_defaults_are_the_providers(self):
-        """Another provider may not default fields it has not declared, even
-        ones irds did."""
-        acme = v2.ManifestProvider('acme')
-        with self.assertRaisesRegex(ValueError, 'cannot default lang'):
-            with acme.defaults(lang='en'):
-                pass
-        acme.defaultable('lang')
-        src = v2.Resource('test-acme-src', sources=['https://example.org/x'])
-        with acme.defaults(lang='fr'):
-            self.assertEqual('fr', v2.TsvQueries('test-acme-q', source=src).lang)
-
-    def test_defaults_do_not_leak_past_the_block(self):
-        src = v2.Resource('test-defaults-leak-src', sources=['https://example.org/x'])
-        with irds.defaults(lang='zh'):
-            pass
-        self.assertIsNone(v2.TsvQueries('test-defaults-leak', source=src).lang)
 
 
 class TestV2LocalCopyHint(unittest.TestCase):
@@ -960,11 +917,12 @@ class TestSourceRecords(unittest.TestCase):
             'https://example.org/x', v2.Source.mirror(),
             v2.Source.external('ds/file', old_locations=['old/file'], instructions='get it at {path}')], md5='a' * 32)
         url, mirror, manual = self._srcs(r)
-        self.assertEqual({'order': 0, 'kind': 'url', 'url': 'https://example.org/x'}, url)
-        self.assertEqual(('mirror', 1, 'https://mirror.ir-datasets.com/' + 'a' * 32),
-                         (mirror['kind'], mirror['order'], mirror['url']))
+        self.assertEqual({'type': 'url', 'order': 0, 'url': 'https://example.org/x'}, url)
+        # the mirror is just another URL; a reader tells it apart by host name
+        self.assertEqual(('url', 1, 'https://mirror.ir-datasets.com/' + 'a' * 32),
+                         (mirror['type'], mirror['order'], mirror['url']))
         self.assertEqual(('manual', 2, 'ds/file', ['old/file']),
-                         (manual['kind'], manual['order'], manual['path'], manual['old_locations']))
+                         (manual['type'], manual['order'], manual['path'], manual['old_locations']))
 
     def test_local_resolves_under_external_with_legacy_fallback(self):
         import os, tempfile

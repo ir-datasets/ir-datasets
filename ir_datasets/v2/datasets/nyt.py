@@ -75,6 +75,16 @@ from ir_datasets.v2 import (
 )
 from ir_datasets.v2.formats import Parser
 
+CITATION = '''@article{Sandhaus2008Nyt,
+  title={The new york times annotated corpus},
+  author={Sandhaus, Evan},
+  journal={Linguistic Data Consortium, Philadelphia},
+  volume={6},
+  number={12},
+  pages={e26752},
+  year={2008}
+}'''
+
 NAME = 'nyt'
 
 DUA = ("The New York Times Annotated Corpus is distributed by the LDC "
@@ -137,7 +147,7 @@ docs = DocTable('nyt',
     parser=_NytDocsParser(),
     lang='en',
     count_hint=1_864_661,
-    citation='Sandhaus2008Nyt',
+    citation=CITATION,
 )
 
 wksup_queries = QueryTable('nyt-wksup-queries',
