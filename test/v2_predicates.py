@@ -202,8 +202,9 @@ class TestRowTriples(unittest.TestCase):
                          [(o.value, o.datatype) for _, _, o in triples])
 
     def test_the_owning_providers_own_property_wins(self):
-        triples = list(row_triples('hf:x', {'name': 'hf:x', 'snapshotAt': 'now'}))
-        self.assertEqual([('hf:x', 'hf:snapshotAt')], [(s, p) for s, p, _ in triples])
+        vocabulary.declare_graph_property('hf:ownedHere', owner='hf', range='literal')
+        triples = list(row_triples('hf:x', {'name': 'hf:x', 'ownedHere': 'v'}))
+        self.assertEqual([('hf:x', 'hf:ownedHere')], [(s, p) for s, p, _ in triples])
 
 
 if __name__ == '__main__':

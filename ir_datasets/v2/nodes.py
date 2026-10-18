@@ -740,10 +740,12 @@ class Table(Node):
         literals = {**super().discovery_literals(), 'lang': self.lang}
         if self._count_hint is not None:
             literals['count'] = self._count_hint
-        try:
-            columns = _column_documents(self.record_type)
-        except Exception:
-            columns = []  # e.g. a handler that can't say without touching its data
+        columns = []
+        if not getattr(self.parser, 'columns_need_io', False):  # else: only the data can say
+            try:
+                columns = _column_documents(self.record_type)
+            except Exception:
+                columns = []  # e.g. a handler that can't say without touching its data
         if columns:
             literals['column'] = columns
         if self.defs:
