@@ -35,9 +35,11 @@ shorthand for a one-item list -- a single mapping::
         column_map: {_id: query_id, junk: null}
 
 Each entry has a ``fragment`` (its name under the repo; absent or ``null`` is
-the top-level node) and a ``type`` (a graph class: ``irds:Docs``,
-``irds:Queries``, ``irds:Qrels`` or ``irds:Benchmark``; the lower-case word
-alone is accepted too). Nothing else is required, and nothing is inferred --
+the top-level node) and a ``type`` (a fully qualified graph class:
+``irds:Docs``, ``irds:Queries``, ``irds:Qrels``, ``irds:Benchmark`` or one of its
+task types, ``irds:AdhocBenchmark`` -- docs, queries and qrels -- and
+``irds:QaBenchmark`` -- queries and answers; a task type is checked against the
+facets given). Nothing else is required, and nothing is inferred --
 a repo with no top-level entry simply has no bare name.
 
 A table entry says where its rows are: ``file:`` (a path, or a list, relative to
@@ -48,6 +50,14 @@ taken from the fragment: ``train`` is split ``train``, ``en/train`` is config
 ``en``, split ``train``). ``column_map:`` is ``{source_column: field}``, ``null``
 to drop a column; a source column it doesn't mention passes through under its
 own name, so a typical map names only the exceptions (``_apply_column_map``).
+Common alternative names are mapped for you, by the table's type: a docs table's
+``docno``/``docid``/``_id``/``id`` is its ``doc_id``; a queries table's ``qid``/
+``id``/... its ``query_id`` and ``query``/``question`` its ``text``; a qrels table's
+``qid``/``query-id``, ``docno``/``corpus-id`` and ``label``/``score`` its
+``query_id``, ``doc_id`` and ``relevance`` (see ``_COLUMN_ALIASES``). That applies
+only where the canonical name isn't already a column, the source column isn't named
+in ``column_map``, and exactly one column could be the field (more than one is an
+error); ``auto_columns: false`` turns it off.
 ``defs:`` gives a qrels table's relevance labels.
 
 A benchmark entry names its facets (``docs``/``queries``/``qrels``/...) and
@@ -125,13 +135,38 @@ def _record_class(entity, fields):
     return cls
 
 
-def _apply_column_map(source_columns, column_map):
+#: Per entity, ``(field, alternative source names)`` in priority order. Names are compared
+#: lower-case with ``-`` as ``_``. Deliberately conservative: the id fields every
+#: record needs, plus the one text field of a query or a doc where the usual alternatives
+#: are unambiguous (a ``title`` or ``abstract`` is never taken for ``text``).
+_COLUMN_ALIASES = {
+    'docs': (('doc_id', ('docno', 'docid', 'doc_no', 'document_id', 'documentid', '_id', 'id')),
+             ('text', ('contents', 'content', 'body', 'passage', 'passage_text'))),
+    'queries': (('query_id', ('qid', 'queryid', 'query_no', 'qno', '_id', 'id')),
+                ('text', ('query', 'query_text', 'question', 'topic'))),
+    'qrels': (('query_id', ('qid', 'queryid', 'query_no', 'qno')),
+              ('doc_id', ('docno', 'docid', 'doc_no', 'corpus_id', 'document_id')),
+              ('relevance', ('label', 'score', 'rel', 'rating', 'grade'))),
+}
+
+
+def _normalized(column):
+    return str(column).lower().replace('-', '_')
+
+
+def _apply_column_map(source_columns, column_map, entity=None, auto=True):
     """``column_map`` is ``{source_column: field_name}`` (or ``None`` to drop
     that column) -- the reverse direction of a record's fields, since that's
     the direction most tables actually need: rename or drop a handful of
     columns, keep the rest as-is. Any source column *not* mentioned passes
     through under its own name, so an empty/absent ``column_map`` takes every
     column verbatim, and a partial one only needs to name the exceptions.
+
+    Then, for ``entity`` (unless ``auto`` is off), a column passing through under a
+    common alternative name takes the entity's own name (``_COLUMN_ALIASES``) --
+    but only when the entity's name isn't already a field, and when the column
+    wasn't named in ``column_map``: what the card says always wins. If more than one
+    column could be the same field, that is an error rather than a guess.
 
     Returns ``(fields, columns)`` -- ``fields`` in source-column order,
     ``columns`` the field-name -> source-column dict ``_iter`` reads by (the
@@ -149,6 +184,21 @@ def _apply_column_map(source_columns, column_map):
             continue
         fields.append(field)
         columns[field] = col
+    if auto and entity in _COLUMN_ALIASES:
+        for target, alternatives in _COLUMN_ALIASES[entity]:
+            if target in columns:
+                continue
+            names = (target, *alternatives)    # the field's own name too, spelled with '-' or in caps
+            candidates = [c for c in source_columns
+                          if _normalized(c) in names and c not in column_map and columns.get(c) == c]
+            if len(candidates) > 1:
+                raise ValueError(
+                    f'{entity} table: more than one source column could be its {target!r} '
+                    f'({", ".join(map(repr, candidates))}); name the right one in column_map '
+                    f'(e.g. {{{candidates[0]!r}: {target}}}), or set auto_columns: false')
+            if candidates:
+                fields[fields.index(candidates[0])] = target
+                columns[target] = columns.pop(candidates[0])
     return fields, columns
 
 
@@ -205,26 +255,27 @@ def _frontmatter(readme_text):
 _card_cache = {}
 
 
-#: What a card entry's ``type`` may say, lower-cased and without the ``irds:``
-#: prefix -> (kind, entity). A table entry produces that entity's table class.
-_TYPES = {'docs': ('table', 'docs'), 'queries': ('table', 'queries'),
-          'qrels': ('table', 'qrels'), 'benchmark': ('benchmark', None)}
+#: What a card entry's ``type`` may say, always the fully qualified graph class ->
+#: (kind, entity). A table entry produces that entity's table class.
+_TYPES = {'irds:Docs': ('table', 'docs'), 'irds:Queries': ('table', 'queries'),
+          'irds:Qrels': ('table', 'qrels'), 'irds:Benchmark': ('benchmark', None),
+          'irds:AdhocBenchmark': ('benchmark', None), 'irds:QaBenchmark': ('benchmark', None)}
 #: Keys that are properties of the node (card key -> constructor argument).
 _PROPERTY_KEYS = {'description': 'desc', 'prettyName': 'pretty_name', 'citation': 'citation',
                   'license': 'license', 'deprecated': 'deprecated'}
 _TABLE_PROPERTY_KEYS = {'lang': 'lang', 'dua': 'dua'}
-_TABLE_KEYS = {'file', 'config', 'split', 'column_map', 'defs'}
+_TABLE_KEYS = {'file', 'config', 'split', 'column_map', 'auto_columns', 'defs'}
 _BENCHMARK_KEYS = set(ENTITIES) | {'metrics'}
 
 
 def _type_of(repo, entry):
-    """``(kind, entity)`` for an entry's ``type``."""
+    """``(kind, entity)`` for an entry's ``type``, which must be a fully qualified
+    graph class."""
     given = entry.get('type')
-    key = str(given).split(':', 1)[-1].lower() if given is not None else None
-    if key not in _TYPES:
-        raise ValueError(f'{repo}: {entry.get("fragment")!r} has type {given!r}; '
-                         f'expected one of irds:Docs, irds:Queries, irds:Qrels, irds:Benchmark')
-    return _TYPES[key]
+    if given not in _TYPES:
+        raise ValueError(f'{repo}: {entry.get("fragment")!r} has type {given!r}; expected one of '
+                         f'{", ".join(_TYPES)}')
+    return _TYPES[given]
 
 
 def _entries_of(repo, block):
@@ -429,13 +480,14 @@ class _HfDatasetsParser(Parser):
     columns_need_io = True      # the column set comes from the data itself
     requires = ('huggingface_hub', 'datasets')
 
-    def __init__(self, repo, commit, config, split, entity, column_map, defs=None):
+    def __init__(self, repo, commit, config, split, entity, column_map, defs=None, auto_columns=True):
         self.repo = repo
         self.commit = commit
         self.config = config
         self.split = split
         self.entity = entity
         self.column_map = column_map
+        self.auto_columns = auto_columns
         self.defs = defs
         self.columns = None
         self._resolved = None
@@ -453,7 +505,8 @@ class _HfDatasetsParser(Parser):
     def _resolve(self):
         """(record_cls, columns), computed and cached on first use."""
         if self._resolved is None:
-            fields, self.columns = _apply_column_map(self._load().column_names, self.column_map)
+            fields, self.columns = _apply_column_map(self._load().column_names, self.column_map,
+                                                     self.entity, self.auto_columns)
             self._resolved = _record_class(self.entity, fields)
         return self._resolved, self.columns
 
@@ -483,9 +536,10 @@ class _HfFileParser(Parser):
     columns_need_io = True
     requires = ('huggingface_hub', 'datasets')
 
-    def __init__(self, entity, column_map, defs=None):
+    def __init__(self, entity, column_map, defs=None, auto_columns=True):
         self.entity = entity
         self.column_map = column_map
+        self.auto_columns = auto_columns
         self.defs = defs
         self.columns = None
         self._resolved = None
@@ -495,7 +549,8 @@ class _HfFileParser(Parser):
         if self._resolved is None:
             first_source = source[0] if isinstance(source, list) else source
             first_row = next(iter(_rows_of(first_source.path())))
-            fields, self.columns = _apply_column_map(list(first_row.keys()), self.column_map)
+            fields, self.columns = _apply_column_map(list(first_row.keys()), self.column_map,
+                                                     self.entity, self.auto_columns)
             self._resolved = _record_class(self.entity, fields)
         return self._resolved, self.columns
 
@@ -535,12 +590,13 @@ def _build_table(name, repo, entity, hf_dataset, fragment, entry, card_meta):
     # {source_column: field_name} (None to drop); anything unmentioned passes
     # through under its own name. Resolved lazily -- see the parsers.
     column_map = entry.get('column_map')
+    auto = entry.get('auto_columns', True)
     defs = entry.get('defs')
     file = entry.get('file')
     if file:
         source = ([hf_dataset.file(f) for f in file] if isinstance(file, list)
                   else hf_dataset.file(file))
-        parser = _HfFileParser(entity, column_map, defs=defs)
+        parser = _HfFileParser(entity, column_map, defs=defs, auto_columns=auto)
     else:
         # the fragment doubles as "config/split" (or a bare "split", default
         # config) unless overridden explicitly
@@ -551,7 +607,7 @@ def _build_table(name, repo, entity, hf_dataset, fragment, entry, card_meta):
         config = entry.get('config', config_from_key or None)
         source = hf_dataset
         parser = _HfDatasetsParser(hf_dataset.repo, hf_dataset.commit, config, split,
-                                   entity, column_map, defs=defs)
+                                   entity, column_map, defs=defs, auto_columns=auto)
     return cls(name, source=source, parser=parser, defs=defs,
                **_properties(entry, True, card_meta, fragment is None))
 
@@ -565,8 +621,16 @@ def _build_benchmark(name, repo, entry, node_fn, card_meta, top_level):
     _unknown_keys(repo, entry, _BENCHMARK_KEYS | set(_PROPERTY_KEYS))
     facets = {e: (entry[e] if ':' in str(entry[e]) else node_fn(str(entry[e])))
               for e in ENTITIES if entry.get(e) is not None}
-    return Benchmark(name, metrics=entry.get('metrics'), **facets,
-                     **_properties(entry, False, card_meta, top_level))
+    benchmark = Benchmark(name, metrics=entry.get('metrics'), **facets,
+                          **_properties(entry, False, card_meta, top_level))
+    # A task type (irds:AdhocBenchmark, irds:QaBenchmark) is an assertion about the
+    # facets, checked rather than trusted: the node derives its types from them.
+    if entry['type'] != 'irds:Benchmark' and entry['type'] not in benchmark.types:
+        needs = {'irds:AdhocBenchmark': 'docs, queries and qrels',
+                 'irds:QaBenchmark': 'queries and answers'}[entry['type']]
+        raise ValueError(f'{repo}: {entry.get("fragment")!r} is declared {entry["type"]} '
+                         f'but does not have {needs}')
+    return benchmark
 
 
 _node_cache = {}

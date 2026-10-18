@@ -33,7 +33,7 @@ def _card_of(*entries, tags=(), meta=None):
     return {'tags': list(tags), 'meta': meta or {}, 'entries': hfm._entries_of('test', list(entries))}
 
 
-def _table(fragment, type='docs', **kwargs):
+def _table(fragment, type='irds:Docs', **kwargs):
     # no column_map: these are structural tests (existence, identity, naming)
     # that never access .record_type or iterate, so column resolution (which
     # needs I/O) is never triggered.
@@ -82,7 +82,7 @@ class TestV2Hf(unittest.TestCase):
 
     def test_no_fragment_is_the_top_level_entry(self):
         repo = _repo('toplevel')
-        self._mock({repo: _card_of(_table(None, 'docs'), _table('test', 'queries'))})
+        self._mock({repo: _card_of(_table(None, 'irds:Docs'), _table('test', 'irds:Queries'))})
         node = v2.graph[f'hf:{repo}']
         self.assertEqual(node.entity, 'docs')
         self.assertEqual(node.qualified_name, f'hf:{repo}')
@@ -105,7 +105,7 @@ class TestV2Hf(unittest.TestCase):
     def test_a_plain_mapping_is_a_one_item_list(self):
         entries = hfm._entries_of('test', {'type': 'irds:Docs', 'file': 'x.jsonl'})
         self.assertEqual([None], list(entries))
-        self.assertEqual(['a'], list(hfm._entries_of('test', [{'fragment': 'a', 'type': 'docs'}])))
+        self.assertEqual(['a'], list(hfm._entries_of('test', [{'fragment': 'a', 'type': 'irds:Docs'}])))
 
     def test_a_fragment_may_contain_slashes(self):
         repo = _repo('slashes')
@@ -113,15 +113,30 @@ class TestV2Hf(unittest.TestCase):
         self.assertEqual(v2.graph[f'hf:{repo}/en/train'].entity, 'docs')
 
     def test_type_spellings(self):
-        for given in ('irds:Docs', 'Docs', 'docs'):
-            with self.subTest(type=given):
-                self.assertEqual(('table', 'docs'), hfm._type_of('t', {'type': given}))
-        self.assertEqual(('benchmark', None), hfm._type_of('t', {'type': 'irds:Benchmark'}))
+        self.assertEqual(('table', 'docs'), hfm._type_of('t', {'type': 'irds:Docs'}))
+        for given in ('irds:Benchmark', 'irds:AdhocBenchmark', 'irds:QaBenchmark'):
+            self.assertEqual(('benchmark', None), hfm._type_of('t', {'type': given}))
+        for loose in ('docs', 'Docs', 'irds:docs', 'Benchmark', 'hf:Docs'):   # fully qualified only
+            with self.subTest(type=loose), self.assertRaises(ValueError):
+                hfm._type_of('t', {'type': loose})
+
+    def test_a_task_type_is_checked_against_the_facets(self):
+        repo = _repo('tasktype')
+        self._mock({repo: _card_of(
+            _table('d'), _table('q', 'irds:Queries'), _table('r', 'irds:Qrels'),
+            {'fragment': 'ok', 'type': 'irds:AdhocBenchmark', 'docs': 'd', 'queries': 'q', 'qrels': 'r'},
+            {'fragment': 'bad', 'type': 'irds:AdhocBenchmark', 'docs': 'd', 'queries': 'q'},
+            {'fragment': 'qa', 'type': 'irds:QaBenchmark', 'queries': 'q'})})
+        self.assertEqual('irds:AdhocBenchmark', v2.graph[f'hf:{repo}/ok'].type)
+        with self.assertRaisesRegex(KeyError, 'docs, queries and qrels'):
+            v2.graph[f'hf:{repo}/bad']
+        with self.assertRaisesRegex(KeyError, 'queries and answers'):
+            v2.graph[f'hf:{repo}/qa']
 
     def test_a_bad_card_is_a_value_error(self):
         for bad in ([{'fragment': 'a', 'type': 'irds:Suite'}],      # unsupported type
                     [{'fragment': 'a'}],                            # no type
-                    [{'fragment': 'a', 'type': 'docs'}, {'fragment': 'a', 'type': 'queries'}],  # duplicate
+                    [{'fragment': 'a', 'type': 'irds:Docs'}, {'fragment': 'a', 'type': 'irds:Queries'}],  # duplicate
                     [],                                             # empty
                     ['docs']):                                      # not a mapping
             with self.subTest(card=bad), self.assertRaises(ValueError):
@@ -157,6 +172,51 @@ class TestV2Hf(unittest.TestCase):
         self._mock_rows([{'_id': 'd1', 'junk': 'ignore-me', 'text': 'hello'}])
         self.assertEqual(v2.graph[f'hf:{repo}'].record_type._fields, ('doc_id', 'text'))
 
+    def test_common_alternative_names_are_mapped_by_type(self):
+        f = lambda entity, cols, **kw: hfm._apply_column_map(cols, kw.get('column_map'), entity, kw.get('auto', True))[0]
+        self.assertEqual(['doc_id', 'text'], f('docs', ['docno', 'text']))
+        self.assertEqual(['doc_id', 'text'], f('docs', ['_id', 'contents']))
+        self.assertEqual(['query_id', 'query_unmasked', 'text'], f('queries', ['qid', 'query_unmasked', 'query']))
+        self.assertEqual(['query_id', 'doc_id', 'relevance', 'source'],
+                         f('qrels', ['qid', 'docno', 'label', 'source']))
+        self.assertEqual(['query_id', 'doc_id', 'relevance'], f('qrels', ['query-id', 'corpus-id', 'score']))
+
+    def test_auto_mapping_is_conservative(self):
+        f = lambda entity, cols, **kw: hfm._apply_column_map(cols, kw.get('column_map'), entity, kw.get('auto', True))[0]
+        # the canonical name is already there: nothing renamed
+        self.assertEqual(['doc_id', 'id', 'text'], f('docs', ['doc_id', 'id', 'text']))
+        # a title or abstract is never text
+        self.assertEqual(['doc_id', 'title', 'abstract'], f('docs', ['docno', 'title', 'abstract']))
+        # more than one candidate for the same field is an error, not a guess ...
+        with self.assertRaisesRegex(ValueError, "'docno', 'id'.*column_map"):
+            f('docs', ['docno', 'id'])
+        with self.assertRaises(ValueError):
+            f('queries', ['qid', 'query-id', 'text'])
+        # ... which naming one in column_map settles
+        self.assertEqual(['doc_id', 'id'], f('docs', ['docno', 'id'], column_map={'docno': 'doc_id'}))
+        # a column named in column_map is the card's say: left alone (here, mapped elsewhere),
+        # so the next alternative takes the canonical name
+        self.assertEqual(['key', 'doc_id'], f('docs', ['docno', 'id'], column_map={'docno': 'key'}))
+        self.assertEqual(['docno'], f('docs', ['docno'], column_map={'docno': 'docno'}))
+        # off, and for an entity with no aliases
+        self.assertEqual(['docno', 'text'], f('docs', ['docno', 'text'], auto=False))
+        self.assertEqual(['docno'], hfm._apply_column_map(['docno'], None, None)[0])
+
+    def test_auto_mapping_reads_the_source_by_the_original_column(self):
+        repo = _repo('automap')
+        self._mock({repo: _card_of(_table(None))})
+        self._mock_rows([{'docno': 'd1', 'text': 'hello'}])
+        node = v2.graph[f'hf:{repo}']
+        self.assertEqual(('doc_id', 'text'), node.record_type._fields)
+        self.assertEqual('d1', next(iter(node)).doc_id)
+
+    def test_auto_columns_false_takes_the_columns_as_they_are(self):
+        repo = _repo('automapoff')
+        self._mock({repo: _card_of(_table(None, auto_columns=False))})
+        self._mock_rows([{'docno': 'd1', 'text': 'hello'}])
+        with self.assertRaises(ValueError):          # no doc_id
+            v2.graph[f'hf:{repo}'].record_type
+
     def test_column_map_unknown_column_is_an_error(self):
         repo = _repo('colunknown')
         self._mock({repo: _card_of(_table(None, column_map={'nope': 'doc_id'}))})
@@ -173,26 +233,26 @@ class TestV2Hf(unittest.TestCase):
 
     def test_no_file_defaults_to_datasets_load_dataset(self):
         repo = _repo('viadatasets')
-        self._mock({repo: _card_of({'fragment': 'train', 'type': 'docs'})})
+        self._mock({repo: _card_of({'fragment': 'train', 'type': 'irds:Docs'})})
         node = v2.graph[f'hf:{repo}/train']
         self.assertIsInstance(node.parser, hfm._HfDatasetsParser)
         self.assertEqual((None, 'train', repo), (node.parser.config, node.parser.split, node.parser.repo))
 
     def test_config_and_split_from_a_compound_fragment(self):
         repo = _repo('viadatasets-cfg')
-        self._mock({repo: _card_of({'fragment': 'en/train', 'type': 'docs'})})
+        self._mock({repo: _card_of({'fragment': 'en/train', 'type': 'irds:Docs'})})
         node = v2.graph[f'hf:{repo}/en/train']
         self.assertEqual(('en', 'train'), (node.parser.config, node.parser.split))
 
     def test_explicit_split_overrides_the_fragment(self):
         repo = _repo('splitoverride')
-        self._mock({repo: _card_of({'fragment': 'docs', 'type': 'docs', 'split': 'csl'})})
+        self._mock({repo: _card_of({'fragment': 'docs', 'type': 'irds:Docs', 'split': 'csl'})})
         node = v2.graph[f'hf:{repo}/docs']
         self.assertEqual((None, 'csl'), (node.parser.config, node.parser.split))
 
     def test_a_top_level_table_without_a_file_needs_a_split(self):
         repo = _repo('topnosplit')
-        self._mock({repo: _card_of({'type': 'docs'})})
+        self._mock({repo: _card_of({'type': 'irds:Docs'})})
         with self.assertRaisesRegex(KeyError, 'needs a file: or a split:'):
             v2.graph[f'hf:{repo}']
 
@@ -211,7 +271,7 @@ class TestV2Hf(unittest.TestCase):
         meta = hfm._card_defaults({'license': 'apache-2.0', 'language': ['zh'], 'pretty_name': 'CSL'})
         self.assertEqual({'license': 'apache-2.0', 'lang': 'zh', 'pretty_name': 'CSL'}, meta)
         self._mock({repo: _card_of(_table(None), _table('en', lang='en'),
-                                   _table('other', 'queries', license='cc0-1.0'), meta=meta)})
+                                   _table('other', 'irds:Queries', license='cc0-1.0'), meta=meta)})
         top, en, other = (v2.graph[f'hf:{repo}{f}'] for f in ('', '/en', '/other'))
         self.assertEqual(('zh', 'apache-2.0'), (top.lang, top.license))
         self.assertEqual('CSL', top.metadata['prettyName'])
@@ -237,7 +297,7 @@ class TestV2Hf(unittest.TestCase):
 
     def _benchmark_card(self, top=False, **extra):
         return _card_of(
-            _table('corpus'), _table('test', 'queries'), _table('qrels', 'qrels'),
+            _table('corpus'), _table('test', 'irds:Queries'), _table('qrels', 'irds:Qrels'),
             {'fragment': None if top else 'eval', 'type': 'irds:Benchmark', 'docs': 'corpus',
              'queries': 'test', 'qrels': 'qrels', 'metrics': ['nDCG@10'], **extra})
 
@@ -263,9 +323,9 @@ class TestV2Hf(unittest.TestCase):
     def test_several_benchmarks_share_tables(self):
         repo = _repo('multibench')
         self._mock({repo: _card_of(
-            _table('corpus'), _table('train-q', 'queries'), _table('test-q', 'queries'),
-            {'fragment': 'train', 'type': 'benchmark', 'docs': 'corpus', 'queries': 'train-q'},
-            {'fragment': 'test', 'type': 'benchmark', 'docs': 'corpus', 'queries': 'test-q'})})
+            _table('corpus'), _table('train-q', 'irds:Queries'), _table('test-q', 'irds:Queries'),
+            {'fragment': 'train', 'type': 'irds:Benchmark', 'docs': 'corpus', 'queries': 'train-q'},
+            {'fragment': 'test', 'type': 'irds:Benchmark', 'docs': 'corpus', 'queries': 'test-q'})})
         train, test = v2.graph[f'hf:{repo}/train'], v2.graph[f'hf:{repo}/test']
         self.assertIsNot(train, test)
         self.assertIs(train.docs, test.docs)
@@ -276,7 +336,7 @@ class TestV2Hf(unittest.TestCase):
         corpus_repo, eval_repo = _repo('corpus'), _repo('borrower')
         self._mock({
             corpus_repo: _card_of(_table(None)),
-            eval_repo: _card_of(_table('test-q', 'queries'),
+            eval_repo: _card_of(_table('test-q', 'irds:Queries'),
                                 {'fragment': 'eval', 'type': 'irds:Benchmark',
                                  'docs': f'hf:{corpus_repo}', 'queries': 'test-q'})})
         benchmark = v2.graph[f'hf:{eval_repo}/eval']
@@ -287,8 +347,8 @@ class TestV2Hf(unittest.TestCase):
 
     def test_both_card_keys_present_is_an_error(self):
         repo = _repo('dupe')
-        readme = ('---\n' + yaml.safe_dump({'ir_datasets': {'type': 'docs'},
-                                            'ir-datasets': {'type': 'docs'}}) + '---\nbody\n')
+        readme = ('---\n' + yaml.safe_dump({'ir_datasets': {'type': 'irds:Docs'},
+                                            'ir-datasets': {'type': 'irds:Docs'}}) + '---\nbody\n')
         self._patch('_hf_lib')
         hfm._hf_lib().hf_hub_download.return_value = _write_readme(readme)
         with self.assertRaises(ValueError):
@@ -328,7 +388,7 @@ class TestV2Hf(unittest.TestCase):
 
     def test_shared_hf_dataset_across_entries(self):
         repo = _repo('reuse')
-        self._mock({repo: _card_of(_table('corpus'), _table('test', 'queries'))})
+        self._mock({repo: _card_of(_table('corpus'), _table('test', 'irds:Queries'))})
         docs, queries = v2.graph[f'hf:{repo}/corpus'], v2.graph[f'hf:{repo}/test']
         self.assertIs(self._resource_of(docs), self._resource_of(queries))
         self.assertIsInstance(self._resource_of(docs), hfm.HfDataset)
@@ -376,7 +436,7 @@ class TestV2Hf(unittest.TestCase):
     def test_known_expands_each_tagged_repo_into_its_addressable_names(self):
         repo = _repo('discoverable')
         self._patch('search', return_value=[repo])
-        self._mock({repo: _card_of(_table(None), _table('extra', 'queries'), tags=['ir-datasets'])})
+        self._mock({repo: _card_of(_table(None), _table('extra', 'irds:Queries'), tags=['ir-datasets'])})
         self.assertEqual(set(hfm.known()), {repo, f'{repo}/extra'})
         # (the graph's own catalog is cached per provider, so read the nodes' types directly)
         self.assertEqual('irds:Docs', v2.graph[f'hf:{repo}'].type)
