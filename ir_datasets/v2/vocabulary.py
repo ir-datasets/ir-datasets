@@ -170,6 +170,19 @@ def declare_graph_property(qualified, *, owner, range='node', structural=False, 
 
 declare_graph_property(RDF_TYPE, owner='rdf', range='type', desc="a node's type")
 declare_graph_property(RDFS_SUBCLASS_OF, owner='rdfs', range='type', desc='a type -> its parent type')
+#: What describes a graph property, in the standard RDFS terms: it is an ``rdf:Property``, has
+#: a value type (``rdfs:range``) and a description (``rdfs:comment``), and a structural edge is
+#: an ``rdfs:subPropertyOf`` the ``irds:structuralEdge`` property.
+RDFS_RANGE = 'rdfs:range'
+RDFS_COMMENT = 'rdfs:comment'
+RDFS_SUBPROPERTY_OF = 'rdfs:subPropertyOf'
+RDF_PROPERTY = 'rdf:Property'
+declare_graph_property(RDFS_RANGE, owner='rdfs', range='type', desc="a property -> the type of its values")
+declare_graph_property(RDFS_SUBPROPERTY_OF, owner='rdfs', range='type', desc='a property -> its parent property')
+declare_graph_property(RDFS_COMMENT, owner='rdfs', range='literal', desc="a property's description")
+
+#: A graph property's ``range`` as the RDFS term for its values.
+RANGE_TERMS = {'node': 'rdfs:Resource', 'literal': 'rdfs:Literal', 'json': 'rdf:JSON', 'type': 'rdfs:Class'}
 
 
 def graph_properties():

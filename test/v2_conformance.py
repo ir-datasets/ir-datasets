@@ -43,7 +43,7 @@ class TestV2Graph(unittest.TestCase):
 
     def test_graph_classes_are_known(self):
         known = {v2.FILE, v2.DIRECTORY, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK,
-                 v2.SUITE, *v2.TABLE_TYPES.values()}
+                 v2.SUITE, v2.BUNDLE, v2.OVERVIEW, *v2.TABLE_TYPES.values()}
         for name in sorted(irds.names()):
             with self.subTest(node=name):
                 self.assertTrue(set(graph.types_of(name)) <= known)
@@ -56,12 +56,12 @@ class TestV2Graph(unittest.TestCase):
         ENTITIES/TABLE_TYPES docstrings; Benchmark/Suite, with the
         task-specific Adhoc/Qa benchmark types under Benchmark). No more."""
         self.assertEqual({v2.DATA, v2.FILE, v2.DIRECTORY, v2.TABLE, *v2.TABLE_TYPES.values(),
-                          v2.BUNDLE, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK, v2.SUITE, v2.ALIAS},
+                          v2.BUNDLE, v2.OVERVIEW, v2.BENCHMARK, v2.ADHOC_BENCHMARK, v2.QA_BENCHMARK, v2.SUITE, v2.ALIAS},
                          set(irds.graph_classes))
 
     def test_type_hierarchy(self):
         for sub, parent in [(v2.FILE, v2.DATA), (v2.DIRECTORY, v2.DATA),
-                            (v2.BENCHMARK, v2.BUNDLE), (v2.SUITE, v2.BUNDLE),
+                            (v2.BENCHMARK, v2.BUNDLE), (v2.SUITE, v2.BUNDLE), (v2.OVERVIEW, v2.BUNDLE),
                             (v2.ADHOC_BENCHMARK, v2.BENCHMARK), (v2.QA_BENCHMARK, v2.BUNDLE)]:
             self.assertTrue(v2.is_subclass(sub, parent), (sub, parent))
         self.assertFalse(v2.is_subclass(v2.TABLE, v2.BUNDLE))
@@ -839,6 +839,52 @@ class TestV2Suite(unittest.TestCase):
         provider2.register(suite)
         g = v2.Graph([provider2])
         self.assertEqual(['acme3:acme3-task'], g.edges_of('acme3:acme3-suite')['irds:member'])
+
+
+class TestV2Bundle(unittest.TestCase):
+    """A Bundle: any nodes that belong together, with a hand-written summary."""
+
+    def test_parts_are_structural_has_part_edges_of_any_kind(self):
+        bundle = v2.Bundle('test-bundle-edges', parts=['irds:antique-docs', 'irds:antique-test'],
+                           summary='# Antique\n\nQuestions.', desc='short')
+        self.assertEqual('irds:Bundle', bundle.type)
+        self.assertEqual([('irds:hasPart', 'irds:antique-docs'), ('irds:hasPart', 'irds:antique-test')],
+                         [(e.kind, e.target) for e in bundle.structural_edges()])
+        self.assertTrue(v2.graph_properties()['irds:hasPart']['structural'])
+        self.assertEqual('# Antique\n\nQuestions.', bundle.metadata['summary'])
+
+    def test_the_summary_is_a_declared_property_and_a_triple(self):
+        from ir_datasets.v2.registry import row_triples
+        bundle = v2.Bundle('test-bundle-triples', summary='text')
+        irds_row = {'name': 'irds:test-bundle-triples', **bundle.metadata, 'type': bundle.type}
+        triples = list(row_triples('irds:test-bundle-triples', irds_row))
+        self.assertIn(('irds:test-bundle-triples', 'irds:summary'),
+                      [(s, p) for s, p, _ in triples])
+
+    def test_a_bundle_registers_and_loads_and_suite_is_unchanged(self):
+        part = v2.Bundle('test-bundle-part')
+        outer = v2.Bundle('test-bundle-outer', parts=[part])
+        acme = v2.ManifestProvider('acme-bundle')
+        acme.register(outer)
+        self.assertEqual('acme-bundle:test-bundle-part', part.qualified_name)   # a part object is registered too
+        self.assertEqual(['acme-bundle:test-bundle-part'],
+                         acme.indexes()[0]['acme-bundle:test-bundle-outer']['irds:hasPart'])
+        self.assertEqual('irds:Suite', v2.Suite('test-suite-still').type)
+        self.assertNotIsInstance(v2.Suite('test-suite-still-2'), v2.Bundle)
+
+
+class TestV2Overview(unittest.TestCase):
+    def test_an_overview_is_a_bundle_that_always_has_a_summary(self):
+        overview = v2.Overview('test-overview', parts=['irds:antique-test'], summary='# What it is')
+        self.assertEqual('irds:Overview', overview.type)
+        self.assertIsInstance(overview, v2.Bundle)
+        self.assertTrue(v2.is_subclass(overview.type, v2.BUNDLE))
+        self.assertEqual([('irds:hasPart', 'irds:antique-test')],
+                         [(e.kind, e.target) for e in overview.structural_edges()])
+        for missing in (None, '', '   '):
+            with self.subTest(summary=missing), self.assertRaisesRegex(ValueError, 'needs a summary'):
+                v2.Overview('test-overview-empty', summary=missing)
+        self.assertEqual('irds:Bundle', v2.Bundle('test-bare-bundle').type)    # a bare grouping needs none
 
 
 class TestV2LocalCopyHint(unittest.TestCase):

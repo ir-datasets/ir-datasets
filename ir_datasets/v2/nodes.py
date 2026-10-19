@@ -26,6 +26,8 @@ one (``QlogTable`` -- see the note by ``TABLE_TYPES`` below for why it is a
                plus flat metadata (``citation``, ``metrics``) -- ``qlogs`` is
                deliberately not one of ``etc.`` here; see below
     Suite       a named, structural set of Benchmarks (e.g. BEIR)
+    Bundle      any nodes that belong together -- the tables, benchmarks, resources
+               (or other bundles) of one dataset -- with a hand-written ``summary``
 
 Citations as papers-with-edges and metrics as measures-with-edges are future
 work for a broader knowledge graph; for now both are plain metadata.
@@ -110,6 +112,7 @@ ALIAS = _CLASSES[proto.Alias]
 BUNDLE = _CLASSES[proto.Bundle]
 BENCHMARK = _CLASSES[proto.Benchmark]
 SUITE = _CLASSES[proto.Suite]
+OVERVIEW = _CLASSES[proto.Overview]
 
 #: Benchmark subtypes, the counterpart of ``TABLE_TYPES`` for benchmarks: each
 #: adds semantics -- which tables the task is built from. A benchmark may
@@ -188,13 +191,25 @@ ALTERNATIVE_OF = irds.declare_graph_property('alternativeOf', structural=False,
 #: follows it, so loading an alias returns its target.
 ALIAS_OF = irds.declare_graph_property('aliasOf', structural=False,
                           desc='alias -> the node it stands for (loading the alias returns it)')
-STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
+#: Bundle membership: a bundle -> a node it contains, of any kind (tables, benchmarks,
+#: resources, other bundles). Structural, like ``member``: a bundle's requirements
+#: include its parts'. A node may be in several bundles, and nothing in it refers back.
+HAS_PART = irds.declare_graph_property('hasPart', structural=True,
+                              desc='bundle -> a node it contains')
+STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER, HAS_PART)
+#: The parent of every structural edge, in the graph itself: each structural property is an
+#: ``rdfs:subPropertyOf`` this one (see ``ManifestProvider.discover_edges``), so "which edges
+#: are build dependencies" is a query on the graph, not a flag in code. Never used as an edge.
+STRUCTURAL_EDGE = irds.declare_graph_property(
+    'structuralEdge', desc='the parent of every edge a node is built from: its sources, the '
+                           'tables of a benchmark, the benchmarks of a suite, the parts of a bundle')
 
 # Literal-valued graph properties: what a node's row can carry. Every field
 # a row has must be declared here (or by another provider); an undeclared one is
 # left out of the graph with a warning (see ``registry.row_triples``).
 _P = irds.declare_graph_property
 _P('description', range='literal', desc='a short description of the node')
+_P('summary', range='literal', desc='a long-form description of the node: Markdown, written by hand')
 _P('prettyName', range='literal', desc='a display name, where the identifier is not readable')
 _P('citation', range='literal', desc='how to cite it: a dblp key, or plain text')
 _P('deprecated', range='literal', desc='why the node is deprecated, and what to use instead')
@@ -1399,6 +1414,52 @@ class Benchmark(Node):
     def docpairs_handler(self):
         _deprecated('docpairs_handler', 'docpairs.handler')
         return self._entity('docpairs').handler
+
+
+# ── Bundle ───────────────────────────────────────────────────────────────────
+
+class Bundle(Node):
+    """Any nodes that belong together, with a long-form ``summary`` of them.
+
+    The general grouping: one dataset's tables, benchmarks and resources (a corpus
+    with its several tasks), or several datasets that share a story. Unlike a
+    ``Benchmark`` (facets of one task) or a ``Suite`` (benchmarks evaluated together)
+    it says nothing about how its parts are used -- the summary does. Membership is
+    structural (``HAS_PART`` edges), so the bundle's software requirements include its
+    parts', and a part may belong to any number of bundles.
+
+    The ``summary`` is Markdown. ``[[node]]`` (or ``[[node|label]]``) in it is a link to
+    a node, which the site turns into one: a qualified name is itself, a bare one is a
+    sibling fragment of the bundle (``hf:owner/repo`` + ``[[par-par-test]]``) or else a node
+    of the bundle's own provider (``irds:msmarco`` + ``[[msmarco-passage]]``). A reference
+    that matches no node is shown as plain code, so a stale one is easy to spot.
+
+    ``parts`` are nodes or names; a name is resolved against the graph like any other
+    edge target. ``Suite`` is deliberately not a ``Bundle`` subclass here: it stays the
+    special case, with its own ``member`` edge and transitive ``.benchmarks``.
+    """
+    type = BUNDLE
+
+    def __init__(self, name, *, parts=(), **meta):
+        self.parts = list(parts)
+        super().__init__(name, **meta)
+
+    def structural_edges(self):
+        return [Edge(HAS_PART, p) for p in self.parts]
+
+
+class Overview(Bundle):
+    """A ``Bundle`` that is the front page of a dataset: it always has a ``summary``.
+
+    Everything a Bundle is, plus the guarantee that there is a hand-written Markdown summary
+    to show -- which is what makes it a page worth landing on, and what separates it from a
+    bare grouping of nodes. Leaving the summary out is an error."""
+    type = OVERVIEW
+
+    def __init__(self, name, *, parts=(), summary=None, **meta):
+        if not (summary or '').strip():
+            raise ValueError(f'{name!r}: an Overview needs a summary (use a Bundle for a bare grouping)')
+        super().__init__(name, parts=parts, summary=summary, **meta)
 
 
 # ── Suite ────────────────────────────────────────────────────────────────────

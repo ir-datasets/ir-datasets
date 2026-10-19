@@ -12,6 +12,7 @@ registry never collide across tests.
 """
 import itertools
 import tempfile
+from pathlib import Path
 import unittest
 from unittest import mock
 
@@ -48,6 +49,18 @@ def _write_readme(text):
 
 
 class TestV2Hf(unittest.TestCase):
+    def setUp(self):
+        # every test gets an empty registry (the real one is a directory of the package)
+        self.card_dir = Path(tempfile.mkdtemp())
+        ctx = mock.patch.object(hfm, 'CARD_DIR', self.card_dir)
+        ctx.start()
+        self.addCleanup(ctx.stop)
+
+    def _registry_card(self, repo, front):
+        path = self.card_dir / f'{repo}.yaml'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(yaml.safe_dump(front))
+
     def _patch(self, target, **kwargs):
         ctx = mock.patch.object(hfm, target, **kwargs)
         obj = ctx.start()
@@ -279,6 +292,13 @@ class TestV2Hf(unittest.TestCase):
         self.assertEqual('cc0-1.0', other.license)
         self.assertNotIn('prettyName', en.metadata)                         # the top level only
 
+    def test_the_cards_language_is_for_text_tables_not_qrels(self):
+        repo = _repo('langqrels')
+        self._mock({repo: _card_of(_table('d'), _table('q', 'irds:Queries'), _table('r', 'irds:Qrels'),
+                                   _table('r2', 'irds:Qrels', lang='fr'), meta={'lang': 'en'})})
+        self.assertEqual(['en', 'en', None, 'fr'],
+                         [v2.graph[f'hf:{repo}/{f}'].lang for f in ('d', 'q', 'r', 'r2')])
+
     def test_card_defaults_are_conservative(self):
         d = hfm._card_defaults
         self.assertEqual({}, d({'license': 'other', 'language': ['en', 'zh']}))      # ambiguous / unknown
@@ -343,6 +363,63 @@ class TestV2Hf(unittest.TestCase):
         self.assertEqual(f'hf:{corpus_repo}', benchmark.docs.qualified_name)
         self.assertIs(benchmark.docs, v2.graph[f'hf:{corpus_repo}'])
 
+    # -- bundles -----------------------------------------------------------
+
+    def test_a_bundle_groups_the_other_entries(self):
+        repo = _repo('bundle')
+        self._mock({repo: _card_of(
+            {'type': 'irds:Bundle', 'summary': '# All of it', 'description': 'short'},
+            _table('corpus'), _table('test', 'irds:Queries'),
+            {'fragment': 'eval', 'type': 'irds:Benchmark', 'docs': 'corpus', 'queries': 'test'})})
+        bundle = v2.graph[f'hf:{repo}']
+        self.assertEqual('irds:Bundle', bundle.type)
+        self.assertEqual(f'hf:{repo}', bundle.qualified_name)
+        self.assertEqual('# All of it', bundle.metadata['summary'])
+        self.assertEqual([f'hf:{repo}/corpus', f'hf:{repo}/test', f'hf:{repo}/eval'],
+                         [p.qualified_name for p in bundle.parts])
+        self.assertEqual(['irds:hasPart'] * 3, [e.kind for e in bundle.structural_edges()])
+
+    def test_an_overview_is_a_bundle_with_a_required_summary(self):
+        repo = _repo('overview')
+        self._mock({repo: _card_of(
+            {'type': 'irds:Overview', 'summary': 'The whole story.'}, _table('corpus'),
+            {'fragment': 'nosummary', 'type': 'irds:Overview', 'parts': ['corpus']})})
+        overview = v2.graph[f'hf:{repo}']
+        self.assertEqual('irds:Overview', overview.type)
+        self.assertEqual('The whole story.', overview.metadata['summary'])
+        with self.assertRaisesRegex(KeyError, 'needs a summary'):
+            v2.graph[f'hf:{repo}/nosummary']
+
+    def test_a_bundle_can_name_its_parts_and_borrow_from_elsewhere(self):
+        repo, other = _repo('bundleparts'), _repo('bundleelsewhere')
+        self._mock({repo: _card_of(
+            {'fragment': 'all', 'type': 'irds:Bundle', 'parts': ['corpus', f'hf:{other}']},
+            _table('corpus'), _table('unlisted')),
+            other: _card_of(_table(None))})
+        bundle = v2.graph[f'hf:{repo}/all']
+        v2.graph[f'hf:{other}']     # a borrowed part is a node of its own: load it, so the graph is whole
+        self.assertEqual([f'hf:{repo}/corpus', f'hf:{other}'],
+                         [p if isinstance(p, str) else p.qualified_name for p in bundle.parts])
+
+    def test_bundles_do_not_include_each_other_by_default_and_cycles_are_errors(self):
+        repo = _repo('bundlecycle')
+        self._mock({repo: _card_of(
+            {'type': 'irds:Bundle'}, {'fragment': 'inner', 'type': 'irds:Bundle'}, _table('corpus'))})
+        self.assertEqual([f'hf:{repo}/corpus'],
+                         [p.qualified_name for p in v2.graph[f'hf:{repo}'].parts])
+        repo = _repo('bundlecycle2')
+        self._mock({repo: _card_of(
+            {'fragment': 'a', 'type': 'irds:Bundle', 'parts': ['b']},
+            {'fragment': 'b', 'type': 'irds:Bundle', 'parts': ['a']})})
+        with self.assertRaisesRegex(KeyError, 'cycle'):
+            v2.graph[f'hf:{repo}/a']
+
+    def test_a_bundle_with_nothing_to_bundle_is_an_error(self):
+        repo = _repo('bundleempty')
+        self._mock({repo: _card_of({'type': 'irds:Bundle'})})
+        with self.assertRaises(KeyError):
+            v2.graph[f'hf:{repo}']
+
     # -- the card, as stored -----------------------------------------------
 
     def test_both_card_keys_present_is_an_error(self):
@@ -373,6 +450,60 @@ class TestV2Hf(unittest.TestCase):
                     '---\n' + yaml.safe_dump({'ir-datasets': block}) + '---\nbody\n')
                 card = hfm._card(repo, 'deadbeef')
                 self.assertIn(None, card['entries'])
+
+    # -- the registry ------------------------------------------------------
+
+    def test_a_registry_card_needs_no_network_and_no_readme(self):
+        repo = _repo('registry')
+        sha = 'a' * 40
+        self._registry_card(repo, {
+            'license': 'cc-by-4.0', 'language': ['en'], 'commit': sha,
+            'ir-datasets': [{'type': 'irds:Docs', 'file': 'docs.jsonl'},
+                            {'fragment': 'q', 'type': 'irds:Queries', 'file': 'q.jsonl'}]})
+        self._patch('_resolve_commit', side_effect=AssertionError('the commit is pinned'))
+        self._patch('_hf_lib', side_effect=AssertionError('no README is fetched'))
+        docs = v2.graph[f'hf:{repo}']
+        self.assertEqual(('irds:Docs', 'en', 'cc-by-4.0'), (docs.type, docs.lang, docs.license))
+        self.assertEqual('irds:Queries', v2.graph[f'hf:{repo}/q'].type)
+        git = self._resource_of(docs)
+        self.assertEqual(sha, git.commit)
+
+    def test_the_registry_wins_over_the_repos_own_card(self):
+        repo = _repo('registrywins')
+        self._registry_card(repo, {'ir-datasets': {'type': 'irds:Queries', 'file': 'q.jsonl'}})
+        self._patch('_resolve_commit', return_value='b' * 40)
+        self._patch('_hf_lib', side_effect=AssertionError('the registry card is used'))
+        self.assertEqual('irds:Queries', v2.graph[f'hf:{repo}'].type)
+
+    def test_without_a_registry_card_the_readme_is_used(self):
+        repo = _repo('noregistry')
+        self._mock({repo: _card_of(_table(None))})
+        self.assertEqual('irds:Docs', v2.graph[f'hf:{repo}'].type)
+
+    def test_a_registry_commit_must_be_a_full_hash(self):
+        repo = _repo('badpin')
+        self._registry_card(repo, {'commit': 'main', 'ir-datasets': {'type': 'irds:Docs', 'file': 'x'}})
+        with self.assertRaisesRegex(KeyError, '40-character'):
+            v2.graph[f'hf:{repo}']
+
+    def test_a_malformed_registry_card_is_an_error(self):
+        repo = _repo('malformed')
+        path = self.card_dir / f'{repo}.yaml'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('- just\n- a list\n')
+        with self.assertRaises(ValueError):
+            hfm._registry_front(repo)
+
+    def test_known_lists_the_registry_as_well_as_the_tagged_repos(self):
+        in_registry, tagged = _repo('listed'), _repo('tagged')
+        self._registry_card(in_registry, {'commit': 'c' * 40,
+                                          'ir-datasets': {'type': 'irds:Docs', 'file': 'x.jsonl'}})
+        self._patch('search', return_value=[tagged])
+        self._patch('_resolve_commit', side_effect=lambda repo: 'deadbeef')
+        self._patch('_card', side_effect=lambda repo, commit: (
+            hfm._card_of_front(repo, hfm._registry_front(repo)) if repo == in_registry
+            else _card_of(_table(None), tags=['ir-datasets'])))
+        self.assertEqual({in_registry, tagged}, set(hfm.known()))
 
     # -- identity ----------------------------------------------------------
 

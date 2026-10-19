@@ -97,7 +97,7 @@ class Node:
     type = None
 
     def __init__(self, name, *, desc=None, pretty_name=None, citation=None,
-                 deprecated=None, license=None, requires=None, metadata=None):
+                 deprecated=None, license=None, requires=None, metadata=None, summary=None):
         if ':' in name:
             raise ValueError(
                 f'{name!r}: node names may not contain ":"; the prefix is '
@@ -114,7 +114,7 @@ class Node:
         #: of everything it is built from -- see ``Graph.requires``.
         self._requires = requirements.normalize(requires)
         self.metadata = {k: v for k, v in {
-            'description': desc, 'prettyName': pretty_name, 'citation': citation,
+            'description': desc, 'prettyName': pretty_name, 'summary': summary, 'citation': citation,
             'deprecated': deprecated, **(metadata or {}),
         }.items() if v}
         # Assigned by the provider at registration.

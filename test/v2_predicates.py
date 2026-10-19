@@ -17,8 +17,8 @@ class TestDeclarations(unittest.TestCase):
         self.assertEqual({'node', 'literal', 'json', 'type'}, {e['range'] for e in everything.values()})
         self.assertTrue(set(v2.edge_kinds()) <= set(everything))
         self.assertTrue(set(v2.literal_properties()) <= set(everything))
-        self.assertEqual(set(v2.edge_kinds()) | set(v2.literal_properties()) | {'rdf:type', 'rdfs:subClassOf'},
-                         set(everything))
+        builtin = {'rdf:type', 'rdfs:subClassOf', 'rdfs:range', 'rdfs:subPropertyOf'}   # terms, not edges
+        self.assertEqual(set(v2.edge_kinds()) | set(v2.literal_properties()) | builtin, set(everything))
 
     def test_every_predicate_is_prefixed_and_lower_camel_case(self):
         for name in v2.graph_properties():
@@ -40,6 +40,52 @@ class TestDeclarations(unittest.TestCase):
     def test_a_provider_declares_only_its_own_predicates(self):
         with self.assertRaises(ValueError):
             v2.ManifestProvider('acme-own').declare_graph_property('irds:foo')
+
+
+class TestPropertiesInTheGraph(unittest.TestCase):
+    """Every graph property is described in the graph itself, in RDFS terms (no OWL)."""
+
+    def setUp(self):
+        self.triples = list(graph.providers['irds'].discover_edges())
+        self.by_subject = {}
+        for s, p, o in self.triples:
+            self.by_subject.setdefault(s, []).append((p, getattr(o, 'value', o)))
+
+    def test_each_property_is_an_rdf_property_with_a_range_and_a_comment(self):
+        for name, entry in v2.irds.graph_properties.items():
+            with self.subTest(property=name):
+                facts = self.by_subject[name]
+                self.assertIn(('rdf:type', 'rdf:Property'), facts)
+                self.assertIn(('rdfs:range', vocabulary.RANGE_TERMS[entry['range']]), facts)
+                if entry['desc']:
+                    self.assertIn(('rdfs:comment', entry['desc']), facts)
+
+    def test_the_range_says_what_the_values_are(self):
+        ranges = {name: dict(self.by_subject[name])['rdfs:range'] for name in
+                  ('irds:hasPart', 'irds:description', 'irds:column')}
+        self.assertEqual({'irds:hasPart': 'rdfs:Resource', 'irds:description': 'rdfs:Literal',
+                          'irds:column': 'rdf:JSON'}, ranges)
+
+    def test_a_structural_edge_is_a_sub_property_of_the_structural_edge_property(self):
+        sub = {s for s, p, o in self.triples if p == 'rdfs:subPropertyOf' and o == 'irds:structuralEdge'}
+        structural = {n for n, e in v2.irds.graph_properties.items() if e['structural']}
+        self.assertEqual(structural, sub)
+        self.assertTrue({'irds:docs', 'irds:derivedFrom', 'irds:member', 'irds:hasPart'} <= sub)
+        self.assertNotIn('irds:structuralEdge', sub)      # the parent is not its own child
+        self.assertNotIn(('rdfs:subPropertyOf', 'irds:structuralEdge'), self.by_subject['irds:directoryManifest'])
+
+    def test_no_owl(self):
+        self.assertFalse(any(str(x).startswith('owl:') for t in self.triples for x in t))
+
+    def test_properties_are_vocabulary_not_nodes(self):
+        names = set(graph.list())
+        self.assertFalse({'irds:hasPart', 'irds:description', 'irds:structuralEdge'} & names)
+        self.assertEqual([], graph.check())
+
+    def test_a_provider_describes_only_its_own_properties(self):
+        acme = v2.ManifestProvider('acme-describes')
+        acme.declare_graph_property('mine', range='literal', desc='x')
+        self.assertEqual({'acme-describes:mine'}, {s for s, _, _ in acme.property_triples()})
 
 
 class TestTheExportedGraph(unittest.TestCase):

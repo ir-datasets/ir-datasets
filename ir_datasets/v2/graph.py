@@ -39,7 +39,10 @@ import sys
 
 from . import requirements
 from .base import Literal
-from .vocabulary import RDF_TYPE, RDFS_SUBCLASS_OF, is_subclass, structural_kinds
+from .vocabulary import (
+    RDF_PROPERTY, RDF_TYPE, RDFS_RANGE, RDFS_SUBCLASS_OF, RDFS_SUBPROPERTY_OF, is_subclass,
+    structural_kinds,
+)
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
 
@@ -81,12 +84,16 @@ class Graph:
             for subject, kind, obj in provider.discover_edges():
                 if isinstance(obj, Literal):
                     continue
+                if kind == RDF_TYPE and obj == RDF_PROPERTY:
+                    # A graph property describing itself (see ManifestProvider.property_triples):
+                    # vocabulary, not a node.
+                    continue
                 if kind == RDF_TYPE:
                     # A node may have several types; `types` keeps the first
                     # (its primary), `all_types` every one.
                     types.setdefault(subject, obj)
                     all_types.setdefault(subject, []).append(obj)
-                elif kind == RDFS_SUBCLASS_OF:
+                elif kind in (RDFS_SUBCLASS_OF, RDFS_RANGE, RDFS_SUBPROPERTY_OF):
                     # Type-hierarchy metadata (vocabulary.py's own
                     # declare_graph_class/ancestors already track this for
                     # is_subclass) -- not a node-to-node edge, so it must not

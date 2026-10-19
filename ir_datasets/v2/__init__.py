@@ -103,7 +103,7 @@ from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 from .legacy_provider import legacy
 from .nodes import (
     ALIAS_OF, ALTERNATIVE_OF, AnswerTable, BENCHMARK, Benchmark, alternatives, Directory, DocPairTable, DocTable, ENTITIES,
-    ADHOC_BENCHMARK, ALIAS, BUNDLE, DIRECTORY, FILE, File, GitRepo, QA_BENCHMARK, QlogTable, DATA, Resource,
+    ADHOC_BENCHMARK, ALIAS, BUNDLE, Bundle, DIRECTORY, HAS_PART, OVERVIEW, Overview, FILE, File, GitRepo, QA_BENCHMARK, QlogTable, DATA, Resource,
     QrelTable, QueryTable, STRUCTURAL_EDGES, SUITE,
     SUITE_MEMBER, RunTable, Suite, TABLE, TABLE_TYPES, Table, source_resources,
 )
@@ -184,12 +184,12 @@ __all__ = [
     'is_subclass',
     # nodes
     'Resource', 'File', 'Directory', 'GitRepo', 'Table', 'DocTable', 'QueryTable',
-    'QrelTable', 'RunTable', 'DocPairTable', 'AnswerTable', 'QlogTable', 'Benchmark', 'Suite', 'ENTITIES',
+    'QrelTable', 'RunTable', 'DocPairTable', 'AnswerTable', 'QlogTable', 'Benchmark', 'Suite', 'Bundle', 'Overview', 'ENTITIES',
     # protocols: the structural contracts Resource/Table/Benchmark/Suite/Node above
     # are one implementation of, not requirements to inherit from
     'NodeProtocol', 'DataProtocol', 'TableProtocol', 'BenchmarkProtocol', 'SuiteProtocol',
     # vocabulary (declared on the irds provider)
-    'DATA', 'FILE', 'DIRECTORY', 'BUNDLE', 'ADHOC_BENCHMARK', 'ALIAS', 'ALIAS_OF', 'QA_BENCHMARK', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER',
+    'DATA', 'FILE', 'DIRECTORY', 'BUNDLE', 'ADHOC_BENCHMARK', 'ALIAS', 'ALIAS_OF', 'QA_BENCHMARK', 'TABLE', 'TABLE_TYPES', 'BENCHMARK', 'SUITE', 'SUITE_MEMBER', 'HAS_PART', 'OVERVIEW',
     'STRUCTURAL_EDGES', 'source_resources',
     # sources
     'Source', 'Readable', 'transform', 'external_home',

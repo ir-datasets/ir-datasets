@@ -406,6 +406,7 @@ _V1_IDS = (
 #: (transcribed from each dataset module's own (now-removed) irds.alias()
 #: call -- see the module docstring).
 _REPLACED_BY = {
+    'clirmatrix': 'clirmatrix:clirmatrix',
     'antique': 'irds:antique-docs',
     'antique/test': 'irds:antique-test',
     'antique/test/non-offensive': 'irds:antique-test-non-offensive',

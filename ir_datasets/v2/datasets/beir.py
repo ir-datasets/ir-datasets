@@ -267,6 +267,20 @@ cqa_suite = Suite('beir-cqadupstack',
                        'suite below rather than flattened into it.')
 irds.register(cqa_suite)
 
+#: "BEIR-13": the 13 BEIR datasets that are publicly available and not used for training -- the
+#: 14 headline ones above without MS MARCO (the in-domain training set), and without
+#: CQADupStack. Papers that report a BEIR-13 average mean this set (ArguAna, Climate-FEVER,
+#: DBPedia, FEVER, FiQA, HotpotQA, NFCorpus, NQ, Quora, SCIDOCS, SciFact, Touche-2020 and
+#: TREC-COVID). A convention, not part of the original BEIR release.
+BEIR13_MEMBERS = [n for n in SUITE_MEMBERS if n != 'beir-msmarco-dev']
+assert len(BEIR13_MEMBERS) == 13
+
+irds.register(Suite('beir-13', benchmarks=[benchmarks[n] for n in BEIR13_MEMBERS],
+                    citation=CITATION,
+                    desc='BEIR-13: the 13 publicly available BEIR datasets that are not used for '
+                         'training (BEIR without MS MARCO and CQADupStack), the set most papers '
+                         'average over for zero-shot results.'))
+
 irds.register(Suite('beir', benchmarks=[benchmarks[n] for n in SUITE_MEMBERS],
                     suites=[cqa_suite],
                     citation=CITATION,

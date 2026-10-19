@@ -39,7 +39,8 @@ import sys
 from .base import Literal
 from . import protocols
 from .vocabulary import (
-    RDF_TYPE, RDFS_SUBCLASS_OF, canonical_json, check_kind, check_graph_class, declare_graph_property, declare_graph_class,
+    RANGE_TERMS, RDF_PROPERTY, RDF_TYPE, RDFS_COMMENT, RDFS_RANGE, RDFS_SUBCLASS_OF,
+    RDFS_SUBPROPERTY_OF, canonical_json, check_kind, check_graph_class, declare_graph_property, declare_graph_class,
     is_structural, property_for, type_for_protocol, types_of, warn_undeclared,
 )
 
@@ -229,6 +230,19 @@ class ManifestProvider:
         """This provider's graph properties that carry a literal or JSON value."""
         return {k: v for k, v in self.graph_properties.items() if v['range'] in ('literal', 'json')}
 
+    def property_triples(self):
+        """The graph's description of this provider's own graph properties, in RDFS terms: each
+        is an ``rdf:Property`` with an ``rdfs:range`` (what its values are), an
+        ``rdfs:comment`` (its description) and, if structural, ``rdfs:subPropertyOf`` the
+        ``irds:structuralEdge`` property. Sorted, so a rebuild is reproducible."""
+        for qualified, entry in sorted(self.graph_properties.items()):
+            yield qualified, RDF_TYPE, RDF_PROPERTY
+            yield qualified, RDFS_RANGE, RANGE_TERMS[entry['range']]
+            if entry.get('desc'):
+                yield qualified, RDFS_COMMENT, Literal(entry['desc'])
+            if entry.get('structural'):
+                yield qualified, RDFS_SUBPROPERTY_OF, 'irds:structuralEdge'
+
     # -- registration -------------------------------------------------------
 
     def register(self, *nodes, module=None):
@@ -392,6 +406,7 @@ class ManifestProvider:
         for qualified, entry in self.graph_classes.items():
             if self.owns(qualified) and entry.get('parent'):
                 yield qualified, RDFS_SUBCLASS_OF, entry['parent']
+        yield from self.property_triples()
         # Enumerable generators (every param has a closed values= set, e.g.
         # CLIRMatrix's languages/splits) report a type row per name they
         # could produce, plus whatever structural edges the generator

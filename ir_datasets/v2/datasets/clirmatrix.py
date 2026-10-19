@@ -90,7 +90,7 @@ from ir_datasets.util import Lazy
 from ir_datasets.v2.base import Generator, Param
 from ir_datasets.v2.formats import Parser, TsvDocs
 from ir_datasets.v2.nodes import (
-    BENCHMARK, Benchmark, DERIVED_FROM, FACET, QrelTable, QueryTable, FILE,
+    BENCHMARK, Benchmark, DERIVED_FROM, FACET, Overview, QrelTable, QueryTable, FILE,
     Resource, TABLE_TYPES,
 )
 from ir_datasets.v2.clirmatrix_provider import clirmatrix
@@ -365,3 +365,55 @@ clirmatrix.register_generator(Generator(
           (FACET['qrels'], '{variant}-{doc_lang}-{query_lang}-{split}-qrels')],
     desc='A bilingual CLIR benchmark: one doc language, one query language, '
         'one split, at the bi139base/bi139full/multi8 size.'))
+
+
+# The overview
+# -----------------------------------------
+# One page for the whole family. Its parts are the 139 per-language corpora, not the ~150,000
+# benchmarks (far too many to list; the summary says how to name one).
+
+SUMMARY = """\
+CLIRMatrix is a very large collection of cross-language retrieval (CLIR) datasets, built
+automatically from Wikipedia. A query is in one language and the documents to rank are in
+another, so a single collection covers every combination of 139 languages: for instance,
+French queries over an English corpus, or Japanese queries over a German one.
+
+## How it is organized
+
+- **One corpus per language.** The documents are that language's Wikipedia articles: 139 of
+  them, named `<lang>-docs`, for example [[en-docs]].
+- **One benchmark per pair and split.** A benchmark pairs one document language with one
+  *different* query language (there is no same-language pair) and a split. Its name is
+  `<variant>-<doc lang>-<query lang>-<split>`, so [[bi139base-en-fr-train]] is English
+  documents, French queries, the `base` variant's training split.
+- **Splits:** `train`, `dev`, `test1` and `test2`.
+- **Variants:** `bi139base` and `bi139full` cover all 139 languages, in two sizes, and
+  `multi8` is a curated subset of eight languages (Arabic, German, English, Spanish, French,
+  Japanese, Russian and Chinese).
+
+That is on the order of 150,000 benchmarks, so none of them is listed here. Nodes are created
+on demand: load the name you want and it is built then, and the queries and qrels are
+downloaded only when you first read them. Each benchmark's queries and qrels are one file.
+
+## Relevance judgments
+
+The judgments are automatic, not human. Each document's label is 0 to 6, from BM25
+retrieval scores computed in the query's own language and split into bands: 6 is the most relevant, and 0 means
+the document was not retrieved there. They suit training and comparing systems, but not
+absolute claims about relevance.
+
+## Old names
+
+The first version of ir_datasets spelled these `clirmatrix/<doc lang>/<variant>/<query lang>/<split>`,
+with the variants as `bi139-base` and `bi139-full`. Those ids still resolve: for example
+`clirmatrix/en/bi139-base/fr/train` is [[bi139base-en-fr-train]].
+
+Cite the original paper (the Citation above) when using any of these.
+"""
+
+clirmatrix.register(Overview(
+    'clirmatrix', parts=[f'clirmatrix:{lang}-docs' for lang in LANGS], pretty_name='CLIRMatrix',
+    desc='CLIRMatrix: bilingual and multilingual cross-language retrieval datasets built from Wikipedia, '
+         '139 languages.',
+    summary=SUMMARY, citation=CITATION))
+

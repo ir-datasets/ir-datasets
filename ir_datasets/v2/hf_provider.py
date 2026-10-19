@@ -17,8 +17,27 @@ Naming::
 The card
 --------
 
-A repo opts in with an ``ir-datasets`` (or ``ir_datasets``) key in its dataset
-card (``README.md`` YAML frontmatter): a list of node declarations, or -- as
+Where the card comes from
+-------------------------
+
+Two places, tried in this order:
+
+1. **The registry:** a file in this package, ``hf_cards/<owner>/<name>.yaml``. It is shaped
+   like README frontmatter -- an ``ir-datasets`` key (below), plus whatever standard
+   fields the card should supply (``license``, ``language``, ``pretty_name``) -- and may
+   carry a ``commit:`` to pin the data to. It makes a dataset usable without its
+   authors changing anything, is reviewed and tested here like any other node, and is
+   self-contained: nothing is fetched to read it. To try a card, put it there (in a
+   development checkout) and load the name.
+2. **The repo itself:** the same block in its ``README.md`` frontmatter.
+
+A repo with a registry card needs no tag on the Hub; ``known()`` lists the registry
+alongside the tagged repos.
+
+The card
+--------
+
+An ``ir-datasets`` (or ``ir_datasets``) key holds a list of node declarations, or -- as
 shorthand for a one-item list -- a single mapping::
 
     ir-datasets:
@@ -36,7 +55,7 @@ shorthand for a one-item list -- a single mapping::
 
 Each entry has a ``fragment`` (its name under the repo; absent or ``null`` is
 the top-level node) and a ``type`` (a fully qualified graph class:
-``irds:Docs``, ``irds:Queries``, ``irds:Qrels``, ``irds:Benchmark`` or one of its
+``irds:Docs``, ``irds:Queries``, ``irds:Qrels``, ``irds:Overview``, ``irds:Bundle``, ``irds:Benchmark`` or one of its
 task types, ``irds:AdhocBenchmark`` -- docs, queries and qrels -- and
 ``irds:QaBenchmark`` -- queries and answers; a task type is checked against the
 facets given). Nothing else is required, and nothing is inferred --
@@ -60,6 +79,13 @@ in ``column_map``, and exactly one column could be the field (more than one is a
 error); ``auto_columns: false`` turns it off.
 ``defs:`` gives a qrels table's relevance labels.
 
+A bundle entry groups nodes that belong together -- ``parts:`` is a list of fragments
+(or fully qualified names), or ``all`` (the default: every other entry except bundles).
+``irds:Overview`` is the front page of a dataset: a bundle that must carry a hand-written
+``summary:`` (Markdown). Give it ``fragment: null`` and the repo's bare name is a landing
+page for the whole dataset. ``irds:Bundle`` is the bare grouping, with a summary only if
+you want one.
+
 A benchmark entry names its facets (``docs``/``queries``/``qrels``/...) and
 ``metrics``. A facet is a fragment of this same card or, if it contains a ``:``,
 a fully qualified node from anywhere in the graph (``irds:<dataset>-docs``,
@@ -71,7 +97,7 @@ doesn't say otherwise: ``license`` (every node; ``other`` is skipped), ``languag
 (a table's ``lang``, when the card names exactly one language) and ``pretty_name``
 (the top-level node's ``prettyName``).
 
-Every other key is a property of the node: ``description``, ``prettyName``,
+Every other key is a property of the node: ``description``, ``summary``, ``prettyName``,
 ``citation``, ``license``, ``deprecated`` and, for tables, ``lang`` and ``dua``.
 A key this provider doesn't know is reported and ignored.
 
@@ -89,6 +115,7 @@ declared by the ``irds`` provider), reused exactly as a third party would.
 """
 import collections
 import re
+from pathlib import Path
 
 import ir_datasets
 from ir_datasets.lazy_libs import hf_datasets as _hf_datasets_lib
@@ -99,7 +126,7 @@ from ir_datasets.lazy_libs import yaml as _yaml_lib
 from .base import Generator, Param
 from .formats import Parser
 from .nodes import (
-    Benchmark, DocTable, ENTITIES, GitRepo, QrelTable, QueryTable, TABLE,
+    Benchmark, Bundle, DocTable, Overview, ENTITIES, GitRepo, QrelTable, QueryTable, TABLE,
 )
 from .registry import ManifestProvider, row_triples
 
@@ -259,13 +286,16 @@ _card_cache = {}
 #: (kind, entity). A table entry produces that entity's table class.
 _TYPES = {'irds:Docs': ('table', 'docs'), 'irds:Queries': ('table', 'queries'),
           'irds:Qrels': ('table', 'qrels'), 'irds:Benchmark': ('benchmark', None),
-          'irds:AdhocBenchmark': ('benchmark', None), 'irds:QaBenchmark': ('benchmark', None)}
+          'irds:AdhocBenchmark': ('benchmark', None), 'irds:QaBenchmark': ('benchmark', None),
+          'irds:Bundle': ('bundle', None), 'irds:Overview': ('bundle', None)}
 #: Keys that are properties of the node (card key -> constructor argument).
-_PROPERTY_KEYS = {'description': 'desc', 'prettyName': 'pretty_name', 'citation': 'citation',
+_PROPERTY_KEYS = {'description': 'desc', 'prettyName': 'pretty_name', 'summary': 'summary',
+                  'citation': 'citation',
                   'license': 'license', 'deprecated': 'deprecated'}
 _TABLE_PROPERTY_KEYS = {'lang': 'lang', 'dua': 'dua'}
 _TABLE_KEYS = {'file', 'config', 'split', 'column_map', 'auto_columns', 'defs'}
 _BENCHMARK_KEYS = set(ENTITIES) | {'metrics'}
+_BUNDLE_KEYS = {'parts'}
 
 
 def _type_of(repo, entry):
@@ -317,27 +347,56 @@ def _card_defaults(front):
     return out
 
 
+#: Cards shipped with ir_datasets, one file per repo: ``<owner>/<name>.yaml``.
+CARD_DIR = Path(__file__).parent / 'hf_cards'
+
+
+def _registry_front(repo):
+    """The registry's card for ``repo`` (a README-frontmatter-shaped mapping), or ``None``."""
+    path = CARD_DIR / f'{repo}.yaml'
+    if not path.is_file():
+        return None
+    front = _yaml_lib().safe_load(path.read_text(encoding='utf-8'))
+    if not isinstance(front, dict):
+        raise ValueError(f'{path}: a registry card must be a mapping with an ir-datasets key')
+    return front
+
+
+def _registry_repos():
+    """Every repo the registry has a card for."""
+    if not CARD_DIR.is_dir():
+        return []
+    return sorted(f'{path.parent.name}/{path.stem}' for path in CARD_DIR.glob('*/*.yaml'))
+
+
+def _card_of_front(repo, front):
+    present = [k for k in CARD_KEYS if k in front]
+    if len(present) > 1:
+        raise ValueError(
+            f'{repo}: card declares both {" and ".join(CARD_KEYS)} -- pick one')
+    if not present:
+        raise KeyError(f'{repo}: no {"/".join(CARD_KEYS)} block in its card '
+                       f'-- not annotated for ir_datasets')
+    return {'tags': front.get('tags') or [], 'meta': _card_defaults(front),
+            'entries': _entries_of(repo, front[present[0]])}
+
+
 def _card(repo, commit):
-    """This repo's parsed ``ir-datasets`` card at a resolved commit:
-    ``{'tags': [...], 'entries': {fragment: entry}}``. Raises KeyError if the repo
-    isn't annotated, ValueError if the card is malformed -- both become "no such
-    node" at ``Provider.__getitem__``."""
+    """This repo's parsed ``ir-datasets`` card: the registry's if it has one, else the
+    one in the repo's README at a resolved commit --
+    ``{'tags': [...], 'meta': {...}, 'entries': {fragment: entry}}``. Raises KeyError if
+    the repo isn't annotated, ValueError if the card is malformed -- both become "no
+    such node" at ``Provider.__getitem__``."""
     key = (repo, commit)
     if key not in _card_cache:
-        hub = _hf_lib()
-        path = hub.hf_hub_download(repo_id=repo, repo_type='dataset',
-                                   filename='README.md', revision=commit)
-        with open(path, encoding='utf-8') as fin:
-            front = _frontmatter(fin.read())
-        present = [k for k in CARD_KEYS if k in front]
-        if len(present) > 1:
-            raise ValueError(
-                f'{repo}: card declares both {" and ".join(CARD_KEYS)} -- pick one')
-        if not present:
-            raise KeyError(f'{repo}: no {"/".join(CARD_KEYS)} block in its card '
-                           f'-- not annotated for ir_datasets')
-        _card_cache[key] = {'tags': front.get('tags') or [], 'meta': _card_defaults(front),
-                            'entries': _entries_of(repo, front[present[0]])}
+        front = _registry_front(repo)
+        if front is None:
+            hub = _hf_lib()
+            path = hub.hf_hub_download(repo_id=repo, repo_type='dataset',
+                                       filename='README.md', revision=commit)
+            with open(path, encoding='utf-8') as fin:
+                front = _frontmatter(fin.read())
+        _card_cache[key] = _card_of_front(repo, front)
     return _card_cache[key]
 
 
@@ -386,7 +445,12 @@ def _hf_dataset(repo):
     repeated single-table lookups) all point at the same node instead of
     independent, differently-timed resolutions."""
     if repo not in _repo_cache:
-        _repo_cache[repo] = HfDataset(repo, commit=_resolve_commit(repo), pinned=False)
+        front = _registry_front(repo) or {}
+        pinned = front.get('commit')      # a registry card may pin the data it was written against
+        if pinned is not None and not (isinstance(pinned, str) and re.fullmatch(r'[0-9a-f]{40}', pinned)):
+            raise ValueError(f'{repo}: commit must be a full 40-character commit hash, got {pinned!r}')
+        _repo_cache[repo] = HfDataset(repo, commit=pinned or _resolve_commit(repo),
+                                      pinned=pinned is not None)
     return _repo_cache[repo]
 
 
@@ -572,13 +636,14 @@ def _unknown_keys(repo, entry, allowed):
         _logger.warn(f'{repo}: {entry.get("fragment")!r}: ignoring unknown key(s) {extra}')
 
 
-def _properties(entry, table, card_meta, top_level):
+def _properties(entry, table, card_meta, top_level, entity=None):
     """The node's constructor arguments from its entry; the card's own standard
     metadata fills in what the entry leaves out."""
     keys = {**_PROPERTY_KEYS, **(_TABLE_PROPERTY_KEYS if table else {})}
     props = {arg: entry[key] for key, arg in keys.items() if key in entry}
     for arg in ('license', 'lang', 'pretty_name'):
-        if arg in card_meta and arg not in props and (arg != 'lang' or table) \
+        # a language is the text's: the card's goes to docs and queries, not to qrels
+        if arg in card_meta and arg not in props and (arg != 'lang' or entity in ('docs', 'queries')) \
                 and (arg != 'pretty_name' or top_level):
             props[arg] = card_meta[arg]
     return props
@@ -609,7 +674,7 @@ def _build_table(name, repo, entity, hf_dataset, fragment, entry, card_meta):
         parser = _HfDatasetsParser(hf_dataset.repo, hf_dataset.commit, config, split,
                                    entity, column_map, defs=defs, auto_columns=auto)
     return cls(name, source=source, parser=parser, defs=defs,
-               **_properties(entry, True, card_meta, fragment is None))
+               **_properties(entry, True, card_meta, fragment is None, entity))
 
 
 def _build_benchmark(name, repo, entry, node_fn, card_meta, top_level):
@@ -633,6 +698,25 @@ def _build_benchmark(name, repo, entry, node_fn, card_meta, top_level):
     return benchmark
 
 
+def _build_bundle(name, repo, entry, node_fn, card, top_level):
+    """``parts:`` is a list of fragments of this card (or fully qualified names, passed
+    straight through as in a benchmark's facets), or ``all`` -- every entry of the card
+    except bundles. Cycles between bundles are an error."""
+    _unknown_keys(repo, entry, _BUNDLE_KEYS | set(_PROPERTY_KEYS))
+    parts = entry.get('parts', 'all')
+    if parts == 'all':
+        parts = [f for f, e in card['entries'].items()
+                 if f != entry.get('fragment') and _type_of(repo, e)[0] != 'bundle']
+        if not parts:
+            raise ValueError(f'{repo}: {entry.get("fragment")!r} is a bundle of everything, '
+                             f'but the card has nothing else')
+    elif not isinstance(parts, list):
+        raise ValueError(f'{repo}: {entry.get("fragment")!r}: parts must be a list or "all"')
+    nodes = [p if ':' in str(p) else node_fn(None if p is None else str(p)) for p in parts]
+    cls = Overview if entry['type'] == 'irds:Overview' else Bundle
+    return cls(name, parts=nodes, **_properties(entry, False, card['meta'], top_level))
+
+
 _node_cache = {}
 
 
@@ -646,6 +730,7 @@ def _HfResolver(spec):
     repo, fragment = _parse_spec(spec)
     hf_dataset = _hf_dataset(repo)
     card = _card(repo, hf_dataset.commit)
+    building = set()
 
     def node(frag):
         """The one node for (repo, fragment), built once and shared however
@@ -657,9 +742,19 @@ def _HfResolver(spec):
             entry = card['entries'][frag]
             name = repo if frag is None else f'{repo}/{frag}'
             kind, entity = _type_of(repo, entry)
-            _node_cache[key] = (_build_table(name, repo, entity, hf_dataset, frag, entry, card['meta'])
-                                if kind == 'table'
-                                else _build_benchmark(name, repo, entry, node, card['meta'], frag is None))
+            if key in building:
+                raise ValueError(f'{repo}: bundle parts form a cycle through {frag!r}')
+            building.add(key)
+            try:
+                if kind == 'table':
+                    built = _build_table(name, repo, entity, hf_dataset, frag, entry, card['meta'])
+                elif kind == 'bundle':
+                    built = _build_bundle(name, repo, entry, node, card, frag is None)
+                else:
+                    built = _build_benchmark(name, repo, entry, node, card['meta'], frag is None)
+            finally:
+                building.discard(key)
+            _node_cache[key] = built
         return _node_cache[key]
 
     if fragment is None and None not in card['entries']:
@@ -698,8 +793,7 @@ def _expand(repo):
     if the repo turns out not to carry a valid card, or its card fails to resolve;
     see ``known``."""
     try:
-        commit = _resolve_commit(repo)
-        card = _card(repo, commit)
+        card = _card(repo, _hf_dataset(repo).commit)
     except (KeyError, ValueError):
         return []
     except Exception:
@@ -720,7 +814,8 @@ def _expand(repo):
 
 
 def known():
-    """Every repo tagged ``ir-datasets`` on the Hub, expanded into every name
+    """Every repo with a registry card, and every repo tagged ``ir-datasets`` on the Hub,
+    expanded into every name
     it actually addresses -- its bare/default identity (if it has one), every
     ``tables:`` key, and every ``benchmarks:`` key -- not just the repo id.
     Each is actually resolved (and so registered into the graph with a real
@@ -737,6 +832,6 @@ def known():
     there is no opt-in flag) so a listing shows real types/subtypes without
     every page having to be visited first by hand."""
     names = []
-    for repo in search(None):
+    for repo in dict.fromkeys([*_registry_repos(), *search(None)]):   # the registry's, then the tagged
         names.extend(_expand(repo))
     return names
