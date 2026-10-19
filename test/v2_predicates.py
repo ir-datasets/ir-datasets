@@ -17,7 +17,7 @@ class TestDeclarations(unittest.TestCase):
         self.assertEqual({'node', 'literal', 'json', 'type'}, {e['range'] for e in everything.values()})
         self.assertTrue(set(v2.edge_kinds()) <= set(everything))
         self.assertTrue(set(v2.literal_properties()) <= set(everything))
-        builtin = {'rdf:type', 'rdfs:subClassOf', 'rdfs:range', 'rdfs:subPropertyOf'}   # terms, not edges
+        builtin = {'rdf:type', 'rdfs:subClassOf', 'rdfs:range', 'rdfs:domain', 'rdfs:subPropertyOf'}   # terms, not edges
         self.assertEqual(set(v2.edge_kinds()) | set(v2.literal_properties()) | builtin, set(everything))
 
     def test_every_predicate_is_prefixed_and_lower_camel_case(self):
@@ -56,30 +56,80 @@ class TestPropertiesInTheGraph(unittest.TestCase):
             with self.subTest(property=name):
                 facts = self.by_subject[name]
                 self.assertIn(('rdf:type', 'rdf:Property'), facts)
-                self.assertIn(('rdfs:range', vocabulary.RANGE_TERMS[entry['range']]), facts)
+                self.assertIn(('rdfs:range', entry.get('range_type') or vocabulary.RANGE_TERMS[entry['range']]), facts)
+                if entry.get('domain'):
+                    self.assertIn(('rdfs:domain', entry['domain']), facts)
                 if entry['desc']:
                     self.assertIn(('rdfs:comment', entry['desc']), facts)
 
     def test_the_range_says_what_the_values_are(self):
         ranges = {name: dict(self.by_subject[name])['rdfs:range'] for name in
-                  ('irds:hasPart', 'irds:description', 'irds:column')}
-        self.assertEqual({'irds:hasPart': 'rdfs:Resource', 'irds:description': 'rdfs:Literal',
+                  ('irds:bundleItem', 'irds:description', 'irds:column')}
+        self.assertEqual({'irds:bundleItem': 'rdfs:Resource', 'irds:description': 'rdfs:Literal',
                           'irds:column': 'rdf:JSON'}, ranges)
 
-    def test_a_structural_edge_is_a_sub_property_of_the_structural_edge_property(self):
-        sub = {s for s, p, o in self.triples if p == 'rdfs:subPropertyOf' and o == 'irds:structuralEdge'}
+    def test_a_structural_edge_says_so_and_nothing_else_does(self):
+        flagged = {s for s, p, o in self.triples if p == 'irds:structuralEdge'}
         structural = {n for n, e in v2.irds.graph_properties.items() if e['structural']}
-        self.assertEqual(structural, sub)
-        self.assertTrue({'irds:docs', 'irds:derivedFrom', 'irds:member', 'irds:hasPart'} <= sub)
-        self.assertNotIn('irds:structuralEdge', sub)      # the parent is not its own child
-        self.assertNotIn(('rdfs:subPropertyOf', 'irds:structuralEdge'), self.by_subject['irds:directoryManifest'])
+        self.assertEqual(structural, flagged)
+        self.assertTrue({'irds:docs', 'irds:derivedFrom', 'irds:member'} <= flagged)
+        self.assertNotIn('irds:bundleItem', flagged)         # membership is informational
+        self.assertNotIn('irds:directoryManifest', flagged)
+
+    def test_every_literal_property_of_irds_is_metadata(self):
+        for name, entry in v2.irds.graph_properties.items():
+            if entry['range'] in ('literal', 'json') and name != 'irds:metadata':
+                with self.subTest(property=name):
+                    self.assertEqual(('irds:metadata',), tuple(entry['parents']))
+
+    def test_every_property_has_at_most_one_parent(self):
+        for name, entry in v2.graph_properties().items():
+            with self.subTest(property=name):
+                self.assertLessEqual(len(entry['parents']), 1)
+
+    def test_a_suite_is_a_benchmark_and_its_members_are_benchmarks(self):
+        self.assertTrue(vocabulary.is_subclass('irds:Suite', 'irds:Benchmark'))
+        member = dict(self.by_subject['irds:member'])
+        self.assertEqual('irds:Suite', member['rdfs:domain'])
+        self.assertEqual('irds:Benchmark', member['rdfs:range'])
+
+    def test_the_ways_a_node_consists_of_parts_are_sub_properties_of_bundle_item(self):
+        sub = {s for s, p, o in self.triples if p == 'rdfs:subPropertyOf' and o == 'irds:bundleItem'}
+        self.assertEqual({'irds:member', *(f'irds:{e}' for e in v2.ENTITIES)}, sub)
+        self.assertNotIn('irds:derivedFrom', sub)         # built from, not a part of
+
+    def test_a_property_says_what_it_applies_to_and_points_at(self):
+        docs = dict(self.by_subject['irds:docs'])
+        self.assertEqual('irds:Benchmark', docs['rdfs:domain'])
+        self.assertEqual('irds:Docs', docs['rdfs:range'])
+        self.assertEqual('irds:Bundle', dict(self.by_subject['irds:bundleItem'])['rdfs:domain'])
+
+    def test_a_sub_property_is_no_wider_than_its_parent(self):
+        props = v2.graph_properties()
+        for name, entry in props.items():
+            for parent in entry['parents']:
+                if props.get(parent, {}).get('domain') and entry['domain']:
+                    with self.subTest(property=name, parent=parent):
+                        self.assertTrue(vocabulary.is_subclass(entry['domain'], props[parent]['domain']))
+
+    def test_check_reports_an_edge_from_or_to_the_wrong_class(self):
+        acme = v2.ManifestProvider('acme-domain')
+        src = v2.Resource('src', sources=['https://example.org/x.tsv'])
+        queries = v2.TsvQueries('queries', source=src)
+        # a benchmark's docs must be a docs table, a suite's member a bundle
+        acme.register(v2.Benchmark('bad', docs=queries, queries=queries),
+                      v2.Suite('suite', benchmarks=[]))
+        problems = v2.Graph([acme]).check()
+        self.assertTrue(any(p.startswith('range: acme-domain:bad --irds:docs--> acme-domain:queries')
+                            for p in problems), problems)
+        self.assertFalse([p for p in problems if 'acme-domain:suite' in p])
 
     def test_no_owl(self):
         self.assertFalse(any(str(x).startswith('owl:') for t in self.triples for x in t))
 
     def test_properties_are_vocabulary_not_nodes(self):
         names = set(graph.list())
-        self.assertFalse({'irds:hasPart', 'irds:description', 'irds:structuralEdge'} & names)
+        self.assertFalse({'irds:bundleItem', 'irds:description', 'irds:structuralEdge'} & names)
         self.assertEqual([], graph.check())
 
     def test_a_provider_describes_only_its_own_properties(self):

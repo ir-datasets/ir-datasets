@@ -848,10 +848,25 @@ class TestV2Bundle(unittest.TestCase):
         bundle = v2.Bundle('test-bundle-edges', parts=['irds:antique-docs', 'irds:antique-test'],
                            summary='# Antique\n\nQuestions.', desc='short')
         self.assertEqual('irds:Bundle', bundle.type)
-        self.assertEqual([('irds:hasPart', 'irds:antique-docs'), ('irds:hasPart', 'irds:antique-test')],
+        self.assertEqual([('irds:bundleItem', 'irds:antique-docs'), ('irds:bundleItem', 'irds:antique-test')],
                          [(e.kind, e.target) for e in bundle.structural_edges()])
-        self.assertTrue(v2.graph_properties()['irds:hasPart']['structural'])
+        self.assertFalse(v2.graph_properties()['irds:bundleItem']['structural'])   # a grouping, not a dependency
         self.assertEqual('# Antique\n\nQuestions.', bundle.metadata['summary'])
+
+    def test_a_bundle_needs_nothing_its_parts_need_and_scales_to_many_parts(self):
+        needy = v2.Resource('test-bundle-needy', sources=['https://x/y'], requires=['somepackage'])
+        acme = v2.ManifestProvider('acme-bundle-big')
+        parts = [f'acme-bundle-big:part-{i}' for i in range(50_000)]
+        bundle = v2.Bundle('big', parts=['acme-bundle-big:needy', *parts])
+        acme.register(needy.__class__('needy', sources=['https://x/y'], requires=['somepackage']), bundle)
+        graph = v2.Graph()
+        graph.add(acme)
+        self.assertEqual((), graph.requires('acme-bundle-big:big'))           # parts' needs are not the bundle's
+        self.assertEqual('somepackage', graph['acme-bundle-big:needy'].requires[0])
+        import time
+        started = time.time()
+        self.assertEqual(50_001, len(graph.edges_of('acme-bundle-big:big')['irds:bundleItem']))
+        self.assertLess(time.time() - started, 5)                              # linear, not quadratic
 
     def test_the_summary_is_a_declared_property_and_a_triple(self):
         from ir_datasets.v2.registry import row_triples
@@ -868,7 +883,7 @@ class TestV2Bundle(unittest.TestCase):
         acme.register(outer)
         self.assertEqual('acme-bundle:test-bundle-part', part.qualified_name)   # a part object is registered too
         self.assertEqual(['acme-bundle:test-bundle-part'],
-                         acme.indexes()[0]['acme-bundle:test-bundle-outer']['irds:hasPart'])
+                         acme.indexes()[0]['acme-bundle:test-bundle-outer']['irds:bundleItem'])
         self.assertEqual('irds:Suite', v2.Suite('test-suite-still').type)
         self.assertNotIsInstance(v2.Suite('test-suite-still-2'), v2.Bundle)
 
@@ -879,7 +894,7 @@ class TestV2Overview(unittest.TestCase):
         self.assertEqual('irds:Overview', overview.type)
         self.assertIsInstance(overview, v2.Bundle)
         self.assertTrue(v2.is_subclass(overview.type, v2.BUNDLE))
-        self.assertEqual([('irds:hasPart', 'irds:antique-test')],
+        self.assertEqual([('irds:bundleItem', 'irds:antique-test')],
                          [(e.kind, e.target) for e in overview.structural_edges()])
         for missing in (None, '', '   '):
             with self.subTest(summary=missing), self.assertRaisesRegex(ValueError, 'needs a summary'):

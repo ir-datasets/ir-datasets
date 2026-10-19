@@ -146,10 +146,20 @@ TABLE_TYPES = {
     'qlogs': _CLASSES[proto.QueryLog],
 }
 
+#: What a node consists of: a bundle -> a node it contains, of any kind (tables, benchmarks,
+#: resources, other bundles). The facet edges of a benchmark and the ``member`` edges of a
+#: suite are ``rdfs:subPropertyOf`` this -- a more specific role a part plays. Informational, not structural: a bundle is a grouping and
+#: nothing is built from it, so loading one does not load its parts or need what they need
+#: -- which is what keeps a bundle of 150,000 parts (CLIRMatrix) cheap. A node may be in
+#: several bundles, and nothing in it refers back.
+BUNDLE_ITEM = irds.declare_graph_property('bundleItem', structural=False, domain=BUNDLE,
+                              desc='a node -> a node it consists of: the parts of a bundle, the tables of a benchmark, the members of a suite')
 #: Structural edges form a DAG and are what builds, caching and verification
 #: follow. Keeping them separate from informational edges is what stops a
 #: "see also" link from creating a cycle in the build graph.
-FACET = {e: irds.declare_graph_property(e, structural=True, desc='benchmark -> table providing that facet')
+FACET = {e: irds.declare_graph_property(e, structural=True, parent=BUNDLE_ITEM,
+                                        domain=BENCHMARK, range_type=TABLE_TYPES[e],
+                                        desc='benchmark -> table providing that facet')
          for e in ENTITIES}
 #: What a node is built from -- covers "table parsed from these bytes"
 #: (formerly a separate ``source`` kind), "table filtered from this other
@@ -169,12 +179,13 @@ DERIVED_FROM = irds.declare_graph_property('derivedFrom', structural=True,
 #: member is a Benchmark or a nested Suite (e.g. BEIR nests CQADupStack) --
 #: the member's own ``.type`` already says which, so a second kind would only
 #: duplicate it.
-SUITE_MEMBER = irds.declare_graph_property('member', structural=True,
-                              desc='suite -> a benchmark or nested suite it contains')
+SUITE_MEMBER = irds.declare_graph_property('member', structural=True, parent=BUNDLE_ITEM,
+                              domain=SUITE, range_type=BENCHMARK,
+                              desc='suite -> a benchmark it contains (a nested suite is one too)')
 #: Informational: a Directory -> the manifest its contents are checked against
 #: on first access. Not structural -- the directory is not built from it.
 DIRECTORY_MANIFEST = irds.declare_graph_property(
-    'directoryManifest', structural=False,
+    'directoryManifest', structural=False, domain=DIRECTORY, range_type=FILE,
     desc='a directory -> the file manifest its contents are checked against on first access')
 #: Informational: this table is a drop-in for the target -- same id space
 #: (doc_ids/query_ids), so anything keyed on one's ids (qrels, queries, a
@@ -184,53 +195,57 @@ DIRECTORY_MANIFEST = irds.declare_graph_property(
 #: judgment depths, or translations with their own ids. The alternative may
 #: carry a short ``alternativeNote`` (metadata) saying how it differs.
 ALTERNATIVE_OF = irds.declare_graph_property('alternativeOf', structural=False,
+                                domain=TABLE, range_type=TABLE,
                                 desc='table -> the canonical table it is a drop-in '
                                      '(same id space) alternative for')
 #: An ``irds:Alias`` node -> the node it stands for. Informational (an alias is
 #: bookkeeping, never part of anything's build DAG). ``Graph.__getitem__``
 #: follows it, so loading an alias returns its target.
-ALIAS_OF = irds.declare_graph_property('aliasOf', structural=False,
+ALIAS_OF = irds.declare_graph_property('aliasOf', structural=False, domain=ALIAS,
                           desc='alias -> the node it stands for (loading the alias returns it)')
-#: Bundle membership: a bundle -> a node it contains, of any kind (tables, benchmarks,
-#: resources, other bundles). Structural, like ``member``: a bundle's requirements
-#: include its parts'. A node may be in several bundles, and nothing in it refers back.
-HAS_PART = irds.declare_graph_property('hasPart', structural=True,
-                              desc='bundle -> a node it contains')
-STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER, HAS_PART)
-#: The parent of every structural edge, in the graph itself: each structural property is an
-#: ``rdfs:subPropertyOf`` this one (see ``ManifestProvider.discover_edges``), so "which edges
-#: are build dependencies" is a query on the graph, not a flag in code. Never used as an edge.
+STRUCTURAL_EDGES = (*FACET.values(), DERIVED_FROM, SUITE_MEMBER)
+#: The parent of every literal-valued property: a fact stated *about* a node (its names,
+#: descriptions, citation, license, language, size, where its bytes come from, how they are
+#: checked), as opposed to an edge, which relates it to another node. Never used on a node.
+METADATA = irds.declare_graph_property(
+    'metadata', range='literal', desc='the parent of every literal-valued property: what is '
+                                      'stated about a node rather than how it relates to another')
+_P = lambda name, **kw: irds.declare_graph_property(name, **kw)
+#: A property of other graph properties, in the graph itself: ``true`` on each structural edge
+#: (see ``ManifestProvider.property_triples``), so "which edges are build dependencies" is a
+#: query on the graph, not a flag in code. Never used on a node.
 STRUCTURAL_EDGE = irds.declare_graph_property(
-    'structuralEdge', desc='the parent of every edge a node is built from: its sources, the '
-                           'tables of a benchmark, the benchmarks of a suite, the parts of a bundle')
+    'structuralEdge', range='literal', parent=METADATA,
+    desc='true on an edge a node is built from: its sources, the tables of a benchmark, the '
+         'benchmarks of a suite -- as opposed to an informational one')
 
 # Literal-valued graph properties: what a node's row can carry. Every field
 # a row has must be declared here (or by another provider); an undeclared one is
 # left out of the graph with a warning (see ``registry.row_triples``).
-_P = irds.declare_graph_property
-_P('description', range='literal', desc='a short description of the node')
-_P('summary', range='literal', desc='a long-form description of the node: Markdown, written by hand')
-_P('prettyName', range='literal', desc='a display name, where the identifier is not readable')
-_P('citation', range='literal', desc='how to cite it: a dblp key, or plain text')
-_P('deprecated', range='literal', desc='why the node is deprecated, and what to use instead')
-_P('license', range='literal', desc='the license its data is distributed under: an SPDX identifier, or a URL')
-_P('package', range='literal', desc='the pip package the node comes from')
-_P('requiresDependency', range='literal', desc='a pip package that must be installed beyond the core install')
-_P('lang', range='literal', desc='the language of its text')
-_P('relevanceLabel', range='json', desc='one relevance label a table\'s judgments use, as {"label": ..., "meaning": ...}')
-_P('column', range='json', desc='one column of a table\'s records, as {"name": ..., "order": ..., "data_type": ...} (plus "nullable": true if it can be missing, and "fields": [...] -- its own columns, if it holds nested records)')
-_P('count', range='literal', desc='the number of records, as declared by its author')
-_P('fileSize', range='literal', desc='the size of its file in bytes')
-_P('dua', range='literal', desc='the data use agreement a user must accept')
-_P('source', range='json', desc='a place its bytes can be obtained from, as one JSON document each')
-_P('validation', range='json', desc='how its contents are checked on first access, as {"type": ...}')
-_P('fileHash', range='literal', desc='a declared integrity hash of its file, as algo:hexdigest')
-_P('repo', range='literal', desc='the repository a git-backed resource is, as owner/name')
-_P('commit', range='literal', desc='the commit a git-backed resource is pinned to')
-_P('url', range='literal', desc='where a git-backed resource can be visited')
-_P('metric', range='literal', desc='an official evaluation measure for a benchmark')
-_P('filter', range='literal', desc='the filter a derived table applies to the table it is derived from')
-_P('alternativeNote', range='literal', desc='how an alternative table differs from the one it is an alternative to')
+_M = lambda name, **kw: irds.declare_graph_property(name, parent=METADATA, **kw)
+_M('description', range='literal', desc='a short description of the node')
+_M('summary', range='literal', desc='a long-form description of the node: Markdown, written by hand')
+_M('prettyName', range='literal', desc='a display name, where the identifier is not readable')
+_M('citation', range='literal', desc='how to cite it: a dblp key, or plain text')
+_M('deprecated', range='literal', desc='why the node is deprecated, and what to use instead')
+_M('license', range='literal', desc='the license its data is distributed under: an SPDX identifier, or a URL')
+_M('package', range='literal', desc='the pip package the node comes from')
+_M('requiresDependency', range='literal', desc='a pip package that must be installed beyond the core install')
+_M('lang', range='literal', desc='the language of its text')
+_M('relevanceLabel', range='json', domain=TABLE_TYPES['qrels'], desc='one relevance label a table\'s judgments use, as {"label": ..., "meaning": ...}')
+_M('column', range='json', domain=TABLE, desc='one column of a table\'s records, as {"name": ..., "order": ..., "data_type": ...} (plus "nullable": true if it can be missing, and "fields": [...] -- its own columns, if it holds nested records)')
+_M('count', range='literal', desc='the number of records, as declared by its author')
+_M('fileSize', range='literal', desc='the size of its file in bytes')
+_M('dua', range='literal', desc='the data use agreement a user must accept')
+_M('source', range='json', desc='a place its bytes can be obtained from, as one JSON document each')
+_M('validation', range='json', desc='how its contents are checked on first access, as {"type": ...}')
+_M('fileHash', range='literal', desc='a declared integrity hash of its file, as algo:hexdigest')
+_M('repo', range='literal', desc='the repository a git-backed resource is, as owner/name')
+_M('commit', range='literal', desc='the commit a git-backed resource is pinned to')
+_M('url', range='literal', desc='where a git-backed resource can be visited')
+_M('metric', range='literal', domain=BENCHMARK, desc='an official evaluation measure for a benchmark')
+_M('filter', range='literal', domain=TABLE, desc='the filter a derived table applies to the table it is derived from')
+_M('alternativeNote', range='literal', domain=TABLE, desc='how an alternative table differs from the one it is an alternative to')
 
 
 def _data_type(annotation):
@@ -1425,14 +1440,16 @@ class Bundle(Node):
     with its several tasks), or several datasets that share a story. Unlike a
     ``Benchmark`` (facets of one task) or a ``Suite`` (benchmarks evaluated together)
     it says nothing about how its parts are used -- the summary does. Membership is
-    structural (``HAS_PART`` edges), so the bundle's software requirements include its
-    parts', and a part may belong to any number of bundles.
+    informational (``BUNDLE_ITEM`` edges): the bundle needs nothing its parts need, and a part
+    may belong to any number of bundles.
 
     The ``summary`` is Markdown. ``[[node]]`` (or ``[[node|label]]``) in it is a link to
     a node, which the site turns into one: a qualified name is itself, a bare one is a
     sibling fragment of the bundle (``hf:owner/repo`` + ``[[par-par-test]]``) or else a node
     of the bundle's own provider (``irds:msmarco`` + ``[[msmarco-passage]]``). A reference
-    that matches no node is shown as plain code, so a stale one is easy to spot.
+    that matches no node is shown as plain code, so a stale one is easy to spot. A citation
+    can be linked the same way: ``[[dblp:conf/emnlp/SunD20]]`` or ``[[doi:10.x/y]]``, with
+    ``|label`` to name it (``[[dblp:conf/emnlp/SunD20|the original paper]]``).
 
     ``parts`` are nodes or names; a name is resolved against the graph like any other
     edge target. ``Suite`` is deliberately not a ``Bundle`` subclass here: it stays the
@@ -1445,7 +1462,7 @@ class Bundle(Node):
         super().__init__(name, **meta)
 
     def structural_edges(self):
-        return [Edge(HAS_PART, p) for p in self.parts]
+        return [Edge(BUNDLE_ITEM, p) for p in self.parts]
 
 
 class Overview(Bundle):
@@ -1514,5 +1531,12 @@ class Suite(Node):
 
     def structural_edges(self):
         return [Edge(SUITE_MEMBER, m) for m in (*self.direct_benchmarks, *self.suites)]
+
+    # A Suite is a Benchmark (see ``protocols.Suite``) with no facets of its own.
+    def edge(self, entity):
+        return None
+
+    def has(self, entity):
+        return False
 
 

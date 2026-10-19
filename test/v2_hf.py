@@ -377,7 +377,7 @@ class TestV2Hf(unittest.TestCase):
         self.assertEqual('# All of it', bundle.metadata['summary'])
         self.assertEqual([f'hf:{repo}/corpus', f'hf:{repo}/test', f'hf:{repo}/eval'],
                          [p.qualified_name for p in bundle.parts])
-        self.assertEqual(['irds:hasPart'] * 3, [e.kind for e in bundle.structural_edges()])
+        self.assertEqual(['irds:bundleItem'] * 3, [e.kind for e in bundle.structural_edges()])
 
     def test_an_overview_is_a_bundle_with_a_required_summary(self):
         repo = _repo('overview')

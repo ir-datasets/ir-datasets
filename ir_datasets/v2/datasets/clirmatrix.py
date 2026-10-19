@@ -320,9 +320,20 @@ clirmatrix.register_generator(Generator(
     desc='The downloaded Wikipedia-derived corpus file backing one '
         'language\'s docs table.'))
 
+def _docs_row(lang):
+    """A docs table's language is its ``{lang}`` -- known from the name, so a listing reports it
+    without building the table."""
+    return {'lang': lang}
+
+
+def _queries_row(variant, doc_lang, query_lang, split):
+    """A queries table's language is the pair's query language."""
+    return {'lang': query_lang}
+
+
 clirmatrix.register_generator(Generator(
     '{lang}-docs', params={'lang': Param(values=LANGS)},
-    type=TABLE_TYPES['docs'], resolver=_docs, enumerable=True,
+    type=TABLE_TYPES['docs'], resolver=_docs, enumerable=True, row_metadata=_docs_row,
     edges=[(DERIVED_FROM, '{lang}-docs.txt.gz')],
     desc='One language\'s Wikipedia-derived document corpus.'))
 
@@ -345,7 +356,7 @@ clirmatrix.register_generator(Generator(
 clirmatrix.register_generator(Generator(
     '{variant}-{doc_lang}-{query_lang}-{split}-queries',
     params=_BILINGUAL_PARAMS, constraints=[_bilingual_constraint],
-    type=TABLE_TYPES['queries'], resolver=_queries, enumerable=True,
+    type=TABLE_TYPES['queries'], resolver=_queries, enumerable=True, row_metadata=_queries_row,
     edges=[(DERIVED_FROM, '{variant}-{doc_lang}-{query_lang}-{split}.jsonl.gz')],
     desc='The queries for one bilingual pair+split.'))
 
@@ -369,8 +380,10 @@ clirmatrix.register_generator(Generator(
 
 # The overview
 # -----------------------------------------
-# One page for the whole family. Its parts are the 139 per-language corpora, not the ~150,000
-# benchmarks (far too many to list; the summary says how to name one).
+# One page for the whole family. Its parts are every node a person would browse to: the 139
+# per-language corpora and every benchmark (~154,000 of them -- see ``_bilingual_constraint``
+# for which combinations exist). Membership is informational, so none of them is built, or
+# needs anything, to list it.
 
 SUMMARY = """\
 CLIRMatrix is a very large collection of cross-language retrieval (CLIR) datasets, built
@@ -381,19 +394,20 @@ French queries over an English corpus, or Japanese queries over a German one.
 ## How it is organized
 
 - **One corpus per language.** The documents are that language's Wikipedia articles: 139 of
-  them, named `<lang>-docs`, for example [[en-docs]].
+  them, named `{lang}-docs`, for example [[en-docs]].
 - **One benchmark per pair and split.** A benchmark pairs one document language with one
   *different* query language (there is no same-language pair) and a split. Its name is
-  `<variant>-<doc lang>-<query lang>-<split>`, so [[bi139base-en-fr-train]] is English
+  `{variant}-{doc_lang}-{query_lang}-{split}`, so [[bi139base-en-fr-train]] is English
   documents, French queries, the `base` variant's training split.
 - **Splits:** `train`, `dev`, `test1` and `test2`.
 - **Variants:** `bi139base` and `bi139full` cover all 139 languages, in two sizes, and
   `multi8` is a curated subset of eight languages (Arabic, German, English, Spanish, French,
   Japanese, Russian and Chinese).
 
-That is on the order of 150,000 benchmarks, so none of them is listed here. Nodes are created
-on demand: load the name you want and it is built then, and the queries and qrels are
-downloaded only when you first read them. Each benchmark's queries and qrels are one file.
+That is on the order of 150,000 benchmarks, so this page lists only a sample of its contents;
+every one of them belongs to it. Nodes are created on demand: load the name you want and it
+is built then, and the queries and qrels are downloaded only when you first read them. Each
+benchmark's queries and qrels are one file.
 
 ## Relevance judgments
 
@@ -404,15 +418,20 @@ absolute claims about relevance.
 
 ## Old names
 
-The first version of ir_datasets spelled these `clirmatrix/<doc lang>/<variant>/<query lang>/<split>`,
+The first version of ir_datasets spelled these `clirmatrix/{doc_lang}/{variant}/{query_lang}/{split}`,
 with the variants as `bi139-base` and `bi139-full`. Those ids still resolve: for example
 `clirmatrix/en/bi139-base/fr/train` is [[bi139base-en-fr-train]].
 
-Cite the original paper (the Citation above) when using any of these.
+Cite [[dblp:conf/emnlp/SunD20|the original paper]] when using any of these.
 """
 
 clirmatrix.register(Overview(
-    'clirmatrix', parts=[f'clirmatrix:{lang}-docs' for lang in LANGS], pretty_name='CLIRMatrix',
+    'clirmatrix',
+    parts=[*(f'clirmatrix:{lang}-docs' for lang in LANGS),
+           *(f'clirmatrix:{variant}-{doc_lang}-{query_lang}-{split}'
+             for variant in VARIANTS for doc_lang in LANGS for query_lang in LANGS for split in SPLITS
+             if _bilingual_constraint(variant, doc_lang, query_lang, split))],
+    pretty_name='CLIRMatrix',
     desc='CLIRMatrix: bilingual and multilingual cross-language retrieval datasets built from Wikipedia, '
          '139 languages.',
     summary=SUMMARY, citation=CITATION))

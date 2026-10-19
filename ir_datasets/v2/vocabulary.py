@@ -149,7 +149,7 @@ def row_for(node):
     return {k: v for k, v in row.items() if v or k == 'name'}
 
 
-def declare_graph_property(qualified, *, owner, range='node', structural=False, desc=None):
+def declare_graph_property(qualified, *, owner, range='node', structural=False, desc=None, parents=(), domain=None, range_type=None):
     """Idempotent. A graph property is either an edge to another node (``range='node'``,
     structural or informational) or a property: a ``literal`` value or a ``json``
     document. Like any RDF property it may have several values on a node."""
@@ -164,20 +164,23 @@ def declare_graph_property(qualified, *, owner, range='node', structural=False, 
                              f'(range={entry["range"]!r}, structural={entry["structural"]})')
         return qualified
     _PROPERTIES[qualified] = {'range': range, 'structural': structural,
-                              'desc': desc, 'owner': owner}
+                              'desc': desc, 'owner': owner, 'parents': tuple(parents),
+                              'domain': domain, 'range_type': range_type}
     return qualified
 
 
 declare_graph_property(RDF_TYPE, owner='rdf', range='type', desc="a node's type")
 declare_graph_property(RDFS_SUBCLASS_OF, owner='rdfs', range='type', desc='a type -> its parent type')
 #: What describes a graph property, in the standard RDFS terms: it is an ``rdf:Property``, has
-#: a value type (``rdfs:range``) and a description (``rdfs:comment``), and a structural edge is
-#: an ``rdfs:subPropertyOf`` the ``irds:structuralEdge`` property.
+#: a value type (``rdfs:range``) and a description (``rdfs:comment``); a structural edge also
+#: says so itself, with ``irds:structuralEdge true``.
 RDFS_RANGE = 'rdfs:range'
+RDFS_DOMAIN = 'rdfs:domain'
 RDFS_COMMENT = 'rdfs:comment'
 RDFS_SUBPROPERTY_OF = 'rdfs:subPropertyOf'
 RDF_PROPERTY = 'rdf:Property'
 declare_graph_property(RDFS_RANGE, owner='rdfs', range='type', desc="a property -> the type of its values")
+declare_graph_property(RDFS_DOMAIN, owner='rdfs', range='type', desc="a property -> the type of the nodes that have it")
 declare_graph_property(RDFS_SUBPROPERTY_OF, owner='rdfs', range='type', desc='a property -> its parent property')
 declare_graph_property(RDFS_COMMENT, owner='rdfs', range='literal', desc="a property's description")
 

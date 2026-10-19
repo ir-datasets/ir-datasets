@@ -74,14 +74,14 @@ ir-datasets:
 
       ## Names
 
-      Tables are `<kind>-<level>-<split>`, for example [[query-par-test]] or [[qrel-par-par-dev]].
-      Benchmarks are `<query level>-<document level>-<split>`, for example [[par-par-test]] (the
+      Tables are `{kind}-{level}-{split}`, for example [[query-par-test]] or [[qrel-par-par-dev]].
+      Benchmarks are `{query_level}-{document_level}-{split}`, for example [[par-par-test]] (the
       headline task) or [[case-case-dev]].
 
       This is a research and benchmarking collection, not legal advice or a complete record of
       CJEU precedent.
 
-  # A table's fragment is <config>-<split>; config and split say where it is read from.
+  # A table's fragment is {config}-{split}; config and split say where it is read from.
   # (docno, qid, query and label are mapped to doc_id, query_id, text and relevance automatically.)
   # Docs
   - {fragment: doc-par-dev, type: irds:Docs, config: doc_par, split: dev, citation: "dblp:journals/corr/abs-2608-03756"}
@@ -105,7 +105,7 @@ ir-datasets:
   - {fragment: qrel-case-case-train, type: irds:Qrels, config: qrel_case_case, split: train, citation: "dblp:journals/corr/abs-2608-03756"}
   - {fragment: qrel-case-case-dev, type: irds:Qrels, config: qrel_case_case, split: dev, citation: "dblp:journals/corr/abs-2608-03756"}
   - {fragment: qrel-case-case-test, type: irds:Qrels, config: qrel_case_case, split: test, citation: "dblp:journals/corr/abs-2608-03756"}
-  # Benchmarks: <query level>-<document level>-<split> (only dev and test have a candidate corpus)
+  # Benchmarks: {query_level}-{document_level}-{split} (only dev and test have a candidate corpus)
   - {fragment: par-par-dev, type: irds:AdhocBenchmark, docs: doc-par-dev, queries: query-par-dev, qrels: qrel-par-par-dev, citation: "dblp:journals/corr/abs-2608-03756"}
   - {fragment: par-par-test, type: irds:AdhocBenchmark, docs: doc-par-test, queries: query-par-test, qrels: qrel-par-par-test, citation: "dblp:journals/corr/abs-2608-03756"}
   - {fragment: par-case-dev, type: irds:AdhocBenchmark, docs: doc-case-dev, queries: query-par-dev, qrels: qrel-par-case-dev, citation: "dblp:journals/corr/abs-2608-03756"}

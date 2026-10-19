@@ -40,8 +40,8 @@ import sys
 from . import requirements
 from .base import Literal
 from .vocabulary import (
-    RDF_PROPERTY, RDF_TYPE, RDFS_RANGE, RDFS_SUBCLASS_OF, RDFS_SUBPROPERTY_OF, is_subclass,
-    structural_kinds,
+    RDF_PROPERTY, RDF_TYPE, RDFS_DOMAIN, RDFS_RANGE, RDFS_SUBCLASS_OF, RDFS_SUBPROPERTY_OF, is_subclass,
+    graph_properties, structural_kinds,
 )
 
 ENTRY_POINT_GROUP = 'ir_datasets.providers'
@@ -81,6 +81,7 @@ class Graph:
         cached = self._catalogs.get(provider.prefix)
         if cached is None:
             types, all_types, fwd, rev = {}, {}, {}, {}
+            seen_edges = set()
             for subject, kind, obj in provider.discover_edges():
                 if isinstance(obj, Literal):
                     continue
@@ -93,7 +94,7 @@ class Graph:
                     # (its primary), `all_types` every one.
                     types.setdefault(subject, obj)
                     all_types.setdefault(subject, []).append(obj)
-                elif kind in (RDFS_SUBCLASS_OF, RDFS_RANGE, RDFS_SUBPROPERTY_OF):
+                elif kind in (RDFS_SUBCLASS_OF, RDFS_RANGE, RDFS_DOMAIN, RDFS_SUBPROPERTY_OF):
                     # Type-hierarchy metadata (vocabulary.py's own
                     # declare_graph_class/ancestors already track this for
                     # is_subclass) -- not a node-to-node edge, so it must not
@@ -101,7 +102,8 @@ class Graph:
                     continue
                 else:
                     bucket = fwd.setdefault(subject, {}).setdefault(kind, [])
-                    if obj not in bucket:
+                    if (subject, kind, obj) not in seen_edges:        # O(1), not a scan of the bucket
+                        seen_edges.add((subject, kind, obj))
                         bucket.append(obj)
                     rev.setdefault(obj, set()).add((subject, kind))
             cached = {'types': types, 'all_types': all_types, 'fwd': fwd, 'rev': rev}
@@ -186,7 +188,10 @@ class Graph:
         if isinstance(node, str):
             node = self[node]
         nodes, seen = [node], set()
+        structural = structural_kinds()
         for edge in node.structural_edges():
+            if edge.kind not in structural:       # an informational edge (a bundle's parts) is not a dependency
+                continue
             target = edge.target if isinstance(edge.target, str) else edge.target.qualified_name
             for name in ([target, *self.closure(target)] if target else []):
                 if name not in seen:
@@ -216,7 +221,8 @@ class Graph:
         for provider in self.providers.values():
             for kind, targets in self._catalog(provider)['fwd'].get(name, {}).items():
                 bucket = out.setdefault(kind, [])
-                bucket.extend(t for t in targets if t not in bucket)
+                known = set(bucket)
+                bucket.extend(t for t in targets if t not in known)
         if structural_only:
             structural = structural_kinds()
             out = {k: v for k, v in out.items() if k in structural}
@@ -325,7 +331,33 @@ class Graph:
                             except KeyError:
                                 pass
                         problems.append(f'dangling: {src} --{kind}--> {dst}')
+        problems += self._check_domains_and_ranges()
         return problems
+
+    def _check_domains_and_ranges(self):
+        """An edge whose property declares a ``domain`` or a ``range_type`` must start at a
+        node of that class, and end at one (an end that is not in the graph is reported as
+        dangling, not here)."""
+        declared = {k: v for k, v in graph_properties().items()
+                    if v['range'] == 'node' and (v.get('domain') or v.get('range_type'))}
+        problems = []
+        for provider in self.providers.values():
+            for src, kinds in self._catalog(provider)['fwd'].items():
+                for kind, dsts in kinds.items():
+                    entry = declared.get(kind)
+                    if entry is None:
+                        continue
+                    if entry['domain'] and not self._has_type(src, entry['domain']):
+                        problems.append(f'domain: {src} --{kind}--> {dsts[0]}: {src} is not an {entry["domain"]}')
+                    if entry['range_type']:
+                        for dst in dsts:
+                            types = self.types_of(dst)
+                            if types and not any(is_subclass(t, entry['range_type']) for t in types):
+                                problems.append(f'range: {src} --{kind}--> {dst}: {dst} is not an {entry["range_type"]}')
+        return problems
+
+    def _has_type(self, name, cls):
+        return any(is_subclass(t, cls) for t in self.types_of(name))
 
     def export_triples(self, providers=None):
         """Every provider's nodes/edges as RDF-ready ``(subject, predicate,

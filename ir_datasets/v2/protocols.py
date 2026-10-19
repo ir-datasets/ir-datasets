@@ -379,11 +379,13 @@ class Overview(Bundle, Protocol):
 
 @graph_class
 @runtime_checkable
-class Suite(Bundle, Protocol):
-    """A set of related benchmarks.
+class Suite(Benchmark, Protocol):
+    """A benchmark that is a set of related benchmarks.
 
     A named set of related Benchmarks (for example BEIR) evaluated
-    together. Suites can contain other Suites."""
+    together -- itself a Benchmark, so it can be a member of another suite
+    (BEIR holds the CQADupStack suite). A suite has no facets of its own; what it
+    is built from are its members."""
     #: Every Benchmark in the suite, including those of nested suites.
     benchmarks: list
 

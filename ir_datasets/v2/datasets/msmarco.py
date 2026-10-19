@@ -62,7 +62,7 @@ judgments (they are scored on the leaderboard), so they cannot be evaluated loca
   its own, much more thoroughly judged queries; those benchmarks are defined separately, for
   example [[trec-dl-2019-passage]] and [[trec-dl-2019-document]].
 
-Cite the original paper (the Citation above) when using any of these.
+Cite [[dblp:conf/nips/NguyenRSGTMD16|the original paper]] when using any of these.
 """
 
 _members = [name for name, node in irds.nodes.items()

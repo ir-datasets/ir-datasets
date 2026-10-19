@@ -21,4 +21,4 @@ can't be deferred to first lookup).
 """
 from .registry import ManifestProvider
 
-clirmatrix = ManifestProvider('clirmatrix')
+clirmatrix = ManifestProvider('clirmatrix', distribution='ir_datasets')
