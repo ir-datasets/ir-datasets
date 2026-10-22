@@ -148,10 +148,7 @@ for _split in ('train', 'dev', 'test'):
     )
     main_bm = Benchmark(f'nfcorpus-{_split}',
         docs=docs, queries=queries, qrels=qrels,
-        citation=CITATION,
-        desc=f'Official {_split} set of NFCorpus. Queries include both a '
-             '"title" and a combined "all" text field (titles, '
-             'descriptions, topics, transcripts and comments).')
+        citation=CITATION)
 
     nontopic_queries = TsvQueries(f'nfcorpus-{_split}-nontopic-queries',
         source=main_file.member(f'nfcorpus/{_split}.nontopic-titles.queries').cache(
@@ -162,8 +159,7 @@ for _split in ('train', 'dev', 'test'):
         queries=nontopic_queries,
         derived_from=main_bm,
         filter=Filter(query_ids=ids_from_lines(nontopic_ids_file), mode='include'),
-        citation=CITATION,
-        desc=f'Official {_split} set, filtered to exclude queries from topic pages.')
+        citation=CITATION)
 
     vid_title_member = main_file.member(f'nfcorpus/{_split}.vid-titles.queries').cache(
         BASE / _split / 'video' / 'queries.titles.tsv')
@@ -178,8 +174,7 @@ for _split in ('train', 'dev', 'test'):
         queries=video_queries,
         derived_from=main_bm,
         filter=Filter(query_ids=ids_from_lines(video_ids_file), mode='include'),
-        citation=CITATION,
-        desc=f'Official {_split} set, filtered to only include queries from video pages.')
+        citation=CITATION)
 
     _benchmarks[_split] = main_bm
     _benchmarks[f'{_split}-nontopic'] = nontopic_bm

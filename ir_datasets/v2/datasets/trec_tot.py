@@ -160,12 +160,10 @@ dev_2023_qrels = TrecQrels('trec-tot-2023-dev-qrels',
 # -----------------------------------------
 trec_tot_2023_train = Benchmark('trec-tot-2023-train',
     citation='dblp:conf/trec/ArguelloBDKM23',
-    docs=docs_2023, queries=train_2023_queries, qrels=train_2023_qrels,
-    desc='TREC Tip-of-the-Tongue 2023: train query set.')
+    docs=docs_2023, queries=train_2023_queries, qrels=train_2023_qrels)
 trec_tot_2023_dev = Benchmark('trec-tot-2023-dev',
     citation='dblp:conf/trec/ArguelloBDKM23',
-    docs=docs_2023, queries=dev_2023_queries, qrels=dev_2023_qrels,
-    desc='TREC Tip-of-the-Tongue 2023: dev query set.')
+    docs=docs_2023, queries=dev_2023_queries, qrels=dev_2023_qrels)
 
 # Files -- 2024
 # -----------------------------------------
@@ -199,9 +197,7 @@ test_2024_queries = QueryTable('trec-tot-2024-test-queries',
 # -----------------------------------------
 trec_tot_2024_test = Benchmark('trec-tot-2024-test',
     citation='dblp:conf/trec/Arguello00KHK024',
-    docs=docs_2024, queries=test_2024_queries,
-    desc='TREC Tip-of-the-Tongue 2024: test query set (queries only; '
-         'v1 does not wire up qrels for this dataset).')
+    docs=docs_2024, queries=test_2024_queries)
 
 # Files -- 2025
 # -----------------------------------------
@@ -311,25 +307,19 @@ test_2025_queries = QueryTable('trec-tot-2025-test-queries',
 # -----------------------------------------
 trec_tot_2025_train = Benchmark('trec-tot-2025-train',
     citation='dblp:journals/corr/abs-2601-20671',
-    docs=docs_2025, queries=train_2025_queries, qrels=train_2025_qrels,
-    desc='TREC Tip-of-the-Tongue 2025: train query set.')
+    docs=docs_2025, queries=train_2025_queries, qrels=train_2025_qrels)
 trec_tot_2025_dev1 = Benchmark('trec-tot-2025-dev1',
     citation='dblp:journals/corr/abs-2601-20671',
-    docs=docs_2025, queries=dev1_2025_queries, qrels=dev1_2025_qrels,
-    desc='TREC Tip-of-the-Tongue 2025: dev-1 query set (the original 2023 dev set).')
+    docs=docs_2025, queries=dev1_2025_queries, qrels=dev1_2025_qrels)
 trec_tot_2025_dev2 = Benchmark('trec-tot-2025-dev2',
     citation='dblp:journals/corr/abs-2601-20671',
-    docs=docs_2025, queries=dev2_2025_queries, qrels=dev2_2025_qrels,
-    desc='TREC Tip-of-the-Tongue 2025: dev-2 query set (the original 2023 test set).')
+    docs=docs_2025, queries=dev2_2025_queries, qrels=dev2_2025_qrels)
 trec_tot_2025_dev3 = Benchmark('trec-tot-2025-dev3',
     citation='dblp:journals/corr/abs-2601-20671',
-    docs=docs_2025, queries=dev3_2025_queries, qrels=dev3_2025_qrels,
-    desc='TREC Tip-of-the-Tongue 2025: dev-3 query set (the original 2024 test set).')
+    docs=docs_2025, queries=dev3_2025_queries, qrels=dev3_2025_qrels)
 trec_tot_2025_test = Benchmark('trec-tot-2025-test',
     citation='dblp:journals/corr/abs-2601-20671',
-    docs=docs_2025, queries=test_2025_queries,
-    desc='TREC Tip-of-the-Tongue 2025: test query set (queries only; '
-         'no qrels released yet).')
+    docs=docs_2025, queries=test_2025_queries)
 
 
 # Registration

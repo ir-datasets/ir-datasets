@@ -210,65 +210,51 @@ train = Benchmark('msmarco-passage-train',
     docs=docs, queries=train_queries, qrels=train_qrels,
     docpairs=train_docpairs, scoreddocs=train_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official train set.',
     license='https://microsoft.github.io/msmarco/')
 train_judged = Benchmark('msmarco-passage-train-judged',
     derived_from=train, filter=Filter(queries_with_qrels=True),
     citation=CITATION, metrics=MEASURES,
-    desc='msmarco-passage-train restricted to queries with >= 1 qrel.',
     license='https://microsoft.github.io/msmarco/')
 train_triples_v2 = Benchmark('msmarco-passage-train-triples-v2',
     docs=docs, queries=train_queries, qrels=train_qrels,
     docpairs=train_docpairs_v2, scoreddocs=train_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='msmarco-passage-train with the v2 (larger) docpairs release.',
     license='https://microsoft.github.io/msmarco/')
 train_split200_train = Benchmark('msmarco-passage-train-split200-train',
     derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='exclude'),
     citation=CITATION, metrics=MEASURES,
-    desc='msmarco-passage-train without the 200 queries held out in '
-         'msmarco-passage-train-split200-valid.',
     license='https://microsoft.github.io/msmarco/')
 train_split200_valid = Benchmark('msmarco-passage-train-split200-valid',
     derived_from=train, filter=Filter(query_ids=SPLIT200_QIDS, mode='include'),
     citation=CITATION, metrics=MEASURES,
-    desc='A held-out subset of 200 queries from msmarco-passage-train. '
-         'Use with msmarco-passage-train-split200-train.',
     license='https://microsoft.github.io/msmarco/')
 train_medical = Benchmark('msmarco-passage-train-medical',
     derived_from=train,
     filter=Filter(query_ids=ids_from_lines(medmarco_ids_file), mode='include'),
     citation=CITATION, metrics=MEASURES,
-    desc='Subset of msmarco-passage-train restricted to medical queries, '
-         'as identified by Georgetown-IR-Lab/covid-neural-ir.',
     license='https://microsoft.github.io/msmarco/')
 
 dev = Benchmark('msmarco-passage-dev',
     docs=docs, queries=dev_queries, qrels=dev_qrels,
     citation=CITATION, metrics=MEASURES,
-    desc='Official dev set.',
     license='https://microsoft.github.io/msmarco/')
 dev_judged = Benchmark('msmarco-passage-dev-judged',
     derived_from=dev, filter=Filter(queries_with_qrels=True),
     citation=CITATION, metrics=MEASURES,
-    desc='msmarco-passage-dev restricted to queries with >= 1 qrel.',
     license='https://microsoft.github.io/msmarco/')
 dev_small = Benchmark('msmarco-passage-dev-small',
     docs=docs, queries=dev_small_queries, qrels=dev_small_qrels,
     scoreddocs=dev_small_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official "small" dev set (6,980 queries).',
     license='https://microsoft.github.io/msmarco/')
 
 eval_ = Benchmark('msmarco-passage-eval',
     docs=docs, queries=eval_queries,
     citation=CITATION, metrics=MEASURES,
-    desc='Official eval set for the MS MARCO leaderboard (qrels hidden).',
     license='https://microsoft.github.io/msmarco/')
 eval_small = Benchmark('msmarco-passage-eval-small',
     docs=docs, queries=eval_small_queries, scoreddocs=eval_small_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official "small" eval set (6,837 queries).',
     license='https://microsoft.github.io/msmarco/')
 
 

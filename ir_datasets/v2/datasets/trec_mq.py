@@ -97,14 +97,10 @@ mq2008_qrels = QrelTable('trec-mq-2008-qrels',
 # -----------------------------------------
 trec_mq_2007 = Benchmark('trec-mq-2007',
     docs=docs, queries=mq2007_queries, qrels=mq2007_qrels,
-    citation=CITATION_MQ_2007,
-    desc='TREC 2007 Million Query Track: a large query sample with shallow, per-query '
-         'probabilistic judgments (prels) for unbiased effectiveness estimation.')
+    citation=CITATION_MQ_2007)
 trec_mq_2008 = Benchmark('trec-mq-2008',
     docs=docs, queries=mq2008_queries, qrels=mq2008_qrels,
-    citation=CITATION_MQ_2008,
-    desc='TREC 2008 Million Query Track: a large query sample with shallow, per-query '
-         'probabilistic judgments (prels) for unbiased effectiveness estimation.')
+    citation=CITATION_MQ_2008)
 
 # Files
 # -----------------------------------------
@@ -136,10 +132,7 @@ mq2009_qrels = QrelTable('trec-mq-2009-qrels',
 # -----------------------------------------
 trec_mq_2009 = Benchmark('trec-mq-2009',
     docs=cw09_docs, queries=mq2009_queries, qrels=mq2009_qrels,
-    citation=CITATION_MQ_2009,
-    desc='TREC 2009 Million Query Track: a large query sample with shallow, per-query '
-         'probabilistic judgments (prels) for unbiased effectiveness estimation, over '
-         'the full multilingual ClueWeb09 collection.')
+    citation=CITATION_MQ_2009)
 
 
 # Registration

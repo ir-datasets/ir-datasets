@@ -83,8 +83,7 @@ qrels = QrelTable('cranfield-qrels',
 # Benchmark
 # -----------------------------------------
 cranfield = Benchmark('cranfield',
-    docs=docs, queries=queries, qrels=qrels,
-    desc='A small corpus of 1,400 scientific abstracts.')
+    docs=docs, queries=queries, qrels=qrels)
 
 
 # Registration

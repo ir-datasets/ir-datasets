@@ -84,7 +84,6 @@ for _lang, (_dir, _url, _md5, _size) in LANGS.items():
     _docs = DocTable(f'mrtydi-{_lang}-docs',
         source=_tar.member(f'{_dir}/collection/docs.jsonl.gz').gunzip(),
         parser=_MrTydiDocsParser(), lang=_lang,
-        desc=f'The Mr. TyDi {_lang} Wikipedia passage corpus.',
         license='Apache-2.0')
 
     for _split in SPLITS:
@@ -96,7 +95,6 @@ for _lang, (_dir, _url, _md5, _size) in LANGS.items():
             qrels=TrecQrels(f'{_name}-qrels',
                 source=_tar.member(f'{_dir}/qrels.{_split}.txt'), defs=QREL_DEFS, license='Apache-2.0'),
             citation=CITATION,
-            desc=f'Mr. TyDi {_lang}, {_split} split.',
             license='Apache-2.0'))
 
 

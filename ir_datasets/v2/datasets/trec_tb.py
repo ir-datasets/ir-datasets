@@ -203,60 +203,42 @@ tb2006_eff_stream4_queries = QueryTable('trec-tb-2006-efficiency-stream4-queries
 # -----------------------------------------
 trec_tb_2004 = Benchmark('trec-tb-2004',
     docs=docs, queries=tb2004_queries, qrels=tb2004_qrels,
-    citation=CITATION_TB_2004,
-    desc='TREC Terabyte Track 2004 ad hoc ranking benchmark: 50 queries with deep relevance judgments.')
+    citation=CITATION_TB_2004)
 
 trec_tb_2005 = Benchmark('trec-tb-2005',
     docs=docs, queries=tb2005_queries, qrels=tb2005_qrels,
-    citation=CITATION_TB_2005,
-    desc='TREC Terabyte Track 2005 ad hoc ranking benchmark: 50 queries with deep relevance judgments.')
+    citation=CITATION_TB_2005)
 trec_tb_2005_np = Benchmark('trec-tb-2005-named-page',
     docs=docs, queries=tb2005_np_queries, qrels=tb2005_np_qrels,
-    citation=CITATION_TB_2005,
-    desc='TREC Terabyte Track 2005 named-page ranking benchmark: 252 queries with titles that '
-         'resemble bookmark labels; judgments include near-duplicate pages and other pages that '
-         'may satisfy the bookmark label.')
+    citation=CITATION_TB_2005)
 trec_tb_2005_eff = Benchmark('trec-tb-2005-efficiency',
     docs=docs, queries=tb2005_eff_queries, qrels=tb2005_eff_qrels,
-    citation=CITATION_TB_2005,
-    desc='TREC Terabyte Track 2005 efficiency ranking benchmark: 50,000 queries from a search '
-         'engine log, including the 50 topics from trec-tb-2005 (only those have judgments).')
+    citation=CITATION_TB_2005)
 
 trec_tb_2006 = Benchmark('trec-tb-2006',
     docs=docs, queries=tb2006_queries, qrels=tb2006_qrels,
-    citation=CITATION_TB_2006,
-    desc='TREC Terabyte Track 2006 ad hoc ranking benchmark: 50 queries with deep relevance judgments.')
+    citation=CITATION_TB_2006)
 trec_tb_2006_np = Benchmark('trec-tb-2006-named-page',
     docs=docs, queries=tb2006_np_queries, qrels=tb2006_np_qrels,
-    citation=CITATION_TB_2006,
-    desc='TREC Terabyte Track 2006 named-page ranking benchmark: 181 queries with titles that '
-         'resemble bookmark labels; judgments include near-duplicate pages and other pages that '
-         'may satisfy the bookmark label.')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff = Benchmark('trec-tb-2006-efficiency',
     docs=docs, queries=tb2006_eff_all_queries, qrels=tb2006_eff_all_qrels,
-    citation=CITATION_TB_2006,
-    desc='TREC Terabyte Track 2006 efficiency ranking benchmark: 100,000 queries from a search '
-         'engine log, including the 50 topics from trec-tb-2006 (only those have judgments).')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff_10k = Benchmark('trec-tb-2006-efficiency-10k',
     docs=docs, queries=tb2006_eff_10k_queries,
-    citation=CITATION_TB_2006,
-    desc='Small 10,000-query stream from trec-tb-2006-efficiency (unjudged).')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff_stream1 = Benchmark('trec-tb-2006-efficiency-stream1',
     docs=docs, queries=tb2006_eff_stream1_queries,
-    citation=CITATION_TB_2006,
-    desc='Stream 1 of trec-tb-2006-efficiency (25,000 queries, unjudged).')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff_stream2 = Benchmark('trec-tb-2006-efficiency-stream2',
     docs=docs, queries=tb2006_eff_stream2_queries,
-    citation=CITATION_TB_2006,
-    desc='Stream 2 of trec-tb-2006-efficiency (25,000 queries, unjudged).')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff_stream3 = Benchmark('trec-tb-2006-efficiency-stream3',
     docs=docs, queries=tb2006_eff_stream3_queries, qrels=tb2006_eff_stream3_qrels,
-    citation=CITATION_TB_2006,
-    desc='Stream 3 of trec-tb-2006-efficiency (25,000 queries, including the judged ad hoc topics).')
+    citation=CITATION_TB_2006)
 trec_tb_2006_eff_stream4 = Benchmark('trec-tb-2006-efficiency-stream4',
     docs=docs, queries=tb2006_eff_stream4_queries,
-    citation=CITATION_TB_2006,
-    desc='Stream 4 of trec-tb-2006-efficiency (25,000 queries, unjudged).')
+    citation=CITATION_TB_2006)
 
 
 # Registration

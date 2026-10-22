@@ -72,17 +72,13 @@ qrels_2004 = TrecQrels('trec-robust-2004-qrels', source=qrels_2004_file, defs=QR
 # -----------------------------------------
 robust2004 = Benchmark('trec-robust-2004',
     docs=disks45_docs, queries=queries_2004, qrels=qrels_2004,
-    citation=CITATION_2004,
-    desc='TREC Robust 2004: focuses on improving the consistency of retrieval '
-         'technology by targeting poorly-performing topics.')
+    citation=CITATION_2004)
 
 folds = {}
 for fold, qids in FOLDS.items():
     folds[fold] = Benchmark(f'trec-robust-2004-{fold}',
         derived_from=robust2004, filter=Filter(query_ids=qids, mode='include'),
-        citation=CITATION_FOLDS,
-        desc=f'TREC Robust 2004, {fold} of the 5-fold cross-validation split '
-             f'proposed by Huston & Croft (2014).')
+        citation=CITATION_FOLDS)
 
 # TREC Robust 2005 -- its own topics/qrels, no NIST DUA (unlike 2004's disks45
 # corpus), so it carries no dua.
@@ -115,9 +111,7 @@ qrels_2005 = TrecQrels('trec-robust-2005-qrels',
 # -----------------------------------------
 robust2005 = Benchmark('trec-robust-2005',
     docs=aquaint_docs, queries=queries_2005, qrels=qrels_2005,
-    citation=CITATION_2005,
-    desc='TREC Robust 2005: a 50 "hard" topic subset of TREC Robust 2004\'s '
-         'query set, judged against the AQUAINT corpus.')
+    citation=CITATION_2005)
 
 
 # Registration

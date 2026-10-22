@@ -112,12 +112,10 @@ ar2002_qrels = TrecQrels('trec-arabic-2002-qrels',
 # dropped as redundant with "arabic" already in the family name.
 ar2001 = Benchmark('trec-arabic-2001',
     docs=docs, queries=ar2001_queries, qrels=ar2001_qrels,
-    citation=CITATION_2001,
-    desc='TREC cross-lingual Arabic benchmark, 2001 (TREC-10).')
+    citation=CITATION_2001)
 ar2002 = Benchmark('trec-arabic-2002',
     docs=docs, queries=ar2002_queries, qrels=ar2002_qrels,
-    citation=CITATION_2002,
-    desc='TREC cross-lingual Arabic benchmark, 2002 (TREC-11).')
+    citation=CITATION_2002)
 
 
 # Registration

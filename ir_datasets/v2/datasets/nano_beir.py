@@ -156,15 +156,11 @@ for v1_id, files in SOURCES.items():
 
     name = f'nano-beir-{v1_id}'
     nano_benchmarks[name] = Benchmark(
-        name, docs=docs, queries=queries, qrels=qrels, citation=CITATION,
-        desc=f'NanoBEIR: a small sample of BEIR\'s {v1_id} benchmark.')
+        name, docs=docs, queries=queries, qrels=qrels, citation=CITATION)
 
 
 # Registration
 # -----------------------------------------
 irds.register(*nano_benchmarks.values())
 irds.register(Suite('nano-beir', benchmarks=list(nano_benchmarks.values()),
-                    citation=CITATION,
-                    desc="A small, fast preview of BEIR's headline benchmarks "
-                         '(13 of 14) -- for quick sanity checks, not for '
-                         'reporting comparable numbers.'))
+                    citation=CITATION))

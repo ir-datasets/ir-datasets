@@ -88,9 +88,7 @@ qrels = TrecQrels('codec-qrels', source=qrels_file, defs=QREL_DEFS, count_hint=6
 # -----------------------------------------
 codec = Benchmark('codec',
     docs=docs, queries=queries, qrels=qrels,
-    citation='dblp:conf/sigir/MackieOGFM022',
-    desc='CODEC: a document-level test collection for complex, essay-style '
-         'information needs across economics, history, and politics.')
+    citation='dblp:conf/sigir/MackieOGFM022')
 
 domain_benchmarks = {}
 _DOMAIN_COUNTS = {
@@ -108,8 +106,7 @@ for _domain, (_qcount, _rcount) in _DOMAIN_COUNTS.items():
     domain_benchmarks[_domain] = Benchmark(f'codec-{_domain}',
         derived_from=codec,
         queries=_domain_queries,
-        filter=Filter(query_ids=ids_of(f'irds:codec-{_domain}-queries'), mode='include'),
-        desc=f'CODEC, {_domain} domain subset.')
+        filter=Filter(query_ids=ids_of(f'irds:codec-{_domain}-queries'), mode='include'))
 
 
 # Registration

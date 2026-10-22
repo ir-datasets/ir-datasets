@@ -139,12 +139,10 @@ trec6_qrels = TrecQrels('trec-mandarin-6-qrels',
 # "trec6" is dropped since it's already in the family name.
 trec5 = Benchmark('trec-mandarin-5',
     docs=docs, queries=trec5_queries, qrels=trec5_qrels,
-    citation=CITATION_TREC5,
-    desc='Mandarin Chinese benchmark from TREC 5.')
+    citation=CITATION_TREC5)
 trec6 = Benchmark('trec-mandarin-6',
     docs=docs, queries=trec6_queries, qrels=trec6_qrels,
-    citation=CITATION_TREC6,
-    desc='Mandarin Chinese benchmark from TREC 6.')
+    citation=CITATION_TREC6)
 
 
 # Registration

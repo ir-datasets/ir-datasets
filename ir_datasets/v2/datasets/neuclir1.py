@@ -52,13 +52,12 @@ DOCS_TABLES = {}   # lang -> the DocTable, imported by trec_neuclir.py
 for _lang in DOCS:
     DOCS_TABLES[_lang] = DocTable(f'neuclir1-{_lang}', license='spdx:ODC-By-1.0',
         source=DOCS_FILES[_lang].gunzip(), parser=_NeuclirDocsParser(_lang, DOC_COUNTS[_lang]),
-        lang=_lang, desc=f'NeuCLIR collection 1, {_lang} Common Crawl documents.')
+        lang=_lang)
 
 # -- Combined tri-lingual corpus, TREC 2023's cross-language "multi" task --
 MULTI_DOCS = DocTable('neuclir1-multi', license='spdx:ODC-By-1.0',
     source=[DOCS_FILES[_lang].gunzip() for _lang in ('zh', 'fa', 'ru')],
-    parser=_NeuclirDocsParser(None, sum(DOC_COUNTS.values())),
-    desc='NeuCLIR collection 1, the three languages (zh/fa/ru) combined.')
+    parser=_NeuclirDocsParser(None, sum(DOC_COUNTS.values())))
 
 
 # Registration

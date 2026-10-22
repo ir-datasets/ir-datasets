@@ -212,20 +212,16 @@ challenge_qrels = QrelTable('codesearchnet-challenge-qrels',
 # -----------------------------------------
 train = Benchmark('codesearchnet-train',
     docs=docs, queries=train_queries, qrels=train_qrels,
-    citation=CITATION,
-    desc='CodeSearchNet: official train set, using queries inferred from docstrings.')
+    citation=CITATION)
 valid = Benchmark('codesearchnet-valid',
     docs=docs, queries=valid_queries, qrels=valid_qrels,
-    citation=CITATION,
-    desc='CodeSearchNet: official validation set, using queries inferred from docstrings.')
+    citation=CITATION)
 test = Benchmark('codesearchnet-test',
     docs=docs, queries=test_queries, qrels=test_qrels,
-    citation=CITATION,
-    desc='CodeSearchNet: official test set, using queries inferred from docstrings.')
+    citation=CITATION)
 challenge = Benchmark('codesearchnet-challenge',
     docs=docs, queries=challenge_queries, qrels=challenge_qrels,
-    citation=CITATION,
-    desc='CodeSearchNet: official challenge set, with keyword queries and deep relevance assessments.')
+    citation=CITATION)
 
 
 # Registration

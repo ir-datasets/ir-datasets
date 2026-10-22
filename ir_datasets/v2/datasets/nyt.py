@@ -167,21 +167,17 @@ wksup_qrels = QrelTable('nyt-wksup-qrels',
 # -----------------------------------------
 wksup = Benchmark('nyt-wksup',
     docs=docs, queries=wksup_queries, qrels=wksup_qrels,
-    citation=CITATION_WKSUP,
-    desc='Weak supervision from the NYT collection: one query per doc '
-         '(headline), self-referential qrels.')
+    citation=CITATION_WKSUP)
 
 wksup_train = Benchmark('nyt-wksup-train',
     derived_from=wksup,
     filter=Filter(query_ids=VALID_IDS, mode='exclude'),
-    citation=CITATION_WKSUP,
-    desc='nyt-wksup, excluding the held-out nyt-wksup-valid ids.')
+    citation=CITATION_WKSUP)
 
 wksup_valid = Benchmark('nyt-wksup-valid',
     derived_from=wksup,
     filter=Filter(query_ids=VALID_IDS, mode='include'),
-    citation=CITATION_WKSUP,
-    desc='nyt-wksup, held-out validation split.')
+    citation=CITATION_WKSUP)
 
 
 # Registration

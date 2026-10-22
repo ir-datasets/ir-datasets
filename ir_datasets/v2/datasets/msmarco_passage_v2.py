@@ -145,17 +145,14 @@ dev2_scoreddocs = TrecScoredDocs('msmarco-passage-v2-dev2-scoreddocs', source=de
 train = Benchmark('msmarco-passage-v2-train',
     docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official train set for the MS MARCO v2 passage corpus.',
     license='https://microsoft.github.io/msmarco/')
 dev1 = Benchmark('msmarco-passage-v2-dev1',
     docs=docs, queries=dev1_queries, qrels=dev1_qrels, scoreddocs=dev1_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official dev set for the MS MARCO v2 passage corpus.',
     license='https://microsoft.github.io/msmarco/')
 dev2 = Benchmark('msmarco-passage-v2-dev2',
     docs=docs, queries=dev2_queries, qrels=dev2_qrels, scoreddocs=dev2_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='A second, held-out dev set for the MS MARCO v2 passage corpus.',
     license='https://microsoft.github.io/msmarco/')
 
 

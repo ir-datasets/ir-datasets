@@ -51,9 +51,7 @@ for lang3, lang2 in [('fas', 'fa'), ('zho', 'zh'), ('rus', 'ru')]:
         name = f'neumarco-{lang2}-{suffix}'
         nodes[name] = Benchmark(name,
             docs=docs, queries=parent.queries, qrels=parent.qrels, docpairs=parent.docpairs,
-            citation=CITATION, metrics=MEASURES,
-            desc=f'neuMARCO: msmarco-passage-{suffix}, corpus translated to {lang2} '
-                 f'(queries/qrels/docpairs are msmarco-passage\'s own, unchanged).')
+            citation=CITATION, metrics=MEASURES)
 
 
 # Registration

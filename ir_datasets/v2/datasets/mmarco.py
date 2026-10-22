@@ -183,36 +183,36 @@ for lang in V1_LANGS:
     train_queries = TsvQueries(f'mmarco-{lang}-train-queries', source=_resource(f'mmarco-{lang}-train-queries.tsv', V1_QUERIES_TRAIN[lang]), lang=lang)
     nodes[f'mmarco-{lang}-train'] = Benchmark(f'mmarco-{lang}-train',
         docs=docs, queries=train_queries, qrels=train_qrels, docpairs=train_docpairs,
-        citation=CITATION, desc=f'mMARCO: msmarco-passage-train, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
     dev_queries = TsvQueries(f'mmarco-{lang}-dev-queries', source=_resource(f'mmarco-{lang}-dev-queries.tsv', V1_QUERIES_DEV[lang]), lang=lang)
     nodes[f'mmarco-{lang}-dev'] = Benchmark(f'mmarco-{lang}-dev',
         docs=docs, queries=dev_queries, qrels=dev_qrels,
-        citation=CITATION, desc=f'mMARCO: msmarco-passage-dev, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
     dev_small_queries = small_dev_filter.apply('queries', dev_queries, None, f'mmarco-{lang}-dev-small')
     dev_small_scoreddocs = TrecScoredDocs(f'mmarco-{lang}-dev-small-scoreddocs', source=_resource(f'mmarco-{lang}-dev-small-scoreddocs.txt', V1_SCOREDDOCS_DEV[lang])) if lang in V1_SCOREDDOCS_DEV else None
     nodes[f'mmarco-{lang}-dev-small'] = Benchmark(f'mmarco-{lang}-dev-small',
         docs=docs, queries=dev_small_queries, qrels=dev_small_qrels, scoreddocs=dev_small_scoreddocs,
-        citation=CITATION, desc=f'mMARCO: msmarco-passage-dev-small, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
     if lang in PT_ZH_V1_1_QUERIES_DEV:
         v11_dev_queries = TsvQueries(f'mmarco-{lang}-dev-v1.1-queries', source=_resource(f'mmarco-{lang}-dev-v1.1-queries.tsv', PT_ZH_V1_1_QUERIES_DEV[lang]), lang=lang)
         nodes[f'mmarco-{lang}-dev-v1.1'] = Benchmark(f'mmarco-{lang}-dev-v1.1',
             docs=docs, queries=v11_dev_queries, qrels=dev_qrels,
-            citation=CITATION, desc=f'mMARCO: {lang} "v1.1" re-release of the dev queries.')
+            citation=CITATION)
 
         v11_dev_small_queries = small_dev_filter.apply('queries', v11_dev_queries, None, f'mmarco-{lang}-dev-small-v1.1')
         v11_dev_small_scoreddocs = TrecScoredDocs(f'mmarco-{lang}-dev-small-v1.1-scoreddocs', source=_resource(f'mmarco-{lang}-dev-small-v1.1-scoreddocs.txt', PT_ZH_V1_1_SCOREDDOCS_DEV[lang]))
         nodes[f'mmarco-{lang}-dev-small-v1.1'] = Benchmark(f'mmarco-{lang}-dev-small-v1.1',
             docs=docs, queries=v11_dev_small_queries, qrels=dev_small_qrels, scoreddocs=v11_dev_small_scoreddocs,
-            citation=CITATION, desc=f'mMARCO: {lang} "v1.1" re-release, filtered to the small dev qrels.')
+            citation=CITATION)
 
     if lang == 'pt':
         v11_train_queries = TsvQueries('mmarco-pt-train-v1.1-queries', source=_resource('mmarco-pt-train-v1.1-queries.tsv', PT_V1_1_QUERIES_TRAIN), lang=lang)
         nodes['mmarco-pt-train-v1.1'] = Benchmark('mmarco-pt-train-v1.1',
             docs=docs, queries=v11_train_queries, qrels=train_qrels, docpairs=train_docpairs,
-            citation=CITATION, desc='mMARCO: pt "v1.1" re-release of the train queries.')
+            citation=CITATION)
 
 for lang in V2_LANGS:
     docs = TsvDocs(f'mmarco-v2-{lang}', source=_resource(f'mmarco-v2-{lang}-docs.tsv', V2_DOCS[lang]), lang=lang)
@@ -221,18 +221,18 @@ for lang in V2_LANGS:
     train_queries = TsvQueries(f'mmarco-v2-{lang}-train-queries', source=_resource(f'mmarco-v2-{lang}-train-queries.tsv', V2_QUERIES_TRAIN[lang]), lang=lang)
     nodes[f'mmarco-v2-{lang}-train'] = Benchmark(f'mmarco-v2-{lang}-train',
         docs=docs, queries=train_queries, qrels=train_qrels, docpairs=train_docpairs,
-        citation=CITATION, desc=f'mMARCO v2: msmarco-passage-train, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
     dev_queries = TsvQueries(f'mmarco-v2-{lang}-dev-queries', source=_resource(f'mmarco-v2-{lang}-dev-queries.tsv', V2_QUERIES_DEV[lang]), lang=lang)
     nodes[f'mmarco-v2-{lang}-dev'] = Benchmark(f'mmarco-v2-{lang}-dev',
         docs=docs, queries=dev_queries, qrels=dev_qrels,
-        citation=CITATION, desc=f'mMARCO v2: msmarco-passage-dev, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
     dev_small_queries = small_dev_filter.apply('queries', dev_queries, None, f'mmarco-v2-{lang}-dev-small')
     dev_small_scoreddocs = TrecScoredDocs(f'mmarco-v2-{lang}-dev-small-scoreddocs', source=_resource(f'mmarco-v2-{lang}-dev-small-scoreddocs.txt', V2_SCOREDDOCS_DEV[lang]), negate_score=True)
     nodes[f'mmarco-v2-{lang}-dev-small'] = Benchmark(f'mmarco-v2-{lang}-dev-small',
         docs=docs, queries=dev_small_queries, qrels=dev_small_qrels, scoreddocs=dev_small_scoreddocs,
-        citation=CITATION, desc=f'mMARCO v2: msmarco-passage-dev-small, queries and corpus translated to {lang}.')
+        citation=CITATION)
 
 
 # Registration

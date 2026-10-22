@@ -39,6 +39,7 @@ irds = "ir_datasets.v2.provider:irds"
 hf = "ir_datasets.v2.hf_provider:hf"
 clirmatrix = "ir_datasets.v2.clirmatrix_provider:clirmatrix"
 legacy = "ir_datasets.v2.legacy_provider:legacy"
+documentation = "ir_datasets.v2.documentation_provider:documentation"
 
 [project.optional-dependencies]
 car = [

@@ -64,7 +64,7 @@ def row_triples(name, row):
     """A node's row (``row_for``'s shape) as RDF-ready ``(subject, predicate, object)`` triples: one
     ``rdf:type`` triple per type, then one triple per non-identity field, under
     that field's *declared* property (``provider.declare_graph_property(field, range=...)``,
-    qualified by the owning provider: ``irds:description``). A field no provider
+    qualified by the owning provider: ``irds:license``). A field no provider
     has declared is left out, with an ``UndeclaredPropertyWarning``. A
     list value gets one triple per element (RDF has no single-valued
     properties); a ``json`` property's value is a JSON literal (a dict is
@@ -213,7 +213,7 @@ class ManifestProvider:
             irds.declare_graph_property('derivedFrom', structural=True, desc='...')
             irds.declare_graph_property('description', range='literal', desc='...')
 
-        ``parent`` names the one property this is an ``rdfs:subPropertyOf``.
+        ``parent`` names the property this is an ``rdfs:subPropertyOf`` (or a list of them: a property can specialize more than one).
 
         ``domain`` is the graph class a node must have to carry the property, and
         ``range_type`` (an edge's) the class its target must have -- ``rdfs:domain`` and
@@ -225,7 +225,7 @@ class ManifestProvider:
         qualified = self.qualify(name)
         if not self.owns(qualified):
             raise ValueError(f'{self} cannot declare the graph property {name!r}')
-        parents = (parent,) if parent else ()
+        parents = tuple(parent) if isinstance(parent, (list, tuple)) else ((parent,) if parent else ())
         self.graph_properties[qualified] = {'range': range, 'structural': structural, 'desc': desc,
                                             'parents': parents, 'domain': domain,
                                             'range_type': range_type}

@@ -91,6 +91,22 @@ differing only in docs (long-form) and qrels (re-derived from the queries
 file's `gold_ids_long` field). The 12 short benchmarks form the `irds:bright` suite and the 8 long
 variants their own `irds:bright-long` suite.
 
+## Documentation
+
+Prose about nodes is not part of the nodes. The `documentation:` provider
+([`documentation_provider.py`](documentation_provider.py)) defines no nodes of its own; it reads a
+live copy of [ir-datasets/documentation](https://github.com/ir-datasets/documentation) (fetched on first use
+with a conditional request, cached for an hour, falling back to the cache offline;
+`$IR_DATASETS_DOCUMENTATION` points at a local checkout instead and `$IR_DATASETS_DOCUMENTATION_REF` freezes a
+branch, tag or sha), one file per described node (`irds/mast.md`; a node that needs only a description gets an entry in
+`irds/_index.yaml` instead), and contributes
+`documentation:description` (from the YAML frontmatter),
+`documentation:about` (the Markdown body), `documentation:source` (the one file it was read from: the page if there is one, which replaces the index entry outright, else the index entry) and `documentation:links` (an edge for each
+`[text](irds:node)` link in the body). All of them are subproperties of the root `documentation:documentation`. A node's description exists only here: there is no `irds:description`. Links are standard Markdown with fully qualified targets; no
+relative links and no `#section` anchors. Code keeps the facts that drive behavior (hashes, sources,
+edges, license, citation); anyone can edit the pages, and a bad page is skipped, never fatal.
+`documentation.lint()` reports problems.
+
 ## Try it
 
 ```bash

@@ -198,8 +198,6 @@ for _source_dir, _lang, _dsid in LANGS:
     benchmarks[_dsid] = Benchmark(f'wikiclir-{_dsid}',
         docs=_docs, queries=_queries, qrels=_qrels,
         citation=CITATION,
-        desc=f'WikiCLIR: English queries against the {_source_dir.replace("_", " ")} '
-             f'Wikipedia edition, judged by inter-language links.',
         license='CC-BY-SA-4.0')
 
 

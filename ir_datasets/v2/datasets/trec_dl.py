@@ -266,102 +266,82 @@ document_2023_scoreddocs = TrecScoredDocs('trec-dl-2023-document-scoreddocs',
 passage_2019 = Benchmark('trec-dl-2019-passage',
     docs=passage_docs, queries=queries_2019, qrels=passage_2019_qrels,
     scoreddocs=passage_2019_scoreddocs,
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2019 passage ranking task.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 passage_2019_judged = Benchmark('trec-dl-2019-passage-judged',
     derived_from=passage_2019, filter=Filter(queries_with_qrels=True),
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='trec-dl-2019-passage restricted to queries with >= 1 qrel.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 
 passage_2020 = Benchmark('trec-dl-2020-passage',
     docs=passage_docs, queries=queries_2020, qrels=passage_2020_qrels,
     scoreddocs=passage_2020_scoreddocs,
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2020 passage ranking task.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 passage_2020_judged = Benchmark('trec-dl-2020-passage-judged',
     derived_from=passage_2020, filter=Filter(queries_with_qrels=True),
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='trec-dl-2020-passage restricted to queries with >= 1 qrel.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 
 document_2019 = Benchmark('trec-dl-2019-document',
     docs=document_docs, queries=queries_2019, qrels=document_2019_qrels,
     scoreddocs=document_2019_scoreddocs,
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2019 document ranking task.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 document_2019_judged = Benchmark('trec-dl-2019-document-judged',
     derived_from=document_2019, filter=Filter(queries_with_qrels=True),
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='trec-dl-2019-document restricted to queries with >= 1 qrel.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 
 document_2020 = Benchmark('trec-dl-2020-document',
     docs=document_docs, queries=queries_2020, qrels=document_2020_qrels,
     scoreddocs=document_2020_scoreddocs,
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2020 document ranking task.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 document_2020_judged = Benchmark('trec-dl-2020-document-judged',
     derived_from=document_2020, filter=Filter(queries_with_qrels=True),
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='trec-dl-2020-document restricted to queries with >= 1 qrel.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 
 passage_2021 = Benchmark('trec-dl-2021-passage',
     docs=passage_v2_docs, queries=queries_2021, qrels=passage_2021_qrels,
     scoreddocs=passage_2021_scoreddocs,
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2021 passage ranking task (MS MARCO v2 passage corpus).')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 passage_2021_judged = Benchmark('trec-dl-2021-passage-judged',
     derived_from=passage_2021, filter=Filter(queries_with_qrels=True),
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='trec-dl-2021-passage restricted to queries with >= 1 qrel.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 
 passage_2022 = Benchmark('trec-dl-2022-passage',
     docs=passage_v2_docs, queries=queries_2022, qrels=passage_2022_qrels,
     scoreddocs=passage_2022_scoreddocs,
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2022 passage ranking task (MS MARCO v2 passage corpus).')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 passage_2022_judged = Benchmark('trec-dl-2022-passage-judged',
     derived_from=passage_2022, filter=Filter(queries_with_qrels=True),
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='trec-dl-2022-passage restricted to queries with >= 1 qrel.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 
 passage_2023 = Benchmark('trec-dl-2023-passage',
     docs=passage_v2_docs, queries=queries_2023, qrels=passage_2023_qrels,
     scoreddocs=passage_2023_scoreddocs,
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2023 passage ranking task (MS MARCO v2 passage corpus).')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 passage_2023_judged = Benchmark('trec-dl-2023-passage-judged',
     derived_from=passage_2023, filter=Filter(queries_with_qrels=True),
-    citation=PASSAGE_CITATION, metrics=MEASURES,
-    desc='trec-dl-2023-passage restricted to queries with >= 1 qrel.')
+    citation=PASSAGE_CITATION, metrics=MEASURES)
 
 document_2021 = Benchmark('trec-dl-2021-document',
     docs=document_v2_docs, queries=queries_2021, qrels=document_2021_qrels,
     scoreddocs=document_2021_scoreddocs,
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2021 document ranking task (MS MARCO v2 document corpus).')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 document_2021_judged = Benchmark('trec-dl-2021-document-judged',
     derived_from=document_2021, filter=Filter(queries_with_qrels=True),
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='trec-dl-2021-document restricted to queries with >= 1 qrel.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 
 document_2022 = Benchmark('trec-dl-2022-document',
     docs=document_v2_docs, queries=queries_2022, qrels=document_2022_qrels,
     scoreddocs=document_2022_scoreddocs,
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2022 document ranking task (MS MARCO v2 document corpus).')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 document_2022_judged = Benchmark('trec-dl-2022-document-judged',
     derived_from=document_2022, filter=Filter(queries_with_qrels=True),
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='trec-dl-2022-document restricted to queries with >= 1 qrel.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 
 document_2023 = Benchmark('trec-dl-2023-document',
     docs=document_v2_docs, queries=queries_2023, qrels=document_2023_qrels,
     scoreddocs=document_2023_scoreddocs,
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='TREC Deep Learning 2023 document ranking task (MS MARCO v2 document corpus).')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 document_2023_judged = Benchmark('trec-dl-2023-document-judged',
     derived_from=document_2023, filter=Filter(queries_with_qrels=True),
-    citation=DOCUMENT_CITATION, metrics=MEASURES,
-    desc='trec-dl-2023-document restricted to queries with >= 1 qrel.')
+    citation=DOCUMENT_CITATION, metrics=MEASURES)
 
 
 # Registration

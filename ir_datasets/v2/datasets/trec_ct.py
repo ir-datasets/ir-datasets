@@ -79,12 +79,10 @@ ct_2022_queries = QueryTable('trec-ct-2022-queries',
 # Benchmarks
 # -----------------------------------------
 ct_2021 = Benchmark('trec-ct-2021',
-    docs=clinicaltrials_2021_docs, queries=ct_2021_queries, qrels=ct_2021_qrels,
-    desc='TREC Clinical Trials 2021.')
+    docs=clinicaltrials_2021_docs, queries=ct_2021_queries, qrels=ct_2021_qrels)
 ct_2022 = Benchmark('trec-ct-2022',
     docs=clinicaltrials_2021_docs, queries=ct_2022_queries,
-    citation='dblp:conf/trec/RobertsDVBH22',
-    desc='TREC Clinical Trials 2022 (queries only; qrels not yet published).')
+    citation='dblp:conf/trec/RobertsDVBH22')
 
 
 # Registration

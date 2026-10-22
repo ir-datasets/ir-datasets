@@ -271,26 +271,23 @@ class TestV2Hf(unittest.TestCase):
 
     def test_node_properties_pass_through(self):
         repo = _repo('props')
-        self._mock({repo: _card_of(_table(None, description='A corpus.', license='cc-by-4.0',
+        self._mock({repo: _card_of(_table(None, license='cc-by-4.0',
                                           citation='dblp:conf/x/Y', lang='fr'))})
         node = v2.graph[f'hf:{repo}']
         self.assertEqual('fr', node.lang)
         self.assertEqual('cc-by-4.0', node.license)
-        self.assertEqual('A corpus.', node.metadata['description'])
         self.assertEqual('dblp:conf/x/Y', node.metadata['citation'])
 
     def test_the_cards_standard_metadata_fills_in_what_an_entry_leaves_out(self):
         repo = _repo('cardmeta')
-        meta = hfm._card_defaults({'license': 'apache-2.0', 'language': ['zh'], 'pretty_name': 'CSL'})
-        self.assertEqual({'license': 'apache-2.0', 'lang': 'zh', 'pretty_name': 'CSL'}, meta)
+        meta = hfm._card_defaults({'license': 'apache-2.0', 'language': ['zh']})
+        self.assertEqual({'license': 'apache-2.0', 'lang': 'zh'}, meta)
         self._mock({repo: _card_of(_table(None), _table('en', lang='en'),
                                    _table('other', 'irds:Queries', license='cc0-1.0'), meta=meta)})
         top, en, other = (v2.graph[f'hf:{repo}{f}'] for f in ('', '/en', '/other'))
         self.assertEqual(('zh', 'apache-2.0'), (top.lang, top.license))
-        self.assertEqual('CSL', top.metadata['prettyName'])
         self.assertEqual(('en', 'apache-2.0'), (en.lang, en.license))       # an entry's own value wins
         self.assertEqual('cc0-1.0', other.license)
-        self.assertNotIn('prettyName', en.metadata)                         # the top level only
 
     def test_the_cards_language_is_for_text_tables_not_qrels(self):
         repo = _repo('langqrels')
@@ -368,7 +365,7 @@ class TestV2Hf(unittest.TestCase):
     def test_a_bundle_groups_the_other_entries(self):
         repo = _repo('bundle')
         self._mock({repo: _card_of(
-            {'type': 'irds:Bundle', 'summary': '# All of it', 'description': 'short'},
+            {'type': 'irds:Bundle', 'summary': '# All of it'},
             _table('corpus'), _table('test', 'irds:Queries'),
             {'fragment': 'eval', 'type': 'irds:Benchmark', 'docs': 'corpus', 'queries': 'test'})})
         bundle = v2.graph[f'hf:{repo}']
@@ -379,7 +376,7 @@ class TestV2Hf(unittest.TestCase):
                          [p.qualified_name for p in bundle.parts])
         self.assertEqual(['irds:bundleItem'] * 3, [e.kind for e in bundle.structural_edges()])
 
-    def test_an_overview_is_a_bundle_with_a_required_summary(self):
+    def test_an_overview_is_a_bundle_and_may_carry_a_card_summary(self):
         repo = _repo('overview')
         self._mock({repo: _card_of(
             {'type': 'irds:Overview', 'summary': 'The whole story.'}, _table('corpus'),
@@ -387,8 +384,7 @@ class TestV2Hf(unittest.TestCase):
         overview = v2.graph[f'hf:{repo}']
         self.assertEqual('irds:Overview', overview.type)
         self.assertEqual('The whole story.', overview.metadata['summary'])
-        with self.assertRaisesRegex(KeyError, 'needs a summary'):
-            v2.graph[f'hf:{repo}/nosummary']
+        self.assertEqual('irds:Overview', v2.graph[f'hf:{repo}/nosummary'].type)
 
     def test_a_bundle_can_name_its_parts_and_borrow_from_elsewhere(self):
         repo, other = _repo('bundleparts'), _repo('bundleelsewhere')
@@ -542,7 +538,7 @@ class TestV2Hf(unittest.TestCase):
 
     def test_discovery_reports_what_the_card_says_without_touching_the_data(self):
         repo = _repo('literals')
-        self._mock({repo: _card_of(_table(None, lang='fr', license='mit', description='d'))})
+        self._mock({repo: _card_of(_table(None, lang='fr', license='mit', citation='dblp:conf/x/Y'))})
         self._patch('known')
         with mock.patch.object(hfm.HfDataset, 'path', side_effect=AssertionError('read the data')), \
                 mock.patch.object(hfm, '_rows_of', side_effect=AssertionError('read the data')):
@@ -551,7 +547,7 @@ class TestV2Hf(unittest.TestCase):
         name = f'hf:{repo}'
         self.assertEqual('fr', triples[(name, 'irds:lang')].value)
         self.assertEqual('mit', triples[(name, 'irds:license')].value)
-        self.assertEqual('d', triples[(name, 'irds:description')].value)
+        self.assertEqual('dblp:conf/x/Y', triples[(name, 'irds:citation')].value)
         self.assertFalse(any(p == 'hf:snapshotAt' for _, p in triples))
         self.assertFalse(any(p == 'irds:column' for _, p in triples))   # only the data can say
 

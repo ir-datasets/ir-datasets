@@ -147,12 +147,10 @@ trec4_qrels = TrecQrels('trec-spanish-4-qrels',
 # "trec4" is dropped since it's already in the family name.
 trec3 = Benchmark('trec-spanish-3',
     docs=docs, queries=trec3_queries, qrels=trec3_qrels,
-    citation=CITATION_TREC3,
-    desc='Spanish-language benchmark from TREC 3.')
+    citation=CITATION_TREC3)
 trec4 = Benchmark('trec-spanish-4',
     docs=docs, queries=trec4_queries, qrels=trec4_qrels,
-    citation=CITATION_TREC4,
-    desc='Spanish-language benchmark from TREC 4.')
+    citation=CITATION_TREC4)
 
 
 # Registration

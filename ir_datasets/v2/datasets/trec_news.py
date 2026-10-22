@@ -89,16 +89,12 @@ news_2020_qrels = TrecQrels('trec-news-2020-qrels',
 # -----------------------------------------
 news_2018 = Benchmark('trec-news-2018',
     docs=wapo_v2_docs, queries=news_2018_queries, qrels=news_2018_qrels,
-    citation=CITATION_2018,
-    desc='TREC News Track 2018 background linking task.')
+    citation=CITATION_2018)
 news_2019 = Benchmark('trec-news-2019',
     docs=wapo_v2_docs, queries=news_2019_queries, qrels=news_2019_qrels,
-    citation=CITATION_2019,
-    desc='TREC News Track 2019 background linking task.')
+    citation=CITATION_2019)
 news_2020 = Benchmark('trec-news-2020',
-    queries=news_2020_queries, qrels=news_2020_qrels,
-    desc='TREC News Track 2020 background linking task. v1 registers this '
-         'with no docs facet (no v3 collection was ever defined) -- preserved as-is.')
+    queries=news_2020_queries, qrels=news_2020_qrels)
 
 
 # Registration

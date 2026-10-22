@@ -80,8 +80,7 @@ qrels = QrelTable('vaswani-qrels',
 # Benchmark
 # -----------------------------------------
 vaswani = Benchmark('vaswani',
-    docs=docs, queries=queries, qrels=qrels,
-    desc='A small corpus of roughly 11,000 scientific abstracts.')
+    docs=docs, queries=queries, qrels=qrels)
 
 
 # Registration

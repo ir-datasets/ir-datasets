@@ -230,7 +230,6 @@ for _lang, _topic_sets in SPLITS.items():
     _docs = DocTable(f'miracl-{_lang}-docs',
         source=[r.gunzip() for r in _corpus_resources],
         parser=_MiraclDocsParser(), lang=_lang,
-        desc=f'The MIRACL {_lang} Wikipedia passage corpus.',
         license='Apache-2.0')
 
     for _split in _topic_sets:
@@ -251,15 +250,12 @@ for _lang, _topic_sets in SPLITS.items():
             _benchmarks.append(Benchmark(_name,
                 docs=_docs, queries=_queries, qrels=_qrels,
                 citation=CITATION,
-                desc=f'MIRACL {_lang}, {_split} split.',
                 license='Apache-2.0'))
         else:
             # test-a/test-b: held-out leaderboard queries, no public qrels.
             _benchmarks.append(Benchmark(_name,
                 docs=_docs, queries=_queries,
                 citation=CITATION,
-                desc=f'MIRACL {_lang}, {_split} split (held-out query set, '
-                     'no public qrels).',
                 license='Apache-2.0'))
 
 
@@ -283,6 +279,5 @@ for _split, _what in _SPLIT_DESCS.items():
         benchmarks=[_by_name[f'miracl-{l}-{_split}'] for l in _langs],
         citation=CITATION,
         # license verified 2026-09-30: same HF cards as above (apache-2.0); all members share it
-        license='Apache-2.0',
-        desc=f'MIRACL {_what}, across the {len(_langs)} languages that have one.'))
+        license='Apache-2.0'))
 

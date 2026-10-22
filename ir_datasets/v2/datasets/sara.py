@@ -69,8 +69,7 @@ qrels = TrecQrels('sara-qrels', source=qrels_file, defs=QREL_DEFS, count_hint=34
 # -----------------------------------------
 sara = Benchmark('sara',
     docs=docs, queries=queries, qrels=qrels,
-    citation='dblp:journals/corr/abs-2401-05144',
-    desc='SARA: a collection of sensitivity-aware relevance assessments.')
+    citation='dblp:journals/corr/abs-2401-05144')
 
 
 # Registration

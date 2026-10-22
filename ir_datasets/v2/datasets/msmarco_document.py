@@ -175,23 +175,18 @@ orcas_scoreddocs = TrecScoredDocs('msmarco-document-orcas-scoreddocs', source=or
 train = Benchmark('msmarco-document-train',
     docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official train set.',
     license='https://microsoft.github.io/msmarco/')
 dev = Benchmark('msmarco-document-dev',
     docs=docs, queries=dev_queries, qrels=dev_qrels, scoreddocs=dev_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official dev set.',
     license='https://microsoft.github.io/msmarco/')
 eval_ = Benchmark('msmarco-document-eval',
     docs=docs, queries=eval_queries, scoreddocs=eval_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='Official eval set for the MS MARCO leaderboard (qrels hidden).',
     license='https://microsoft.github.io/msmarco/')
 orcas = Benchmark('msmarco-document-orcas',
     docs=docs, queries=orcas_queries, qrels=orcas_qrels, scoreddocs=orcas_scoreddocs,
     citation=CITATION, metrics=MEASURES,
-    desc='ORCAS: real user click data as relevance signal (a separate '
-         'query set from the official "msmarco" queries).',
     license='https://microsoft.github.io/msmarco/')
 
 

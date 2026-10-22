@@ -195,29 +195,23 @@ for _fold, (_qcount, _rcount) in _FOLD_COUNTS.items():
 # -----------------------------------------
 trec_y1 = Benchmark('car-trec-y1',
     docs=docs_v15, queries=trec_y1_queries,
-    desc='TREC CAR 2017 (Y1) benchmark test queries, over the v1.5 paragraph corpus.',
     license='CC-BY-SA-3.0')
 trec_y1_manual = Benchmark('car-trec-y1-manual',
     docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_manual_qrels,
-    desc='TREC CAR 2017 (Y1) benchmark, with manual (NIST assessor) relevance judgments.',
     license='CC-BY-SA-3.0')
 trec_y1_auto = Benchmark('car-trec-y1-auto',
     docs=docs_v15, queries=trec_y1_queries, qrels=trec_y1_auto_qrels,
-    desc='TREC CAR 2017 (Y1) benchmark, with automatic (Wikipedia heading-derived) relevance judgments.',
     license='CC-BY-SA-3.0')
 
 test200 = Benchmark('car-test200',
     docs=docs_v15, queries=test200_queries, qrels=test200_qrels,
     citation=CITATION_TEST200,
-    desc='TREC CAR v1.5, a small 200-query sample of the train set, useful for quick tests.',
     license='CC-BY-SA-3.0')
 
 train_benchmarks = {}
 for _fold, (_queries, _qrels) in train_folds.items():
     train_benchmarks[_fold] = Benchmark(f'car-train-{_fold}',
         docs=docs_v15, queries=_queries, qrels=_qrels,
-        desc=f'TREC CAR v1.5 training data, {_fold} of 5 (for training rankers/embeddings, '
-             'not for evaluation).',
         license='CC-BY-SA-3.0')
 
 

@@ -260,7 +260,7 @@ class TestV2Graph(unittest.TestCase):
             acme.declare_graph_property('irds:derivedFrom', structural=True)
 
     def test_providers_subscribe_to_the_default_graph(self):
-        self.assertEqual(['clirmatrix', 'hf', 'irds', 'legacy'], sorted(graph.providers))
+        self.assertEqual(['clirmatrix', 'documentation', 'hf', 'irds', 'legacy'], sorted(graph.providers))
         self.assertIs(v2.default_graph().providers, graph.providers)
 
     def test_minimal_provider_satisfies_the_protocol(self):
@@ -785,8 +785,7 @@ class TestV2Suite(unittest.TestCase):
                                queries=v2.TsvQueries('acme-task1-queries', source=src))
         self.b2 = v2.Benchmark('acme-task2', docs=docs,
                                queries=v2.TsvQueries('acme-task2-queries', source=src))
-        self.suite = v2.Suite('acme-suite', benchmarks=[self.b1, self.b2],
-                              desc='A toy suite for testing.')
+        self.suite = v2.Suite('acme-suite', benchmarks=[self.b1, self.b2])
         self.provider.register(self.suite)
         self.graph = v2.Graph([self.provider])
 
@@ -846,7 +845,7 @@ class TestV2Bundle(unittest.TestCase):
 
     def test_parts_are_structural_has_part_edges_of_any_kind(self):
         bundle = v2.Bundle('test-bundle-edges', parts=['irds:antique-docs', 'irds:antique-test'],
-                           summary='# Antique\n\nQuestions.', desc='short')
+                           summary='# Antique\n\nQuestions.')
         self.assertEqual('irds:Bundle', bundle.type)
         self.assertEqual([('irds:bundleItem', 'irds:antique-docs'), ('irds:bundleItem', 'irds:antique-test')],
                          [(e.kind, e.target) for e in bundle.structural_edges()])
@@ -889,17 +888,14 @@ class TestV2Bundle(unittest.TestCase):
 
 
 class TestV2Overview(unittest.TestCase):
-    def test_an_overview_is_a_bundle_that_always_has_a_summary(self):
-        overview = v2.Overview('test-overview', parts=['irds:antique-test'], summary='# What it is')
+    def test_an_overview_is_a_bundle_whose_prose_lives_in_its_documentation_page(self):
+        overview = v2.Overview('test-overview', parts=['irds:antique-test'])
         self.assertEqual('irds:Overview', overview.type)
         self.assertIsInstance(overview, v2.Bundle)
         self.assertTrue(v2.is_subclass(overview.type, v2.BUNDLE))
         self.assertEqual([('irds:bundleItem', 'irds:antique-test')],
                          [(e.kind, e.target) for e in overview.structural_edges()])
-        for missing in (None, '', '   '):
-            with self.subTest(summary=missing), self.assertRaisesRegex(ValueError, 'needs a summary'):
-                v2.Overview('test-overview-empty', summary=missing)
-        self.assertEqual('irds:Bundle', v2.Bundle('test-bare-bundle').type)    # a bare grouping needs none
+        self.assertEqual('irds:Bundle', v2.Bundle('test-bare-bundle').type)
 
 
 class TestV2LocalCopyHint(unittest.TestCase):

@@ -14,7 +14,7 @@ inspection:
     structural_edges()   the node's dependencies, as Edges
     (metadata)           the descriptive dict reported at discovery
 
-``citation`` sits alongside ``desc``/``pretty_name`` as a field any node can
+``citation`` is a field any node can
 carry: "how do I cite this" is not specific to any one graph class. It is plain
 text here; a richer citation model (papers as nodes, citations as edges) is
 future work -- see the README.
@@ -96,7 +96,7 @@ class Node:
     """
     type = None
 
-    def __init__(self, name, *, desc=None, pretty_name=None, citation=None,
+    def __init__(self, name, *, citation=None,
                  deprecated=None, license=None, requires=None, metadata=None, summary=None):
         if ':' in name:
             raise ValueError(
@@ -114,7 +114,7 @@ class Node:
         #: of everything it is built from -- see ``Graph.requires``.
         self._requires = requirements.normalize(requires)
         self.metadata = {k: v for k, v in {
-            'description': desc, 'prettyName': pretty_name, 'summary': summary, 'citation': citation,
+            'summary': summary, 'citation': citation,
             'deprecated': deprecated, **(metadata or {}),
         }.items() if v}
         # Assigned by the provider at registration.

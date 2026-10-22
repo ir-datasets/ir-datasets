@@ -167,19 +167,15 @@ genomics_2007_qrels = QrelTable('trec-genomics-2007-qrels',
 # -----------------------------------------
 genomics_2004 = Benchmark('trec-genomics-2004',
     docs=medline_2004_docs, queries=genomics_2004_queries, qrels=genomics_2004_qrels,
-    desc='TREC Genomics Track 2004.',
     citation='dblp:conf/trec/HershBRCKJ04')
 genomics_2005 = Benchmark('trec-genomics-2005',
     docs=medline_2004_docs, queries=genomics_2005_queries, qrels=genomics_2005_qrels,
-    desc='TREC Genomics Track 2005.',
     citation='dblp:conf/trec/HershCYBRH05')
 genomics_2006 = Benchmark('trec-genomics-2006',
     docs=highwire_docs, queries=genomics_2006_queries, qrels=genomics_2006_qrels,
-    desc='TREC Genomics Track 2006.',
     citation='dblp:conf/trec/HershCRR06')
 genomics_2007 = Benchmark('trec-genomics-2007',
     docs=highwire_docs, queries=genomics_2007_queries, qrels=genomics_2007_qrels,
-    desc='TREC Genomics Track 2007.',
     citation='dblp:conf/trec/HershCRR07')
 
 

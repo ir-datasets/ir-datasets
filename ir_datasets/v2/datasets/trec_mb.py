@@ -64,11 +64,9 @@ qrels_2014 = TrecQrels('trec-mb-2014-qrels',
 # Benchmarks
 # -----------------------------------------
 mb_2013 = Benchmark('trec-mb-2013',
-    docs=tweets2013_ia_docs, queries=queries_2013, qrels=qrels_2013,
-    desc='TREC Microblog 2013.')
+    docs=tweets2013_ia_docs, queries=queries_2013, qrels=qrels_2013)
 mb_2014 = Benchmark('trec-mb-2014',
-    docs=tweets2013_ia_docs, queries=queries_2014, qrels=qrels_2014,
-    desc='TREC Microblog 2014.')
+    docs=tweets2013_ia_docs, queries=queries_2014, qrels=qrels_2014)
 
 
 # Registration

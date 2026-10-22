@@ -261,7 +261,6 @@ dev = Benchmark('natural-questions-dev',
     qrels=dev_qrels,
     scoreddocs=dev_scoreddocs,
     citation=CITATION,
-    desc='Official dev set.',
 )
 train = Benchmark('natural-questions-train',
     docs=docs,
@@ -269,7 +268,6 @@ train = Benchmark('natural-questions-train',
     qrels=train_qrels,
     scoreddocs=train_scoreddocs,
     citation=CITATION,
-    desc='Official train set.',
 )
 
 

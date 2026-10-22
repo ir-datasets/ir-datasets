@@ -147,8 +147,7 @@ for _lang, (_url, _sha, _size) in DOCS.items():
     _docs_file = Resource(f'hc4-{_lang}-docs.jsonl.gz', sources=[_url], hash=f'sha256:{_sha}', size=_size,
         license='ODC-By-1.0')
     _docs = DocTable(f'hc4-{_lang}-docs',
-        source=_docs_file.gunzip(), parser=_Hc4DocsParser(_lang), lang=_lang, license='ODC-By-1.0',
-        desc=f'The HC4 {_lang} Common Crawl document corpus.')
+        source=_docs_file.gunzip(), parser=_Hc4DocsParser(_lang), lang=_lang, license='ODC-By-1.0')
 
     for _split in ('train', 'dev', 'test'):
         _name = f'hc4-{_lang}-{_split}'
@@ -158,8 +157,7 @@ for _lang, (_url, _sha, _size) in DOCS.items():
             source=QRELS_FILES[(_lang, _split)], defs=QREL_DEFS)
         _benchmarks.append(Benchmark(_name,
             docs=_docs, queries=_queries, qrels=_qrels,
-            citation=CITATION,
-            desc=f'HC4 {_lang}, {_split} split.'))
+            citation=CITATION))
 
 
 # Registration

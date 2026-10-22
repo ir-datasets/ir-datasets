@@ -129,20 +129,15 @@ train = Benchmark('msmarco-qna-train',
     docs=docs, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
     answers=train_answers,
     citation=CITATION,
-    desc='Official train set. Queries are natural-language questions with '
-         'free-text answers; qrels/scoreddocs mark which passages the '
-         "annotator selected as contributing to the answer.",
     license='https://microsoft.github.io/msmarco/')
 dev = Benchmark('msmarco-qna-dev',
     docs=docs, queries=dev_queries, qrels=dev_qrels, scoreddocs=dev_scoreddocs,
     answers=dev_answers,
     citation=CITATION,
-    desc='Official dev set.',
     license='https://microsoft.github.io/msmarco/')
 eval_ = Benchmark('msmarco-qna-eval',
     docs=docs, queries=eval_queries, scoreddocs=eval_scoreddocs,
     citation=CITATION,
-    desc='Official eval set for the MS MARCO QnA leaderboard (qrels hidden).',
     license='https://microsoft.github.io/msmarco/')
 
 

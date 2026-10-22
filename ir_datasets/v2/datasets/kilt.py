@@ -79,9 +79,7 @@ qrels = TrecQrels('kilt-codec-qrels', source=qrels_file, defs=CODEC_QREL_DEFS, c
 # -----------------------------------------
 kilt_codec = Benchmark('kilt-codec',
     docs=docs, queries=codec_queries, qrels=qrels,
-    citation=CITATION,
-    desc='KILT entity-ranking task: KILT Wikipedia entities judged relevant '
-         "to CODEC's own 42 queries (economics, history, and politics).")
+    citation=CITATION)
 
 domain_benchmarks = {}
 _DOMAIN_COUNTS = {
@@ -93,8 +91,7 @@ for _domain, _rcount in _DOMAIN_COUNTS.items():
     domain_benchmarks[_domain] = Benchmark(f'kilt-codec-{_domain}',
         derived_from=kilt_codec,
         queries=codec_domain_benchmarks[_domain].queries,
-        filter=Filter(query_ids=ids_of(f'irds:codec-{_domain}-queries'), mode='include'),
-        desc=f'KILT entity-ranking task, {_domain} domain subset.')
+        filter=Filter(query_ids=ids_of(f'irds:codec-{_domain}-queries'), mode='include'))
 
 
 # Registration

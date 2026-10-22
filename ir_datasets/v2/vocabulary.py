@@ -3,8 +3,8 @@
 Nothing is declared *here*. A graph class or graph property is declared by a
 provider (``provider.declare_graph_class('Table')``,
 ``provider.declare_graph_property('derivedFrom', structural=True)``,
-``provider.declare_graph_property('description', range='literal')``) and carries that
-provider's prefix: ``irds:Table``, ``irds:derivedFrom``, ``irds:description``.
+``provider.declare_graph_property('license', range='literal')``) and carries that
+provider's prefix: ``irds:Table``, ``irds:derivedFrom``, ``irds:license``.
 Graph classes are UpperCamelCase and graph properties lowerCamelCase, as RDF/OWL
 vocabularies write them. A graph property is either an edge between nodes or a
 literal-valued property (a value or a JSON document); every triple in the graph
@@ -196,12 +196,13 @@ def graph_properties():
 def property_for(field, prefix):
     """The declared property (a literal/json graph property) a row field stands for:
     ``<prefix>:<field>`` if the node's own provider declares one, else any other
-    provider's of that name; ``None`` if none is declared."""
+    provider's of that name (the core ``irds`` vocabulary first, then alphabetically); ``None`` if
+    none is declared."""
     own = f'{prefix}:{field}'
     entry = _PROPERTIES.get(own)
     if entry is not None and entry['range'] in ('literal', 'json'):
         return own
-    for qualified, entry in sorted(_PROPERTIES.items()):
+    for qualified, entry in sorted(_PROPERTIES.items(), key=lambda kv: (not kv[0].startswith('irds:'), kv[0])):
         if entry['range'] in ('literal', 'json') and qualified.split(':', 1)[1] == field:
             return qualified
     return None

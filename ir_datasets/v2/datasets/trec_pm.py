@@ -132,23 +132,18 @@ pm_2019_trials_qrels = TrecQrels('trec-pm-2019-trials-qrels',
 # -----------------------------------------
 pm_2017_abstracts = Benchmark('trec-pm-2017-abstracts',
     docs=medline_2017_docs, queries=pm_2017_queries, qrels=pm_2017_abstracts_qrels,
-    desc='TREC Precision Medicine 2017, MEDLINE abstracts sub-task.',
     citation='dblp:conf/trec/RobertsDVHBLP17')
 pm_2018_abstracts = Benchmark('trec-pm-2018-abstracts',
     docs=medline_2017_docs, queries=pm_2018_queries, qrels=pm_2018_abstracts_qrels,
-    desc='TREC Precision Medicine 2018, MEDLINE abstracts sub-task.',
     citation='dblp:conf/trec/RobertsDVHBL18')
 pm_2017_trials = Benchmark('trec-pm-2017-trials',
     docs=clinicaltrials_2017_docs, queries=pm_2017_queries, qrels=pm_2017_trials_qrels,
-    desc='TREC Precision Medicine 2017, clinical trials sub-task.',
     citation='dblp:conf/trec/RobertsDVHBLP17')
 pm_2018_trials = Benchmark('trec-pm-2018-trials',
     docs=clinicaltrials_2017_docs, queries=pm_2018_queries, qrels=pm_2018_trials_qrels,
-    desc='TREC Precision Medicine 2018, clinical trials sub-task.',
     citation='dblp:conf/trec/RobertsDVHBL18')
 pm_2019_trials = Benchmark('trec-pm-2019-trials',
     docs=clinicaltrials_2019_docs, queries=pm_2019_queries, qrels=pm_2019_trials_qrels,
-    desc='TREC Precision Medicine 2019, clinical trials sub-task.',
     citation='dblp:conf/trec/RobertsDVHBLPM19')
 
 

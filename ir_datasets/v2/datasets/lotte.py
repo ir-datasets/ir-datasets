@@ -69,8 +69,7 @@ for domain in DOMAINS:
                 parser=_LotteQrelsParser())
             name = f'lotte-{domain}-{split}-{qtype}'
             nodes[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                citation=CITATION,
-                desc=f'LoTTE: {domain} ({split} split), {qtype} queries.')
+                citation=CITATION)
 
 
 # Registration

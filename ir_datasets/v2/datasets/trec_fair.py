@@ -215,18 +215,15 @@ train_2022_qrels = QrelTable('trec-fair-2022-train-qrels',
 # -----------------------------------------
 trec_fair_2021_train = Benchmark('trec-fair-2021-train',
     docs=docs_2021, queries=train_2021_queries, qrels=train_2021_qrels,
-    citation='dblp:conf/trec/EkstrandRM021',
-    desc='TREC Fair Ranking 2021, official train set.')
+    citation='dblp:conf/trec/EkstrandRM021')
 
 trec_fair_2021_eval = Benchmark('trec-fair-2021-eval',
     docs=docs_2021, queries=eval_2021_queries, qrels=eval_2021_qrels,
-    citation='dblp:conf/trec/EkstrandRM021',
-    desc='TREC Fair Ranking 2021, official evaluation set.')
+    citation='dblp:conf/trec/EkstrandRM021')
 
 trec_fair_2022_train = Benchmark('trec-fair-2022-train',
     docs=docs_2022, queries=train_2022_queries, qrels=train_2022_qrels,
-    citation='dblp:conf/trec/EkstrandMR022',
-    desc='TREC Fair Ranking 2022, official train set.')
+    citation='dblp:conf/trec/EkstrandMR022')
 
 
 # Registration

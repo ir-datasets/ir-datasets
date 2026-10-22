@@ -101,12 +101,10 @@ citation=CITATION)
 # -----------------------------------------
 trec_misinfo_2019 = Benchmark('trec-misinfo-2019',
     docs=docs_b13, queries=trec_misinfo_2019_queries, qrels=trec_misinfo_2019_qrels,
-    citation=CITATION,
-    desc='TREC Misinfo 2019.')
+    citation=CITATION)
 trec_misinfo_2021 = Benchmark('trec-misinfo-2021',
     docs=c4_docs, queries=trec_misinfo_2021_queries,
-    citation='dblp:conf/trec/ClarkeMS21',
-    desc='TREC Misinfo 2021 (queries only; v1 does not wire up qrels for this dataset).')
+    citation='dblp:conf/trec/ClarkeMS21')
 
 
 # Registration

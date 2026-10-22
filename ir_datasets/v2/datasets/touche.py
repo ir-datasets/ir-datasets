@@ -424,60 +424,48 @@ task3_2022_qrels = QrelTable('touche-2022-task-3-qrels',
 touche_2020_task_1 = Benchmark('touche-2020-task-1',
     docs=argsme_docs_2020_04_01, queries=task1_2020_queries, qrels=task1_2020_qrels,
     citation=CITATION_TASK_1_2020,
-    desc='Touché 2020 Task 1: Argument Retrieval for Controversial Questions.',
     license='CC-BY-4.0')
 touche_2020_task_1_argsme_1_0_uncorrected = Benchmark('touche-2020-task-1-argsme-1.0-uncorrected',
     docs=argsme_docs_1_0, queries=task1_2020_queries, qrels=task1_2020_argsme_1_0_uncorrected_qrels,
     citation=CITATION_TASK_1_2020,
-    desc='Touché 2020 Task 1, over the args.me 1.0 corpus with uncorrected '
-         'crowdworker relevance judgements. Should not be used without preprocessing.',
     license='CC-BY-4.0')
 touche_2020_task_1_argsme_2020_04_01_uncorrected = Benchmark('touche-2020-task-1-argsme-2020-04-01-uncorrected',
     docs=argsme_docs_2020_04_01, queries=task1_2020_queries, qrels=task1_2020_argsme_2020_04_01_uncorrected_qrels,
     citation=CITATION_TASK_1_2020,
-    desc='Touché 2020 Task 1, with uncorrected crowdworker relevance '
-         'judgements. Should not be used without preprocessing.',
     license='CC-BY-4.0')
 
 touche_2020_task_2 = Benchmark('touche-2020-task-2',
     docs=clueweb12_docs, queries=task2_2020_queries, qrels=task2_2020_qrels,
     citation=CITATION_TASK_2_2020,
-    desc='Touché 2020 Task 2: Argument Retrieval for Comparative Questions.',
     license='CC-BY-4.0')
 
 touche_2021_task_1 = Benchmark('touche-2021-task-1',
     docs=argsme_docs_2020_04_01, queries=task1_2021_queries, qrels=task1_2021_qrels,
     citation=CITATION_2021,
-    desc='Touché 2021 Task 1: Argument Retrieval for Controversial Questions.',
     license='CC-BY-4.0')
 
 touche_2021_task_2 = Benchmark('touche-2021-task-2',
     docs=clueweb12_docs, queries=task2_2021_queries, qrels=task2_2021_qrels,
     citation=CITATION_2021,
-    desc='Touché 2021 Task 2: Argument Retrieval for Comparative Questions.',
     license='CC-BY-4.0')
 
 touche_2022_task_1 = Benchmark('touche-2022-task-1',
     docs=argsme_docs_2020_04_01_processed, queries=task1_2022_queries, qrels=task1_2022_qrels,
     citation=CITATION_2022,
-    desc='Touché 2022 Task 1: Argument Retrieval for Controversial Questions.',
     license='CC-BY-4.0')
 
 touche_2022_task_2 = Benchmark('touche-2022-task-2',
     docs=task2_2022_docs, queries=task2_2022_queries, qrels=task2_2022_qrels,
     citation=CITATION_2022,
-    desc='Touché 2022 Task 2: Argument Retrieval for Comparative Questions.',
     license='CC-BY-4.0')
 touche_2022_task_2_expanded_doc_t5_query = Benchmark('touche-2022-task-2-expanded-doc-t5-query',
     docs=task2_2022_expanded_docs, queries=task2_2022_queries, qrels=task2_2022_qrels,
     citation=CITATION_2022,
-    desc='Touché 2022 Task 2, over passages expanded with DocT5Query.',
     license='CC-BY-4.0')
 
 touche_2022_task_3 = Benchmark('touche-2022-task-3',
     docs=touche_image_docs, queries=task3_2022_queries, qrels=task3_2022_qrels,
     citation=CITATION_TASK_3_2022,
-    desc='Touché 2022 Task 3: Controversial Image Retrieval.',
     license='CC-BY-4.0')
 
 

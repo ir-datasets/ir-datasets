@@ -24,7 +24,7 @@ Two places, tried in this order:
 
 1. **The registry:** a file in this package, ``hf_cards/<owner>/<name>.yaml``. It is shaped
    like README frontmatter -- an ``ir-datasets`` key (below), plus whatever standard
-   fields the card should supply (``license``, ``language``, ``pretty_name``) -- and may
+   fields the card should supply (``license``, ``language``) -- and may
    carry a ``commit:`` to pin the data to. It makes a dataset usable without its
    authors changing anything, is reviewed and tested here like any other node, and is
    self-contained: nothing is fetched to read it. To try a card, put it there (in a
@@ -94,11 +94,13 @@ borrowed in place of a local one, resolved lazily the first time it's used.
 
 What the card already says in the standard HF frontmatter is used where an entry
 doesn't say otherwise: ``license`` (every node; ``other`` is skipped), ``language``
-(a table's ``lang``, when the card names exactly one language) and ``pretty_name``
-(the top-level node's ``prettyName``).
+(a table's ``lang``, when the card names exactly one language).
 
-Every other key is a property of the node: ``description``, ``summary``, ``prettyName``,
-``citation``, ``license``, ``deprecated`` and, for tables, ``lang`` and ``dua``.
+Names and prose are not a card's business: a node's description, display name and page are
+its documentation (``documentation:*``, see ``documentation_provider``), edited in the
+documentation repository like any other node's.
+
+Every other key is a property of the node: ``summary``, ``citation``, ``license``, ``deprecated`` and, for tables, ``lang`` and ``dua``.
 A key this provider doesn't know is reported and ignored.
 
 A plain ``/`` rather than ``#``/``~`` separates the fragment: the name is a URL
@@ -289,8 +291,7 @@ _TYPES = {'irds:Docs': ('table', 'docs'), 'irds:Queries': ('table', 'queries'),
           'irds:AdhocBenchmark': ('benchmark', None), 'irds:QaBenchmark': ('benchmark', None),
           'irds:Bundle': ('bundle', None), 'irds:Overview': ('bundle', None)}
 #: Keys that are properties of the node (card key -> constructor argument).
-_PROPERTY_KEYS = {'description': 'desc', 'prettyName': 'pretty_name', 'summary': 'summary',
-                  'citation': 'citation',
+_PROPERTY_KEYS = {'summary': 'summary', 'citation': 'citation',
                   'license': 'license', 'deprecated': 'deprecated'}
 _TABLE_PROPERTY_KEYS = {'lang': 'lang', 'dua': 'dua'}
 _TABLE_KEYS = {'file', 'config', 'split', 'column_map', 'auto_columns', 'defs'}
@@ -342,8 +343,6 @@ def _card_defaults(front):
     language = [language] if isinstance(language, str) else language
     if isinstance(language, list) and len(language) == 1 and isinstance(language[0], str):
         out['lang'] = language[0]
-    if isinstance(front.get('pretty_name'), str):
-        out['pretty_name'] = front['pretty_name']
     return out
 
 
@@ -641,10 +640,9 @@ def _properties(entry, table, card_meta, top_level, entity=None):
     metadata fills in what the entry leaves out."""
     keys = {**_PROPERTY_KEYS, **(_TABLE_PROPERTY_KEYS if table else {})}
     props = {arg: entry[key] for key, arg in keys.items() if key in entry}
-    for arg in ('license', 'lang', 'pretty_name'):
+    for arg in ('license', 'lang'):
         # a language is the text's: the card's goes to docs and queries, not to qrels
-        if arg in card_meta and arg not in props and (arg != 'lang' or entity in ('docs', 'queries')) \
-                and (arg != 'pretty_name' or top_level):
+        if arg in card_meta and arg not in props and (arg != 'lang' or entity in ('docs', 'queries')):
             props[arg] = card_meta[arg]
     return props
 

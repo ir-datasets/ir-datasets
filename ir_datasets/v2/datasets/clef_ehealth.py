@@ -208,25 +208,25 @@ qrels_sv = QrelTable('clef-ehealth-sv-qrels',
 # -----------------------------------------
 clef_ehealth = Benchmark('clef-ehealth',
     docs=docs_b13, queries=queries_en, qrels=qrels_en,
-    citation=CITATION, desc='CLEF eHealth IR task (English).')
+    citation=CITATION)
 clef_ehealth_cs = Benchmark('clef-ehealth-cs',
     docs=docs_b13, queries=queries_cs, qrels=qrels_cs,
-    citation=CITATION, desc='CLEF eHealth IR task (Czech queries).')
+    citation=CITATION)
 clef_ehealth_de = Benchmark('clef-ehealth-de',
     docs=docs_b13, queries=queries_de, qrels=qrels_de,
-    citation=CITATION, desc='CLEF eHealth IR task (German queries).')
+    citation=CITATION)
 clef_ehealth_fr = Benchmark('clef-ehealth-fr',
     docs=docs_b13, queries=queries_fr, qrels=qrels_fr,
-    citation=CITATION, desc='CLEF eHealth IR task (French queries).')
+    citation=CITATION)
 clef_ehealth_hu = Benchmark('clef-ehealth-hu',
     docs=docs_b13, queries=queries_hu, qrels=qrels_hu,
-    citation=CITATION, desc='CLEF eHealth IR task (Hungarian queries).')
+    citation=CITATION)
 clef_ehealth_pl = Benchmark('clef-ehealth-pl',
     docs=docs_b13, queries=queries_pl, qrels=qrels_pl,
-    citation=CITATION, desc='CLEF eHealth IR task (Polish queries).')
+    citation=CITATION)
 clef_ehealth_sv = Benchmark('clef-ehealth-sv',
     docs=docs_b13, queries=queries_sv, qrels=qrels_sv,
-    citation=CITATION, desc='CLEF eHealth IR task (Swedish queries).')
+    citation=CITATION)
 
 
 # Registration

@@ -369,12 +369,12 @@ class QaBenchmark(Benchmark, Protocol):
 @graph_class
 @runtime_checkable
 class Overview(Bundle, Protocol):
-    """The front page of a dataset: a bundle with a hand-written summary.
+    """The front page of a dataset: a bundle with a documentation page.
 
     Brings the tables, benchmarks and resources of one dataset (or a family that share a
-    story) under a single name, and explains them in a Markdown ``summary``: what the data
-    is, how it was made, how its parts relate and how to use them. An Overview always has a
-    summary; a plain ``irds:Bundle`` is only a grouping and need not."""
+    story) under a single name, and explains them in its Markdown documentation page: what the data
+    is, how it was made, how its parts relate and how to use them. An Overview is where a reader
+    should land; a plain ``irds:Bundle`` is only a grouping and need not have a page."""
 
 
 @graph_class

@@ -64,8 +64,8 @@ class TestPropertiesInTheGraph(unittest.TestCase):
 
     def test_the_range_says_what_the_values_are(self):
         ranges = {name: dict(self.by_subject[name])['rdfs:range'] for name in
-                  ('irds:bundleItem', 'irds:description', 'irds:column')}
-        self.assertEqual({'irds:bundleItem': 'rdfs:Resource', 'irds:description': 'rdfs:Literal',
+                  ('irds:bundleItem', 'irds:citation', 'irds:column')}
+        self.assertEqual({'irds:bundleItem': 'rdfs:Resource', 'irds:citation': 'rdfs:Literal',
                           'irds:column': 'rdf:JSON'}, ranges)
 
     def test_a_structural_edge_says_so_and_nothing_else_does(self):
@@ -129,7 +129,7 @@ class TestPropertiesInTheGraph(unittest.TestCase):
 
     def test_properties_are_vocabulary_not_nodes(self):
         names = set(graph.list())
-        self.assertFalse({'irds:bundleItem', 'irds:description', 'irds:structuralEdge'} & names)
+        self.assertFalse({'irds:bundleItem', 'irds:citation', 'irds:structuralEdge'} & names)
         self.assertEqual([], graph.check())
 
     def test_a_provider_describes_only_its_own_properties(self):
@@ -156,7 +156,7 @@ class TestTheExportedGraph(unittest.TestCase):
 
     def test_properties_are_qualified_by_their_declaring_provider(self):
         triples = list(graph.providers['irds'].discover_edges())
-        self.assertTrue(any(p == 'irds:description' for _, p, _ in triples))
+        self.assertTrue(any(p == 'irds:license' for _, p, _ in triples))
         self.assertFalse(any(p == 'desc' or p == 'description' for _, p, _ in triples))
 
 
@@ -278,15 +278,15 @@ class TestRowTriples(unittest.TestCase):
         vocabulary._warned_fields.discard('mystery')
         with self.assertWarnsRegex(vocabulary.UndeclaredPropertyWarning, "'mystery'"):
             triples = list(row_triples('irds:x', {'name': 'irds:x', 'type': 'irds:Docs',
-                                                  'mystery': 'v', 'description': 'd'}))
+                                                  'mystery': 'v', 'citation': 'd'}))
         predicates = {p for _, p, _ in triples}
-        self.assertEqual({'rdf:type', 'irds:description'}, predicates)
+        self.assertEqual({'rdf:type', 'irds:citation'}, predicates)
 
     def test_a_list_is_repeated_triples_for_any_property(self):
-        triples = list(row_triples('irds:x', {'name': 'irds:x', 'metric': ['a', 'b'], 'description': ['d', 'e']}))
+        triples = list(row_triples('irds:x', {'name': 'irds:x', 'metric': ['a', 'b'], 'citation': ['d', 'e']}))
         self.assertEqual(['a', 'b'], [o.value for _, p, o in triples if p == 'irds:metric'])
-        self.assertEqual(['d', 'e'], [o.value for _, p, o in triples if p == 'irds:description'])
-        self.assertEqual(['d'], [o.value for _, p, o in row_triples('irds:x', {'name': 'irds:x', 'description': 'd'})])
+        self.assertEqual(['d', 'e'], [o.value for _, p, o in triples if p == 'irds:citation'])
+        self.assertEqual(['d'], [o.value for _, p, o in row_triples('irds:x', {'name': 'irds:x', 'citation': 'd'})])
 
     def test_a_json_property_is_one_json_literal(self):
         (_, p, o), = [t for t in row_triples('irds:x', {'name': 'irds:x', 'relevanceLabel': {'label': 1, 'meaning': 'relevant'}})]

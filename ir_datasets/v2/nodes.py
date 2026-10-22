@@ -27,7 +27,7 @@ one (``QlogTable`` -- see the note by ``TABLE_TYPES`` below for why it is a
                deliberately not one of ``etc.`` here; see below
     Suite       a named, structural set of Benchmarks (e.g. BEIR)
     Bundle      any nodes that belong together -- the tables, benchmarks, resources
-               (or other bundles) of one dataset -- with a hand-written ``summary``
+               (or other bundles) of one dataset -- described by a documentation page
 
 Citations as papers-with-edges and metrics as measures-with-edges are future
 work for a broader knowledge graph; for now both are plain metadata.
@@ -223,9 +223,7 @@ STRUCTURAL_EDGE = irds.declare_graph_property(
 # a row has must be declared here (or by another provider); an undeclared one is
 # left out of the graph with a warning (see ``registry.row_triples``).
 _M = lambda name, **kw: irds.declare_graph_property(name, parent=METADATA, **kw)
-_M('description', range='literal', desc='a short description of the node')
 _M('summary', range='literal', desc='a long-form description of the node: Markdown, written by hand')
-_M('prettyName', range='literal', desc='a display name, where the identifier is not readable')
 _M('citation', range='literal', desc='how to cite it: a dblp key, or plain text')
 _M('deprecated', range='literal', desc='why the node is deprecated, and what to use instead')
 _M('license', range='literal', desc='the license its data is distributed under: an SPDX identifier, or a URL')
@@ -1295,8 +1293,7 @@ class Benchmark(Node):
         out = Benchmark(f'{self.name}[{spec.replace(":", "/")}]',
                         **{e: t for e, t in new.items() if t is not None},
                         metrics=self.metrics,
-                        citation=self.metadata.get('citation'),
-                        desc=self.metadata.get('description'))
+                        citation=self.metadata.get('citation'))
         # Not registered anywhere, but carries its canonical spec as its name
         # (a registered name can't contain ':', hence set after construction).
         out.qualified_name = f'{self.qualified_name or self.name}[{spec}]'
@@ -1434,22 +1431,15 @@ class Benchmark(Node):
 # ── Bundle ───────────────────────────────────────────────────────────────────
 
 class Bundle(Node):
-    """Any nodes that belong together, with a long-form ``summary`` of them.
+    """Any nodes that belong together, described by a documentation page.
 
     The general grouping: one dataset's tables, benchmarks and resources (a corpus
     with its several tasks), or several datasets that share a story. Unlike a
     ``Benchmark`` (facets of one task) or a ``Suite`` (benchmarks evaluated together)
-    it says nothing about how its parts are used -- the summary does. Membership is
-    informational (``BUNDLE_ITEM`` edges): the bundle needs nothing its parts need, and a part
-    may belong to any number of bundles.
-
-    The ``summary`` is Markdown. ``[[node]]`` (or ``[[node|label]]``) in it is a link to
-    a node, which the site turns into one: a qualified name is itself, a bare one is a
-    sibling fragment of the bundle (``hf:owner/repo`` + ``[[par-par-test]]``) or else a node
-    of the bundle's own provider (``irds:msmarco`` + ``[[msmarco-passage]]``). A reference
-    that matches no node is shown as plain code, so a stale one is easy to spot. A citation
-    can be linked the same way: ``[[dblp:conf/emnlp/SunD20]]`` or ``[[doi:10.x/y]]``, with
-    ``|label`` to name it (``[[dblp:conf/emnlp/SunD20|the original paper]]``).
+    it says nothing about how its parts are used -- its page does (``documentation:page``,
+    which links to nodes as ``[text](irds:node)``; see ``documentation_provider``).
+    Membership is informational (``BUNDLE_ITEM`` edges): the bundle needs nothing its parts
+    need, and a part may belong to any number of bundles.
 
     ``parts`` are nodes or names; a name is resolved against the graph like any other
     edge target. ``Suite`` is deliberately not a ``Bundle`` subclass here: it stays the
@@ -1466,17 +1456,11 @@ class Bundle(Node):
 
 
 class Overview(Bundle):
-    """A ``Bundle`` that is the front page of a dataset: it always has a ``summary``.
-
-    Everything a Bundle is, plus the guarantee that there is a hand-written Markdown summary
-    to show -- which is what makes it a page worth landing on, and what separates it from a
-    bare grouping of nodes. Leaving the summary out is an error."""
+    """A ``Bundle`` that is the front page of a dataset: the node whose documentation page
+    (``documentation:page``, see ``documentation_provider``) introduces the whole family. It is a
+    Bundle in every respect; the type says "this is where a reader should land", and
+    ``documentation.lint()``-style checks can ask that such a node has a page."""
     type = OVERVIEW
-
-    def __init__(self, name, *, parts=(), summary=None, **meta):
-        if not (summary or '').strip():
-            raise ValueError(f'{name!r}: an Overview needs a summary (use a Bundle for a bare grouping)')
-        super().__init__(name, parts=parts, summary=summary, **meta)
 
 
 # ── Suite ────────────────────────────────────────────────────────────────────

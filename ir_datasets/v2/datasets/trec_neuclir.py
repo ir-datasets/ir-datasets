@@ -130,8 +130,7 @@ for _lang, _docs in DOCS_TABLES.items():
             _lang, ExctractedCCNoReportQuery, _qrels_2022.handler))
     _benchmarks.append(Benchmark(_name_2022,
         docs=_docs, queries=_queries_2022, qrels=_qrels_2022,
-        citation=CITATION,
-        desc=f'TREC 2022 NeuCLIR track, {_lang} (NeuCLIR collection 1).'))
+        citation=CITATION))
 
     # -- TREC 2023: one tar, a qrels member per language --
     _name_2023 = f'trec-neuclir-2023-{_lang}'
@@ -143,8 +142,7 @@ for _lang, _docs in DOCS_TABLES.items():
             _lang, ExctractedCCNoReportNoHtNarQuery, _qrels_2023.handler))
     _benchmarks.append(Benchmark(_name_2023,
         docs=_docs, queries=_queries_2023, qrels=_qrels_2023,
-        citation=CITATION,
-        desc=f'TREC 2023 NeuCLIR track, {_lang} (NeuCLIR collection 1).'))
+        citation=CITATION))
 
 # -- TREC 2023's cross-language "multi" task: one combined tri-lingual
 # ranking per query, over the combined corpus --
@@ -154,9 +152,7 @@ _multi_queries = QueryTable('trec-neuclir-2023-multi-queries',
     source=QUERIES_2023, parser=_NeuclirQueriesParser(None, ExctractedCCMultiMtQuery))
 _benchmarks.append(Benchmark('trec-neuclir-2023-multi',
     docs=MULTI_DOCS, queries=_multi_queries, qrels=_multi_qrels,
-    citation=CITATION,
-    desc='TREC 2023 NeuCLIR track, the cross-language "multi" task over '
-        'NeuCLIR collection 1 (one combined tri-lingual ranking per query).'))
+    citation=CITATION))
 
 # -- TREC 2023's technical-document task: its own (Chinese) topics over the CSL
 # corpus, with qrels from the same 2023 tar as the other tasks --
@@ -166,8 +162,7 @@ _tech_qrels = TrecQrels('trec-neuclir-2023-tech-qrels',
     source=QRELS_2023_TAR.member('tech_final_qrels.txt'), defs=TECH_QREL_DEFS, count_hint=11_291)
 _benchmarks.append(Benchmark('trec-neuclir-2023-tech',
     docs=CSL_DOCS, queries=_tech_queries, qrels=_tech_qrels,
-    citation='dblp:conf/coling/LiZ0S0MZ22',
-    desc='TREC 2023 NeuCLIR track, the technical-document task (Chinese Scientific Literature).'))
+    citation='dblp:conf/coling/LiZ0S0MZ22'))
 
 # Registration
 # -----------------------------------------

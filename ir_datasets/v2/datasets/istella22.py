@@ -173,8 +173,7 @@ test_qrels = QrelTable('istella22-test-qrels',
 test = Benchmark('istella22-test',
     docs=docs, queries=test_queries, qrels=test_qrels,
     citation=CITATION,
-    license=_LICENSE,
-    desc='Istella22: official test query set.')
+    license=_LICENSE)
 
 _FOLD_COUNTS = {
     'fold1': 2_164,
@@ -190,8 +189,7 @@ for _fold in ['fold1', 'fold2', 'fold3', 'fold4', 'fold5']:
         derived_from=test,
         filter=Filter(query_ids=_fold_query_ids(_fold), mode='include'),
         citation=CITATION,
-        license=_LICENSE,
-        desc=f'Istella22: fold {_fold[-1]} of the official test query set.')
+        license=_LICENSE)
 
 
 # Registration

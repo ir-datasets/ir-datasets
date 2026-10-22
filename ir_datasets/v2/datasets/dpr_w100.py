@@ -211,24 +211,16 @@ tqa_train_qrels = QrelTable('dpr-w100-trivia-qa-train-qrels',
 # -----------------------------------------
 natural_questions_dev = Benchmark('dpr-w100-natural-questions-dev',
     docs=docs, queries=nq_dev_queries, qrels=nq_dev_qrels, answers=nq_dev_answers,
-    citation=CITATION_NQ,
-    desc='Dev subset from the Natural Questions Q&A collection, using the '
-         'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
+    citation=CITATION_NQ)
 natural_questions_train = Benchmark('dpr-w100-natural-questions-train',
     docs=docs, queries=nq_train_queries, qrels=nq_train_qrels, answers=nq_train_answers,
-    citation=CITATION_NQ,
-    desc='Training subset from the Natural Questions Q&A collection, using the '
-         'full DPR Wikipedia dump and additional filtering (see the DPR paper).')
+    citation=CITATION_NQ)
 trivia_qa_dev = Benchmark('dpr-w100-trivia-qa-dev',
     docs=docs, queries=tqa_dev_queries, qrels=tqa_dev_qrels, answers=tqa_dev_answers,
-    citation=CITATION_TQA,
-    desc='Dev subset from the Trivia QA dataset, using the DPR Wikipedia '
-         'dump as the source collection (see the DPR paper).')
+    citation=CITATION_TQA)
 trivia_qa_train = Benchmark('dpr-w100-trivia-qa-train',
     docs=docs, queries=tqa_train_queries, qrels=tqa_train_qrels, answers=tqa_train_answers,
-    citation=CITATION_TQA,
-    desc='Training subset from the Trivia QA dataset, using the DPR Wikipedia '
-         'dump as the source collection (see the DPR paper).')
+    citation=CITATION_TQA)
 
 
 # Registration

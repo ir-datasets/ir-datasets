@@ -144,16 +144,12 @@ QRELS_DEFS = {
 DOWNLOADS_INDEX = Resource('downloads.json.gz',
     sources=['http://www.cs.jhu.edu/~shuosun/clirmatrix/data/downloads.json.gz'],
     hash='md5:371cc532aca236759bd3602eb6ce2181',
-    size=5_143_717,
-    desc='The per-file {url, cache_path, expected_md5} index this family '
-        'resolves every other download from -- see _fetch_index below.')
+    size=5_143_717)
 
 METADATA_FILE = Resource('metadata.json.lz4',
     sources=['https://macavaney.us/clirmatrix-metadata.json.lz4'],
     hash='md5:537510770a139b25dd12684c6711c91a',
-    size=6_517_585,
-    desc='Per-language/pair metadata mirrored from v1; not read by this v2 '
-        'port -- see the module docstring.')
+    size=6_517_585)
 
 clirmatrix.register(DOWNLOADS_INDEX, METADATA_FILE)
 
@@ -294,10 +290,7 @@ def _benchmark(variant, doc_lang, query_lang, split):
         qrels = QrelTable(f'{name}-qrels', source=stream,
                           parser=_ClirMatrixQrelsParser(), defs=QRELS_DEFS)
         _benchmark_cache[key] = Benchmark(
-            name, docs=docs, queries=queries, qrels=qrels, citation=CITATION,
-            desc=f'CLIRMatrix {variant}: {doc_lang} docs, {query_lang} queries, '
-                 f'{split} split. Qrels are automatic (BM25-derived), not '
-                 f'human judgments -- see the qrels table\'s relevance defs.')
+            name, docs=docs, queries=queries, qrels=qrels, citation=CITATION)
     return _benchmark_cache[key]
 
 
@@ -385,54 +378,11 @@ clirmatrix.register_generator(Generator(
 # for which combinations exist). Membership is informational, so none of them is built, or
 # needs anything, to list it.
 
-SUMMARY = """\
-CLIRMatrix is a very large collection of cross-language retrieval (CLIR) datasets, built
-automatically from Wikipedia. A query is in one language and the documents to rank are in
-another, so a single collection covers every combination of 139 languages: for instance,
-French queries over an English corpus, or Japanese queries over a German one.
-
-## How it is organized
-
-- **One corpus per language.** The documents are that language's Wikipedia articles: 139 of
-  them, named `{lang}-docs`, for example [[en-docs]].
-- **One benchmark per pair and split.** A benchmark pairs one document language with one
-  *different* query language (there is no same-language pair) and a split. Its name is
-  `{variant}-{doc_lang}-{query_lang}-{split}`, so [[bi139base-en-fr-train]] is English
-  documents, French queries, the `base` variant's training split.
-- **Splits:** `train`, `dev`, `test1` and `test2`.
-- **Variants:** `bi139base` and `bi139full` cover all 139 languages, in two sizes, and
-  `multi8` is a curated subset of eight languages (Arabic, German, English, Spanish, French,
-  Japanese, Russian and Chinese).
-
-That is on the order of 150,000 benchmarks, so this page lists only a sample of its contents;
-every one of them belongs to it. Nodes are created on demand: load the name you want and it
-is built then, and the queries and qrels are downloaded only when you first read them. Each
-benchmark's queries and qrels are one file.
-
-## Relevance judgments
-
-The judgments are automatic, not human. Each document's label is 0 to 6, from BM25
-retrieval scores computed in the query's own language and split into bands: 6 is the most relevant, and 0 means
-the document was not retrieved there. They suit training and comparing systems, but not
-absolute claims about relevance.
-
-## Old names
-
-The first version of ir_datasets spelled these `clirmatrix/{doc_lang}/{variant}/{query_lang}/{split}`,
-with the variants as `bi139-base` and `bi139-full`. Those ids still resolve: for example
-`clirmatrix/en/bi139-base/fr/train` is [[bi139base-en-fr-train]].
-
-Cite [[dblp:conf/emnlp/SunD20|the original paper]] when using any of these.
-"""
 
 clirmatrix.register(Overview(
     'clirmatrix',
     parts=[*(f'clirmatrix:{lang}-docs' for lang in LANGS),
            *(f'clirmatrix:{variant}-{doc_lang}-{query_lang}-{split}'
              for variant in VARIANTS for doc_lang in LANGS for query_lang in LANGS for split in SPLITS
-             if _bilingual_constraint(variant, doc_lang, query_lang, split))],
-    pretty_name='CLIRMatrix',
-    desc='CLIRMatrix: bilingual and multilingual cross-language retrieval datasets built from Wikipedia, '
-         '139 languages.',
-    summary=SUMMARY, citation=CITATION))
+             if _bilingual_constraint(variant, doc_lang, query_lang, split))], citation=CITATION))
 

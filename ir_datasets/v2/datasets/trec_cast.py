@@ -159,16 +159,10 @@ eval_2020_qrels_file = Resource('trec-cast-v1-2020-qrels.txt',
 # why these two nodes carry no derived_from edges at all.
 docs_v0 = DocTable('trec-cast-v0-docs',
     source=[], parser=_TrecCastDocsParser('trec-cast/v0'),
-    lang='en', count_hint=47_696_605,
-    desc='WaPo (v2) + MS MARCO passage (v1) + TREC CAR (v2.0), id-prefixed and '
-         'combined via v1\'s PrefixedDocs -- see the module docstring on why '
-         'this has no derived_from edges to wapo.py/msmarco_passage.py/car.py.')
+    lang='en', count_hint=47_696_605)
 docs_v1 = DocTable('trec-cast-v1-docs',
     source=[], parser=_TrecCastDocsParser('trec-cast/v1'),
-    lang='en', count_hint=38_622_444,
-    desc='MS MARCO passage (v1) + TREC CAR (v2.0), id-prefixed and combined '
-         'via v1\'s PrefixedDocs -- see the module docstring on why this has '
-         'no derived_from edges to msmarco_passage.py/car.py.')
+    lang='en', count_hint=38_622_444)
 
 # license verified 2026-09-30 (GitHub-sourced topics/qrels only; NIST qrels, scoreddocs, docs and benchmarks left unlicensed):
 # https://github.com/daltonj/treccastweb/blob/master/LICENSE (MIT)
@@ -198,27 +192,21 @@ eval_2020_qrels = TrecQrels('trec-cast-v1-2020-qrels',
 # -----------------------------------------
 v0_train = Benchmark('trec-cast-v0-train',
     docs=docs_v0, queries=train_queries, qrels=train_qrels, scoreddocs=train_scoreddocs,
-    citation=CITATION_2019,
-    desc='TREC CAsT 2019 training set.')
+    citation=CITATION_2019)
 v0_train_judged = Benchmark('trec-cast-v0-train-judged',
-    derived_from=v0_train, filter=Filter(queries_with_qrels=True),
-    desc='trec-cast-v0-train restricted to queries with >= 1 qrel.')
+    derived_from=v0_train, filter=Filter(queries_with_qrels=True))
 
 v1_2019 = Benchmark('trec-cast-v1-2019',
     docs=docs_v1, queries=eval_2019_queries, qrels=eval_2019_qrels, scoreddocs=eval_2019_scoreddocs,
-    citation=CITATION_2019,
-    desc='Official evaluation set for TREC CAsT 2019.')
+    citation=CITATION_2019)
 v1_2019_judged = Benchmark('trec-cast-v1-2019-judged',
-    derived_from=v1_2019, filter=Filter(queries_with_qrels=True),
-    desc='trec-cast-v1-2019 restricted to queries with >= 1 qrel.')
+    derived_from=v1_2019, filter=Filter(queries_with_qrels=True))
 
 v1_2020 = Benchmark('trec-cast-v1-2020',
     docs=docs_v1, queries=eval_2020_queries, qrels=eval_2020_qrels,
-    citation=CITATION_2020,
-    desc='Official evaluation set for TREC CAsT 2020.')
+    citation=CITATION_2020)
 v1_2020_judged = Benchmark('trec-cast-v1-2020-judged',
-    derived_from=v1_2020, filter=Filter(queries_with_qrels=True),
-    desc='trec-cast-v1-2020 restricted to queries with >= 1 qrel.')
+    derived_from=v1_2020, filter=Filter(queries_with_qrels=True))
 
 
 # Registration

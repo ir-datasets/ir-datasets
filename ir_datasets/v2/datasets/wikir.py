@@ -82,7 +82,6 @@ for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
     _docs = DocTable(f'wikir-{_code}-docs',
         source=_zip.zip_member(f'{_zip_dir}/documents.csv'),
         parser=_WikirDocsParser(), lang=_lang,
-        desc=f'The WikIR {_code} document corpus.',
         license='CC-BY-4.0')
 
     for _split, _suffix in SPLITS:
@@ -100,8 +99,6 @@ for _code, _zip_dir, _lang, _url, _md5, _size in VARIANTS:
         _benchmarks.append(Benchmark(_name,
             docs=_docs, queries=_queries, qrels=_qrels, scoreddocs=_scoreddocs,
             citation=CITATION,
-            desc=f'WikIR {_code}, {_split} split. Scoreddocs are the '
-                 'provided BM25 run.',
             license='CC-BY-4.0'))
 
 

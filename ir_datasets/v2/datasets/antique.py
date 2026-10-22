@@ -127,40 +127,32 @@ train = Benchmark('antique-train',
     queries=train_queries,
     qrels=train_qrels,
     citation=CITATION,
-    metrics=MEASURES,
-    desc='Official train set of the ANTIQUE dataset.'
+    metrics=MEASURES
 )
 test = Benchmark('antique-test',
     docs=docs,
     queries=test_queries,
     qrels=test_qrels,
     citation=CITATION,
-    metrics=MEASURES,
-    desc='Official test set of the ANTIQUE dataset.'
+    metrics=MEASURES
 )
 split200_train = Benchmark('antique-split200-train',
     derived_from=train,
     filter=Filter(query_ids=VALIDATION_QIDS, mode='exclude'),
     citation=CITATION,
-    metrics=MEASURES,
-    desc='antique-train without the 200 queries held out in '
-         'antique-split200-valid.'
+    metrics=MEASURES
 )
 split200_valid = Benchmark('antique-split200-valid',
     derived_from=train,
     filter=Filter(query_ids=VALIDATION_QIDS, mode='include'),
     citation=CITATION,
-    metrics=MEASURES,
-    desc='A held-out subset of 200 queries from antique-train. Use with '
-         'antique-split200-train.'
+    metrics=MEASURES
 )
 non_offensive = Benchmark('antique-test-non-offensive',
     derived_from=test,
     filter=Filter(query_ids=ids_from_lines(disallow_list_file), mode='exclude'),
     citation=CITATION,
-    metrics=MEASURES,
-    desc='antique-test without the queries the ANTIQUE authors deemed '
-         '"offensive (and noisy)".'
+    metrics=MEASURES
 )
 
 

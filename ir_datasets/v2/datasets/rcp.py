@@ -84,20 +84,16 @@ for v1_id, (subset, files) in SOURCES.items():
         sources=[f'https://huggingface.co/datasets/{REPO}/resolve/{COMMIT}/{subset}/qrels.parquet'],
         hash=digest, size=size)
     qrels = RcpQrels(
-        f'nano-beir-{v1_id}-rcp-qrels', source=qrels_file,
-        desc='Calibrated RCP relevance probabilities (relevance, in [0, 1]) over the '
-             '150-document candidate pool. Judge: Qwen3.5-397B.')
+        f'nano-beir-{v1_id}-rcp-qrels', source=qrels_file)
 
     base = nano_benchmarks[f'nano-beir-{v1_id}']
     name = f'nano-beir-{v1_id}-rcp'
     rcp_benchmarks[name] = Benchmark(
-        name, docs=base.docs, queries=base.queries, qrels=qrels, citation=CITATION,
-        desc=f'NanoBEIR {v1_id} with RCP calibrated relevance labels.')
+        name, docs=base.docs, queries=base.queries, qrels=qrels, citation=CITATION)
 
 
 # Registration
 # -----------------------------------------
 irds.register(*rcp_benchmarks.values())
 irds.register(Suite('nano-beir-rcp', benchmarks=list(rcp_benchmarks.values()),
-                    citation=CITATION,
-                    desc='NanoBEIR (13 tasks) with RCP calibrated relevance labels.'))
+                    citation=CITATION))

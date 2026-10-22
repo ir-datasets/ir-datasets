@@ -153,30 +153,22 @@ round5_qrels = TrecQrels('trec-covid-round5-qrels',
 # -----------------------------------------
 trec_covid = Benchmark('trec-covid',
     docs=docs_2020_07_16, queries=queries, qrels=qrels,
-    citation=CITATION,
-    desc='The complete TREC-COVID collection: the 2020-07-16 (metadata-only) '
-         'CORD-19 snapshot with deep, cumulative relevance judgments.')
+    citation=CITATION)
 trec_covid_round1 = Benchmark('trec-covid-round1',
     docs=docs_2020_04_10, queries=round1_queries, qrels=round1_qrels,
-    citation=CITATION,
-    desc='Round 1 of the TREC-COVID task, over the 2020-04-10 CORD-19 snapshot.')
+    citation=CITATION)
 trec_covid_round2 = Benchmark('trec-covid-round2',
     docs=docs_2020_05_01, queries=round2_queries, qrels=round2_qrels,
-    citation=CITATION,
-    desc='Round 2 of the TREC-COVID task, over the 2020-05-01 CORD-19 snapshot.')
+    citation=CITATION)
 trec_covid_round3 = Benchmark('trec-covid-round3',
     docs=docs_2020_05_19, queries=round3_queries, qrels=round3_qrels,
-    citation=CITATION,
-    desc='Round 3 of the TREC-COVID task, over the 2020-05-19 CORD-19 snapshot.')
+    citation=CITATION)
 trec_covid_round4 = Benchmark('trec-covid-round4',
     docs=docs_2020_06_19, queries=round4_queries, qrels=round4_qrels,
-    citation=CITATION,
-    desc='Round 4 of the TREC-COVID task, over the 2020-06-19 CORD-19 snapshot.')
+    citation=CITATION)
 trec_covid_round5 = Benchmark('trec-covid-round5',
     docs=docs_2020_07_16, queries=queries, qrels=round5_qrels,
-    citation=CITATION,
-    desc='Round 5 of the TREC-COVID task: same docs/queries as trec-covid '
-         '(the 2020-07-16 snapshot), but with round-5-only relevance judgments.')
+    citation=CITATION)
 
 
 # Registration

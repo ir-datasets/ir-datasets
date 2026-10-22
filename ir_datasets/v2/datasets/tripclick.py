@@ -569,74 +569,64 @@ logs_qlogs = QlogTable('tripclick-logs-qlogs',
 train_head = Benchmark('tripclick-train-head',
     license=LICENSE,
     docs=docs, queries=train_head_queries, qrels=train_head_qrels,
-    citation=CITATION, desc='TripClick training queries, head (high-frequency) slice.')
+    citation=CITATION)
 train_head_dctr = Benchmark('tripclick-train-head-dctr',
     license=LICENSE,
     docs=docs, queries=train_head_queries, qrels=train_head_dctr_qrels,
-    citation=CITATION,
-    desc='TripClick training queries, head slice, with click-through-rate-binned '
-         '("dctr") relevance instead of raw clicked/not-clicked.')
+    citation=CITATION)
 train_torso = Benchmark('tripclick-train-torso',
     license=LICENSE,
     docs=docs, queries=train_torso_queries, qrels=train_torso_qrels,
-    citation=CITATION, desc='TripClick training queries, torso (mid-frequency) slice.')
+    citation=CITATION)
 train_tail = Benchmark('tripclick-train-tail',
     license=LICENSE,
     docs=docs, queries=train_tail_queries, qrels=train_tail_qrels,
-    citation=CITATION, desc='TripClick training queries, tail (low-frequency) slice.')
+    citation=CITATION)
 train = Benchmark('tripclick-train',
     license=LICENSE,
     docs=docs, queries=train_queries, qrels=train_qrels, docpairs=train_docpairs,
-    citation=CITATION, desc='TripClick training queries, head+torso+tail combined.')
+    citation=CITATION)
 train_hofstaetter_triples = Benchmark('tripclick-train-hofstaetter-triples',
     docs=docs, queries=train_queries, qrels=train_qrels, docpairs=hofstaetter_docpairs,
-    citation=CITATION,
-    desc="TripClick training queries (head+torso+tail combined), with Hofstaetter et "
-         "al.'s improved training triples in place of v1's own docpair extraction.")
+    citation=CITATION)
 
 val_head = Benchmark('tripclick-val-head',
     license=LICENSE,
     docs=docs, queries=val_head_queries, qrels=val_head_qrels, scoreddocs=val_head_scoreddocs,
-    citation=CITATION, desc='TripClick validation queries, head (high-frequency) slice.')
+    citation=CITATION)
 val_head_dctr = Benchmark('tripclick-val-head-dctr',
     license=LICENSE,
     docs=docs, queries=val_head_queries, qrels=val_head_dctr_qrels, scoreddocs=val_head_scoreddocs,
-    citation=CITATION,
-    desc='TripClick validation queries, head slice, with click-through-rate-binned '
-         '("dctr") relevance instead of raw clicked/not-clicked.')
+    citation=CITATION)
 val_torso = Benchmark('tripclick-val-torso',
     license=LICENSE,
     docs=docs, queries=val_torso_queries, qrels=val_torso_qrels, scoreddocs=val_torso_scoreddocs,
-    citation=CITATION, desc='TripClick validation queries, torso (mid-frequency) slice.')
+    citation=CITATION)
 val_tail = Benchmark('tripclick-val-tail',
     license=LICENSE,
     docs=docs, queries=val_tail_queries, qrels=val_tail_qrels, scoreddocs=val_tail_scoreddocs,
-    citation=CITATION, desc='TripClick validation queries, tail (low-frequency) slice.')
+    citation=CITATION)
 val = Benchmark('tripclick-val',
     license=LICENSE,
     docs=docs, queries=val_queries, qrels=val_qrels, scoreddocs=val_scoreddocs,
-    citation=CITATION, desc='TripClick validation queries, head+torso+tail combined.')
+    citation=CITATION)
 
 test_head = Benchmark('tripclick-test-head',
     license=LICENSE,
     docs=docs, queries=test_head_queries, scoreddocs=test_head_scoreddocs,
-    citation=CITATION,
-    desc='TripClick test queries, head (high-frequency) slice. Unjudged (no qrels).')
+    citation=CITATION)
 test_torso = Benchmark('tripclick-test-torso',
     license=LICENSE,
     docs=docs, queries=test_torso_queries, scoreddocs=test_torso_scoreddocs,
-    citation=CITATION,
-    desc='TripClick test queries, torso (mid-frequency) slice. Unjudged (no qrels).')
+    citation=CITATION)
 test_tail = Benchmark('tripclick-test-tail',
     license=LICENSE,
     docs=docs, queries=test_tail_queries, scoreddocs=test_tail_scoreddocs,
-    citation=CITATION,
-    desc='TripClick test queries, tail (low-frequency) slice. Unjudged (no qrels).')
+    citation=CITATION)
 test = Benchmark('tripclick-test',
     license=LICENSE,
     docs=docs, queries=test_queries, scoreddocs=test_scoreddocs,
-    citation=CITATION,
-    desc='TripClick test queries, head+torso+tail combined. Unjudged (no qrels).')
+    citation=CITATION)
 
 
 # Registration

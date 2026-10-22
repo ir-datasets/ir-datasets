@@ -213,8 +213,7 @@ for v1_id, splits, doc_type, query_type in BENCHMARKS:
         qrels = _qrels(v1_id, zip_resource, splits[0] if splits[0] != 'test' else None)
         name = f'beir-{_flat(v1_id)}'
         benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                     citation=_eval_citation(v1_id),
-                                     desc=f'BEIR: {v1_id}.')
+                                     citation=_eval_citation(v1_id))
     else:
         # Not registered: a private parent for the per-split Benchmarks
         # below to inherit docs/queries from (filtered by each split's
@@ -231,8 +230,7 @@ for v1_id, splits, doc_type, query_type in BENCHMARKS:
                 # ids_of() resolves through the top-level graph, so it
                 # needs a qualified name -- not just split_qrels.name.
                 filter=Filter(query_ids=ids_of(f'irds:{split_qrels.name}'), mode='include'),
-                citation=_eval_citation(v1_id, split),
-                desc=f'BEIR: {v1_id}, {split} split.')
+                citation=_eval_citation(v1_id, split))
 
 # CQADupStack: 12 sub-forums sharing one zip, each single-split.
 cqa_url, cqa_md5, cqa_size = CQA_ZIP
@@ -250,7 +248,7 @@ for sub in CQA_SUBFORUMS:
                   parser=_BeirQrelsParser(), citation=_cites(CQA_CITATION))
     name = f'beir-cqadupstack-{sub}'
     benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
-                                 citation=_cites(CQA_CITATION), desc=f'BEIR: cqadupstack/{sub}.')
+                                 citation=_cites(CQA_CITATION))
 
 
 # Registration
@@ -259,12 +257,7 @@ irds.register(*benchmarks.values())
 
 cqa_suite = Suite('beir-cqadupstack',
                   benchmarks=[benchmarks[f'beir-cqadupstack-{sub}'] for sub in CQA_SUBFORUMS],
-                  citation=_cites(CQA_CITATION),
-                  desc="CQADupStack: BEIR's 12 StackExchange sub-forums, "
-                       'aggregated from a single shared download -- its own '
-                       'suite since it is itself commonly reported as one '
-                       'sub-benchmark group, and nested into the main BEIR '
-                       'suite below rather than flattened into it.')
+                  citation=_cites(CQA_CITATION))
 irds.register(cqa_suite)
 
 #: "BEIR-13": the 13 BEIR datasets that are publicly available and not used for training -- the
@@ -276,15 +269,8 @@ BEIR13_MEMBERS = [n for n in SUITE_MEMBERS if n != 'beir-msmarco-dev']
 assert len(BEIR13_MEMBERS) == 13
 
 irds.register(Suite('beir-13', benchmarks=[benchmarks[n] for n in BEIR13_MEMBERS],
-                    citation=CITATION,
-                    desc='BEIR-13: the 13 publicly available BEIR datasets that are not used for '
-                         'training (BEIR without MS MARCO and CQADupStack), the set most papers '
-                         'average over for zero-shot results.'))
+                    citation=CITATION))
 
 irds.register(Suite('beir', benchmarks=[benchmarks[n] for n in SUITE_MEMBERS],
                     suites=[cqa_suite],
-                    citation=CITATION,
-                    desc='The BEIR evaluation suite: 14 headline zero-shot '
-                         'retrieval benchmarks across heterogeneous domains, '
-                         "plus CQADupStack's 12 StackExchange sub-forums "
-                         '(nested as the beir-cqadupstack suite).'))
+                    citation=CITATION))

@@ -303,7 +303,6 @@ for subset in SHORT_SUBSETS:
     name = f'bright-{subset}'
     benchmarks[name] = Benchmark(name, docs=docs, queries=queries, qrels=qrels,
                                  citation=CITATION, metrics=METRICS,
-                                 desc=f'BRIGHT: {subset} (reasoning-intensive retrieval).',
                                  license='CC-BY-4.0')
 
 for subset in LONG_SUBSETS:
@@ -321,7 +320,6 @@ for subset in LONG_SUBSETS:
     name = f'bright-{subset}-long'
     long_benchmarks[name] = Benchmark(name, docs=long_docs, queries=queries, qrels=long_qrels,
                                  citation=CITATION, metrics=METRICS,
-                                 desc=f'BRIGHT: {subset}, long-form documents.',
                                  license='CC-BY-4.0')
 
 
@@ -333,11 +331,6 @@ irds.register(*(rewritten for rewritten, _ in rewritten_queries))
 for _rewritten, _original in rewritten_queries:
     irds.add_edge(_rewritten, 'alternativeOf', _original)
 
-irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CITATION,
-                    desc='The BRIGHT evaluation suite: reasoning-intensive retrieval '
-                         'across 12 domains (StackExchange topics, coding, theorem-proving, '
-                         'competition math).'))
+irds.register(Suite('bright', benchmarks=list(benchmarks.values()), citation=CITATION))
 
-irds.register(Suite('bright-long', benchmarks=list(long_benchmarks.values()), citation=CITATION,
-                    desc='BRIGHT with long-form documents: the same queries as bright, '
-                         'against long documents, for 8 of its 12 domains.'))
+irds.register(Suite('bright-long', benchmarks=list(long_benchmarks.values()), citation=CITATION))

@@ -68,11 +68,9 @@ core_2018_qrels = TrecQrels('trec-core-2018-qrels',
 # -----------------------------------------
 core_2017 = Benchmark('trec-core-2017',
     docs=nyt_docs, queries=core_2017_queries, qrels=core_2017_qrels,
-    citation=CITATION_2017,
-    desc='TREC Common Core 2017 (50 queries assessed by NIST).')
+    citation=CITATION_2017)
 core_2018 = Benchmark('trec-core-2018',
-    docs=wapo_v2_docs, queries=core_2018_queries, qrels=core_2018_qrels,
-    desc='TREC Common Core 2018 (50 queries assessed by NIST).')
+    docs=wapo_v2_docs, queries=core_2018_queries, qrels=core_2018_qrels)
 
 
 # Registration

@@ -264,9 +264,6 @@ gold_qrels = TrecQrels('browsecomp-plus-gold-qrels', source=gold_qrels_file,
 browsecomp_plus = Benchmark('browsecomp-plus',
     docs=docs, queries=queries, qrels=qrels, answers=answers,
     citation=CITATION, metrics=METRICS,
-    desc='BrowseComp-Plus: 830 BrowseComp queries over a fixed ~100K-document web '
-         'corpus, judged for evidence documents, with ground-truth answers for '
-         'end-to-end deep-research evaluation.',
     license='MIT')
 
 

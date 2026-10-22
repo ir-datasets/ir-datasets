@@ -76,12 +76,10 @@ trec8_qrels = TrecQrels('trec-adhoc-8-qrels',
 # -----------------------------------------
 trec7 = Benchmark('trec-adhoc-7',
     docs=docs, queries=trec7_queries, qrels=trec7_qrels,
-    citation=CITATION_TREC7,
-    desc='TREC 7 (1998) ad hoc retrieval track.')
+    citation=CITATION_TREC7)
 trec8 = Benchmark('trec-adhoc-8',
     docs=docs, queries=trec8_queries, qrels=trec8_qrels,
-    citation=CITATION_TREC8,
-    desc='TREC 8 (1999) ad hoc retrieval track.')
+    citation=CITATION_TREC8)
 
 
 # Registration
