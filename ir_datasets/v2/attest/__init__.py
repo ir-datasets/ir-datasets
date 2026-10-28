@@ -5,5 +5,5 @@ and exposed in the graph as the ``attest:`` provider. See README.md.
     attest.attest_hash('irds:antique-docs')
 """
 from .client import (AttestError, Client, attest_evaluation, attest_hash, attest_visual,
-                     build_record, environment, for_node, hash_record, server_url)
+                     build_record, environment, for_node, hash_record, revoke, server_url)
 from .crypto import Identity

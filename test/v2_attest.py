@@ -176,6 +176,18 @@ class TestProvider(unittest.TestCase):
         self.assertEqual(4, len(provider.rows()))
         self.assertEqual([0, 3], self.client.asked)       # the second pass asked only for what is newer
 
+    def test_deleted_attestations_are_dropped(self):
+        self.assertEqual(3, len(provider.rows()))
+        self.rows[:] = [self.rows[0], {'id': 'id-hash', 'type': 'hash', 'seq': 4, 'deleted': True}, self.rows[2]]
+        provider.refresh()
+        self.assertEqual({'id-alice', 'id-eval'}, set(provider.rows()))
+        self.assertEqual([], Graph([provider]).list(type='attest:HashAttestation'))
+        self.assertEqual([], provider.for_node('irds:antique-docs'))
+        self.client.asked.clear()
+        provider.refresh()
+        provider.rows()
+        self.assertEqual([4], self.client.asked)       # the cursor passed the tombstone: nothing is asked for twice
+
     def test_offline_uses_the_copy_on_disk(self):
         provider.rows()
         provider.refresh()

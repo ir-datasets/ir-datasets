@@ -4,6 +4,7 @@
     ir_datasets attest hash irds:antique-docs      # hash a table or file and submit it
     ir_datasets attest visual irds:antique-docs --verdict ok --sample 2020338_0 --notes "texts look right"
     ir_datasets attest evaluation irds:antique-test --system "Terrier BM25" -m nDCG@10=0.32
+    ir_datasets attest revoke <id>                 # delete one you signed
     ir_datasets attest show irds:antique-test      # what has been attested (or give ids)
 """
 import argparse
@@ -63,6 +64,18 @@ def cmd_evaluation(args):
     return _submit(args, records.EVALUATION, args.node, {'system': args.system, 'measures': dict(args.measure)})
 
 
+def cmd_revoke(args):
+    identity = crypto.Identity.load()
+    if args.dry_run:
+        print(json.dumps({'record': clientmod.build_record(records.REVOCATION, f'attest:{args.attestation.split(":")[-1]}',
+                                                         {'reason': args.reason} if args.reason else {}),
+                          'signed_by': identity.username if identity else None}, indent=2))
+        return 0
+    id = clientmod.Client(args.server).revoke(args.attestation, args.reason, identity)
+    print(f'{id}  (deleted)')
+    return 0
+
+
 def cmd_show(args):
     client = clientmod.Client(args.server)
     out = []
@@ -107,6 +120,12 @@ def parser():
     s = submitting('evaluation', cmd_evaluation, 'report scores for a system on a benchmark')
     s.add_argument('--system', required=True)
     s.add_argument('-m', '--measure', action='append', type=_measure, required=True, metavar='NAME=VALUE')
+
+    s = sub.add_parser('revoke', aliases=['delete'], help='delete an attestation you signed')
+    s.add_argument('attestation', help='its id (as printed when you submitted it, or shown by "show")')
+    s.add_argument('--reason', help='why (kept with the request only; nothing is stored once it is deleted)')
+    s.add_argument('--dry-run', action='store_true', help='print the record instead of submitting it')
+    s.set_defaults(fn=cmd_revoke)
 
     s = sub.add_parser('show', help='print attestations: for nodes (irds:...), by id, or all ids')
     s.add_argument('target', nargs='*')

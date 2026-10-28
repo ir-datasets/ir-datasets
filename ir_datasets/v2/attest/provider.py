@@ -1,9 +1,10 @@
 """The ``attest:`` provider: attestations held by a server, as nodes in the v2 graph.
 
 Discovery downloads the whole attestation graph: every attestation's type, record, signature and
-signer, and an edge from each attested node to its attestations. Records never change, so the copy
-on disk (``<ir_datasets home>/attest/cache.json``) is kept up to date incrementally -- once an
-hour at most, only what is newer than the last record seen is fetched. A server that is down
+signer, and an edge from each attested node to its attestations. A record never changes (it can only be
+deleted, by its signer), so the copy on disk (``<ir_datasets home>/attest/cache.json``) is kept up to date
+incrementally -- once an hour at most, only what is new since the last sync is fetched: new records, and
+tombstones for deleted ones, which are dropped. A server that is down
 falls back to the copy on disk (with a warning); ``IR_DATASETS_ATTEST_OFFLINE=1`` never touches the
 network.
 """
@@ -61,13 +62,19 @@ class AttestProvider(ManifestProvider):
         except (OSError, ValueError):
             cached = None
         rows = cached['rows'] if cached else {}
+        cursor = cached.get('cursor', max((r['seq'] for r in rows.values()), default=0)) if cached else 0
         stale = not cached or time.time() - cached['fetched'] >= CACHE_TTL
         if stale and not os.environ.get('IR_DATASETS_ATTEST_OFFLINE'):
             try:
-                after = max((r['seq'] for r in rows.values()), default=0)
-                rows = {**rows, **{r['id']: r for r in self._client().records(after)}}
+                rows = dict(rows)
+                for r in self._client().records(cursor):
+                    cursor = max(cursor, r['seq'])
+                    if r.get('deleted'):      # deleted by its signer: forget what we had
+                        rows.pop(r['id'], None)
+                    else:
+                        rows[r['id']] = r
                 path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(json.dumps({'fetched': time.time(), 'server': url, 'rows': rows}))
+                path.write_text(json.dumps({'fetched': time.time(), 'server': url, 'cursor': cursor, 'rows': rows}))
             except Exception as e:     # a down server must not break listing every other dataset
                 _log.warning('attest: could not reach %s (%s); using %s', url, e,
                              'the copy on disk' if cached else 'nothing')

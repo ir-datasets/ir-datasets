@@ -8,19 +8,23 @@ import json
 import re
 import uuid
 
-HASH, VISUAL, EVALUATION, IDENTITY = 'hash', 'visual', 'evaluation', 'identity'
+HASH, VISUAL, EVALUATION, IDENTITY, REVOCATION = 'hash', 'visual', 'evaluation', 'identity', 'revocation'
 #: Kinds a client may submit to ``POST /{kind}``; identities have their own ``POST /register``.
 SUBMITTABLE = (HASH, VISUAL, EVALUATION)
-KINDS = (*SUBMITTABLE, IDENTITY)
+#: A revocation (``POST /revoke``) is not stored: it is a signed request, valid only from the identity that signed the
+#: attestation it names, and the server deletes that attestation when it verifies.
+KINDS = (*SUBMITTABLE, IDENTITY, REVOCATION)
 
-#: Visual attestations are only meaningful if someone is accountable for having looked.
-SIGNATURE_REQUIRED = (VISUAL,)
+#: Visual attestations are only meaningful if someone is accountable for having looked; a revocation is the
+#: proof that the key that made an attestation is the one deleting it.
+SIGNATURE_REQUIRED = (VISUAL, REVOCATION)
 
 MAX_BODY_BYTES = 64 * 1024
 #: ``table_hash`` version this package implements (see ``hashing.table_hash``).
 TABLE_HASH_VERSION = 1
 
 _SUBJECT = re.compile(r'^[a-z][a-z0-9_-]*:\S+$')
+_ATTESTATION_NAME = re.compile(r'^attest:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$')
 _USERNAME = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{1,38}$')
 
 
@@ -107,6 +111,12 @@ def validate(kind, record):
                 isinstance(k, str) and isinstance(v, (int, float)) and not isinstance(v, bool)
                 for k, v in measures.items())):
             raise ValueError('measures must be a non-empty object of measure name -> number')
+    elif kind == REVOCATION:
+        if not _ATTESTATION_NAME.match(record['subject']):
+            raise ValueError('a revocation\'s subject must be the attestation it deletes, like "attest:<id>"')
+        reason = record.get('reason', '')
+        if not isinstance(reason, str) or len(reason) > 500:
+            raise ValueError('reason must be a string of at most 500 characters')
     elif kind == IDENTITY:
         if not _USERNAME.match(record.get('username') or ''):
             raise ValueError('username must be 2-39 characters: letters, digits, "_", "." or "-"')

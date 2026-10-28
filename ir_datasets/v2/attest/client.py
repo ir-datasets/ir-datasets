@@ -61,7 +61,8 @@ class Client:
     # -- reading ------------------------------------------------------------
 
     def records(self, after=0):
-        """Every attestation with ``seq`` greater than ``after`` (all of them by default), in pages."""
+        """Every attestation with ``seq`` greater than ``after`` (all of them by default), in pages. A deleted one comes
+        back as a tombstone, ``{"id", "seq", "deleted": True}``, so a reader that has the record can drop it."""
         while True:
             page = self._call('GET', f'?full=1&after={after}&limit=1000')['attestations']
             yield from page
@@ -70,7 +71,7 @@ class Client:
             after = page[-1]['seq']
 
     def ids(self):
-        return [a['id'] for a in self._call('GET', '')['attestations']]
+        return [a['id'] for a in self._call('GET', '')['attestations'] if not a.get('deleted')]
 
     def get(self, *ids):
         """The records for these ids (unknown ids are left out)."""
@@ -96,6 +97,23 @@ class Client:
         identity.save()
         return identity
 
+    def revoke(self, attestation, reason=None, identity=None):
+        """Delete an attestation you signed (``attestation``: its id, or ``attest:<id>``). Needs the identity that
+        signed it (default: the saved one): the request is signed with its key, and the server checks that signature
+        against the public key of the identity that signed the attestation, which is what proves it is yours. Returns
+        the id deleted. Anonymous attestations have no key to prove, so cannot be deleted."""
+        identity = identity or crypto.Identity.load()
+        if identity is None:
+            raise ValueError('revoking needs your identity: run "ir_datasets attest register <username>" first')
+        name = attestation if attestation.startswith('attest:') else f'attest:{attestation}'
+        target = self.get(name.split(':', 1)[1])
+        if not target or target[0]['type'] == records.IDENTITY:
+            raise ValueError(f'no such attestation (identities cannot be deleted): {name}')
+        if target[0]['signed_by'] != identity.identity_id:
+            raise ValueError(f'{name} was not signed by {identity.username}, so you cannot delete it' if target[0]['signed_by']
+                             else f'{name} is anonymous (not signed), so there is no key that can delete it')
+        return self.submit(records.REVOCATION, name, {'reason': reason} if reason else {}, identity)
+
     def submit(self, kind, node, record, identity=None):
         """Submit a record about ``node``. ``identity`` (a ``crypto.Identity``) signs it; without
         one it is anonymous. Returns the new attestation id."""
@@ -106,7 +124,7 @@ class Client:
                 raise ValueError(f'this identity is registered on {identity.server}, not {self.url}')
             body.update(signature=identity.sign(records.signing_payload(record)),
                         signed_by=identity.identity_id)
-        return self._call('POST', kind, json=body)['id']
+        return self._call('POST', 'revoke' if kind == records.REVOCATION else kind, json=body)['id']
 
 
 def build_record(kind, node, content):
@@ -158,6 +176,10 @@ def attest_visual(node, verdict, notes='', sample=(), identity=None, client=None
 def attest_evaluation(node, system, measures, identity=None, client=None):
     record = {'system': system, 'measures': dict(measures)}
     return (client or Client()).submit(records.EVALUATION, node, record, identity)
+
+
+def revoke(attestation, reason=None, identity=None, client=None):
+    return (client or Client()).revoke(attestation, reason, identity)
 
 
 def for_node(node, client=None):
