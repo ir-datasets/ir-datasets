@@ -1,7 +1,8 @@
 """Python API for reading and submitting attestations.
 
     from ir_datasets.v2 import attest
-    attest.attest_hash('irds:antique-docs')                    # hash the table, submit anonymously
+    attest.attest_hash('irds:antique-docs')                    # hash the table and submit it, signed with the identity
+                                                               # `register` saved (anonymous without one; identity=None forces that)
     attest.attest_evaluation('irds:antique-test', system='Terrier BM25', measures={'nDCG@10': 0.3})
     attest.for_node('irds:antique-test')                       # what has been attested so far
 """
@@ -32,6 +33,18 @@ def environment():
     env = {'python': platform.python_version(), 'os': f'{platform.system()} {platform.release()}',
            'machine': platform.machine(), 'ir_datasets': version('ir_datasets')}
     return {k: v for k, v in env.items() if v}
+
+
+class _Saved:
+    """The default for ``identity=``: use the identity saved by ``register``, if there is one."""
+
+    def __repr__(self):
+        return 'SAVED'
+
+
+#: ``identity=SAVED`` (the default of every submitting function) signs with the saved identity if there is one --
+#: what the command line does -- and is anonymous otherwise. ``identity=None`` is always anonymous.
+SAVED = _Saved()
 
 
 class AttestError(Exception):
@@ -114,11 +127,15 @@ class Client:
                              else f'{name} is anonymous (not signed), so there is no key that can delete it')
         return self.submit(records.REVOCATION, name, {'reason': reason} if reason else {}, identity)
 
-    def submit(self, kind, node, record, identity=None):
-        """Submit a record about ``node``. ``identity`` (a ``crypto.Identity``) signs it; without
-        one it is anonymous. Returns the new attestation id."""
+    def submit(self, kind, node, record, identity=SAVED):
+        """Submit a record about ``node``. It is signed with ``identity`` (a ``crypto.Identity``) -- by default the saved one,
+        if there is one -- and anonymous if ``identity=None`` (or there is none to use). Returns the new attestation id."""
         record = build_record(kind, node, record)
         body = {'record': record}
+        if identity is SAVED:
+            identity = crypto.Identity.load()
+            if identity is not None and identity.server and identity.server != self.url:
+                identity = None      # saved for another server: not an identity here
         if identity is not None:
             if identity.server and identity.server != self.url:
                 raise ValueError(f'this identity is registered on {identity.server}, not {self.url}')
@@ -162,18 +179,18 @@ def hash_record(node, path=None, algos=None):
     raise ValueError(f'{node.qualified_name} is a {types[0]}: only files and tables can be hash-attested')
 
 
-def attest_hash(node, path=None, identity=None, client=None, algos=None):
+def attest_hash(node, path=None, identity=SAVED, client=None, algos=None):
     name = node if isinstance(node, str) else node.qualified_name
     return (client or Client()).submit(records.HASH, name, hash_record(node, path, algos), identity)
 
 
-def attest_visual(node, verdict, notes='', sample=(), identity=None, client=None):
+def attest_visual(node, verdict, notes='', sample=(), identity=SAVED, client=None):
     """Record that a person looked at a sample of the node's records (``sample``: the ids)."""
     record = {'verdict': verdict, 'notes': notes, 'sample': list(sample)}
-    return (client or Client()).submit(records.VISUAL, node, record, identity or crypto.Identity.load())
+    return (client or Client()).submit(records.VISUAL, node, record, identity)
 
 
-def attest_evaluation(node, system, measures, identity=None, client=None):
+def attest_evaluation(node, system, measures, identity=SAVED, client=None):
     record = {'system': system, 'measures': dict(measures)}
     return (client or Client()).submit(records.EVALUATION, node, record, identity)
 

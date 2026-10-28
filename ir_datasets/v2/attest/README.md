@@ -39,7 +39,8 @@ ir_datasets attest show irds:antique-test
 ```python
 from ir_datasets.v2 import attest
 attest.attest_hash('irds:antique-docs')
-attest.attest_evaluation('irds:antique-test', 'Terrier BM25', {'nDCG@10': 0.32}, identity=attest.Identity.load())
+attest.attest_evaluation('irds:antique-test', 'Terrier BM25', {'nDCG@10': 0.32})   # signed with your saved identity, if any
+attest.attest_hash('irds:antique-docs', identity=None)                          # anonymously, even if you have one
 attest.for_node('irds:antique-test')
 ```
 
