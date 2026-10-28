@@ -49,7 +49,7 @@ def cmd_register(args):
 
 def cmd_hash(args):
     return _submit(args, records.HASH, args.node,
-                   clientmod.hash_record(args.node, path=args.file, algos=tuple(args.algo or ['sha256'])))
+                   clientmod.hash_record(args.node, path=args.file, algos=tuple(args.algo) if args.algo else None))
 
 
 def cmd_visual(args):
@@ -97,7 +97,7 @@ def parser():
 
     s = submitting('hash', cmd_hash, 'hash a file or table')
     s.add_argument('--file', help='hash this local copy of a file node (recorded as having no source)')
-    s.add_argument('--algo', action='append', help='hash algorithm for files (repeatable; default sha256)')
+    s.add_argument('--algo', action='append', help='hash algorithm for files (repeatable; default: sha256 and the algorithms the node declares)')
 
     s = submitting('visual', cmd_visual, 'report a manual inspection (signed)')
     s.add_argument('--verdict', required=True, choices=['ok', 'issues'])

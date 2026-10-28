@@ -79,6 +79,20 @@ class TestTableHash(unittest.TestCase):
         self.assertTrue(hashing.table_hash([])[:7] == 'sha256:')
 
 
+class TestFileHashRecord(unittest.TestCase):
+    def test_algorithms_include_the_declared_ones(self):
+        from ir_datasets.v2.attest import client
+        with tempfile.NamedTemporaryFile() as f:
+            f.write(b'hi')
+            f.flush()
+            node = v2.Resource('attest-test-file', hash='md5:49f68a5c8493ec2c0bf489821c21fc3b')
+            record = client.hash_record(node, path=f.name)
+            self.assertEqual(['md5:49f68a5c8493ec2c0bf489821c21fc3b', 'sha256:8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4'],
+                             record['hashes'])
+            self.assertEqual(['sha256'], [h.split(':')[0] for h in client.hash_record(v2.Resource('attest-test-file2'), path=f.name)['hashes']])
+            self.assertEqual(1, len(client.hash_record(node, path=f.name, algos=('sha1',))['hashes']))
+
+
 class TestSigning(unittest.TestCase):
     def test_roundtrip_and_tamper(self):
         private, public = crypto.generate_keypair()

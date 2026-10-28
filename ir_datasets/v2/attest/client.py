@@ -119,10 +119,12 @@ def build_record(kind, node, content):
 
 # -- builders for each kind of record ---------------------------------------------
 
-def hash_record(node, path=None, algos=('sha256',)):
+def hash_record(node, path=None, algos=None):
     """A hash record for a ``irds`` v2 node (or its name): a table is hashed by content
     (``hashing.table_hash``), a file by its bytes -- at ``path`` if given (a copy you obtained
-    yourself, so ``source`` is null), else the node's own downloaded copy."""
+    yourself, so ``source`` is null), else the node's own downloaded copy. A file is hashed with
+    ``algos`` -- by default SHA-256 plus whatever algorithms the node declares a hash in, so the
+    result can be compared with the declared one."""
     from .. import load
     from .. import vocabulary
     node = load(node) if isinstance(node, str) else node
@@ -137,11 +139,12 @@ def hash_record(node, path=None, algos=('sha256',)):
             urls = [getattr(s, 'url', s) for s in node.sources]
             source = next((u for u in urls if isinstance(u, str)), None)
             path = node.path()
+        algos = algos or sorted({'sha256', *getattr(node, 'hashes', {})})
         return {'source': source, 'hashes': hashing.file_hashes(path, algos)}
     raise ValueError(f'{node.qualified_name} is a {types[0]}: only files and tables can be hash-attested')
 
 
-def attest_hash(node, path=None, identity=None, client=None, algos=('sha256',)):
+def attest_hash(node, path=None, identity=None, client=None, algos=None):
     name = node if isinstance(node, str) else node.qualified_name
     return (client or Client()).submit(records.HASH, name, hash_record(node, path, algos), identity)
 
