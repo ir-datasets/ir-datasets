@@ -47,6 +47,23 @@ class TestWapoDocs(unittest.TestCase):
             'First linked and italic text & more.\nNEW YORK — Second paragraph.',
             doc.body)
 
+    def test_real_doc_749ec5b2_is_not_empty(self):
+        # Paragraphs from wapo/v2 doc 749ec5b2-32f5-11e1-825f-dabc29fd7071, whose
+        # body lxml-xml parsed to entirely empty strings (525 words in the original).
+        paras = [
+            'Set down your champagne and gaze west, as the bubbly planet <b>Venus</b> kicks off Sunday night’s first evening of the New Year.',
+            'Find fleet <b>Mercury</b> now before sunrise in the southeast, in the constellation <b>Ophiuchus</b>, hugging the horizon.',
+            'Bright enough to see from the light-polluted Washington area, <b>Mars</b> and <b>Saturn</b>, both zero magnitude objects, become the New Year’s late-night revelers.',
+            'The International Meteor Organization (<a class="show" href="http://www.imo.net">www.imo.net</a>) says the hourly rate could be 120, but, in all honesty, you’ll be lucky to spot a handful.',
+        ]
+        doc = self._doc(paras)
+        self.assertEqual(
+            'Set down your champagne and gaze west, as the bubbly planet Venus kicks off Sunday night’s first evening of the New Year.\n'
+            'Find fleet Mercury now before sunrise in the southeast, in the constellation Ophiuchus, hugging the horizon.\n'
+            'Bright enough to see from the light-polluted Washington area, Mars and Saturn, both zero magnitude objects, become the New Year’s late-night revelers.\n'
+            'The International Meteor Organization (www.imo.net) says the hourly rate could be 120, but, in all honesty, you’ll be lucky to spot a handful.',
+            doc.body)
+
 
 if __name__ == '__main__':
     unittest.main()
