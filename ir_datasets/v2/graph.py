@@ -216,9 +216,18 @@ class Graph:
 
     def edges_of(self, name, structural_only=False):
         """``{kind: [target, ...]}`` for a node, from every provider -- an
-        informational edge about a node may live in another package."""
+        informational edge about a node may live in another package.
+
+        ``structural_only`` asks the node's own provider alone: structural edges are the owner's
+        to declare (``add_edge`` refuses anyone else's), so no other provider can have one. That
+        keeps build-graph questions -- everything ``load()`` asks, via ``requires`` -- from
+        discovering the catalog of a provider that may be live (a crawl, a download)."""
         out = {}
-        for provider in self.providers.values():
+        providers = self.providers.values()
+        if structural_only:
+            owner = self.providers.get(name.split(':', 1)[0]) if ':' in name else None
+            providers = [owner] if owner is not None else providers
+        for provider in providers:
             for kind, targets in self._catalog(provider)['fwd'].get(name, {}).items():
                 bucket = out.setdefault(kind, [])
                 known = set(bucket)

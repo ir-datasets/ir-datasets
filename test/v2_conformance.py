@@ -523,6 +523,23 @@ class TestV2Authority(unittest.TestCase):
         with self.assertRaises(PermissionError):
             self.acme.add_edge('irds:antique-docs', 'irds:derivedFrom', 'acme:file')
 
+    def test_loading_discovers_no_other_provider(self):
+        """Resolving a node (``load`` asks for its structural closure) must not discover the catalog
+        of any provider but the owner's: a live one would crawl or download."""
+        asked = []
+
+        class Live(v2.ManifestProvider):
+            def discover_edges(self):
+                asked.append(self.prefix)
+                return super().discover_edges()
+        g = v2.Graph([irds, Live('live')])
+        g.load('irds:antique-test')
+        g.dependencies('irds:antique-test')
+        g.closure('irds:antique-test')
+        self.assertEqual([], asked)
+        g.edges_of('irds:antique-test')        # a full query does ask every provider
+        self.assertEqual(['live'], asked)
+
     def test_third_party_edges_are_validated(self):
         self.acme.add_edge('irds:antique-docs', 'acme:see_also', 'acme:does-not-exist')
         self.assertIn('dangling: irds:antique-docs --acme:see_also--> acme:does-not-exist',
