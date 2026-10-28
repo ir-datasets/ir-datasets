@@ -102,6 +102,7 @@ from .datasets import clirmatrix as _clirmatrix  # noqa: F401
 # legacy_provider.py's own docstring.
 from .legacy_provider import legacy
 from .documentation_provider import documentation
+from .attest.provider import attest as _attest_provider
 from .nodes import (
     ALIAS_OF, ALTERNATIVE_OF, AnswerTable, BENCHMARK, Benchmark, alternatives, Directory, DocPairTable, DocTable, ENTITIES,
     ADHOC_BENCHMARK, ALIAS, BUNDLE, Bundle, DIRECTORY, BUNDLE_ITEM, OVERVIEW, Overview, FILE, File, GitRepo, QA_BENCHMARK, QlogTable, DATA, Resource,
@@ -132,6 +133,7 @@ graph.add(hf)
 graph.add(clirmatrix)
 graph.add(legacy)
 graph.add(documentation)
+graph.add(_attest_provider)
 
 
 def load(name, **facets):

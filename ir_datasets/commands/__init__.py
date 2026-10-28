@@ -7,6 +7,7 @@ from . import build_download_cache
 from . import build_c4_checkpoints
 from . import clean
 from . import generate_metadata
+from . import attest
 
 COMMANDS = {
 	'doc_fifos': doc_fifos.main,
@@ -18,4 +19,5 @@ COMMANDS = {
     'build_download_cache': build_download_cache.main,
     'clean': clean.main,
     'generate_metadata': generate_metadata.main,
+    'attest': attest.main,
 }

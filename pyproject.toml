@@ -40,6 +40,7 @@ hf = "ir_datasets.v2.hf_provider:hf"
 clirmatrix = "ir_datasets.v2.clirmatrix_provider:clirmatrix"
 legacy = "ir_datasets.v2.legacy_provider:legacy"
 documentation = "ir_datasets.v2.documentation_provider:documentation"
+attest = "ir_datasets.v2.attest.provider:attest"
 
 [project.optional-dependencies]
 car = [

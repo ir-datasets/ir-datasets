@@ -4,3 +4,4 @@ requests>=2.22.0
 tqdm>=4.38.0
 lz4>=3.1.10
 pyarrow>=16.1.0
+cryptography>=41

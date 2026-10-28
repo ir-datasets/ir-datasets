@@ -130,6 +130,7 @@ python -m unittest test.v2_conformance
 | `provider.py` | The `irds` `ManifestProvider` instance itself |
 | `nodes.py` | `Resource`, `Table` (+ `DocTable`/`QueryTable`/`QrelTable`/`RunTable`/`DocPairTable`), `Benchmark`, `Suite` — the dataset vocabulary, declared on `irds` |
 | `formats.py`, `sources.py`, `filters.py` | Format subclasses, download/cache machinery, derivation (`Filter`) |
+| `attest/` | Attestations: the `attest:` provider (records that someone hashed, inspected or evaluated a node, held by a server), signing, and the client and `ir_datasets attest` CLI. The server is in ir-datasets.com/attest. See [attest/README.md](attest/README.md) |
 | `datasets/*.py` | One authored file per dataset family |
 
 ## What it demonstrates
