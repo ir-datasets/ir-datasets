@@ -96,7 +96,7 @@ class WapoDocs(BaseDocs):
                     if content.get('content') is not None:
                         body_paras_html.append(content['content'])
                         if content.get('mime') == 'text/html':
-                            body += BeautifulSoup(content['content'], 'lxml-xml').get_text() + '\n'
+                            body += BeautifulSoup(content['content'], 'html.parser').get_text() + '\n'
                         else:
                             body += content['content'] + '\n'
                 elif content.get('type') in ['image', 'tweet', 'video', 'gallery']:
@@ -164,8 +164,12 @@ def _init():
     dlc = DownloadConfig.context(NAME, base_path)
     documentation = YamlDocumentation(f'docs/{NAME}.yaml')
 
-    collection_v2 = WapoDocs(dlc['v2'], 'WashingtonPost.v2/data/TREC_Washington_Post_collection.v2.jl')
-    collection_v4 = WapoDocs(dlc['v4'], 'WashingtonPost.v4/data/TREC_Washington_Post_collection.v4.jl')
+    migrator = Migrator(base_path/'irds_version.txt', 'v2',
+        affected_files=[f'{base_path/"WashingtonPost.v2.tar.gz"}.pklz4', f'{base_path/"WashingtonPost.v4.tar.gz"}.pklz4'],
+        message='Migrating wapo (re-extracting body text with html.parser)')
+
+    collection_v2 = migrator(WapoDocs(dlc['v2'], 'WashingtonPost.v2/data/TREC_Washington_Post_collection.v2.jl'))
+    collection_v4 = migrator(WapoDocs(dlc['v4'], 'WashingtonPost.v4/data/TREC_Washington_Post_collection.v4.jl'))
 
     base = Dataset(documentation('_'))
 
